@@ -1,0 +1,131 @@
+.tool-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: flex-start;
+    align-content: flex-start;
+
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tool-item {
+    align-items: flex-start;
+    margin: 2px;
+}
+
+.tool-item-color-picker {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+}
+
+.icon-radio-group {
+    display: flex;
+}
+
+.icon-radio-option {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.icon-radio-input {
+    display: none;
+}
+
+.icon-radio-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+}
+
+.icon-radio-icon i {
+    font-size: 16px;
+    color: #333;
+}
+
+.icon-radio-option:hover .icon-radio-icon {
+    background-color: #007bff;
+}
+
+.icon-radio-option:hover .icon-radio-icon i {
+    color: #fff;
+}
+
+.icon-radio-option input:checked + .icon-radio-icon {
+    background-color: #007bff;
+}
+
+.icon-radio-option input:checked + .icon-radio-icon i {
+    color: #fff;
+}
+
+.icon-radio-label {
+    font-size: 14px;
+    color: #333;
+}
+
+body {
+    font-family: 'Consolas', monospace;
+    /* background-color: #f5f5f5; */
+}
+
+#terminal {
+    background-color: rgba(51, 51, 51);
+    color: #fff;
+    padding-left: 10px;
+    font-size: 14px;
+    line-height: 1.2;
+    border-radius: 4px;
+    overflow: auto;
+    width: 1200px;
+    height: 160px;
+}
+
+#terminal pre {
+    margin: 5px;
+    padding: 0px;
+}
+
+#terminal .result {
+    color: #5fff5f;
+}
+
+#terminal .error {
+    color: #ff3d3d;
+}
+
+#terminal * {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+#input-line {
+    margin-top: 5px;
+    display: flex;
+}
+
+input {
+    font-family: Consolas, monospace;
+}
+
+#prompt {
+    margin-right: 5px;
+}
+
+#input {
+    flex-grow: 1;
+    background-color: transparent;
+    border: none;
+    color: white;
+    outline: none;
+}

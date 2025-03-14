@@ -1,0 +1,90 @@
+#!/usr/bin/env node
+
+const fs = require("fs");
+const gulp = require("gulp");
+const path = require("path");
+const parser = require("./parser");
+const colors = require("colors-console");
+const webpack = require("webpack-stream");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+function validateJSFile(sourceFilePath) {
+    if (!fs.existsSync(sourceFilePath)) {
+        console.log(colors("red", `[Error] File ${sourceFilePath} not found. Please check if the input path is correct.`));
+        process.exit(1);
+    }
+    if (!sourceFilePath.toLowerCase().endsWith(".js")) {
+        console.log(colors("red", `[Error] Invalid file type. The file must be a JavaScript (.js) file.`));
+        process.exit(1);
+    }
+    try {
+        fs.accessSync(sourceFilePath, fs.constants.R_OK);
+    } catch (err) {
+        console.log(colors("red", `[Error] Cannot read the file. Check file permissions.`));
+        process.exit(1);
+    }
+}
+
+function task(sourceFilePath, targetFilePath) {
+    sourceFilePath = sourceFilePath.replace("\\", "/");
+    validateJSFile(sourceFilePath);
+    const file = String(sourceFilePath).split("/").slice(-1)[0].split(".")[0];
+    const config = configuration(file);
+    return gulp.src(sourceFilePath).pipe(webpack(config)).pipe(gulp.dest(targetFilePath));
+}
+
+function configuration(file) {
+    const mode = global["d"] ? "development" : "production";
+    const suffix = global["l"] ? "Local" : "Remote";
+    return {
+        mode: mode,
+        output: {
+            filename: `${file}.js`,
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                template: `${global["projectRoot"]}/build/aniIndex${suffix}.html`,
+                inject: "body",
+                inlineSource: ".(js)$",
+                minify: false,
+                filename: `${file}.html`,
+                scriptLoading: "blocking",
+            }),
+        ],
+        watch: global["w"] ? true : false,
+        module: {
+            rules: [
+                {
+                    test: /.js$/,
+                    use: {
+                        loader: "babel-loader",
+                    },
+                },
+                { test: /\.css$/, use: ["style-loader", "css-loader"] },
+            ],
+        },
+        performance: {
+            hints: false,
+        },
+        cache: true,
+        externals: {
+            "@/sd": "sd",
+            "slidew": "sd",
+        },
+    };
+}
+
+if (require.main === module) {
+    global["projectRoot"] = path.resolve(__dirname, "..");
+    parser.parseInput();
+    const sourceFilePath = global["i"];
+    const targetFilePath = global["o"] || parser.parseConfig("animationOutputPath");
+    if (!sourceFilePath) {
+        console.log(colors("red", "[Error] Please provide the source file path."));
+        console.log(colors("cyan", "Usage: animation -i <source file path> [-o <target path>]"));
+        process.exit(1);
+    }
+    task(sourceFilePath, targetFilePath);
+}
+
+module.exports = task;

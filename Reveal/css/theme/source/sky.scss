@@ -1,0 +1,177 @@
+/**
+ * Sky theme for reveal.js.
+ *
+ * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+
+// Include theme-specific fonts
+@import url(https://fonts.googleapis.com/css?family=Quicksand:400,700,400italic,700italic);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
+
+
+// Override theme settings (see ../template/settings.scss)
+$systemFontsMono: Menlo,
+                  Consolas,
+                  Monaco,
+                  Liberation Mono,
+                  Lucida Console,
+                  monospace;
+$codeFont: "Fira Code", $systemFontsMono;
+$mainFont: 'Open Sans', sans-serif;
+$mainColor: #333;
+$headingFont: 'Quicksand', sans-serif;
+$headingColor: #333;
+$headingLetterSpacing: -0.08em;
+$headingTextShadow: none;
+$backgroundColor: #f7fbfc;
+$linkColor: #3b759e;
+$linkColorHover: lighten( $linkColor, 20% );
+$selectionBackgroundColor: #134674;
+
+$overlayElementBgColor: 0, 0, 0;
+$overlayElementFgColor: 240, 240, 240;
+
+// Fix links so they are not cut off
+.reveal a {
+	line-height: 1.3em;
+}
+
+// Background generator
+@mixin bodyBackground() {
+	@include radial-gradient( #add9e4, #f7fbfc );
+}
+
+// Change text colors against dark slide backgrounds
+@include dark-bg-text-color(#fff);
+
+
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+
+.hljs {
+	background: #2E3440;
+}
+.hljs,
+.hljs-subst {
+	color: #D8DEE9;
+}
+.hljs-selector-tag {
+color: #81A1C1;
+}
+.hljs-selector-id {
+    color: #8FBCBB;
+    font-weight: bold;
+}
+.hljs-selector-class,
+.hljs-selector-attr {
+    color: #8FBCBB;
+}
+.hljs-property,
+.hljs-selector-pseudo,
+.hljs-function {
+    color: #88C0D0;
+}
+.hljs-addition {
+    background-color: rgba(163, 190, 140, 0.5);
+}
+.hljs-deletion {
+    background-color: rgba(191, 97, 106, 0.5);
+}
+.hljs-built_in,
+.hljs-type,
+.hljs-class {
+    color: #8FBCBB;
+}
+.hljs-title.hljs-function,
+.hljs-function > .hljs-title {
+    color: #88C0D0;
+}
+.hljs-keyword,
+.hljs-literal,
+.hljs-symbol {
+    color: #81A1C1;
+}
+.hljs-number {
+    color: #B48EAD;
+}
+.hljs-regexp {
+    color: #EBCB8B;
+}
+.hljs-string {
+    color: #A3BE8C;
+}
+.hljs-title {
+    color: #8FBCBB;
+}
+.hljs-params {
+    color: #D8DEE9;
+}
+.hljs-bullet {
+    color: #81A1C1;
+}
+.hljs-code {
+    color: #8FBCBB;
+}
+.hljs-emphasis {
+    font-style: italic;
+}
+.hljs-formula {
+    color: #8FBCBB;
+}
+.hljs-strong {
+    font-weight: bold;
+}
+.hljs-link:hover {
+    text-decoration: underline;
+}
+.hljs-quote {
+    color: #4C566A;
+}
+.hljs-comment {
+    color: #8FBCBB;
+}
+.hljs-doctag {
+    color: #8FBCBB;
+}
+.hljs-meta,
+.hljs-meta .hljs-keyword {
+    color: #5E81AC;
+}
+.hljs-meta .hljs-string {
+    color: #A3BE8C;
+}
+.hljs-attr {
+    color: #8FBCBB;
+}
+.hljs-attribute {
+    color: #D8DEE9;
+}
+.hljs-name {
+    color: #81A1C1;
+}
+.hljs-section {
+    color: #88C0D0;
+}
+.hljs-tag {
+    color: #81A1C1;
+}
+.hljs-variable {
+    color: #D8DEE9;
+}
+.hljs-template-variable {
+    color: #D8DEE9;
+}
+.hljs-template-tag {
+    color: #5E81AC;
+}

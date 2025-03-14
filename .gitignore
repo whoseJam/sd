@@ -1,0 +1,6 @@
+*.exe
+*.pyc
+/.vscode
+/.CodeCounter
+node_modules
+myconfig.json
