@@ -5,6 +5,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 export class Input extends BaseHTML {
     constructor(parent: SDNode | RenderNode);
     value(): string;
+    value(value: any): this;
     label(): string;
     label(label: string): this;
     onChange(callback: (value: string) => void): this;

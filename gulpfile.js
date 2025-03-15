@@ -1,16 +1,28 @@
 const gulp = require("gulp");
-
-const sd = require("./build/sd");
+const sd = load("./build/sd");
 const animation = require("./build/animation");
-const github = require("./build/github");
-const iframe = require("./build/iframe");
+const github = load("./build/github");
+const iframe = load("./build/iframe");
 const ppt = require("./build/ppt");
-const rag = require("./build/rag");
-const release = require("./build/release");
+const rag = load("./build/rag");
+const release = load("./build/release");
 const reveal = require("./build/reveal");
 const revealPlugin = require("./build/revealPlugin");
 const theme = require("./build/theme");
 const parser = require("./build/parser");
+
+function load(path) {
+    try {
+        const module = require(path);
+        return module;
+    } catch (_) {
+        return undefined;
+    }
+}
+
+function copyFile(src, dest) {
+    return gulp.src(src).pipe(gulp.dest(dest));
+}
 
 global["projectRoot"] = __dirname.replaceAll("\\", "/");
 
@@ -40,7 +52,9 @@ gulp.task("theme", async () => {
 });
 
 gulp.task("animation", () => {
+    const pptOutputPath = parser.parseConfig("pptOutputPath");
     const animationOutputPath = global["o"] || parser.parseConfig("animationOutputPath");
+    if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
     return animation(global["i"], animationOutputPath);
 });
 
@@ -61,6 +75,18 @@ gulp.task("github", () => {
 
 gulp.task("ppt", done => {
     const pptOutputPath = global["o"] || parser.parseConfig("pptOutputPath");
+    if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
+    if (global["l"] && !global["theme"]) {
+        copyFile("./dist/beige.css", pptOutputPath);
+        copyFile("./dist/dracula.css", pptOutputPath);
+        copyFile("./dist/serif.css", pptOutputPath);
+        copyFile("./dist/serif.css", pptOutputPath);
+        copyFile("./dist/simple.css", pptOutputPath);
+        copyFile("./dist/sky.css", pptOutputPath);
+        copyFile("./dist/solarized.css", pptOutputPath);
+        copyFile("./dist/white.css", pptOutputPath);
+    }
+    if (global["l"] && !global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
     ppt(global["i"], pptOutputPath);
     done();
 });

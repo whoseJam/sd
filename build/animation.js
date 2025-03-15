@@ -29,15 +29,23 @@ function task(sourceFilePath, targetFilePath) {
     sourceFilePath = sourceFilePath.replace("\\", "/");
     validateJSFile(sourceFilePath);
     const file = String(sourceFilePath).split("/").slice(-1)[0].split(".")[0];
-    const config = configuration(file);
-    return gulp.src(sourceFilePath).pipe(webpack(config)).pipe(gulp.dest(targetFilePath));
+    const config = getConfiguration(file);
+    return (
+        gulp
+            // webpack stream
+            .src(sourceFilePath)
+            .pipe(webpack(config))
+            .pipe(gulp.dest(targetFilePath))
+    );
 }
 
-function configuration(file) {
+function getConfiguration(file) {
     const mode = global["d"] ? "development" : "production";
+    const watch = global["w"] ? true : false;
     const suffix = global["l"] ? "Local" : "Remote";
     return {
-        mode: mode,
+        mode,
+        watch,
         output: {
             filename: `${file}.js`,
         },
@@ -51,7 +59,6 @@ function configuration(file) {
                 scriptLoading: "blocking",
             }),
         ],
-        watch: global["w"] ? true : false,
         module: {
             rules: [
                 {

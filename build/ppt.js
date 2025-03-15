@@ -80,21 +80,6 @@ function task(sourceFileFolder, targetFileFolder) {
     });
     shouldPutInAnimationList = false;
 
-    if (global["l"]) {
-        if (!global["sd"]) copyFile("./dist/sd.js", targetFileFolder);
-        if (!global["theme"]) {
-            copyFile("./dist/beige.css", targetFileFolder);
-            copyFile("./dist/dracula.css", targetFileFolder);
-            copyFile("./dist/serif.css", targetFileFolder);
-            copyFile("./dist/serif.css", targetFileFolder);
-            copyFile("./dist/simple.css", targetFileFolder);
-            copyFile("./dist/sky.css", targetFileFolder);
-            copyFile("./dist/solarized.css", targetFileFolder);
-            copyFile("./dist/white.css", targetFileFolder);
-        }
-        if (!global["reveal"]) copyFile("./dist/myreveal.js", targetFileFolder);
-    }
-
     if (global["w"]) {
         const watcher = gulp.watch(`${sourceFileFolder}/**`);
         watcher.on("change", function (path) {
