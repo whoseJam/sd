@@ -3,6 +3,7 @@
 const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
+const utils = require("./utils");
 const parser = require("./parser");
 const colors = require("colors-console");
 const webpack = require("webpack-stream");
@@ -43,6 +44,27 @@ function task(source, targetFolder) {
             .pipe(webpack(config))
             .pipe(gulp.dest(targetFolder))
     );
+}
+
+/**
+ * Launch the animation task, processing the input.
+ * @param {boolean} selfLaunch If the launch is created by this file.
+ * @returns {NodeJS.ReadWriteStream}
+ */
+function launch(selfLaunch = true) {
+    if (require.main !== module && selfLaunch) return;
+    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
+    parser.parseInput();
+    const pptOutputPath = parser.parseConfig("pptOutputPath");
+    const animationOutputPath = global["o"] || parser.parseConfig("animationOutputPath");
+    const sourceFilePath = global["i"];
+    if (!sourceFilePath) {
+        console.log(colors("red", "[Error] Please provide the source file path."));
+        console.log(colors("cyan", "Usage: animation -i <source file path> [-o <target path>]"));
+        process.exit();
+    }
+    if (global["l"] && !global["sd"]) utils.copyFile("./dist/sd.js", pptOutputPath);
+    return task(sourceFilePath, animationOutputPath);
 }
 
 function getConfiguration(file) {
@@ -87,17 +109,9 @@ function getConfiguration(file) {
     };
 }
 
-if (require.main === module) {
-    global["projectRoot"] = path.resolve(__dirname, "..");
-    parser.parseInput();
-    const sourceFilePath = global["i"];
-    const targetFilePath = global["o"] || parser.parseConfig("animationOutputPath");
-    if (!sourceFilePath) {
-        console.log(colors("red", "[Error] Please provide the source file path."));
-        console.log(colors("cyan", "Usage: animation -i <source file path> [-o <target path>]"));
-        process.exit(1);
-    }
-    task(sourceFilePath, targetFilePath);
-}
+launch(true);
 
-module.exports = task;
+module.exports = {
+    task,
+    launch,
+};

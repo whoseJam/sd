@@ -1,6 +1,7 @@
 const gulp = require("gulp");
 const sd = load("./build/sd");
 const animation = require("./build/animation");
+const animationGroup = require("./build/animationGroup");
 const github = load("./build/github");
 const iframe = load("./build/iframe");
 const ppt = require("./build/ppt");
@@ -18,10 +19,6 @@ function load(path) {
     } catch (_) {
         return undefined;
     }
-}
-
-function copyFile(src, dest) {
-    return gulp.src(src).pipe(gulp.dest(dest));
 }
 
 global["projectRoot"] = __dirname.replaceAll("\\", "/");
@@ -52,10 +49,12 @@ gulp.task("theme", async () => {
 });
 
 gulp.task("animation", () => {
-    const pptOutputPath = parser.parseConfig("pptOutputPath");
-    const animationOutputPath = global["o"] || parser.parseConfig("animationOutputPath");
-    if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
-    return animation(global["i"], animationOutputPath);
+    return animation.launch(false);
+});
+
+gulp.task("animationGroup", done => {
+    animationGroup.launch(false);
+    done();
 });
 
 gulp.task("iframe", () => {
@@ -73,21 +72,8 @@ gulp.task("github", () => {
     return github(githubOutputPath);
 });
 
-gulp.task("ppt", done => {
-    const pptOutputPath = global["o"] || parser.parseConfig("pptOutputPath");
-    if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
-    if (global["l"] && !global["theme"]) {
-        copyFile("./dist/beige.css", pptOutputPath);
-        copyFile("./dist/dracula.css", pptOutputPath);
-        copyFile("./dist/serif.css", pptOutputPath);
-        copyFile("./dist/serif.css", pptOutputPath);
-        copyFile("./dist/simple.css", pptOutputPath);
-        copyFile("./dist/sky.css", pptOutputPath);
-        copyFile("./dist/solarized.css", pptOutputPath);
-        copyFile("./dist/white.css", pptOutputPath);
-    }
-    if (global["l"] && !global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
-    return ppt(global["i"], pptOutputPath);
+gulp.task("ppt", () => {
+    return ppt.launch(false);
 });
 
 gulp.task("serve", done => {

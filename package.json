@@ -1,13 +1,14 @@
 {
     "name": "slidew",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "",
     "main": "./SD/sd.d.ts",
     "scripts": {},
     "bin": {
-        "animation": "./build/animation.js",
-        "ppt": "./build/ppt.js",
-        "config": "./build/config.js"
+        "sd-animation": "./build/animation.js",
+        "sd-animationGroup": "./build/animationGroup.js",
+        "sd-ppt": "./build/ppt.js",
+        "sd-config": "./build/config.js"
     },
     "repository": {
         "type": "",

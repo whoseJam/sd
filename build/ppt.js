@@ -6,7 +6,7 @@ const gulp = require("gulp");
 const path = require("path");
 const parser = require("./parser");
 const webpack = require("webpack-stream");
-const animationTask = require("./animation");
+const animation = require("./animation");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const colors = require("colors-console");
 const eventListener = {};
@@ -29,7 +29,7 @@ defineEventListener("png|jpg|jpeg", {
 defineEventListener("js", {
     onAdd: function (path, destFolderPath) {
         gulp.task(path, () => {
-            return animationTask(path, destFolderPath, true);
+            return animation.task(path, destFolderPath);
         });
         gulp.task(path)();
     },
@@ -100,6 +100,36 @@ function task(source, targetFolder) {
         .src(pptFilePath)
         .pipe(webpack(getConfiguration(pptFilePath)))
         .pipe(gulp.dest(targetFolder));
+}
+
+/**
+ * @param {boolean} selfLaunch
+ * @returns {NodeJS.ReadWriteStream}
+ */
+function launch(selfLaunch = true) {
+    if (require.main !== module && selfLaunch) return;
+    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
+    parser.parseInput();
+    const pptOutputPath = global["o"] || parser.parseConfig("pptOutputPath");
+    const source = global["i"];
+    if (!source) {
+        console.log(colors("red", "[Error] Please provide the source folder path."));
+        console.log(colors("cyan", "Usage: ppt -i <source folder path> [-o <target folder path>]"));
+        process.exit();
+    }
+    if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
+    if (global["l"] && !global["theme"]) {
+        copyFile("./dist/beige.css", pptOutputPath);
+        copyFile("./dist/dracula.css", pptOutputPath);
+        copyFile("./dist/serif.css", pptOutputPath);
+        copyFile("./dist/serif.css", pptOutputPath);
+        copyFile("./dist/simple.css", pptOutputPath);
+        copyFile("./dist/sky.css", pptOutputPath);
+        copyFile("./dist/solarized.css", pptOutputPath);
+        copyFile("./dist/white.css", pptOutputPath);
+    }
+    if (global["l"] && !global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
+    return task(source, pptOutputPath);
 }
 
 function relativePath(filePath) {
@@ -238,17 +268,9 @@ function getConfiguration() {
     };
 }
 
-if (require.main === module) {
-    global["projectRoot"] = path.resolve(__dirname, "..");
-    parser.parseInput();
-    const source = global["i"];
-    const targetFolder = global["o"] || parser.parseConfig("pptOutputPath");
-    if (!source) {
-        console.log(colors("red", "[Error] Please provide the source folder path."));
-        console.log(colors("cyan", "Usage: ppt -i <source folder path> [-o <target folder path>]"));
-        process.exit(1);
-    }
-    task(source, targetFolder);
-}
+launch(true);
 
-module.exports = task;
+module.exports = {
+    task,
+    launch,
+};
