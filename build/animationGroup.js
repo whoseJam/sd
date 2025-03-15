@@ -68,7 +68,6 @@ function launch(selfLaunch = true) {
     if (require.main !== module && selfLaunch) return;
     if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
     parser.parseInput();
-    const pptOutputPath = parser.parseConfig("pptOutputPath");
     const animationOutputPath = global["o"] || parser.parseConfig("animationOutputPath");
     const source = global["i"];
     if (!source) {
@@ -76,7 +75,7 @@ function launch(selfLaunch = true) {
         console.log(colors("cyan", "Usage: animationGroup -i <source folder path> [-o <target folder path>]"));
         process.exit();
     }
-    if (global["l"] && !global["sd"]) utils.copyFile("./dist/sd.js", pptOutputPath);
+    if (global["l"] && !global["sd"]) utils.copyFile("./dist/sd.js", parser.parseConfig("pptOutputPath"));
     task(source, animationOutputPath);
 }
 

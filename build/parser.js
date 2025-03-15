@@ -45,7 +45,7 @@ module.exports = {
         if (!config || !config[key]) {
             console.log(colors("red", `[Error] Configuration key '${key}' not found. Please check the configuration.`));
             console.log(colors("cyan", configHints[key]));
-            process.exit(1);
+            process.exit();
         }
         return config[key];
     },
