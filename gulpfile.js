@@ -87,8 +87,7 @@ gulp.task("ppt", done => {
         copyFile("./dist/white.css", pptOutputPath);
     }
     if (global["l"] && !global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
-    ppt(global["i"], pptOutputPath);
-    done();
+    return ppt(global["i"], pptOutputPath);
 });
 
 gulp.task("serve", done => {

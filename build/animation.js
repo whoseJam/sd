@@ -11,31 +11,37 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 function validateJSFile(sourceFilePath) {
     if (!fs.existsSync(sourceFilePath)) {
         console.log(colors("red", `[Error] File ${sourceFilePath} not found. Please check if the input path is correct.`));
-        process.exit(1);
+        process.exit();
     }
     if (!sourceFilePath.toLowerCase().endsWith(".js")) {
         console.log(colors("red", `[Error] Invalid file type. The file must be a JavaScript (.js) file.`));
-        process.exit(1);
+        process.exit();
     }
     try {
         fs.accessSync(sourceFilePath, fs.constants.R_OK);
     } catch (err) {
         console.log(colors("red", `[Error] Cannot read the file. Check file permissions.`));
-        process.exit(1);
+        process.exit();
     }
 }
 
-function task(sourceFilePath, targetFilePath) {
-    sourceFilePath = sourceFilePath.replace("\\", "/");
-    validateJSFile(sourceFilePath);
-    const file = String(sourceFilePath).split("/").slice(-1)[0].split(".")[0];
+/**
+ * Compile xxx.js to the target folder.
+ * @param {string} source The source js file path.
+ * @param {string} targetFolder The folder to hold the output.
+ * @returns {NodeJS.ReadWriteStream}
+ */
+function task(source, targetFolder) {
+    source = source.replace("\\", "/");
+    validateJSFile(source);
+    const file = String(source).split("/").slice(-1)[0].split(".")[0];
     const config = getConfiguration(file);
     return (
         gulp
             // webpack stream
-            .src(sourceFilePath)
+            .src(source)
             .pipe(webpack(config))
-            .pipe(gulp.dest(targetFilePath))
+            .pipe(gulp.dest(targetFolder))
     );
 }
 

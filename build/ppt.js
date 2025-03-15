@@ -9,11 +9,7 @@ const webpack = require("webpack-stream");
 const animationTask = require("./animation");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const colors = require("colors-console");
-
 const eventListener = {};
-
-let shouldPutInAnimationList = true;
-const animationList = [];
 
 defineEventListener("cpp", {
     onAdd: copyCPPFile,
@@ -32,42 +28,35 @@ defineEventListener("png|jpg|jpeg", {
 });
 defineEventListener("js", {
     onAdd: function (path, destFolderPath) {
-        gulp.task(path, done => {
+        gulp.task(path, () => {
             return animationTask(path, destFolderPath, true);
         });
-        if (shouldPutInAnimationList) {
-            animationList.push(path);
-        } else {
-            gulp.task(path)();
-        }
+        gulp.task(path)();
     },
     onChange: function () {},
     onUnlink: function () {},
 });
 
-function task(sourceFileFolder, targetFileFolder) {
-    const pptFilePath = `${sourceFileFolder}/ppt.html`;
+/**
+ * Compile the ppt project to the target folder.
+ * @param {string} source The source of the ppt project. Ensure ppt.html exists.
+ * @param {string} targetFolder The folder to hold the output.
+ * @returns {NodeJS.ReadWriteStream}
+ */
+function task(source, targetFolder) {
+    const pptFilePath = `${source}/ppt.html`;
 
     if (!fs.existsSync(pptFilePath)) {
         console.log(colors("red", `[Error] Please check if the path ${pptFilePath} exists.`));
         process.exit();
     }
 
-    gulp.task("ppt-task", () => {
-        return gulp
-            .src(pptFilePath)
-            .pipe(webpack(configuration(pptFilePath)))
-            .pipe(gulp.dest(targetFileFolder));
-    });
+    global.source = source;
+    global.targetFolder = targetFolder;
 
-    let project = gulp.task("ppt-task");
-
-    global.sourceFileFolder = sourceFileFolder;
-    global.targetFileFolder = targetFileFolder;
-
-    cleanAllFiles(targetFileFolder);
-    cleanAllEmptyDirectories(targetFileFolder);
-    walk(sourceFileFolder, path => {
+    cleanAllFiles(targetFolder);
+    cleanAllEmptyDirectories(targetFolder);
+    walk(source, path => {
         const suffix = path.split(".").slice(-1)[0];
         if (!eventListener[suffix] || !eventListener[suffix].onAdd) {
             console.log(colors("red", `[Error] No 'onAdd' handler defined for file with extension ${suffix} at ${path}.`));
@@ -75,13 +64,9 @@ function task(sourceFileFolder, targetFileFolder) {
         }
         eventListener[suffix].onAdd(pathToOriginFile(path), pathToTargetFolder(path));
     });
-    animationList.forEach(task => {
-        project = gulp[global["w"] ? "parallel" : "series"](project, gulp.task(task));
-    });
-    shouldPutInAnimationList = false;
 
     if (global["w"]) {
-        const watcher = gulp.watch(`${sourceFileFolder}/**`);
+        const watcher = gulp.watch(`${source}/**`);
         watcher.on("change", function (path) {
             path = path.replaceAll("\\", "/");
             const suffix = path.split(".").slice(-1)[0];
@@ -111,14 +96,17 @@ function task(sourceFileFolder, targetFileFolder) {
         });
     }
 
-    project();
+    return gulp
+        .src(pptFilePath)
+        .pipe(webpack(getConfiguration(pptFilePath)))
+        .pipe(gulp.dest(targetFolder));
 }
 
 function relativePath(filePath) {
     const A = filePath.split("/");
-    const B = sourceFileFolder.split("/");
-    let indexA = 0,
-        indexB = 0;
+    const B = global["source"].split("/");
+    let indexA = 0;
+    let indexB = 0;
     while (indexA < A.length && A[indexA] === ".") indexA++;
     while (indexB < B.length && B[indexB] === ".") indexB++;
     while (indexA < A.length && indexB < B.length) {
@@ -135,15 +123,15 @@ function relativePathWithoutFile(filePath) {
 }
 
 function pathToOriginFile(path) {
-    return `${sourceFileFolder}/${relativePath(path)}`;
+    return `${global["source"]}/${relativePath(path)}`;
 }
 
 function pathToTargetFile(path) {
-    return `${targetFileFolder}/${relativePath(path)}`;
+    return `${global["targetFolder"]}/${relativePath(path)}`;
 }
 
 function pathToTargetFolder(path) {
-    return `${targetFileFolder}/${relativePathWithoutFile(path)}`;
+    return `${global["targetFolder"]}/${relativePathWithoutFile(path)}`;
 }
 
 function copyFile(srcPath, destFolderPath) {
@@ -151,7 +139,7 @@ function copyFile(srcPath, destFolderPath) {
 }
 
 function copyCPPFile(srcPath, destFolderPath) {
-    return copyFile(srcPath, `${targetFileFolder}/std`);
+    return copyFile(srcPath, `${global["targetFolder"]}/std`);
 }
 
 function copyImage(srcPath, destFolderPath) {
@@ -165,7 +153,7 @@ function cleanFile(path) {
 
 function cleanCPPFile(path) {
     const fileName = path.split("/").slice(-1)[0];
-    cleanFile(`${targetFileFolder}/std/${fileName}`);
+    cleanFile(`${global["targetFolder"]}/std/${fileName}`);
 }
 
 function cleanAllFiles(path) {
@@ -217,13 +205,15 @@ function defineEventListener(suffix, listener) {
     });
 }
 
-function configuration() {
+function getConfiguration() {
     // pptFilePath: ./work/xxx/ppt.html
+    const mode = global["d"] ? "development" : "production";
+    const watch = global["w"] ? true : false;
     const suffix = global["l"] ? "Local" : "Remote";
     return {
-        mode: global["d"] ? "development" : "production",
+        mode,
+        watch,
         entry: `${global["projectRoot"]}/build/pptMain.js`,
-        watch: global["w"] ? true : false,
         plugins: [
             new HtmlWebpackPlugin({
                 template: `${global["projectRoot"]}/build/pptIndex${suffix}.html`,
@@ -251,14 +241,14 @@ function configuration() {
 if (require.main === module) {
     global["projectRoot"] = path.resolve(__dirname, "..");
     parser.parseInput();
-    const sourceFileFolder = global["i"];
-    const targetFileFolder = global["o"] || parser.parseConfig("pptOutputPath");
-    if (!sourceFileFolder) {
+    const source = global["i"];
+    const targetFolder = global["o"] || parser.parseConfig("pptOutputPath");
+    if (!source) {
         console.log(colors("red", "[Error] Please provide the source folder path."));
         console.log(colors("cyan", "Usage: ppt -i <source folder path> [-o <target folder path>]"));
         process.exit(1);
     }
-    task(sourceFileFolder, targetFileFolder);
+    task(source, targetFolder);
 }
 
 module.exports = task;
