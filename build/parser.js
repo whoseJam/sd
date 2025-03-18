@@ -32,6 +32,10 @@ module.exports = {
                 global[key] = true;
             }
         }
+        if (global["domain"]) {
+            if (global["domain"] === true) global["domain"] = "/";
+            if (global["domain"].endsWith("/") || global["domain"].endsWith("\\")) global["domain"] = global["domain"].slice(0, -1);
+        }
     },
     parseConfig(key) {
         if (config === undefined) {
