@@ -239,32 +239,44 @@ function getConfiguration() {
     // pptFilePath: ./work/xxx/ppt.html
     const mode = global["d"] ? "development" : "production";
     const watch = global["w"] ? true : false;
-    const suffix = global["l"] ? "Local" : "Remote";
+    const suffix = global["domain"] !== undefined ? "" : global["l"] ? "Local" : "Remote";
+    const domain = global["domain"] !== undefined ? global["domain"] : global["l"] ? "http://localhost:8080" : "https://whosejam.site";
+    const plugins = [
+        new HtmlWebpackPlugin({
+            template: `${global["projectRoot"]}/build/pptIndex${suffix}.html`,
+            inject: "body",
+            inlineSource: ".(js)$",
+            minify: false,
+            scriptLoading: "blocking",
+            templateParameters: {
+                domain: global["domain"],
+            },
+        }),
+        new w.DefinePlugin({
+            __VERSION__: JSON.stringify("1.0.0"),
+            DOMAIN: JSON.stringify(domain),
+        }),
+    ];
     return {
         mode,
         watch,
+        plugins,
         entry: `${global["projectRoot"]}/build/pptMain.js`,
-        plugins: [
-            new HtmlWebpackPlugin({
-                template: `${global["projectRoot"]}/build/pptIndex${suffix}.html`,
-                inject: "body",
-                scriptLoading: "blocking",
-            }),
-            new w.DefinePlugin({
-                __VERSION__: JSON.stringify("1.0.0"),
-                DEFINE_LOCAL: global["l"],
-            }),
-        ],
         module: {
             rules: [
-                { test: /\.tsx?$/, use: ["ts-loader"] },
-                { test: /.html$/, use: ["html-loader"] },
-                { test: /\.(s[ac]ss|css)$/, use: ["style-loader", "css-loader", "sass-loader"] },
+                {
+                    test: /.js$/,
+                    use: {
+                        loader: "babel-loader",
+                    },
+                },
+                { test: /\.css$/, use: ["style-loader", "css-loader"] },
             ],
         },
-        resolve: {
-            extensions: [".tsx", ".ts", ".js"],
+        performance: {
+            hints: false,
         },
+        cache: true,
     };
 }
 

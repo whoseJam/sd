@@ -1,5 +1,5 @@
 import { BaseElement } from "@/Node/Element/BaseElement";
-import { Rect } from "@/Node/Nake/Rect";
+import { Rect } from "@/Node/SVG/Rect";
 import { Rule as R } from "@/Rule/Rule";
 
 export function Box(parent, value) {

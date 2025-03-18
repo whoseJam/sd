@@ -3,7 +3,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 import { PacketColor, SDColor } from "@/Utility/Color";
 
 export class BaseArray extends SDNode {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     start(): number;
     start(start: number): this;
     end(): number;

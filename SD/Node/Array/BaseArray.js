@@ -1,12 +1,12 @@
 import { Exit as EX } from "@/Node/Core/Exit";
-import { SDNode } from "@/Node/SDNode";
+import { SD2DNode } from "@/Node/SD2DNode";
 import { Cast } from "@/Utility/Cast";
 import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
 export function BaseArray(parent) {
-    SDNode.call(this, parent);
+    SD2DNode.call(this, parent);
 
     this.newLayer("elements");
 
@@ -14,12 +14,11 @@ export function BaseArray(parent) {
         start: 0,
         elements: [],
     });
-
-    this._.BASE_ARRAY = true;
 }
 
 BaseArray.prototype = {
-    ...SDNode.prototype,
+    ...SD2DNode.prototype,
+    BASE_ARRAY: true,
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     start: Factory.handler("start"),
@@ -141,9 +140,9 @@ BaseArray.prototype = {
         const args = arguments;
         switch (args.length) {
             case 0:
-                return SDNode.prototype.opacity.call(this);
+                return SD2DNode.prototype.opacity.call(this);
             case 1:
-                if (Check.isTypeOfOpacity(args[0])) return SDNode.prototype.opacity.call(this, args[0]);
+                if (Check.isTypeOfOpacity(args[0])) return SD2DNode.prototype.opacity.call(this, args[0]);
                 else return this.element(args[0]).opacity();
             case 2:
                 this.element(args[0]).opacity(args[1]);

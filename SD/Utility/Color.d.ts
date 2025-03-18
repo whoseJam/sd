@@ -1,5 +1,5 @@
 export type HexColor = string;
-export type PacketColor = { main: HexColor; border: HexColor };
+export type PacketColor = { fill: HexColor; stroke: HexColor };
 export type SDColor = HexColor | PacketColor;
 
 export class Color {

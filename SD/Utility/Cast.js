@@ -1,4 +1,4 @@
-import { Text } from "@/Node/Nake/Text";
+import { Text } from "@/Node/SVG/Text";
 
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 

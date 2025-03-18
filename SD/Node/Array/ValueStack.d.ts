@@ -5,7 +5,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 type Align = "x" | "cx" | "mx";
 
 export class ValueStack extends Stack {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     align(): Align;
     align(align: Align): this;
 }

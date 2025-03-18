@@ -1,36 +1,15 @@
-import { Action } from "@/Animate/Action";
 import { Animate } from "@/Node/Core/Animate";
 import { Children } from "@/Node/Core/Children";
+import { Enter as EN } from "@/Node/Core/Enter";
 import { Interact } from "@/Node/Core/Interact";
 import { Location } from "@/Node/Core/Location";
 import { effect, reactive, uneffect } from "@/Node/Core/Reactive";
-import { createRenderNode } from "@/Renderer/RenderNode";
 import { SVGNode } from "@/Renderer/SVG/SVGNode";
 import { Check } from "@/Utility/Check";
-import { Factory } from "@/Utility/Factory";
-import { Enter as EN } from "@/Node/Core/Enter";
 
 let id = 0;
 
-function interp(node, attrs) {
-    return function (t) {
-        const k = this.source + (this.target - this.source) * t;
-        attrs.setAttribute("opacity", k);
-        if (t === 1 && !node._.clickableCalled) {
-            attrs.setAttribute("pointer-events", k === 0 ? "none" : "auto");
-        }
-    };
-}
-
-function opacityInterp(node, attrs) {
-    return function (newValue, oldValue) {
-        const l = node.delay();
-        const r = node.delay() + node.duration();
-        new Action(l, r, oldValue, newValue, interp(node, attrs), node, "opacity");
-    };
-}
-
-export function SDNode(parent, layer = undefined, group = undefined) {
+export function SDNode(target) {
     this.id = ++id;
     this._ = {
         ready: false, // only when ready = true, the action can impact the node
@@ -42,40 +21,11 @@ export function SDNode(parent, layer = undefined, group = undefined) {
         interact: new Interact(this),
         updaters: {},
     };
-    group = group === undefined ? "g" : group;
 
-    if (Check.isTypeOfSDNode(parent)) {
-        // parent is SDNode
-        this._.parent = parent;
-        if (!layer) {
-            this._.layer = createRenderNode(this, parent.layer(), group);
-        } else {
-            // appear later, layer is undefined
-            this._.layer = createRenderNode(this, undefined, layer);
-        }
-    } else {
-        // parent is RenderNode
-        if (Check.isTypeOfThreeNode(parent)) {
-            this._.parent = parent.parent;
-            this._.layer = parent;
-        } else {
-            this._.parent = parent.parent;
-            if (!layer) {
-                this._.layer = createRenderNode(this, parent, group);
-            } else {
-                // appear later, layer is undefined
-                this._.layer = createRenderNode(this, undefined, layer);
-            }
-        }
-    }
+    if (Check.isTypeOfSDNode(target)) target = target.layer();
+    this._.layers.__targetLayer = target;
 
-    this.vars = reactive({
-        opacity: 1,
-    });
-
-    this.vars.associate("opacity", opacityInterp(this, this._.layer));
-
-    this._.BASE_SDNODE = true;
+    this.vars = reactive({});
 }
 
 function forward(comp, func) {
@@ -95,11 +45,17 @@ function forwardWithReturn(comp, func) {
 
 SDNode.prototype = {
     ...SDNode.prototype,
+    BASE_SDNODE: true,
+
     type(type) {
         if (type === undefined) return this._.layer.getAttribute("type");
         this._.layer.setAttribute("type", type);
         return this;
     },
+    fixAspect() {
+        return false;
+    },
+
     layer(name) {
         return name === undefined ? this._.layer : this._.layers[name];
     },
@@ -119,6 +75,7 @@ SDNode.prototype = {
         }
         return this;
     },
+
     childAs() {
         const args = [...arguments];
         const child = args.filter(arg => Check.isTypeOfSDNode(arg))[0];
@@ -135,19 +92,17 @@ SDNode.prototype = {
     child: forwardWithReturn("children", "child"),
     hasChild: forwardWithReturn("children", "has"),
     eraseChild: forwardWithReturn("children", "erase"),
+    remove() {
+        this._.layer.remove();
+    },
+
     startAnimate: forward("animate", "startAnimate"),
     endAnimate: forward("animate", "endAnimate"),
     isAnimating: forwardWithReturn("animate", "isAnimating"),
     delay: forwardWithReturn("animate", "delay"),
     after: forward("animate", "after"),
     duration: forwardWithReturn("animate", "duration"),
-    opacity: Factory.handlerMediumPrecise("opacity"),
-    inRange(vec) {
-        return this.x() <= vec[0] && vec[0] <= this.mx() && this.y() <= vec[1] && vec[1] <= this.my();
-    },
-    remove() {
-        this._.layer.remove();
-    },
+
     scale: Location.scale,
     pos: Location.position,
     center: Location.center,

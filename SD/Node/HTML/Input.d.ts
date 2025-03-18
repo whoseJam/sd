@@ -3,7 +3,7 @@ import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Input extends BaseHTML {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     value(): string;
     value(value: any): this;
     label(): string;

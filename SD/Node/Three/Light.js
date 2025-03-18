@@ -1,5 +1,5 @@
 import { Interp } from "@/Animate/Interp";
-import { SDNode } from "@/Node/SDNode";
+import { SD3DNode } from "@/Node/SD3DNode";
 import { Scene } from "@/Node/Three/Scene";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
@@ -7,7 +7,7 @@ import { DirectionalLight } from "three";
 
 export function Light(parent) {
     if (parent instanceof Scene) ErrorLauncher.invalidArguments();
-    SDNode.call(this, parent);
+    SD3DNode.call(this, parent);
 
     this.vars.merge({
         x: 0,

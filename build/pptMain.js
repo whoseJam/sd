@@ -106,14 +106,11 @@ class ThemeManager {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
-        if (DEFINE_LOCAL) link.href = `http://localhost:8080/${themeName}.css`;
-        else link.href = `https://whosejam.site/${themeName}.css`;
+        link.href = DOMAIN + "/" + themeName + ".css";
         link.dataset.theme = themeName;
         document.head.appendChild(link);
         const selector = document.querySelector("#theme-selector select");
-        if (selector) {
-            selector.value = themeName;
-        }
+        if (selector) selector.value = themeName;
     }
     static initializeFromURL() {
         const urlParams = new URLSearchParams(window.location.search);

@@ -1,4 +1,4 @@
-import { Polygon } from "@/Node/Nake/Polygon";
+import { Polygon } from "@/Node/SVG/Polygon";
 
 export function BasePolygon(parent, points) {
     Polygon.call(this, parent, points);

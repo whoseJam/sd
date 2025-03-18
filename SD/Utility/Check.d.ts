@@ -9,6 +9,7 @@ export class Check {
     static isTypeOfNake(object: any): boolean;
     static isTypeOfTree(object: any): boolean;
     static isTypeOfLine(object: any): boolean;
+    static isTypeOfThree(object: any): boolean;
     static isFalseType(object: any): boolean;
     static isNumberOrString(object: any): boolean;
     static isTypeOfString(object: any): boolean;
@@ -16,5 +17,4 @@ export class Check {
     static isTypeOfColor(object: any): boolean;
     static isValidNumber(object: any): boolean;
     static isTypeOfVector(object: any): boolean;
-    static isTypeOfThreeNode(object: any): boolean;
 }

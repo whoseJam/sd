@@ -1,12 +1,12 @@
 import { Canvas } from "@/Node/HTML/Canvas";
-import { SDNode } from "@/Node/SDNode";
+import { SD3DNode } from "@/Node/SD3DNode";
 import { Color as C } from "@/Utility/Color";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { WebGLRenderer } from "three";
 
 export function Renderer(canvas) {
     if (!(canvas instanceof Canvas)) ErrorLauncher.invalidArguments();
-    SDNode.call(this, canvas);
+    SD3DNode.call(this, canvas);
 
     const width = canvas.width();
     const height = canvas.height();
@@ -22,7 +22,7 @@ export function Renderer(canvas) {
 }
 
 Renderer.prototype = {
-    ...Renderer.prototype,
+    ...SD3DNode.prototype,
     start(scene, camera) {
         [scene, camera] = [scene._.scene, camera._.camera];
         this._.renderer.setAnimationLoop(() => {

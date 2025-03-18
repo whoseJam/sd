@@ -3,7 +3,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 import { HexColor, PacketColor, SDColor } from "@/Utility/Color";
 
 export class Button extends BaseHTML {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     text(): string;
     text(text: string): this;
     onClick(callback: () => void): this;

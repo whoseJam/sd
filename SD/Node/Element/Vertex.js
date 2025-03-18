@@ -1,5 +1,5 @@
 import { BaseElement } from "@/Node/Element/BaseElement";
-import { Circle } from "@/Node/Nake/Circle";
+import { Circle } from "@/Node/SVG/Circle";
 import { Rule as R } from "@/Rule/Rule";
 import { Factory } from "@/Utility/Factory";
 

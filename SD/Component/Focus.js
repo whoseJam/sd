@@ -1,5 +1,5 @@
 import { Context } from "@/Animate/Context";
-import { Rect } from "@/Node/Nake/Rect";
+import { Rect } from "@/Node/SVG/Rect";
 import { Check } from "@/Utility/Check";
 import { Color as C } from "@/Utility/Color";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";

@@ -6,7 +6,7 @@ type Axis = "row" | "col";
 type Align = "x" | "y" | "cx" | "cy" | "mx" | "my";
 
 export class Grid extends BaseGrid {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     axis(): Axis;
     axis(axis: Axis): this;
     align(): Align;

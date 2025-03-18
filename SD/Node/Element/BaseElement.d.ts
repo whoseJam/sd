@@ -4,7 +4,7 @@ import { SDRule } from "@/Rule/Rule";
 import { HexColor, PacketColor, SDColor } from "@/Utility/Color";
 
 export class BaseElement extends SDNode {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     rate(): number;
     rate(rate: number): this;
     color(): PacketColor;

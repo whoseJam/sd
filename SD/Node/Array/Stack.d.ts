@@ -3,5 +3,5 @@ import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Stack extends Array {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
 }

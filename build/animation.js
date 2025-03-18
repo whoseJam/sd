@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const w = require("webpack");
 const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
@@ -69,23 +70,27 @@ function launch(selfLaunch = true) {
 function getConfiguration(file) {
     const mode = global["d"] ? "development" : "production";
     const watch = global["w"] ? true : false;
-    const suffix = global["l"] ? "Local" : "Remote";
+    const suffix = global["domain"] !== undefined ? "" : global["l"] ? "Local" : "Remote";
+    const plugins = [
+        new HtmlWebpackPlugin({
+            template: `${global["projectRoot"]}/build/aniIndex${suffix}.html`,
+            inject: "body",
+            inlineSource: ".(js)$",
+            minify: false,
+            filename: `${file}.html`,
+            scriptLoading: "blocking",
+            templateParameters: {
+                domain: global["domain"],
+            },
+        }),
+    ];
     return {
         mode,
         watch,
         output: {
             filename: `${file}.js`,
         },
-        plugins: [
-            new HtmlWebpackPlugin({
-                template: `${global["projectRoot"]}/build/aniIndex${suffix}.html`,
-                inject: "body",
-                inlineSource: ".(js)$",
-                minify: false,
-                filename: `${file}.html`,
-                scriptLoading: "blocking",
-            }),
-        ],
+        plugins,
         module: {
             rules: [
                 {

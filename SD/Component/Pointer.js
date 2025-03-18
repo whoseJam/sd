@@ -1,6 +1,6 @@
 import { Context } from "@/Animate/Context";
-import { Line } from "@/Node/Nake/Line";
-import { Text } from "@/Node/Nake/Text";
+import { Line } from "@/Node/SVG/Line";
+import { Text } from "@/Node/SVG/Text";
 import { Check } from "@/Utility/Check";
 import { Factory } from "@/Utility/Factory";
 

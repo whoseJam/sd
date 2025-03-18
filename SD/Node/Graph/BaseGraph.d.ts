@@ -7,7 +7,7 @@ type InputID = InputID;
 type InputNode = InputID | SDNode;
 
 export class BaseGraph extends SDNode {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     newNode(id: InputID, value?: any): this;
     newNodeFromExistValue(id: InputID, value: SDNode): this;
     newNodeFromExistElement(id: InputID, element: SDNode): this;

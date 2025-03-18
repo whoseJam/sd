@@ -6,7 +6,7 @@ type RankDir = "TB" | "BT" | "LR" | "RL";
 type Align = "UL" | "UR" | "DL" | "DR" | "C";
 
 export class DAG extends BaseGraph {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     rankDir(): RankDir;
     rankDir(rankDir: RankDir): this;
     align(): Align;

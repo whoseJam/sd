@@ -27,6 +27,13 @@ export class ErrorLauncher {
     static whatHappened() {
         throw new Error("What happened???");
     }
+    static notImplementedYet(method, clazz) {
+        if (arguments.length === 2) {
+            throw new Error(`Function ${clazz}.${method} not implemented yet.`);
+        } else {
+            throw new Error(`Function ${method} not implemented yet.`);
+        }
+    }
     static warnNotImplementedYet(method) {
         console.warn(`Function ${method} not implemented yet.`);
     }

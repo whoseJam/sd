@@ -3,8 +3,8 @@ import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Code extends BaseArray {
-    constructor(parent: SDNode | RenderNode);
-    constructor(parent: SDNode | RenderNode, source: string);
+    constructor(target: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode, source: string);
     l(): number;
     r(): number;
     fontSize(): number;

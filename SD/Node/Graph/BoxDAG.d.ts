@@ -3,7 +3,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 import { DAG } from "@/Node/Graph/DAG";
 
 export class BoxDAG extends DAG {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     elementWidth(): number;
     elementWidth(width: number): this;
     elementHeight(): number;

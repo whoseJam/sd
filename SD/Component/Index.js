@@ -1,7 +1,7 @@
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Exit as EX } from "@/Node/Core/Exit";
-import { Text } from "@/Node/Nake/Text";
 import { SDNode } from "@/Node/SDNode";
+import { Text } from "@/Node/SVG/Text";
 import { Rule as R } from "@/Rule/Rule";
 import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";

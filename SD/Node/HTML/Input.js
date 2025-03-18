@@ -17,6 +17,7 @@ export function Input(parent) {
         y: 0,
         width: 120,
         height: 25,
+        label: "",
     });
 
     this._.layer.setAttribute("width", "120px");
@@ -28,6 +29,7 @@ export function Input(parent) {
     this._.label.setAttribute("white-space", "nowrap");
     this._.nake = createRenderNode(this, this._.layer, "input");
     this._.nake.setAttribute("flex-grow", 1);
+    this._.nake.setAttribute("width", "100%");
     this._.nake.setAttribute("height", "100%");
     this._.nake.setAttribute("type", "text");
     this._.nake.setAttribute("value", "");
@@ -38,6 +40,7 @@ export function Input(parent) {
     this.vars.associate("y", Factory.action(this, this._.layer, "top", Interp.pixelInterp));
     this.vars.associate("width", Factory.action(this, this._.layer, "width", Interp.pixelInterp));
     this.vars.associate("height", Factory.action(this, this._.layer, "height", Interp.pixelInterp));
+    this.vars.associate("label", Factory.action(this, this._.label, "text", Interp.stringInterp));
 }
 
 Input.prototype = {
@@ -46,14 +49,10 @@ Input.prototype = {
     y: Factory.handlerLowPrecise("y"),
     width: Factory.handlerLowPrecise("width"),
     height: Factory.handlerLowPrecise("height"),
+    label: Factory.handler("label"),
     onChange(callback) {
         if (callback === undefined) return this._.onChange;
         this._.onChange = callback;
-        return this;
-    },
-    label(value) {
-        if (value === undefined) return this._.label.getAttribute("text");
-        this._.label.setAttribute("text", value);
         return this;
     },
     value(value) {

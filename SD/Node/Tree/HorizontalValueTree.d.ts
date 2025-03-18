@@ -3,16 +3,16 @@ import { BaseTree } from "@/Node/Tree/BaseTree";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class HorizontalValueTree extends BaseTree {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
 
     /**
      * 获取树的层宽
      */
     layerWidth(): number;
-    
+
     /**
      * 设置树的层宽
-     * @param width 
+     * @param width
      */
     layerWidth(width: number): this;
 }

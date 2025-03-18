@@ -1,5 +1,6 @@
 import { Action } from "@/Animate/Action";
 import { setPrecise } from "@/Node/Core/Reactive";
+import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
 function lowPrecise(oldValue, newValue) {
     return Math.abs(oldValue - newValue) >= 1;
@@ -50,11 +51,17 @@ export class Factory {
     }
 
     static action(node, attrs, key, interp) {
+        let object = () => attrs;
+        if (typeof attrs === "string") object = () => node._[attrs];
+        else if (typeof attrs === "function") object = attrs;
         return function (newValue, oldValue) {
             if (global.ACTION_TICK !== 0) {
-                attrs.setAttribute(key, newValue);
+                const obj = object();
+                if (obj.setAttribute) obj.setAttribute(key, newValue);
+                else if (obj[key]) obj[key] = newValue;
+                else ErrorLauncher.whatHappened();
             } else {
-                new Action(node.delay(), node.delay() + node.duration(), oldValue, newValue, interp(attrs, key), node, key);
+                new Action(node.delay(), node.delay() + node.duration(), oldValue, newValue, interp(object(), key), node, key);
             }
         };
     }

@@ -1,5 +1,5 @@
 import { Vector as V } from "@/Math/Vector";
-import { Path } from "@/Node/Nake/Path";
+import { Path } from "@/Node/SVG/Path";
 import { Factory } from "@/Utility/Factory";
 
 export function BaseCurve(parent) {
@@ -12,12 +12,11 @@ export function BaseCurve(parent) {
         y2: 40,
         update: false,
     });
-
-    this._.BASE_CURVE = true;
 }
 
 BaseCurve.prototype = {
     ...Path.prototype,
+    BASE_CURVE: true,
     x1: Factory.handler("x1"),
     y1: Factory.handler("y1"),
     x2: Factory.handler("x2"),

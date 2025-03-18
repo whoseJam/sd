@@ -3,7 +3,7 @@ import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Curve extends BaseCurve {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     bending(): number;
     bending(bending: number): this;
 }

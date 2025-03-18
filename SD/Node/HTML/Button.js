@@ -1,9 +1,9 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseHTML } from "@/Node/HTML/BaseHTML";
+import { BaseSVG } from "@/Node/SVG/BaseSVG";
 import { createRenderNode } from "@/Renderer/RenderNode";
-import { Factory } from "@/Utility/Factory";
 import { Color as C } from "@/Utility/Color";
-import { BaseNake } from "@/Node/Nake/BaseNake";
+import { Factory } from "@/Utility/Factory";
 
 function buttonCallback() {
     if (this._.onClick) this._.onClick();
@@ -48,7 +48,7 @@ Button.prototype = {
     height: Factory.handlerLowPrecise("height"),
     fill: Factory.handler("fill"),
     stroke: Factory.handler("stroke"),
-    color: BaseNake.prototype.color,
+    color: BaseSVG.prototype.color,
     onClick(callback) {
         if (callback === undefined) return this._.onClick;
         this._.onClick = callback;

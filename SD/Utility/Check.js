@@ -1,7 +1,7 @@
 function isTypeOf(type) {
-    const str = `BASE_${type}`;
+    const label = `BASE_${type}`;
     return function (node) {
-        if (node && node._) return node._[str];
+        if (node) return node[label];
         return false;
     };
 }
@@ -17,6 +17,7 @@ export class Check {
     static isTypeOfNake = isTypeOf("NAKE");
     static isTypeOfTree = isTypeOf("TREE");
     static isTypeOfLine = isTypeOf("LINE");
+    static isTypeOfThree = isTypeOf("THREE");
     static isFalseType(object) {
         return object === null || object === undefined || object === false;
     }
@@ -40,8 +41,5 @@ export class Check {
     }
     static isTypeOfVector(object) {
         return object && typeof object[0] === "number" && typeof object[1] === "number";
-    }
-    static isTypeOfThreeNode(object) {
-        return object && object.IS_THREE_NODE;
     }
 }

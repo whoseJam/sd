@@ -1,6 +1,6 @@
-import { Line } from "@/Node/Nake/Line";
-import { Path } from "@/Node/Nake/Path";
 import { SDNode } from "@/Node/SDNode";
+import { Line } from "@/Node/SVG/Line";
+import { Path } from "@/Node/SVG/Path";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 class SDFunction {
@@ -16,7 +16,7 @@ class SDFunction {
 }
 
 export class Coord extends SDNode {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     xAxis(): SDNode;
     yAxis(): SDNode;
     viewX(): number;

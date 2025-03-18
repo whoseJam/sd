@@ -4,7 +4,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 import { Camera } from "@/Node/Three/Camera";
 
 export class Canvas extends BaseHTML {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     canvas(): RenderNode;
     three(): this;
     camera(): Camera;

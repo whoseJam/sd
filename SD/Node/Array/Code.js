@@ -1,7 +1,7 @@
 import { Context } from "@/Animate/Context";
 import { BaseArray } from "@/Node/Array/BaseArray";
 import { Enter as EN } from "@/Node/Core/Enter";
-import { Rect } from "@/Node/Nake/Rect";
+import { Rect } from "@/Node/SVG/Rect";
 import { Cast } from "@/Utility/Cast";
 import { Check } from "@/Utility/Check";
 import { Color } from "@/Utility/Color";

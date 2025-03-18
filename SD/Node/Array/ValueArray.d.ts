@@ -5,7 +5,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 type Align = "y" | "cy" | "my";
 
 export class ValueArray extends Array {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     align(): Align;
     align(align: Align): this;
 }

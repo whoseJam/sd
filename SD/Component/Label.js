@@ -1,4 +1,4 @@
-import { Text } from "@/Node/Nake/Text";
+import { Text } from "@/Node/SVG/Text";
 import { Mathjax } from "@/Node/Text/Mathjax";
 import { Factory } from "@/Utility/Factory";
 

@@ -3,7 +3,7 @@ import { RenderNode } from "@/Renderer/RenderNode";
 import { SDColor } from "@/Utility/Color";
 
 export class BaseGrid extends SDNode {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     startN(): number;
     startN(start: number): this;
     startM(): number;

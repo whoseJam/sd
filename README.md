@@ -49,26 +49,32 @@ gulp animation -i <动画文件>
 
 - `-i`：指定输入文件（即动画文件），这是必填项。
 
-```
+```shell
 gulp animation -i ./example/animation/rect.js
 ```
 
 - `-o`：指定输出路径，如果没有指定，则使用 `animationOutputPath` 作为默认输出路径。
 
-```
+```shell
 gulp animation -i ./example/animation/rect.js -o ../output
 ```
 
 - `-w`：是否监听动画文件变动。默认不开启。开启监听后，此任务会变成长期任务，动画文件一旦改变，则输出会自动改变。这在编写动画文件、做调试的时候很有用。
 
-```
+```shell
 gulp animation -i ./example/animation/rect.js -w
 ```
 
 - `-l`：使用本地的动画库。默认不使用，而是会从作者的网站上加载动画库，这样的好处是可以拉取到最新版的动画库，坏处是第一次加载略慢。使用本地的动画库则需要自己把动画库挂到 `localhost:8080` 上，通过 `http://localhost:8080/sd.js` 进行访问。
 
-```
+```shell
 gulp animation -i ./example/animation/rect.js -l
+```
+
+- `-domain`：有时候我们既不希望使用本地的动画库，也不希望使用作者网站上的动画库，而是希望自己指定动画库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
+
+```shell
+gulp animation -i ./example/animation/rect.js -domain http://localhost:8081
 ```
 
 
@@ -77,7 +83,7 @@ gulp animation -i ./example/animation/rect.js -l
 
 使用 `ppt` 任务来生成课件。相关指令如下：
 
-```
+```shell
 gulp ppt -i <PPT所在目录>
 ```
 
@@ -85,20 +91,73 @@ gulp ppt -i <PPT所在目录>
 
 - `-i`：指定PPT所在的路径，只有当该路径下存在 `ppt.html` 文件时此路径才被视为是一个合法的路径，其中 `ppt.html` 被视作PPT的入口文件。这是必填项。
 
-```
+```shell
 gulp ppt -i ./example/ppt/队列
 ```
 
 - `-o`：指定输出路径，如果没有指定，则使用 `pptOutputPath` 作为默认输出路径。
 
-```
+```shell
 gulp ppt -i ./example/ppt/队列 -o ../output
 ```
 
 - `-w`：是否监听PPT的变动，包括所有HTML文件、动画文件、图片文件等等的变动。默认不开启。开启监听后，此任务会变成长期任务，一旦监听到任何变动，对应输出就会改变。这在编写PPT、做调试的时候很有用。
 
-```
+```shell
 gulp ppt -i ./example/ppt/队列 -w
 ```
 
 - `-l`：使用本地的库。默认不使用，而是会从作者的网站上加载库，这样的好处是可以拉取到最新版的库，坏处是第一次加载略慢。使用本地的库则需要自己把库挂到 `localhost:8080` 上，通过 `http://localhost:8080/???.js` 进行访问。
+
+```shell
+gulp ppt -i ./example/ppt/队列 -l
+```
+
+- `-domain`：有时候我们既不希望使用本地的库，也不希望使用作者网站上的库，而是希望自己指定库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
+
+```shell
+gulp ppt -i ./example/ppt/队列 -domain http://localhost:8081
+```
+
+
+
+# 动画组任务
+
+使用 `animationGroup` 来生成一组动画，下面以动画组指代一组动画。这条命令的意义在于，当编写完大量动画后，可以用一条指令完成动画编译任务，而不需要重复多次使用 `animation` 指令。相关指令如下：
+
+```
+gulp animationGroup -i <动画组所在目录>
+```
+
+### 配置项
+
+- `-i`：指定动画组所在目录，这是必填项。
+
+```shell
+gulp animationGroup -i ./example/animation
+```
+
+- `-o`：指定输出路径，如果没有指定，则使用 `animationOutputPath` 作为默认输出路径。
+
+```shell
+gulp animationGroup -i ./example/animation -o ../output
+```
+
+- `-w`：是否监听动画文件变动。默认不开启。开启监听后，此任务会变成长期任务，动画文件一旦改变，则输出会自动改变。这在编写动画文件、做调试的时候很有用。
+
+```shell
+gulp animationGroup -i ./example/animation -w
+```
+
+- `-l`：使用本地的动画库。默认不使用，而是会从作者的网站上加载动画库，这样的好处是可以拉取到最新版的动画库，坏处是第一次加载略慢。使用本地的动画库则需要自己把动画库挂到 `localhost:8080` 上，通过 `http://localhost:8080/sd.js` 进行访问。
+
+```shell
+gulp animationGroup -i ./example/animation -l
+```
+
+- `-domain`：有时候我们既不希望使用本地的动画库，也不希望使用作者网站上的动画库，而是希望自己指定动画库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
+
+```shell
+gulp animationGroup -i ./example/animation -domain http://localhost:8081
+```
+

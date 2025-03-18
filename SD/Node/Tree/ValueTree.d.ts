@@ -3,5 +3,5 @@ import { BaseTree } from "@/Node/Tree/BaseTree";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class ValueTree extends BaseTree {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
 }

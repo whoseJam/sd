@@ -1,9 +1,9 @@
+import { Context } from "@/Animate/Context";
 import { svg } from "@/Interact/Root";
-import { Line } from "@/Node/Nake/Line";
+import { Exit as EX } from "@/Node/Core/Exit";
+import { Line } from "@/Node/SVG/Line";
 import { Factory } from "@/Utility/Factory";
 import { trim } from "@/Utility/Trim";
-import { Exit as EX } from "@/Node/Core/Exit";
-import { Context } from "@/Animate/Context";
 
 export function Link(sourceElement, targetElement, type = Line, sourceXLocation = "cx", sourceYLocation = "cy", targetXLocation = "cx", targetYLocation = "cy") {
     const link = new type(svg());

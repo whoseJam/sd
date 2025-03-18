@@ -2,7 +2,7 @@ import { BaseHTML } from "@/Node/HTML/BaseHTML";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Slider extends BaseHTML {
-    constructor(parent: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode);
     max(): number;
     max(max: number): this;
     min(): number;
