@@ -1,7 +1,10 @@
-import { RenderNode } from "@/Renderer/RenderNode";
 import { SDNode } from "@/Node/SDNode";
+import { RenderNode } from "@/Renderer/RenderNode";
 
-export class SD2DNode {
+type XLocator = "x" | "cx" | "mx";
+type YLocator = "y" | "cy" | "my";
+
+export class SD2DNode extends SDNode {
     constructor(target: SDNode | RenderNode);
 
     opacity(): number;
@@ -17,7 +20,7 @@ export class SD2DNode {
     height(): number;
     height(height: number): this;
     scale(scale: number): this;
-    pos(xLocator: string, yLocator: string, dx?: number, dy?: number): [number, number];
+    pos(xLocator: XLocator, yLocator: YLocator, dx?: number, dy?: number): [number, number];
     center(): [number, number];
     center(center: [number, number]): this;
     center(cx: number, cy: number): this;

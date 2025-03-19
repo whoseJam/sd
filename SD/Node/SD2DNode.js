@@ -63,9 +63,12 @@ SD2DNode.prototype = {
         if (this.fixAspect()) {
             this.width(this.width() * scale);
         } else {
+            this.freeze();
             this.width(this.width() * scale);
             this.height(this.height() * scale);
+            this.unfreeze();
         }
+        return this;
     },
     pos(xLocator, yLocator, dx = 0, dy = 0) {
         return [

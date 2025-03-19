@@ -9,9 +9,8 @@ export class SDNode {
     layer(): RenderNode;
     layer(name: string): RenderNode;
     newLayer(name: string): this;
-    layer(name: string): RenderNode;
-    attachTo(layer: SDNode): this;
-    attachTo(layer: RenderNode): this;
+    attachTo(target: SDNode): this;
+    attachTo(target: RenderNode): this;
 
     childAs(name: string, child: SDNode, rule: Rule): this;
     childAs(name: string, child: SDNode): this;
@@ -19,8 +18,7 @@ export class SDNode {
     childAs(child: SDNode): this;
     child(name: string): SDNode;
     hasChild(child: string | SDNode): SDNode;
-    eraseChild(name: string): SDNode;
-    eraseChild(child: SDNode): SDNode;
+    eraseChild(child: string | SDNode): SDNode;
     remove(): void;
 
     startAnimate(duration: number): this;
@@ -39,6 +37,9 @@ export class SDNode {
     freezing(): boolean;
     rule(): (parent: SDNode, child: SDNode) => void;
     rule(rule: (parent: SDNode, child: SDNode) => void): this;
+    eraseRule(): this;
+    effect(name: string, callback: () => void): this;
+    uneffect(name: string): this;
 
     drag(type: true): this;
     drag(type: false | null | undefined);
@@ -48,8 +49,8 @@ export class SDNode {
     onClick(onClick: (node: this) => void): this;
     onDblClick(onClick: (node: this) => void): this;
 
-    onEnter(enter: (element: SDNode, move: () => void) => void): this;
     onEnter(): (element: SDNode) => void | undefined;
+    onEnter(enter: (element: SDNode, move: () => void) => void): this;
     onEnterDefault(enter: (element: SDNode, move: () => void) => void): this;
     triggerEnter(): this;
     entering(): boolean;

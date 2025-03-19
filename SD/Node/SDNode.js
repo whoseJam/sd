@@ -20,6 +20,7 @@ export function SDNode(target) {
         children: new Children(this),
         interact: new Interact(this),
         updaters: {},
+        freezing: 0,
     };
 
     if (Check.isTypeOfSDNode(target)) target = target.layer();
@@ -103,25 +104,19 @@ SDNode.prototype = {
     after: forward("animate", "after"),
     duration: forwardWithReturn("animate", "duration"),
 
-    scale: Location.scale,
-    pos: Location.position,
-    center: Location.center,
-    kx: Location.kQuantileLocation("x", "width"),
-    ky: Location.kQuantileLocation("y", "height"),
-    cx: Location.centerLocation("x", "width"),
-    cy: Location.centerLocation("y", "height"),
-    mx: Location.maxiumLocation("x", "width"),
-    my: Location.maxiumLocation("y", "height"),
-    dx: Location.moveLocation("x"),
-    dy: Location.moveLocation("y"),
-    drag: forward("interact", "drag"),
-    clickable: function (type) {
-        this._.layer.setAttribute("pointer-events", Check.isFalseType(type) ? "none" : "auto");
-        this._.clickableCalled = true;
+    freeze() {
+        this._.freezing++;
+        for (const key in this._.updaters) this._.updaters[key].freeze();
         return this;
     },
-    onClick: forward("interact", "onClick"),
-    onDblClick: forward("interact", "onDblClick"),
+    unfreeze() {
+        this._.freezing--;
+        for (const key in this._.updaters) this._.updaters[key].unfreeze();
+        return this;
+    },
+    freezing() {
+        return this._.freezing > 0;
+    },
     rule(rule) {
         if (rule === undefined) return this._.rule;
         this._.rule = effect(() => {
@@ -135,6 +130,25 @@ SDNode.prototype = {
         this._.rule = undefined;
         return this;
     },
+    effect(name, callback) {
+        if (arguments.length === 1) return this._.updaters[name];
+        this._.updaters[name] = effect(callback);
+        return this;
+    },
+    uneffect(name) {
+        uneffect(this._.updaters[name]);
+        return this;
+    },
+
+    drag: forward("interact", "drag"),
+    clickable: function (type) {
+        this._.layer.setAttribute("pointer-events", Check.isFalseType(type) ? "none" : "auto");
+        this._.clickableCalled = true;
+        return this;
+    },
+    onClick: forward("interact", "onClick"),
+    onDblClick: forward("interact", "onDblClick"),
+
     onEnter(enter) {
         if (enter === undefined) return this._.enter;
         this._.enter = enter;
@@ -168,26 +182,6 @@ SDNode.prototype = {
         this._.exit.call(this._.parent, this);
         this._.exit = undefined;
         return this;
-    },
-    title(title) {
-        const titleElment = new SVGNode(this, this._.layer, "title");
-        titleElment.setAttribute("innerHTML", title);
-        return this;
-    },
-    freeze() {
-        for (const key in this._.updaters) this._.updaters[key].freeze();
-        return this;
-    },
-    unfreeze() {
-        for (const key in this._.updaters) this._.updaters[key].unfreeze();
-        return this;
-    },
-    effect(name, callback) {
-        if (arguments.length === 1) return this._.updaters[name];
-        this._.updaters[name] = effect(callback);
-    },
-    uneffect(name) {
-        uneffect(this._.updaters[name]);
     },
     tryUpdate(element, update) {
         if (element.onEnter()) {
