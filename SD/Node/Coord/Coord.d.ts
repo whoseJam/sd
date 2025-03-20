@@ -1,3 +1,4 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
 import { Line } from "@/Node/SVG/Line";
 import { Path } from "@/Node/SVG/Path";
@@ -15,7 +16,7 @@ class SDFunction {
     trimGlobalY(x: number): number;
 }
 
-export class Coord extends SDNode {
+export class Coord extends SD2DNode {
     constructor(target: SDNode | RenderNode);
     xAxis(): SDNode;
     yAxis(): SDNode;

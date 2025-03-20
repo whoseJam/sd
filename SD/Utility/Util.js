@@ -54,3 +54,11 @@ export function make2d(rows, columns, defaultValue = 0) {
     }
     return result;
 }
+
+export function reversible() {
+    global.ACTION_TICK++;
+}
+
+export function irreversible() {
+    global.ACTION_TICK--;
+}

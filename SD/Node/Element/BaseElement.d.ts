@@ -1,9 +1,10 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { SDRule } from "@/Rule/Rule";
 import { HexColor, PacketColor, SDColor } from "@/Utility/Color";
 
-export class BaseElement extends SDNode {
+export class BaseElement extends SD2DNode {
     constructor(target: SDNode | RenderNode);
     rate(): number;
     rate(rate: number): this;

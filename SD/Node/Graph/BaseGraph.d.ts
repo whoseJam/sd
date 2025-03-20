@@ -1,3 +1,4 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { PacketColor, SDColor } from "@/Utility/Color";
@@ -6,7 +7,7 @@ type GraphMode = "direct" | "undirect";
 type InputID = InputID;
 type InputNode = InputID | SDNode;
 
-export class BaseGraph extends SDNode {
+export class BaseGraph extends SD2DNode {
     constructor(target: SDNode | RenderNode);
     newNode(id: InputID, value?: any): this;
     newNodeFromExistValue(id: InputID, value: SDNode): this;

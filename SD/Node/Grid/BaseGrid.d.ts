@@ -1,8 +1,9 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { SDColor } from "@/Utility/Color";
 
-export class BaseGrid extends SDNode {
+export class BaseGrid extends SD2DNode {
     constructor(target: SDNode | RenderNode);
     startN(): number;
     startN(start: number): this;

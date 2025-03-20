@@ -1,4 +1,6 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
+import { RenderNode } from "@/Renderer/RenderNode";
 
 type ViewBox = {
     x: number;
@@ -7,8 +9,8 @@ type ViewBox = {
     height: number;
 };
 
-export class View extends SDNode {
-    constructor(parent: SDNode);
+export class View extends SD2DNode {
+    constructor(target: SDNode | RenderNode);
 
     /**
      * 添加元素

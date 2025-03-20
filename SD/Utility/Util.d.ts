@@ -9,3 +9,6 @@ export function make2d(rows: number, columns: number, defaultValue: any): Array<
 export function init(callback: any): void;
 export function main(callback: any): void;
 export function inter(callback: any): void;
+
+export function reversible(): void;
+export function irreversible(): void;

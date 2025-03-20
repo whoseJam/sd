@@ -1,8 +1,9 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { PacketColor, SDColor } from "@/Utility/Color";
 
-export class BaseArray extends SDNode {
+export class BaseArray extends SD2DNode {
     constructor(target: SDNode | RenderNode);
     start(): number;
     start(start: number): this;

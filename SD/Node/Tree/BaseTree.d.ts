@@ -1,6 +1,6 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
-import { Color } from "@/Utility/Color";
 
 type InputID = number | string;
 type InputNode = InputID | SDNode;
@@ -8,7 +8,7 @@ type InputNode = InputID | SDNode;
 /**
  * 树基类
  */
-export class BaseTree extends SDNode {
+export class BaseTree extends SD2DNode {
     constructor(target: SDNode | RenderNode);
 
     /**

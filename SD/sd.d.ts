@@ -71,4 +71,4 @@ export { PathPen } from "./Utility/PathPen";
 export { rand } from "./Utility/Random";
 export { input } from "./Utility/Reader";
 export { trim } from "./Utility/Trim";
-export { init, int, inter, main, make1d, make2d } from "./Utility/Util";
+export { init, int, inter, irreversible, main, make1d, make2d, reversible } from "./Utility/Util";
