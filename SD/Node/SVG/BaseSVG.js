@@ -9,9 +9,9 @@ export function BaseSVG(parent, label) {
     SD2DNode.call(this, parent, undefined, "g");
 
     this.vars.merge({
-        fill: C.black,
+        fill: C.white,
         fillOpacity: 1,
-        stroke: C.white,
+        stroke: C.black,
         strokeOpacity: 1,
         strokeWidth: 1,
         strokeDashOffset: 0,
@@ -19,6 +19,8 @@ export function BaseSVG(parent, label) {
     });
 
     this._.nake = createRenderNode(this, this._.layer, label);
+    this._.nake.setAttribute("fill", this.vars.fill);
+    this._.nake.setAttribute("stroke", this.vars.stroke);
 
     this.vars.associate("fill", Factory.action(this, this._.nake, "fill", Interp.colorInterp));
     this.vars.associate("stroke", Factory.action(this, this._.nake, "stroke", Interp.colorInterp));

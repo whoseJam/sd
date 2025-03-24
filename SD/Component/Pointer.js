@@ -59,6 +59,9 @@ export function Pointer(parent, label, direction = "b", gap = 3, length = 20) {
         }
         return this;
     };
+    pointer.pointAt = function () {
+        return this.vars.element;
+    };
     pointer.effect("pointer", () => {
         const element = pointer.vars.element;
         if (!element) return;

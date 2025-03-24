@@ -7,15 +7,7 @@ type ApsectRatio = "XMinYMin meet" | "XMinYMin slice" | "XMinYMid meet" | "XMinY
 export class Image extends BaseSVG {
     constructor(target: SDNode | RenderNode);
 
-    /**
-     * 获取图片链接
-     */
     href(): string;
-
-    /**
-     * 设置图片链接
-     * @param href
-     */
     href(href: string): void;
     aspectRatio(): string;
     aspectRatio(aspectRatio: ApsectRatio): this;

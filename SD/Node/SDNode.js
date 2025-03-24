@@ -2,7 +2,6 @@ import { Animate } from "@/Node/Core/Animate";
 import { Children } from "@/Node/Core/Children";
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Interact } from "@/Node/Core/Interact";
-import { Location } from "@/Node/Core/Location";
 import { effect, reactive, uneffect } from "@/Node/Core/Reactive";
 import { SVGNode } from "@/Renderer/SVG/SVGNode";
 import { Check } from "@/Utility/Check";
@@ -137,6 +136,11 @@ SDNode.prototype = {
     },
     uneffect(name) {
         uneffect(this._.updaters[name]);
+        delete this._.updaters[name];
+        return this;
+    },
+    uneffectAll() {
+        for (const name in this._.updaters) this.uneffect(name);
         return this;
     },
 

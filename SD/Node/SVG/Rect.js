@@ -1,6 +1,5 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseSVG } from "@/Node/SVG/BaseSVG";
-import { Color as C } from "@/Utility/Color";
 import { Factory } from "@/Utility/Factory";
 
 export function Rect(target) {
@@ -8,8 +7,6 @@ export function Rect(target) {
 
     this.type("Rect");
 
-    this.vars.fill = C.white;
-    this.vars.stroke = C.black;
     this.vars.merge({
         x: 0,
         y: 0,

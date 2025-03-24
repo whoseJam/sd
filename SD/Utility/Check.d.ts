@@ -6,7 +6,7 @@ export class Check {
     static isTypeOfGraph(object: any): boolean;
     static isTypeOfGrid(object: any): boolean;
     static isTypeOfHTML(object: any): boolean;
-    static isTypeOfNake(object: any): boolean;
+    static isTypeOfSVG(object: any): boolean;
     static isTypeOfTree(object: any): boolean;
     static isTypeOfLine(object: any): boolean;
     static isTypeOfThree(object: any): boolean;

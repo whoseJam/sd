@@ -40,6 +40,7 @@ export class SDNode {
     eraseRule(): this;
     effect(name: string, callback: () => void): this;
     uneffect(name: string): this;
+    uneffectAll(): this;
 
     drag(type: true): this;
     drag(type: false | null | undefined);

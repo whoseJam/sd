@@ -14,7 +14,7 @@ export class Check {
     static isTypeOfGraph = isTypeOf("GRAPH");
     static isTypeOfGrid = isTypeOf("GRID");
     static isTypeOfHTML = isTypeOf("HTML");
-    static isTypeOfNake = isTypeOf("NAKE");
+    static isTypeOfSVG = isTypeOf("SVG");
     static isTypeOfTree = isTypeOf("TREE");
     static isTypeOfLine = isTypeOf("LINE");
     static isTypeOfThree = isTypeOf("THREE");

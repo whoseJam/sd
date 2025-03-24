@@ -1,13 +1,12 @@
-
 export class Interp {
-    static exLengthInterp(attrs: any, key: string): (t: number) => void;
-    static numberInterp(attrs: any, key: string): (t: number) => void;
-    static pixelInterp(attrs: any, key: string): (t: number) => void;
-    static colorInterp(attrs: any, key: string): (t: number) => void;
-    static stringInterp(attrs: any, key: string): (t: number) => void;
-    static arrayInterp(attrs: any, key: string): (t: number) => void;
-    static matrixInterp(attrs: any, key: string): (t: number) => void;
-    static translateInterp(attrs: any, key: string): (t: number) => void;
-    static boxInterp(attrs: any, key: string): (t: number) => void;
-    static pathInterp(attrs: SVGPathElement, key: string): (t: number) => void;
+    static exLengthInterp(object: any, key: string): (t: number) => void;
+    static numberInterp(object: any, key: string): (t: number) => void;
+    static pixelInterp(object: any, key: string): (t: number) => void;
+    static colorInterp(object: any, key: string): (t: number) => void;
+    static stringInterp(object: any, key: string): (t: number) => void;
+    static arrayInterp(object: any, key: string): (t: number) => void;
+    static matrixInterp(object: any, key: string): (t: number) => void;
+    static translateInterp(object: any, key: string): (t: number) => void;
+    static boxInterp(object: any, key: string): (t: number) => void;
+    static pathInterp(object: SVGPathElement, key: string): (t: number) => void;
 }
