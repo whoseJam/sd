@@ -1,4 +1,3 @@
-import { effect } from "@/Node/Core/Reactive";
 import { BaseCurve, curveHandler } from "@/Node/Curve/BaseCurve";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -11,7 +10,7 @@ export function CircleCurve(parent) {
         r: 20,
     });
 
-    this._.updater = effect(() => {
+    this.effect("circleCurve", () => {
         const r = this.r();
         const x1 = this.x1();
         const y1 = this.y1();

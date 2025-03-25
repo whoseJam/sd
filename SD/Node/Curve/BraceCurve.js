@@ -1,5 +1,4 @@
 import { Vector as V } from "@/Math/Vector";
-import { effect } from "@/Node/Core/Reactive";
 import { BaseCurve, curveHandler } from "@/Node/Curve/BaseCurve";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -12,7 +11,7 @@ export function BraceCurve(parent) {
         bending: 5,
     });
 
-    this._.updater = effect(() => {
+    this.effect("braceCurve", () => {
         const vs = this.source();
         const vt = this.target();
         const vc = V.numberMul(V.add(vs, vt), 0.5);

@@ -1,5 +1,4 @@
 import { Vector as V } from "@/Math/Vector";
-import { effect } from "@/Node/Core/Reactive";
 import { BaseCurve, curveHandler } from "@/Node/Curve/BaseCurve";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -13,7 +12,7 @@ export function ZZLine(parent) {
         location: "b",
     });
 
-    this._.updater = effect(() => {
+    this.effect("ZZLine", () => {
         const s = this.source();
         const t = this.target();
         const bending = this.bending();

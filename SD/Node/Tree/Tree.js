@@ -88,7 +88,6 @@ Tree.prototype = {
 };
 
 export function D3Layout(mode, convert, size) {
-    console.log("tree update!");
     let data, root, layout, result;
     try {
         const template = stratify();

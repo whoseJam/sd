@@ -26,6 +26,7 @@ export function BaseTree(parent) {
 
 BaseTree.prototype = {
     ...SD2DNode.prototype,
+    BASE_TREE: true,
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     element() {

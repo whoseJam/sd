@@ -1,16 +1,6 @@
 import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
-function hasChanged(oldValue, newValue, precise) {
-    if (typeof oldValue === "number" && typeof newValue === "number") {
-        if (typeof precise === "function") {
-            return precise(oldValue, newValue);
-        }
-        return Math.abs(oldValue - newValue) > 1e-2;
-    }
-    return oldValue !== newValue;
-}
-
 class Queue {
     constructor(name) {
         this.label = `in${name}Queue`;
@@ -28,11 +18,15 @@ class Queue {
         return callback[this.label];
     }
     execute() {
-        while (this.queue.length > 0) {
+        let counter = 0;
+        while (this.queue.length > 0 && ++counter <= 10000) {
             const callback = this.queue[0];
             this.queue.shift();
             callback();
             callback[this.label] = false;
+        }
+        if (counter === 10001) {
+            console.warn("Perhap here is a circle update");
         }
     }
 }
@@ -79,17 +73,17 @@ class EffectManager {
         }
         this.out.push({ object, key, value });
     }
-    outputUpdate(out) {
+    outputUpdate() {
         this.out.forEach(current => {
             const objectManager = objectsMap.get(current.object);
-            const old = out.find(link => link.key === current.key && link.object === current.object);
-            if (!old || hasChanged(old.value, current.value, objectManager.precise.get(current.key))) {
-                const outEffectsSet = objectManager.outputEffects(current.key);
-                outEffectsSet.forEach(effect => {
-                    if (effectQueue.has(effect)) return;
-                    effectQueue.pushBack(effect);
-                });
-            }
+            const outEffectsSet = objectManager.outputEffects(current.key);
+            outEffectsSet.forEach(effect => {
+                const _in = effectsMap.get(effect).in;
+                let i = 0;
+                for (; i < _in.length; i++) if (_in[i].key === current.key) break;
+                if (effectQueue.has(effect)) return;
+                effectQueue.pushBack(effect);
+            });
         });
     }
 }
@@ -166,11 +160,9 @@ export function reactive(object, father = undefined) {
             const newValue = value;
             const oldValue = Reflect.get(object, key, receiver);
             if (associated[key]) {
-                if (hasChanged(oldValue, newValue) || (Array.isArray(object) && key === "length")) {
-                    associated[key].forEach(callback => {
-                        callback(newValue, oldValue);
-                    });
-                }
+                associated[key].forEach(callback => {
+                    callback(newValue, oldValue);
+                });
             }
             Reflect.set(object, key, value, receiver);
             triggerUpdate(object, key);
@@ -253,7 +245,7 @@ export function uneffect(effect) {
 function traceInput(object, key) {
     if (!globalActiveEffect) return;
     const effectManager = effectsMap.get(globalActiveEffect);
-    effectManager.pushInput(object, key);
+    effectManager.pushInput(object, key, object[key]);
     const objectManager = objectsMap.get(object);
     objectManager.pushOutput(key, globalActiveEffect);
 }

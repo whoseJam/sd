@@ -7,7 +7,7 @@ export function background() {
         child.width(width);
         child.height(height);
         child.x(x).y(y);
-    }
+    };
 }
 
 export function circleBackground() {
@@ -16,5 +16,5 @@ export function circleBackground() {
         const y = parent.y();
         const r = parent.r();
         child.r(r).x(x).y(y);
-    }
+    };
 }

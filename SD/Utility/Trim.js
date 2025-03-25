@@ -29,16 +29,8 @@ export function trim(link, source, target) {
     const t = trimTarget(link, target);
     const ls = link.at(s);
     const lt = link.at(t);
-    if (global.debug) {
-        console.log("trim s=", s, "trim t=", t, ls, lt, "this=", link);
-        console.log("trim info=", source.x(), source.mx(), source.y(), source.my(), source.inRange(ls));
-    }
     link.freeze();
     link.source(ls);
     link.target(lt);
     link.unfreeze();
-    if (global.debug) {
-        console.log("after set source&target, the source is ", link.source(), ls);
-        console.log("-------------------");
-    }
 }

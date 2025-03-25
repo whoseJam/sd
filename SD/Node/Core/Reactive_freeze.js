@@ -109,11 +109,19 @@ class EffectManager {
         this.out.forEach(current => {
             const objectManager = objectsMap.get(current.object);
             const old = out.find(link => link.key === current.key && link.object === current.object);
-            if (!old || hasChanged(old.value, current.value, objectManager.precise.get(current.key))) {
+            if (!old) {
                 const outEffectsSet = objectManager.outputEffects(current.key);
                 outEffectsSet.forEach(effect => {
-                    const effectManager = effectsMap.get(effect);
-                    if (!effectManager.inputHasChanged(current.object, current.key));
+                    if (effectQueue.has(effect)) return;
+                    effectQueue.pushBack(effect);
+                });
+            } else {
+                const outEffectsSet = objectManager.outputEffects(current.key);
+                outEffectsSet.forEach(effect => {
+                    const _in = effectsMap.get(effect).in;
+                    let i = 0;
+                    for (; i < _in.length; i++) if (_in[i].key === current.key) break;
+                    if (!hasChanged(current.value, _in[i].value, objectManager.precise.get(current.key))) return;
                     if (effectQueue.has(effect)) return;
                     effectQueue.pushBack(effect);
                 });
@@ -318,14 +326,14 @@ function collectEffectOnDAG(queue, object, key) {
     const visitedObject = new Map();
     const visitedEffect = new Map();
     function dfs(object, key, lastEffect = undefined) {
-        if (!visitedObject.has(object)) visitedObject.set(object, new Set());
-        if (visitedObject.get(object).has(key)) return;
-        visitedObject.get(object).add(key);
+        if (!visitedObject.has(object)) visitedObject.set(object, new Map());
+        if (!visitedObject.get(object).has(key)) visitedObject.get(object).set(key, new Set());
+        if (lastEffect && visitedObject.get(object).get(key).has(lastEffect)) return;
+        if (lastEffect) visitedObject.get(object).get(key).add(lastEffect);
         const objectManager = objectsMap.get(object);
         const outEffectsSet = objectManager.outputEffects(key);
         outEffectsSet.forEach(effect => {
             const effectManager = effectsMap.get(effect);
-            if (!effectManager.inputHasChanged(object, key) && !lastEffect) return;
             if (!visitedEffect.has(effect)) {
                 visitedEffect.set(effect, {
                     degree: 0,

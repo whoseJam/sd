@@ -1,5 +1,4 @@
 import { Vector as V } from "@/Math/Vector";
-import { effect } from "@/Node/Core/Reactive";
 import { BaseCurve } from "@/Node/Curve/BaseCurve";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -8,7 +7,7 @@ export function Bezier(parent) {
 
     this.type("Bezier");
 
-    this._.updater = effect(() => {
+    this.effect("bezier", () => {
         const v1 = this.source();
         const v2 = this.target();
         const d = V.sub(v2, v1);

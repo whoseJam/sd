@@ -89,11 +89,19 @@ class EffectManager {
         this.out.forEach(current => {
             const objectManager = objectsMap.get(current.object);
             const old = out.find(link => link.key === current.key && link.object === current.object);
-            if (!old || hasChanged(old.value, current.value, objectManager.precise.get(current.key))) {
+            if (!old) {
                 const outEffectsSet = objectManager.outputEffects(current.key);
                 outEffectsSet.forEach(effect => {
-                    const effectManager = effectsMap.get(effect);
-                    if (!effectManager.inputHasChanged(current.object, current.key));
+                    if (effectQueue.has(effect)) return;
+                    effectQueue.pushBack(effect);
+                });
+            } else {
+                const outEffectsSet = objectManager.outputEffects(current.key);
+                outEffectsSet.forEach(effect => {
+                    const _in = effectsMap.get(effect).in;
+                    let i = 0;
+                    for (; i < _in.length; i++) if (_in[i].key === current.key) break;
+                    if (!hasChanged(current.value, _in[i].value, objectManager.precise.get(current.key))) return;
                     if (effectQueue.has(effect)) return;
                     effectQueue.pushBack(effect);
                 });
@@ -134,6 +142,10 @@ class ObjectManager {
         }
         outEffectsSet.add(effect);
     }
+}
+
+export function afterEffect(callback) {
+    callback();
 }
 
 export function freeze() {
@@ -257,7 +269,7 @@ export function uneffect(effect) {
 function traceInput(object, key) {
     if (!globalActiveEffect) return;
     const effectManager = effectsMap.get(globalActiveEffect);
-    effectManager.pushInput(object, key);
+    effectManager.pushInput(object, key, object[key]);
     const objectManager = objectsMap.get(object);
     objectManager.pushOutput(key, globalActiveEffect);
 }

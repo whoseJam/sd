@@ -1,5 +1,4 @@
 import { Vector as V } from "@/Math/Vector";
-import { effect } from "@/Node/Core/Reactive";
 import { BaseCurve } from "@/Node/Curve/BaseCurve";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -8,7 +7,7 @@ export function VHBezier(parent) {
 
     this.type("VHBezier");
 
-    this._.updater = effect(() => {
+    this.effect("VHBezier", () => {
         const v1 = [this.x1(), this.y1()];
         const v2 = [this.x2(), this.y2()];
         let d = V.sub(v2, v1);

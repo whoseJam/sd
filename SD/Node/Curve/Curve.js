@@ -1,5 +1,4 @@
 import { Vector as V } from "@/Math/Vector";
-import { effect } from "@/Node/Core/Reactive";
 import { BaseCurve, curveHandler } from "@/Node/Curve/BaseCurve";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -12,7 +11,7 @@ export function Curve(parent) {
         bending: 0.25,
     });
 
-    this._.updater = effect(() => {
+    this.effect("curve", () => {
         const v1 = this.source();
         const v2 = this.target();
         const d = V.sub(v2, v1);
