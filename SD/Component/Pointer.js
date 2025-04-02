@@ -7,7 +7,7 @@ import { Factory } from "@/Utility/Factory";
 const pointerMap = {};
 
 function labelRule(parent, child) {
-    const gap = parent.gap();
+    const gap = 3;
     const direction = parent.direction();
     if (direction === "t") child.cx(parent.cx()).y(parent.my() + gap);
     if (direction === "b") child.cx(parent.cx()).my(parent.y() - gap);

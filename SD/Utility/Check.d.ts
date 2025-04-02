@@ -8,9 +8,10 @@ export class Check {
     static isTypeOfHTML(object: any): boolean;
     static isTypeOfSVG(object: any): boolean;
     static isTypeOfTree(object: any): boolean;
-    static isTypeOfLine(object: any): boolean;
+    static isTypeOfSVGLine(object: any): boolean;
     static isTypeOfThree(object: any): boolean;
     static isFalseType(object: any): boolean;
+    static isEmptyType(object: any): boolean;
     static isNumberOrString(object: any): boolean;
     static isTypeOfString(object: any): boolean;
     static isTypeOfOpacity(object: any): boolean;

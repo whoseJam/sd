@@ -1,21 +1,20 @@
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 import { SVGNode } from "@/Renderer/SVG/SVGNode";
-// import { ThreeNode } from "@/Renderer/Three/ThreeNode";
 import { Check } from "@/Utility/Check";
 
-function defineArrows() {
-    Snap(svg().nake()).append(
-        Snap.parse(`
-    <marker id="arrow" markerUnits="userSpaceOnUse" viewBox="0 0 12 12" refX="9.5" refY="6" markerWidth="12" markerHeight="12" orient="auto">
-        <path d="M2,2 L10,6 L2,10 L6,6 L2,2" stroke="context-stroke" fill="context-stroke"></path>
-    </marker>`)
-    );
-    Snap(svg().nake()).append(
-        Snap.parse(`
-    <marker id="arrowReverse" markerUnits="userSpaceOnUse" viewBox="0 0 12 12" refX="9.5" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
-        <path d="M2,2 L10,6 L2,10 L6,6 L2,2" stroke="context-stroke" fill="context-stroke"></path>
-    </marker>`)
-    );
+const markerHardcode = [
+    // format
+    `<marker id="arrow" markerUnits="userSpaceOnUse" viewBox="0 0 12 12" refX="9.5" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M2,2 L10,6 L2,10 L6,6 L2,2" stroke="context-stroke" fill="context-stroke"></path></marker>`,
+    `<marker id="adaptiveArrow" markerUnits="strokeWidth" viewBox="0 0 12 12" refX="9.5" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M2,2 L10,6 L2,10 L6,6 L2,2" stroke="context-stroke" fill="context-stroke"></path></marker>`,
+];
+
+function defineMarkers() {
+    const nake = svg().nake();
+    Snap(nake);
+    const defs = Snap(nake.children[1]);
+    markerHardcode.forEach(code => {
+        defs.append(Snap.parse(code));
+    });
 }
 
 function updateDivViewBox(box) {
@@ -84,7 +83,7 @@ export class Root {
             this.svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
             this.svg.setAttribute("width", "100%");
             this.svg.setAttribute("height", "100%");
-            defineArrows();
+            defineMarkers();
         }
 
         if (true) {

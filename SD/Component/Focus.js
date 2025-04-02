@@ -76,5 +76,6 @@ export function Focus(parent) {
             focus.height(my - y);
         }
     });
+    if (parent.childAs) parent.childAs(focus);
     return focus;
 }

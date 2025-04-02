@@ -48,7 +48,7 @@ BaseSVG.prototype = {
         if (typeof color === "string") {
             this.fill(color);
             if (this.text) this.stroke(color);
-            else if (Check.isTypeOfLine(this)) this.stroke(color);
+            else if (Check.isTypeOfSVGLine(this)) this.stroke(color);
         } else this.fill(color.fill).stroke(color.stroke);
         return this;
     },

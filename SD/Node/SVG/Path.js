@@ -1,7 +1,7 @@
 import { Action } from "@/Animate/Action";
 import { Interp } from "@/Animate/Interp";
 import { svg } from "@/Interact/Root";
-import { BaseLine } from "@/Node/SVG/BaseLine";
+import { BaseSVGLine } from "@/Node/SVG/BaseSVGLine";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 let globalPath = undefined;
@@ -64,7 +64,7 @@ function getTotalLength(d) {
 }
 
 export function Path(parent) {
-    BaseLine.call(this, parent, "path");
+    BaseSVGLine.call(this, parent, "path");
 
     this.type("Path");
 
@@ -82,7 +82,7 @@ export function Path(parent) {
 }
 
 Path.prototype = {
-    ...BaseLine.prototype,
+    ...BaseSVGLine.prototype,
     at(k) {
         return getPointByRate(this.d(), k);
     },

@@ -31,7 +31,15 @@ BinaryTree.prototype.newNode = function (id, value) {
 
 BinaryTree.prototype.newLink = function (sourceId, targetId, type, value = null) {
     [sourceId, targetId] = [String(sourceId), String(targetId)];
-    this._.biChildren[this.element(sourceId).id][type] = targetId;
+    if (type === undefined) {
+        if (!this._.biChildren[this.element(sourceId).id][0]) {
+            this._.biChildren[this.element(sourceId).id][0] = targetId;
+        } else {
+            this._.biChildren[this.element(sourceId).id][1] = targetId;
+        }
+    } else {
+        this._.biChildren[this.element(sourceId).id][type] = targetId;
+    }
     const element = new this._.linkType(this.layer("links")).opacity(0);
     element.value(value);
     element.onEnter(Enter.appear("links"));
@@ -64,8 +72,13 @@ BinaryTree.prototype.rightChildId = function (node) {
 };
 
 BinaryTree.prototype.link = function (x, y, dir, value = null) {
-    if (dir === 0) this.leftChild(x, y, value);
-    else this.rightChild(x, y, value);
+    if (dir === undefined) {
+        if (!this.leftChild(x)) this.leftChild(x, y, value);
+        else this.rightChild(x, y, value);
+    } else {
+        if (dir === 0) this.leftChild(x, y, value);
+        else this.rightChild(x, y, value);
+    }
     return this;
 };
 

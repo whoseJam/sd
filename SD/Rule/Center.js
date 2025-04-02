@@ -10,16 +10,28 @@ export function centerFixAspect(rate = 1.2) {
     return function (parent, child) {
         const cx = parent.cx();
         const cy = parent.cy();
-        const w = parent.width();
-        const h = parent.height();
-        const cw = Math.max(child.width(), 1);
-        const ch = Math.max(child.height(), 1);
-        const kw = w / cw / rate;
-        const kh = h / ch / rate;
-        const k = Math.min(kw, kh);
-        child.width(cw * k);
-        child.height(ch * k);
-        child.cx(cx).cy(cy);
+        if (typeof parent.r === "function") {
+            const r = parent.r() / rate;
+            const cw = Math.max(child.width(), 1);
+            const ch = Math.max(child.height(), 1);
+            const k = ch / cw;
+            const w = 2 * Math.sqrt((r * r) / (k * k + 1));
+            const h = w * k;
+            child.width(w);
+            child.height(h);
+            child.center(cx, cy);
+        } else {
+            const w = parent.width();
+            const h = parent.height();
+            const cw = Math.max(child.width(), 1);
+            const ch = Math.max(child.height(), 1);
+            const kw = w / cw / rate;
+            const kh = h / ch / rate;
+            const k = Math.min(kw, kh);
+            child.width(cw * k);
+            child.height(ch * k);
+            child.center(cx, cy);
+        }
     };
 }
 

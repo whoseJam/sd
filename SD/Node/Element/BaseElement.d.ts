@@ -5,7 +5,8 @@ import { SDRule } from "@/Rule/Rule";
 import { HexColor, PacketColor, SDColor } from "@/Utility/Color";
 
 export class BaseElement extends SD2DNode {
-    constructor(target: SDNode | RenderNode);
+    constructor(target: SDNode | RenderNode, value?: any);
+
     rate(): number;
     rate(rate: number): this;
     color(): PacketColor;
@@ -23,9 +24,9 @@ export class BaseElement extends SD2DNode {
     background(): SDNode;
     text(): string;
     text(text: string): this;
-    drop(): this;
     intValue(): number;
     value(): SDNode | undefined;
     value(value: any, rule?: SDRule): this;
     valueFromExist(value: SDNode, rule?: SDRule): this;
+    drop(): SDNode;
 }

@@ -11,13 +11,14 @@ export function BaseElement(parent) {
     SD2DNode.call(this, parent);
 
     this.newLayer("background");
+    this.newLayer("value");
 
     this.vars.merge({
         x: 0,
         y: 0,
         width: 40,
         height: 40,
-        rate: 1.2,
+        rate: 1.3,
         value: undefined,
     });
 }
@@ -29,7 +30,7 @@ BaseElement.prototype = {
     y: Factory.handlerLowPrecise("y"),
     width: Factory.handlerLowPrecise("width"),
     height: Factory.handlerLowPrecise("height"),
-    rate: Factory.handlerLowPrecise("rate"),
+    rate: Factory.handlerMediumPrecise("rate"),
     color: backgroundHandler("color"),
     fill: backgroundHandler("fill"),
     fillOpacity: backgroundHandler("fillOpacity"),
@@ -47,36 +48,38 @@ BaseElement.prototype = {
         value.text(text);
         return this;
     },
-    drop() {
-        const value = this.child("value");
-        value.onExit(EX.drop());
-        this.eraseChild(value);
-        return value;
-    },
     intValue() {
         const value = this.value();
         if (!value) return 0;
         if (!value.text) ErrorLauncher.invalidInvoke("intValue");
-        return +value.text();
+        const i = Math.floor(+value.text());
+        if (isNaN(i)) ErrorLauncher.invalidInvoke("intValue");
+        return i;
     },
     value(value, rule) {
         if (arguments.length === 0) return this.child("value");
         if (this.hasChild("value")) this.eraseChild("value");
-        if (Check.isFalseType(value)) return this;
-        rule = getValueRule(this.vars, rule);
+        if (Check.isEmptyType(value)) return this;
+        rule = getValueRule(rule);
         value = Cast.castToSDNode(this, value);
-        value.onEnterDefault(EN.appear());
+        value.onEnterDefault(EN.appear("value"));
         value.onExitDefault(EX.fade());
         this.childAs("value", value, rule);
         return this;
     },
     valueFromExist(value, rule) {
         if (this.hasChild("value")) this.eraseChild("value");
-        rule = getValueRule(this.vars, rule);
-        value.onEnter(EN.moveTo());
+        rule = getValueRule(rule);
+        value.onEnter(EN.moveTo("value"));
         value.onExitDefault(EX.fade());
         this.childAs("value", value, rule);
         return this;
+    },
+    drop() {
+        const value = this.child("value");
+        value.onExit(EX.drop());
+        this.eraseChild(value);
+        return value;
     },
 };
 
@@ -89,6 +92,12 @@ function backgroundHandler(key) {
     };
 }
 
-function getValueRule(vars, rule) {
-    return rule ? rule : R.centerFixAspect(vars.rate);
+function getValueRule(rule) {
+    return (
+        rule ||
+        function (parent, child) {
+            const rate = parent.rate();
+            R.centerFixAspect(rate)(parent, child);
+        }
+    );
 }

@@ -12,6 +12,7 @@ export { div, svg } from "./Interact/Root";
 export { vec } from "./Math/Vector";
 export { Array } from "./Node/Array/Array";
 export { BarArray } from "./Node/Array/BarArray";
+export { BaseArray } from "./Node/Array/BaseArray";
 export { Code } from "./Node/Array/Code";
 export { Pile } from "./Node/Array/Pile";
 export { Stack } from "./Node/Array/Stack";
