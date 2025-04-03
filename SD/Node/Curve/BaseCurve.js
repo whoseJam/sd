@@ -1,4 +1,5 @@
 import { Vector as V } from "@/Math/Vector";
+import { Line } from "@/Node/SVG/Line";
 import { Path } from "@/Node/SVG/Path";
 import { Factory } from "@/Utility/Factory";
 
@@ -21,6 +22,8 @@ BaseCurve.prototype = {
     y1: Factory.handler("y1"),
     x2: Factory.handler("x2"),
     y2: Factory.handler("y2"),
+    source: Line.prototype.source,
+    target: Line.prototype.target,
     dx(dx) {
         this.freeze();
         this.source(V.add(this.source(), [dx, 0]));

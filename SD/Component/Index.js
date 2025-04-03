@@ -1,6 +1,6 @@
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Exit as EX } from "@/Node/Core/Exit";
-import { SDNode } from "@/Node/SDNode";
+import { SD2DNode } from "@/Node/SD2DNode";
 import { Text } from "@/Node/SVG/Text";
 import { Rule as R } from "@/Rule/Rule";
 import { Check } from "@/Utility/Check";
@@ -64,7 +64,7 @@ function getElement(parent, location, i) {
 }
 
 export function Index(parent, location = "t", fontSize = 15, gap = 3) {
-    const index = new SDNode(parent);
+    const index = new SD2DNode(parent);
     index.type("Index");
     index.vars.merge({
         gap: gap,
