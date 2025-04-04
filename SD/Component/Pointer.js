@@ -56,6 +56,7 @@ export function Pointer(parent, label, direction = "b", gap = 3, length = 20) {
             this.opacity(1);
         } else {
             addPointerMap(this, x);
+            this.opacity(1);
         }
         return this;
     };
