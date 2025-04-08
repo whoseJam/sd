@@ -2,6 +2,7 @@ import { Vertex } from "@/Node/Element/Vertex";
 import { SD2DNode } from "@/Node/SD2DNode";
 import { Line } from "@/Node/SVG/Line";
 import { BaseTree } from "@/Node/Tree/BaseTree";
+import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
 export function BaseGraph(parent) {
@@ -33,16 +34,34 @@ BaseGraph.prototype = {
     y: Factory.handlerLowPrecise("y"),
     width: Factory.handlerLowPrecise("width"),
     height: Factory.handlerLowPrecise("height"),
-    color: BaseTree.prototype.color,
-    value: BaseTree.prototype.value,
     element: BaseTree.prototype.element,
-    opacity: BaseTree.prototype.opacity,
+
+    nodes: BaseTree.prototype.nodes,
+    nodesId: BaseTree.prototype.nodesId,
+    nodeId: BaseTree.prototype.nodeId,
+
+    links: BaseTree.prototype.links,
+    source: BaseTree.prototype.source,
+    target: BaseTree.prototype.target,
+    sourceId: BaseTree.prototype.sourceId,
+    targetId: BaseTree.prototype.targetId,
+    toNode(link, source) {
+        const sourceId = this.nodeId(source);
+        if (this.sourceId(link) === sourceId) return this.target(link);
+        else if (this.targetId(link) === sourceId) return this.source(link);
+        else return undefined;
+    },
+    toNodeId(link, source) {
+        return this.nodeId(this.toNode(link, source));
+    },
+
     findNode: BaseTree.prototype.findNode,
     findNodes: BaseTree.prototype.findNodes,
     findLink: BaseTree.prototype.findLink,
     findLinks: BaseTree.prototype.findLinks,
     findNodeById: BaseTree.prototype.findNodeById,
     findLinkById: BaseTree.prototype.findLinkById,
+
     inLinks(node, mode) {
         node = this.nodeId(node);
         return this.findLinks((link, sourceId, targetId) => targetId === node || (mode === "undirect" && sourceId === node));
@@ -63,26 +82,6 @@ BaseGraph.prototype = {
     outNodesId(node, mode) {
         return this.outNodes(node, mode).map(node => this.toNodeId(node));
     },
-    newNodeByBaseGraph(id, element) {
-        id = String(id);
-        this._.sdnodesMap[element.id] = { node: element, id };
-        this._.nodesMap[id] = element;
-        this.childAs(element);
-        this.vars.nodes.push(element);
-        return this;
-    },
-    newLinkByBaseGraph(sourceId, targetId, element) {
-        [sourceId, targetId] = [String(sourceId), String(targetId)];
-        this._.sdnodesMap[element.id] = { link: element, sourceId, targetId };
-        this._.linksMap[`${sourceId}-${targetId}`] = element;
-        this.childAs(element);
-        this.vars.links.push(element);
-        return this;
-    },
-    link: BaseTree.prototype.link,
-    cut: BaseTree.prototype.cut,
-    text: BaseTree.prototype.text,
-    intValue: BaseTree.prototype.intValue,
     forEachInNode(node, mode, callback) {
         this.inNodes(node, mode).forEach(node => {
             callback(node, this.nodeId(node));
@@ -105,20 +104,54 @@ BaseGraph.prototype = {
     },
     forEachNode: BaseTree.prototype.forEachNode,
     forEachLink: BaseTree.prototype.forEachLink,
-    nodeId: BaseTree.prototype.nodeId,
-    nodesId: BaseTree.prototype.nodesId,
-    sourceId: BaseTree.prototype.sourceId,
-    targetId: BaseTree.prototype.targetId,
-    source: BaseTree.prototype.source,
-    target: BaseTree.prototype.target,
-    nodes: BaseTree.prototype.nodes,
-    links: BaseTree.prototype.links,
-    toNode(link, source) {
-        const sourceId = this.nodeId(source);
-        if (this.sourceId(link) === sourceId) return this.target(link);
-        return this.source(link);
+
+    link: BaseTree.prototype.link,
+    newNode() {
+        ErrorLauncher.notImplementedYet("newNode", this.type());
     },
-    toNodeId(link, source) {
-        return this.nodeId(this.toNode(link, source));
+    newNodeFromExistValue() {
+        ErrorLauncher.notImplementedYet("newNodeFromExistValue", this.type());
+    },
+    newNodeFromExistElement() {
+        ErrorLauncher.notImplementedYet("newNodeFromExistElement", this.type());
+    },
+    newLink() {
+        ErrorLauncher.notImplementedYet("newLink", this.type());
+    },
+    newLinkFromExistValue() {
+        ErrorLauncher.notImplementedYet("newLinkFromExistValue", this.type());
+    },
+    newLinkFromExistElement() {
+        ErrorLauncher.notImplementedYet("newLinkFromExistElement", this.type());
+    },
+    cut: BaseTree.prototype.cut,
+
+    opacity: BaseTree.prototype.opacity,
+    nodeOpacity: BaseTree.prototype.nodeOpacity,
+    linkOpacity: BaseTree.prototype.linkOpacity,
+    color: BaseTree.prototype.color,
+    text: BaseTree.prototype.text,
+    nodeText: BaseTree.prototype.nodeText,
+    linkText: BaseTree.prototype.linkText,
+    intValue: BaseTree.prototype.intValue,
+    value: BaseTree.prototype.value,
+    nodeValue: BaseTree.prototype.nodeValue,
+    linkValue: BaseTree.prototype.linkValue,
+
+    __insertNode(id, element) {
+        id = String(id);
+        this._.sdnodesMap[element.id] = { node: element, id };
+        this._.nodesMap[id] = element;
+        this.childAs(element);
+        this.vars.nodes.push(element);
+        return this;
+    },
+    __insertLink(sourceId, targetId, element) {
+        [sourceId, targetId] = [String(sourceId), String(targetId)];
+        this._.sdnodesMap[element.id] = { link: element, sourceId, targetId };
+        this._.linksMap[`${sourceId}-${targetId}`] = element;
+        this.childAs(element);
+        this.vars.links.push(element);
+        return this;
     },
 };

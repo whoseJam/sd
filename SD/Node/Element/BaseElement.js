@@ -42,18 +42,23 @@ BaseElement.prototype = {
     },
     text(text) {
         const value = this.child("value");
-        if (!value) return "";
-        if (!value.text) ErrorLauncher.invalidInvoke("text");
-        if (arguments.length === 0) return value.text();
-        value.text(text);
-        return this;
+        if (arguments.length === 0) {
+            if (!value) return "";
+            if (!value.text) ErrorLauncher.methodNotFound(value, "text");
+            return value.text();
+        } else {
+            if (!value) return this.value(text);
+            if (!value.text) ErrorLauncher.methodNotFound(value, "text");
+            value.text(text);
+            return this;
+        }
     },
     intValue() {
         const value = this.value();
         if (!value) return 0;
-        if (!value.text) ErrorLauncher.invalidInvoke("intValue");
+        if (!value.text) ErrorLauncher.methodNotFound(value, "text");
         const i = Math.floor(+value.text());
-        if (isNaN(i)) ErrorLauncher.invalidInvoke("intValue");
+        if (isNaN(i)) ErrorLauncher.failToParseAsIntValue(value.text());
         return i;
     },
     value(value, rule) {
@@ -76,7 +81,8 @@ BaseElement.prototype = {
         return this;
     },
     drop() {
-        const value = this.child("value");
+        const value = this.value();
+        if (!value) return undefined;
         value.onExit(EX.drop());
         this.eraseChild(value);
         return value;
@@ -86,7 +92,7 @@ BaseElement.prototype = {
 function backgroundHandler(key) {
     return function (value) {
         const background = this.child("background");
-        if (value === undefined) return background[key]();
+        if (arguments.length === 0) return background[key]();
         background[key](value);
         return this;
     };

@@ -1,3 +1,5 @@
+import { Check } from "./Check";
+
 export class ErrorLauncher {
     static unknownKeyError(key) {
         throw new Error(`Unknown key ${key}.`);
@@ -18,11 +20,31 @@ export class ErrorLauncher {
     static invalidComponentStatus() {
         throw new Error("The component somehow get into an invalid status.");
     }
-    static nodeNotExists(id) {
-        throw new Error(`Node (id = ${id}) do not exists.`);
+    static nodeNotFound(node) {
+        if (Check.isTypeOfSDNode(node)) {
+            console.log(node);
+            throw new Error("Tree/Graph node above not found.");
+        } else {
+            throw new Error(`Tree/Graph node[${node}] not found.`);
+        }
     }
-    static linkNotExist(source, target) {
-        throw new Error(`Link (source = ${source}, target = ${target}) do not exists.`);
+    static linkNotFound(source, target) {
+        if (Check.isTypeOfSDNode(source) && !Check.isTypeOfSDNode(target)) {
+            console.log("source =", source);
+            throw new Error(`Tree/Graph link[source, ${target}] not found.`);
+        } else if (!Check.isTypeOfSDNode(source) && Check.isTypeOfSDNode(target)) {
+            console.log("target =", target);
+            throw new Error(`Tree/Graph link[${source}, target] not found.`);
+        } else if (Check.isTypeOfSDNode(source) && Check.isTypeOfSDNode(target)) {
+            console.log("source =", source);
+            console.log("target =", target);
+            throw new Error(`Tree/Graph link[source, target] not found`);
+        } else {
+            throw new Error(`Tree/Graph link[${source}, ${target}] not found.`);
+        }
+    }
+    static lcaNotFound() {
+        throw new Error("LCA NOT FOUND.");
     }
     static whatHappened() {
         throw new Error("What happened???");
@@ -33,6 +55,19 @@ export class ErrorLauncher {
         } else {
             throw new Error(`Function ${method} not implemented yet.`);
         }
+    }
+    static failToParseAsIntValue(text) {
+        throw new Error(`Fail to parse ${text} as int value.`);
+    }
+    static methodNotFound(node, method) {
+        if (typeof node.type === "function") node = node.type();
+        throw new Error(`Cannot invoke method ${method} on ${node}.`);
+    }
+    static arrayElementNotFound(id) {
+        throw new Error(`Array element[${id}] not found.`);
+    }
+    static gridElementNotFound(rowId, colId) {
+        throw new Error(`Grid element[${rowId}, ${colId}] not found.`);
     }
     static warnNotImplementedYet(method) {
         console.warn(`Function ${method} not implemented yet.`);

@@ -1,7 +1,7 @@
 import { SDNode } from "@/Node/SDNode";
 import { Rect } from "@/Node/SVG/Rect";
 
-class CompFocus {
+export class CompFocus {
     focus(): this;
     focus(i: number): this;
     focus(l: number, r: number): this;

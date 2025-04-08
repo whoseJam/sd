@@ -33,7 +33,7 @@ ValueGrid.prototype = {
         const element = value;
         element.onEnterDefault(EN.appear("elements"));
         element.onExitDefault(EX.fade());
-        this.insertByBaseGrid(i, j, element);
+        this.__insert(i, j, element);
         return this;
     },
 };

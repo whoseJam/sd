@@ -4,7 +4,7 @@ import { Line } from "@/Node/SVG/Line";
 import { Path } from "@/Node/SVG/Path";
 import { RenderNode } from "@/Renderer/RenderNode";
 
-class SDFunction {
+export class SDFunction {
     function(func: (x: number) => number): this;
     coordX(y: number): number;
     coordY(x: number): number;

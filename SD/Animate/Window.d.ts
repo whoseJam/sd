@@ -4,4 +4,4 @@ export const LAST_INTER_FRAME = 2;
 export const FIRST_INTER_FRAME = 3;
 export const CONTINUE_FRAME = 4;
 
-export async function pause();
+export function pause(): Promise<any>;

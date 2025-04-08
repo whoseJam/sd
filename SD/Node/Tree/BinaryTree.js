@@ -25,7 +25,7 @@ BinaryTree.prototype.newNode = function (id, value) {
     this._.biChildren[element.id] = [undefined, undefined];
     element.value(Cast.castToSDNode(element, value, id));
     element.onEnter(Enter.appear("nodes"));
-    this.newNodeByBaseTree(id, element);
+    this.__insertNode(id, element);
     return this;
 };
 
@@ -43,7 +43,7 @@ BinaryTree.prototype.newLink = function (sourceId, targetId, type, value = null)
     const element = new this._.linkType(this.layer("links")).opacity(0);
     element.value(value);
     element.onEnter(Enter.appear("links"));
-    this.newLinkByBaseTree(sourceId, targetId, element);
+    this.__insertLink(sourceId, targetId, element);
     return this;
 };
 

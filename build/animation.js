@@ -68,7 +68,7 @@ function launch(selfLaunch = true) {
 }
 
 function getConfiguration(file) {
-    const mode = global["d"] ? "development" : "production";
+    const mode = "development";
     const watch = global["w"] ? true : false;
     const suffix = global["domain"] !== undefined ? "" : global["l"] ? "Local" : "Remote";
     const plugins = [

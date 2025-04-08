@@ -139,7 +139,7 @@ export class Root {
         const mY = my + ((my - cy) * (rate - 1)) / 2;
         const W = mX > X ? mX - X : 1200;
         const H = mY > Y ? my - Y : 600;
-        this.viewBox = { x: X, y: Y, width: W, height: H + 1 };
+        this.viewBox = { x: X, y: Y - 1, width: W, height: H + 2 };
         updateSVGViewBox(this.viewBox);
         updateDivViewBox(this.viewBox);
         updateWindowRate(this.viewBox);

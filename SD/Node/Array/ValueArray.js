@@ -30,13 +30,13 @@ ValueArray.prototype = {
     insert(id, value) {
         const element = Cast.castToSDNode(this.layer("elements"), value);
         element.onEnter(EN.appear("elements"));
-        this.insertByBaseArray(id, element);
+        this.__insert(id, element);
         return this;
     },
     insertFromExistValue(id, value) {
         const element = value;
         element.onEnter(EN.moveTo("elements"));
-        this.insertByBaseArray(id, element);
+        this.__insert(id, element);
         return this;
     },
 };

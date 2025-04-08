@@ -3,7 +3,7 @@ import { SDNode } from "@/Node/SDNode";
 
 type Location = "l" | "r" | "b" | "t";
 
-class CompBrace {
+export class CompBrace {
     brace(element1: number | SDNode, element2: number | SDNode, location: Location | undefined, gap: number | undefined): this;
     location(): Location;
     location(location: Location): this;

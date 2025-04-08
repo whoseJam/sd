@@ -32,7 +32,7 @@ TinyGraph.prototype = {
         const element = new this._.nodeType(this.layer("nodes"));
         element.value(Cast.castToSDNode(element, value, id));
         element.onEnter(EN.appear("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newLink: GridGraph.prototype.newLink,

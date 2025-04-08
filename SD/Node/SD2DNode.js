@@ -23,6 +23,11 @@ function opacityInterp(node, attrs) {
     };
 }
 
+/* javascript-obfuscator:disable */
+const who = 1;
+console.log(who);
+
+// javascript-obfuscator:disable
 export function SD2DNode(target) {
     SDNode.call(this, target);
 

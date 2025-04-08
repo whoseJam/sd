@@ -22,11 +22,12 @@ export class BaseElement extends SD2DNode {
     strokeWidth(): number;
     strokeWidth(width: number): this;
     background(): SDNode;
+
     text(): string;
     text(text: string): this;
     intValue(): number;
     value(): SDNode | undefined;
     value(value: any, rule?: SDRule): this;
     valueFromExist(value: SDNode, rule?: SDRule): this;
-    drop(): SDNode;
+    drop(): SDNode | undefined;
 }

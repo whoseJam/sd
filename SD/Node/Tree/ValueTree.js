@@ -24,7 +24,7 @@ ValueTree.prototype = {
 ValueTree.prototype.newNode = function (id, value) {
     const element = value;
     element.onEnter(EN.appear("nodes"));
-    this.newNodeByBaseTree(id, element);
+    this.__insertNode(id, element);
     return this;
 };
 

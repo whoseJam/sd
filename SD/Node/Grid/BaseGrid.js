@@ -1,3 +1,4 @@
+import { Exit as EX } from "@/Node/Core/Exit";
 import { SD2DNode } from "@/Node/SD2DNode";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
@@ -24,54 +25,156 @@ BaseGrid.prototype = {
     endN() {
         return this.startN() + this.n() - 1;
     },
-    endM(idx) {
-        if (idx === undefined) return this.startM() + this.m() - 1;
-        const elements = this.vars.elements;
-        return this.startM() + elements[this.idxN(idx)].length - 1;
+    endM(i) {
+        if (arguments.length === 0) return this.startM() + this.m() - 1;
+        const _i = this.idxN(i);
+        if (_i >= this.vars.elements.length || _i < 0) return this.startM() - 1;
+        return this.startM() + this.vars.elements[this.idxN(i)].length - 1;
     },
-    idxN(idx) {
-        return idx - this.startN();
+    idxN(i) {
+        return i - this.startN();
     },
-    idxM(idx) {
-        return idx - this.startM();
+    idxM(j) {
+        return j - this.startM();
     },
     n(n) {
-        if (n === undefined) return this.vars.n;
+        if (arguments.length === 0) return this.vars.n;
         while (this.n() < n) this.pushRow();
         while (this.n() > n) this.popRow();
         return this;
     },
     m(m) {
-        if (m === undefined) return this.vars.m;
+        if (arguments.length === 0) return this.vars.m;
         while (this.m() < m) this.pushCol();
         while (this.m() > m) this.popCol();
         return this;
     },
-    insertByBaseGrid(i, j, element) {
-        const ri = this.idxN(i);
-        const rj = this.idxM(j);
-        if (ri < 0) ErrorLauncher.outOfRangeError(i, j);
-        this.childAs(element);
-        const elements = this.vars.elements;
-        while (elements.length <= ri) elements.push([]);
-        if (rj < 0 || rj > elements[ri].length) ErrorLauncher.outOfRangeError(i, j);
-        elements[ri].splice(rj, 0, element);
-        this.vars.n = elements.length;
-        this.vars.m = Math.max(elements[ri].length, this.vars.m);
+
+    element(i, j) {
+        const [_i, _j] = [this.idxN(i), this.idxM(j)];
+        if (0 <= _i && _i < this.vars.elements.length && 0 <= _j && _j < this.vars.elements[i].length) return this.vars.elements[_i][_j];
+        return undefined;
+    },
+    forEachElement(callback) {
+        this.vars.elements.forEach((row, i) => {
+            row.forEach((element, j) => {
+                callback(element, i + this.startN(), j + this.startM());
+            });
+        });
         return this;
     },
-    eraseByBaseGrid(i, j) {
+
+    opacity() {
+        if (arguments.length === 0) {
+            return SD2DNode.prototype.opacity.call(this);
+        } else if (arguments.length === 1) {
+            const [opacity] = arguments;
+            return SD2DNode.prototype.opacity.call(this, opacity);
+        } else if (arguments.length === 2) {
+            const [i, j] = arguments;
+            const element = this.__getElementWithMethod(i, j, "opacity");
+            return element.opacity();
+        } else {
+            const [i, j, opacity] = arguments;
+            const element = this.__getElementWithMethod(i, j, "opacity");
+            element.opacity(opacity);
+            return this;
+        }
+    },
+    color() {
+        if (arguments.length === 1) {
+            const [color] = arguments;
+            return this.forEachElement(element => element.color(color));
+        } else if (arguments.length === 2) {
+            const [i, j] = arguments;
+            const element = this.__getElementWithMethod(i, j);
+            return element.color();
+        } else {
+            const [i, j, color] = arguments;
+            const element = this.element(i, j);
+            element.color(color);
+            return this;
+        }
+    },
+    text(i, j, text) {
         const element = this.element(i, j);
-        const ri = this.idxN(i);
-        const rj = this.idxM(j);
-        const elements = this.vars.elements;
-        elements[ri].splice(rj, 1);
-        this.eraseChild(element);
-        let m = 0;
-        for (let i = 0; i < elements.length; i++) m = Math.max(m, elements[i].length);
-        this.vars.n = elements.length;
-        this.vars.m = m;
+        if (!element) ErrorLauncher.gridElementNotFound(i, j);
+        if (!element.text) ErrorLauncher.methodNotFound(element, "text");
+        if (arguments.length === 1) {
+            return element.text();
+        } else {
+            element.text(text);
+            return this;
+        }
+    },
+    intValue(i, j) {
+        const element = this.element(i, j);
+        if (!element) return ErrorLauncher.gridElementNotFound(i, j);
+        if (!element.intValue) {
+            if (!element.text) ErrorLauncher.methodNotFound(element, "intValue|text");
+            const i = Math.floor(+element.text());
+            if (isNaN(i)) ErrorLauncher.failToParseAsIntValue(element.text());
+            return i;
+        }
+        return element.intValue();
+    },
+    value(i, j, value) {
+        const element = this.__getElementWithMethod(i, j, "value");
+        if (arguments.length === 1) {
+            return element.value();
+        } else {
+            element.value(value);
+            return this;
+        }
+    },
+
+    insert() {
+        ErrorLauncher.notImplementedYet("insert", this.type());
+    },
+    insertFromExistValue() {
+        ErrorLauncher.notImplementedYet("insertFromExistValue", this.type());
+    },
+    insertFromExistElement() {
+        ErrorLauncher.notImplementedYet("insertFromExistElement", this.type());
+    },
+    pushCol(count) {
+        const l = this.startN();
+        const r = count === undefined ? this.endN() : l + count - 1;
+        for (let i = l; i <= r; i++) this.insert(i, this.endM(i) + 1, null);
+        if (l > r) this.vars.m++;
         return this;
+    },
+    pushRow(count) {
+        let n = this.endN() + 1;
+        let l = this.startM();
+        let r = count === undefined ? this.endM() : l + count - 1;
+        for (let j = l; j <= r; j++) this.insert(n, j, null);
+        if (l > r) {
+            this.vars.n++;
+            this.vars.elements.push([]);
+        }
+        return this;
+    },
+
+    erase(i, j) {
+        const element = this.element(i, j);
+        if (!element) ErrorLauncher.gridElementNotFound(i, j);
+        element.onExitDefault(EX.fade());
+        this.__erase(i, j);
+        return this;
+    },
+    dropElement(i, j) {
+        const element = this.element(i, j);
+        if (!element) return undefined;
+        element.onExit(EX.drop());
+        this.__erase(i, j);
+        return element;
+    },
+    dropValue(i, j) {
+        const element = this.element(i, j);
+        if (!element) return undefined;
+        if (!element.drop) ErrorLauncher.methodNotFound(element, "drop");
+        return element.drop();
     },
     popCol() {
         let erased = false;
@@ -93,101 +196,37 @@ BaseGrid.prototype = {
         this.vars.n--;
         return this;
     },
-    pushCol(rows) {
-        const l = this.startN();
-        const r = rows === undefined ? this.endN() : l + rows - 1;
-        for (let i = l; i <= r; i++) this.insert(i, this.endM(i) + 1, null);
-        if (l > r) this.vars.m++;
+
+    __insert(i, j, element) {
+        const ri = this.idxN(i);
+        const rj = this.idxM(j);
+        if (ri < 0) ErrorLauncher.outOfRangeError(i, j);
+        this.childAs(element);
+        const elements = this.vars.elements;
+        while (elements.length <= ri) elements.push([]);
+        if (rj < 0 || rj > elements[ri].length) ErrorLauncher.outOfRangeError(i, j);
+        elements[ri].splice(rj, 0, element);
+        this.vars.n = elements.length;
+        this.vars.m = Math.max(elements[ri].length, this.vars.m);
         return this;
     },
-    pushRow(cols) {
-        let n = this.endN() + 1;
-        let l = this.startM();
-        let r = cols === undefined ? this.endM() : l + cols - 1;
-        for (let j = l; j <= r; j++) this.insert(n, j, null);
-        if (l > r) {
-            this.vars.n++;
-            this.vars.elements.push([]);
-        }
+    __erase(i, j) {
+        const element = this.element(i, j);
+        const ri = this.idxN(i);
+        const rj = this.idxM(j);
+        const elements = this.vars.elements;
+        elements[ri].splice(rj, 1);
+        this.eraseChild(element);
+        let m = 0;
+        for (let i = 0; i < elements.length; i++) m = Math.max(m, elements[i].length);
+        this.vars.n = elements.length;
+        this.vars.m = m;
         return this;
     },
-    element(i, j) {
-        [i, j] = [this.idxN(i), this.idxM(j)];
-        if (0 <= i && i < this.vars.elements.length) {
-            if (0 <= j && j < this.vars.elements[i].length) {
-                return this.vars.elements[i][j];
-            }
-            ErrorLauncher.outOfRangeError(i + this.startN(), j + this.startM());
-        }
-        ErrorLauncher.outOfRangeError(i + this.startN(), j + this.startM());
-    },
-    forEachElement(callback) {
-        this.vars.elements.forEach((row, i) => {
-            row.forEach((element, j) => {
-                callback(element, i + this.startN(), j + this.startM());
-            });
-        });
-        return this;
-    },
-    value() {
-        const args = arguments;
-        switch (args.length) {
-            case 2: {
-                const element = this.element(args[0], args[1]);
-                return element.value();
-            }
-            case 3: {
-                const element = this.element(args[0], args[1]);
-                element.value(args[2]);
-                return this;
-            }
-            default:
-                ErrorLauncher.invalidArguments();
-        }
-    },
-    intValue(i, j) {
-        const value = this.value(i, j);
-        if (!value) return 0;
-        if (!value.text) ErrorLauncher.invalidInvoke("intValue");
-        return +value.text();
-    },
-    opacity() {
-        const args = arguments;
-        switch (args.length) {
-            case 0:
-                return SD2DNode.prototype.opacity.call(this);
-            case 1:
-                return SD2DNode.prototype.opacity.call(this, args[1]);
-            case 2: {
-                const element = this.element(args[0], args[1]);
-                return element.opacity();
-            }
-            case 3: {
-                const element = this.element(args[0], args[1]);
-                element.opacity(args[2]);
-                return this;
-            }
-            default:
-                ErrorLauncher.invalidArguments();
-        }
-    },
-    color() {
-        const args = arguments;
-        switch (args.length) {
-            case 1:
-                this.forEachElement(element => element.color(args[0]));
-                return this;
-            case 2: {
-                const element = this.element(args[0], args[1]);
-                return element.color();
-            }
-            case 3: {
-                const element = this.element(args[0], args[1]);
-                element.color(args[2]);
-                return this;
-            }
-            default:
-                ErrorLauncher.invalidArguments();
-        }
+    __getElementWithMethod(i, j, method) {
+        const element = this.element(i, j);
+        if (!element) ErrorLauncher.gridElementNotFound(i, j);
+        if (typeof element[method] !== "function") ErrorLauncher.methodNotFound(element, method);
+        return element;
     },
 };

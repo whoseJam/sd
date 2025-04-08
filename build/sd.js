@@ -1,11 +1,41 @@
+const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
 const webpack = require("webpack-stream");
+const TerserPlugin = require("terser-webpack-plugin");
 const JavaScriptObfuscator = require("webpack-obfuscator");
+
+function extractReversedNames() {
+    const filePath = path.join(__dirname, "../SD/sd.js");
+    try {
+        const fileContent = fs.readFileSync(filePath, "utf8");
+        const regex = /\{([^}]+)\}/g;
+        const matches = [];
+        let match;
+        while ((match = regex.exec(fileContent)) !== null) {
+            const contents = match[1].split(",");
+            contents.forEach(content => {
+                content = content.trim();
+                if (content === "CONTINUE_FRAME") return;
+                if (/^[A-Z]/.test(content)) matches.push(content);
+            });
+        }
+        console.log("reversedNames:", matches);
+        return matches;
+    } catch (error) {
+        console.error("读取文件时出错:", error);
+        return [];
+    }
+}
 
 const obfuscator = new JavaScriptObfuscator({
     identifierNamesGenerator: "mangled",
     splitStrings: true,
+    rotateStringArray: true,
+    shuffleStringArray: true,
+    stringArray: true,
+    simplify: true,
+    reservedNames: extractReversedNames(),
 });
 
 /**
@@ -56,6 +86,16 @@ function getConfiguration() {
         },
         performance: {
             hints: false,
+        },
+        optimization: {
+            minimizer: [
+                new TerserPlugin({
+                    terserOptions: {
+                        keep_classnames: true,
+                        keep_fnames: true,
+                    },
+                }),
+            ],
         },
         cache: true,
         resolve: {

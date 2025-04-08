@@ -3,7 +3,7 @@ import { SDNode } from "@/Node/SDNode";
 
 type Location = "t" | "b" | "l" | "r";
 
-class CompIndex {
+export class CompIndex {
     location(): Location;
     location(location: Location): this;
     fontSize(): number;

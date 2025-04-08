@@ -3,7 +3,7 @@ import { Mathjax } from "@/Node/Text/Mathjax";
 
 type Location = "lt" | "lc" | "lb" | "tl" | "tc" | "tr" | "bl" | "bc" | "br" | "rt" | "rc" | "rb";
 
-class CompLabel {
+export class CompLabel {
     location(): Location;
     location(location: Location): this;
     gap(): number;

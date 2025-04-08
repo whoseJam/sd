@@ -1,7 +1,7 @@
 import { SDNode } from "@/Node/SDNode";
 import { Line } from "@/Node/SVG/Line";
 
-class CompPointer {
+export class CompPointer {
     moveTo(): this;
     moveTo(index: number): this;
     moveTo(i: number, j: number): this;

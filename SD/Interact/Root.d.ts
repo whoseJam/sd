@@ -5,6 +5,6 @@ export function svg(): SVGNode;
 export function div(): HTMLNode;
 
 export class Root {
-    static init();
-    static setViewBox(x: number, y: number, width: number, height: number, rate: number);
+    static init(): void;
+    static setViewBox(x: number, y: number, width: number, height: number, rate: number): void;
 }

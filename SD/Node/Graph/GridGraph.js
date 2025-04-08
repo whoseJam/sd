@@ -62,14 +62,14 @@ GridGraph.prototype = {
         this._.pos[element.id] = { x: this._.curN, y: this._.curM };
         element.value(Cast.castToSDNode(element, value, id));
         element.onEnter(EN.appear("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newNodeFromExistValue(id, value) {
         const element = new this._.nodeType(this.layer("nodes"));
         this._.pos[element.id] = { x: this._.curN, y: this._.curM };
         element.onEnter(EN.appear("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         element.value(value.onEnter(EN.moveTo()));
         return this;
     },
@@ -77,27 +77,27 @@ GridGraph.prototype = {
         const element = value;
         this._.pos[element.id] = { x: this._.curN, y: this._.curM };
         element.onEnter(EN.moveTo("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newLink(sourceId, targetId, value) {
         const element = new this._.linkType(this.layer("links"));
         element.value(value);
         element.onEnter(EN.appear("links"));
-        this.newLinkByBaseGraph(sourceId, targetId, element);
+        this.__insertLink(sourceId, targetId, element);
         return this;
     },
     newLinkFromExistValue(sourceId, targetId, value) {
         const element = new this._.linkType(this.layer("links"));
         element.onEnter(EN.appear("links"));
-        this.newLinkByBaseGraph(sourceId, targetId, element);
+        this.__insertLink(sourceId, targetId, element);
         element.value(value.onEnter(EN.moveTo()));
         return this;
     },
     newLinkFromExistElement(sourceId, targetId, value) {
         const element = value;
         element.onEnter(EN.moveTo("links"));
-        this.newLinkByBaseGraph(sourceId, targetId, element);
+        this.__insertLink(sourceId, targetId, element);
         return this;
     },
 };

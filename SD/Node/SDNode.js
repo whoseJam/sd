@@ -8,6 +8,7 @@ import { Check } from "@/Utility/Check";
 
 let id = 0;
 
+// javascript-obfuscator:disable
 export function SDNode(target) {
     this.id = ++id;
     this._ = {

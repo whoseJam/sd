@@ -63,14 +63,14 @@ BipartiteGraph.prototype = {
         this._.no[element.id] = no;
         element.value(Cast.castToSDNode(element, value, id));
         element.onEnter(EN.appear("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newNodeFromExistElement(id, value, no) {
         const element = value;
         this._.no[element.id] = no;
         element.onEnter(EN.moveTo("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newLink: GridGraph.prototype.newLink,

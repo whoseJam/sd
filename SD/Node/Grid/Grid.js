@@ -1,5 +1,4 @@
 import { Enter as EN } from "@/Node/Core/Enter";
-import { Exit as EX } from "@/Node/Core/Exit";
 import { Box } from "@/Node/Element/Box";
 import { BaseGrid } from "@/Node/Grid/BaseGrid";
 import { Factory } from "@/Utility/Factory";
@@ -68,10 +67,6 @@ Grid.prototype = {
     ...BaseGrid.prototype,
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
-    elementWidth: Factory.handlerLowPrecise("elementWidth"),
-    elementHeight: Factory.handlerLowPrecise("elementHeight"),
-    axis: Factory.handlerLowPrecise("main"),
-    align: Factory.handlerLowPrecise("align"),
     width(width) {
         const label = this.vars.main === "row" ? "m" : "n";
         if (width === undefined) return this[label]() * this.elementWidth();
@@ -89,14 +84,23 @@ Grid.prototype = {
     insert(i, j, value) {
         const element = new Box(this.layer("elements"), value).opacity(0);
         element.onEnter(EN.appear("elements"));
-        element.onExitDefault(EX.fade());
-        this.insertByBaseGrid(i, j, element);
+        this.__insert(i, j, element);
         return this;
     },
-    erase(i, j) {
-        const element = this.element(i, j);
-        element.onExit(EX.fade());
-        this.eraseByBaseGrid(i, j);
+    insertFromExistValue(i, j, value) {
+        const element = new Box(this.layer("elements")).opacity(0);
+        element.onEnter(EN.appear("elements"));
+        this.__insert(i, j, element);
+        element.valueFromExist(value);
         return this;
     },
+    insertFromExistElement(i, j, element) {
+        element.onEnter(EN.moveTo("elements"));
+        this.__insert(i, j, element);
+        return this;
+    },
+    elementWidth: Factory.handlerLowPrecise("elementWidth"),
+    elementHeight: Factory.handlerLowPrecise("elementHeight"),
+    axis: Factory.handlerLowPrecise("main"),
+    align: Factory.handlerLowPrecise("align"),
 };

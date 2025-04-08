@@ -1,4 +1,5 @@
 import { BaseHTML } from "@/Node/HTML/BaseHTML";
+import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Slider extends BaseHTML {

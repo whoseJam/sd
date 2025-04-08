@@ -13,14 +13,14 @@ ValueGridGraph.prototype = {
         const element = value;
         this._.pos[element.id] = { x: this._.curN, y: this._.curM };
         element.onEnter(EN.appear("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newNodeFromExistElement(id, value) {
         const element = value;
         this._.pos[element.id] = { x: this._.curN, y: this._.curM };
         element.onEnter(EN.moveTo("nodes"));
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
 };

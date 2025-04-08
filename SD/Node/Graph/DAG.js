@@ -61,7 +61,7 @@ DAG.prototype = {
         element.value(Cast.castToSDNode(element, value, id));
         element.onEnterDefault(EN.appear("nodes"));
         this._.graph.setNode(id, {});
-        this.newNodeByBaseGraph(id, element);
+        this.__insertNode(id, element);
         return this;
     },
     newLink(sourceId, targetId, value) {
@@ -69,7 +69,7 @@ DAG.prototype = {
         element.value(value);
         element.onEnterDefault(EN.appear("links"));
         this._.graph.setEdge(sourceId, targetId);
-        this.newLinkByBaseGraph(sourceId, targetId, element);
+        this.__insertLink(sourceId, targetId, element);
         return this;
     },
 };

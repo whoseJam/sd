@@ -77,7 +77,7 @@ Code.prototype = {
     insert(id, value = "") {
         const element = Cast.castToSDNode(this.layer("elements"), value);
         element.onEnter(EN.appear("elements"));
-        this.insertByBaseArray(id, element);
+        this.__insert(id, element);
         return this;
     },
     code(source) {
