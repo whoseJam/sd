@@ -1,19 +1,14 @@
 import { SDNode } from "@/Node/SDNode";
 import { BaseTree } from "@/Node/Tree/BaseTree";
-import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Tree extends BaseTree {
-    constructor(target: SDNode | RenderNode);
-
-    /**
-     * 获取树的层高
-     */
+    layout(): "vertical" | "horizontal";
+    layout(mode: "vertical" | "horizontal"): this;
+    layerGap(): number;
+    layerGap(gap: number): this;
+    layerWidth(): number;
+    layerWidth(width: number): this;
     layerHeight(): number;
-
-    /**
-     * 设置树的层高
-     * @param height
-     */
     layerHeight(height: number): this;
 }
 

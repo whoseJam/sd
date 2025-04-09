@@ -22,6 +22,8 @@ export function BaseSVGLine(parent, tag) {
         value: undefined,
     });
 
+    this.vars.fillOpacity = 0;
+
     this.vars.associate("markerStart", Factory.action(this, this._.nake, "marker-start", Interp.stringInterp));
     this.vars.associate("markerMid", Factory.action(this, this._.nake, "marker-mid", Interp.stringInterp));
     this.vars.associate("markerEnd", Factory.action(this, this._.nake, "marker-end", Interp.stringInterp));

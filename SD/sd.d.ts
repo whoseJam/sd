@@ -45,6 +45,7 @@ export { Slider } from "./Node/HTML/Slider";
 export { TextArea } from "./Node/HTML/TextArea";
 export { InvertedTriangle } from "./Node/Polygon/InvertedTriangle";
 export { Triangle } from "./Node/Polygon/Triangle";
+export { SDNode } from "./Node/SDNode";
 export { Circle } from "./Node/SVG/Circle";
 export { Ellipse } from "./Node/SVG/Ellipse";
 export { Image } from "./Node/SVG/Image";

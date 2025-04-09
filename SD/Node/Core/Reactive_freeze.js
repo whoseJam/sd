@@ -197,11 +197,11 @@ export function setPrecise(proxy, key, type) {
     objectManager.precise.set(key, type);
 }
 
-export function reactive(object, father = undefined) {
+export function reactive(object) {
     if (objectsMap.has(object)) return objectsMap.get(object).proxy;
     let associated = {};
     const proxy = new Proxy(object, {
-        get: function (object, key, receiver) {
+        get(object, key, receiver) {
             const value = Reflect.get(object, key, receiver);
             traceInput(object, key, value);
             if (Check.isTypeOfSDNode(value)) return value;
@@ -210,7 +210,7 @@ export function reactive(object, father = undefined) {
             }
             return value;
         },
-        set: function (object, key, value, receiver) {
+        set(object, key, value, receiver) {
             if (proxiesMap.get(object)) object = proxiesMap.get(object);
             if (proxiesMap.get(value)) value = proxiesMap.get(value);
             traceOutput(object, key, value);
@@ -246,6 +246,33 @@ export function reactive(object, father = undefined) {
     object.merge = function (otherObject) {
         for (let key in otherObject) {
             object[key] = otherObject[key];
+        }
+    };
+    object.setTogether = function (items) {
+        const newValues = {};
+        const oldValues = {};
+        for (const key in items) {
+            const value = items[key];
+            if (proxiesMap.get(object)) object = proxiesMap.get(object);
+            if (proxiesMap.get(value)) value = proxiesMap.get(value);
+            traceOutput(object, key, value);
+            const newValue = value;
+            const oldValue = object[key];
+            newValues[key] = newValue;
+            oldValues[key] = oldValue;
+            object[key] = value;
+        }
+        for (const key in items) {
+            const newValue = newValues[key];
+            const oldValue = oldValues[key];
+            if (associated[key]) {
+                if (hasChanged(oldValue, newValue) || (Array.isArray(object) && key === "length")) {
+                    associated[key].forEach(callback => {
+                        callback(newValue, oldValue);
+                    });
+                }
+            }
+            triggerUpdate(object, key);
         }
     };
     return proxy;

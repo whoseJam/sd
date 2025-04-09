@@ -52,7 +52,7 @@ BaseGrid.prototype = {
 
     element(i, j) {
         const [_i, _j] = [this.idxN(i), this.idxM(j)];
-        if (0 <= _i && _i < this.vars.elements.length && 0 <= _j && _j < this.vars.elements[i].length) return this.vars.elements[_i][_j];
+        if (0 <= _i && _i < this.vars.elements.length && 0 <= _j && _j < this.vars.elements[_i].length) return this.vars.elements[_i][_j];
         return undefined;
     },
     forEachElement(callback) {

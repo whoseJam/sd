@@ -126,11 +126,10 @@ Text.prototype = {
         const parsedText = parseText(String(text));
         this.vars.text = parsedText === "" ? parseText(" ") : parsedText;
         const box = fontSizeToBox(this.vars.text, this.vars.fontSize);
-        // TODO: 支持 vars 级别的 freeze/unfreeze
-        if (this.rule()) this.rule().freeze();
-        this.vars.width = box.width;
-        this.vars.height = box.height;
-        if (this.rule()) this.rule().unfreeze();
+        this.vars.setTogether({
+            width: box.width,
+            height: box.height,
+        });
         return this;
     },
     intValue() {

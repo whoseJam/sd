@@ -1,8 +1,8 @@
 import { SDNode } from "@/Node/SDNode";
-import { BaseLine } from "@/Node/SVG/BaseSVGLine";
+import { BaseSVGLine } from "@/Node/SVG/BaseSVGLine";
 import { RenderNode } from "@/Renderer/RenderNode";
 
-export class Path extends BaseLine {
+export class Path extends BaseSVGLine {
     constructor(target: SDNode | RenderNode);
 
     /**

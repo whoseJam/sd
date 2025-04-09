@@ -8,7 +8,7 @@ export function BinaryTree(parent) {
 
     this.type("BinaryTree");
 
-    this._.biChildren = {};
+    this._.childrenMap = {}; // SDNode id -> [leftChildId, rightChildId]
 
     this.uneffect("tree");
     this.effect("binaryTree", () => {
@@ -18,57 +18,124 @@ export function BinaryTree(parent) {
 
 BinaryTree.prototype = {
     ...Tree.prototype,
-};
-
-BinaryTree.prototype.newNode = function (id, value) {
-    const element = new this._.nodeType(this.layer("nodes")).opacity(0);
-    this._.biChildren[element.id] = [undefined, undefined];
-    element.value(Cast.castToSDNode(element, value, id));
-    element.onEnter(Enter.appear("nodes"));
-    this.__insertNode(id, element);
-    return this;
-};
-
-BinaryTree.prototype.newLink = function (sourceId, targetId, type, value = null) {
-    [sourceId, targetId] = [String(sourceId), String(targetId)];
-    if (type === undefined) {
-        if (!this._.biChildren[this.element(sourceId).id][0]) {
-            this._.biChildren[this.element(sourceId).id][0] = targetId;
+    newNode(id, value) {
+        const element = new this._.nodeType(this.layer("nodes")).opacity(0);
+        this._.childrenMap[element.id] = [undefined, undefined];
+        element.value(Cast.castToSDNode(element, value, id));
+        element.onEnter(Enter.appear("nodes"));
+        this.__insertNode(id, element);
+        return this;
+    },
+    newLink(sourceId, targetId, type, value) {
+        [sourceId, targetId] = [String(sourceId), String(targetId)];
+        if (type === undefined) {
+            if (!this._.childrenMap[this.element(sourceId).id][0]) {
+                this._.childrenMap[this.element(sourceId).id][0] = targetId;
+            } else {
+                this._.childrenMap[this.element(sourceId).id][1] = targetId;
+            }
         } else {
-            this._.biChildren[this.element(sourceId).id][1] = targetId;
+            this._.childrenMap[this.element(sourceId).id][type] = targetId;
         }
-    } else {
-        this._.biChildren[this.element(sourceId).id][type] = targetId;
-    }
-    const element = new this._.linkType(this.layer("links")).opacity(0);
-    element.value(value);
-    element.onEnter(Enter.appear("links"));
-    this.__insertLink(sourceId, targetId, element);
-    return this;
-};
+        const element = new this._.linkType(this.layer("links")).opacity(0);
+        element.value(value);
+        element.onEnter(Enter.appear("links"));
+        this.__insertLink(sourceId, targetId, element);
+        return this;
+    },
+    leftChild(sourceId, targetId, value = null) {
+        if (arguments.length === 1) {
+            const [node] = arguments;
+            const _node = this.element(node);
+            return this.findNodeById(this._.childrenMap[_node.id][0]);
+        }
+        if (!this.findNodeById(sourceId)) this.newNode(sourceId);
+        if (!this.findNodeById(targetId)) this.newNode(targetId);
+        this.newLink(sourceId, targetId, 0, value);
+        return this;
+    },
+    rightChild(sourceId, targetId, value = null) {
+        if (arguments.length === 1) {
+            const [node] = arguments;
+            const _node = this.element(node);
+            return this.findNodeById(this._.childrenMap[_node.id][1]);
+        }
+        if (!this.findNodeById(sourceId)) this.newNode(sourceId);
+        if (!this.findNodeById(targetId)) this.newNode(targetId);
+        this.newLink(sourceId, targetId, 1, value);
+        return this;
+    },
+    leftChildId(node) {
+        return this.nodeId(this.leftChild(node));
+    },
+    rightChildId(node) {
+        return this.nodeId(this.rightChild(node));
+    },
 
-BinaryTree.prototype.leftChild = function (sourceId, targetId, value = null) {
-    if (arguments.length === 1) return this.findNodeById(this._.biChildren[this.element(sourceId).id][0]);
-    if (!this.findNodeById(sourceId)) this.newNode(sourceId);
-    if (!this.findNodeById(targetId)) this.newNode(targetId);
-    this.newLink(sourceId, targetId, 0, value);
-    return this;
-};
-
-BinaryTree.prototype.rightChild = function (sourceId, targetId, value = null) {
-    if (arguments.length === 1) return this.findNodeById(this._.biChildren[this.element(sourceId).id][1]);
-    if (!this.findNodeById(sourceId)) this.newNode(sourceId);
-    if (!this.findNodeById(targetId)) this.newNode(targetId);
-    this.newLink(sourceId, targetId, 1, value);
-    return this;
-};
-
-BinaryTree.prototype.leftChildId = function (node) {
-    return this.nodeId(this.leftChild(node));
-};
-
-BinaryTree.prototype.rightChildId = function (node) {
-    return this.nodeId(this.rightChild(node));
+    swapChildren(node) {
+        const id = this.nodeId(node);
+        const children = this._.childrenMap[this.element(id).id];
+        [children[0], children[1]] = [children[1], children[0]];
+        this.vars.nodes = this.vars.nodes;
+        return this;
+    },
+    nodesOnPreorderTraversal(node) {
+        console.log("NODE=", node);
+        const nodes = [];
+        const traversal = node => {
+            console.log("node=", node);
+            console.log("node=", node, "int=", node.intValue());
+            nodes.push(node);
+            if (this.leftChild(node)) {
+                console.log("left=", this.leftChild(node));
+                traversal(this.leftChild(node));
+            }
+            if (this.rightChild(node)) {
+                console.log("right=", this.rightChild(node));
+                traversal(this.rightChild(node));
+            }
+        };
+        if (arguments.length === 0) traversal(this.root());
+        else traversal(this.element(node));
+        return nodes;
+    },
+    nodesOnInorderTraversal(node) {
+        const nodes = [];
+        const traversal = node => {
+            if (this.leftChild(node)) traversal(this.leftChild(node));
+            nodes.push(node);
+            if (this.rightChild(node)) traversal(this.rightChild(node));
+        };
+        if (arguments.length === 0) traversal(this.root());
+        else traversal(this.element(node));
+        return nodes;
+    },
+    nodesOnPostorderTraversal(node) {
+        const nodes = [];
+        const traversal = node => {
+            if (this.leftChild(node)) traversal(this.leftChild(node));
+            if (this.rightChild(node)) traversal(this.rightChild(node));
+            nodes.push(node);
+        };
+        if (arguments.length === 0) traversal(this.root());
+        else traversal(this.element(node));
+        return nodes;
+    },
+    forEachNodeOnPreorderTraversal(node, callback) {
+        if (arguments.length === 1) return this.forEachNodeOnPreorderTraversal(this.root(), arguments[0]);
+        this.nodesOnPreorderTraversal(node).forEach(node => callback(node, this.nodeId(node)));
+        return this;
+    },
+    forEachNodeOnInorderTraversal(node, callback) {
+        if (arguments.length === 1) return this.forEachNodeOnInorderTraversal(this.root(), arguments[0]);
+        this.nodesOnInorderTraversal(node).forEach(node => callback(node, this.nodeId(node)));
+        return this;
+    },
+    forEachNodeOnPostorderTraversal(node, callback) {
+        if (arguments.length === 1) return this.forEachNodeOnPostorderTraversal(this.root(), arguments[0]);
+        this.nodesOnPostorderTraversal(node).forEach(node => callback(node, this.nodeId(node)));
+        return this;
+    },
 };
 
 BinaryTree.prototype.link = function (x, y, dir, value = null) {
@@ -83,7 +150,7 @@ BinaryTree.prototype.link = function (x, y, dir, value = null) {
 };
 
 export function BinaryTreeLayout(mode) {
-    const biChildren = this._.biChildren;
+    const childrenMap = this._.childrenMap;
     const roots = this.findNodes(node => this.father(node) === undefined);
     if (roots.length > 1) return;
     const root = roots[0];
@@ -97,8 +164,8 @@ export function BinaryTreeLayout(mode) {
         this.tryUpdate(current, () => {
             current.center(convert(rank, gap, depth));
         });
-        if (biChildren[current.id][0]) dfs(this.element(biChildren[current.id][0]), rank * 2, gap / 2, depth + 1);
-        if (biChildren[current.id][1]) dfs(this.element(biChildren[current.id][1]), rank * 2 + 1, gap / 2, depth + 1);
+        if (childrenMap[current.id][0]) dfs(this.element(childrenMap[current.id][0]), rank * 2, gap / 2, depth + 1);
+        if (childrenMap[current.id][1]) dfs(this.element(childrenMap[current.id][1]), rank * 2 + 1, gap / 2, depth + 1);
     };
     const gap = (mode === "vertical" ? this.width() : this.height()) / 2;
     dfs(root, 0, gap, 0);

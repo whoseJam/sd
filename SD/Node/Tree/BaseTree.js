@@ -131,7 +131,7 @@ BaseTree.prototype = {
         if (_y === undefined) ErrorLauncher.nodeNotFound(y);
         for (let i = 1; i <= 100 && _x !== _y; i++) {
             if (dx > dy) (_x = this.fatherId(_x)), dx--;
-            else (y = this.fatherId(y)), dy--;
+            else (_y = this.fatherId(_y)), dy--;
         }
         if (_x !== _y) ErrorLauncher.lcaNotFound();
         return this.findNodeById(_x);
@@ -418,7 +418,7 @@ BaseTree.prototype = {
     },
     linkValue(source, target, value) {
         const element = this.__getLinkWithMethod(source, target, "value");
-        if (arguments.length === 1) return element.value();
+        if (arguments.length === 2) return element.value();
         element.value(value);
         return this;
     },

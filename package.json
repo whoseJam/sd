@@ -1,6 +1,6 @@
 {
     "name": "slidew",
-    "version": "1.0.12",
+    "version": "1.0.14",
     "description": "",
     "main": "./SD/sd.d.ts",
     "scripts": {},
