@@ -155,6 +155,11 @@ Mathjax.prototype = {
     text() {
         return this.vars.text;
     },
+    intValue() {
+        const i = Math.floor(+this.text());
+        if (isNaN(i)) ErrorLauncher.failToParseAsIntValue(this.text());
+        return i;
+    },
     math(text) {
         if (text === undefined) return this.text();
         text = String(text);

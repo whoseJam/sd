@@ -1,12 +1,9 @@
 import { SDNode } from "@/Node/SDNode";
-import { RenderNode } from "@/Renderer/RenderNode";
 
 type XLocator = "x" | "cx" | "mx";
 type YLocator = "y" | "cy" | "my";
 
 export class SD2DNode extends SDNode {
-    constructor(target: SDNode | RenderNode);
-
     opacity(): number;
     opacity(opacity: number): this;
 

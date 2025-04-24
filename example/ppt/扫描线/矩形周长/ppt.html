@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>矩形周长</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1856"></problem>
+    <section>
+        <h2>矩形周长</h2>
+        <iframe data-animation="./矩形周长.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">只需要维护，在每个 $y$ 坐标上线段覆盖的<b>变化量</b>，就能统计横着的边的总长度了</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 对每种 y 坐标
+                int current = Ask();
+                ans += abs(current - lastans);
+                lastans = current;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>矩形周长</h2>
+        <p>对于竖着的线，把矩形转一转，再当作横着的线统计一次就行</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int x = Solve();
+                for (int i = 1; i <= n; i++) {
+                    swap(R[i].x, R[i].y);
+                    swap(R[i].width, R[i].height);
+                }
+                int y = Solve();
+                cout << x + y << '\n';
+            </script>
+        </codeblock>
+    </section>
+</section>

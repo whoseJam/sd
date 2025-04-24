@@ -40,7 +40,7 @@ export class Check {
         return false;
     }
     static isValidNumber(object) {
-        return typeof object === "number" && object !== NaN && object !== Infinity && object !== -Infinity;
+        return typeof object === "number" && !isNaN(object) && object !== Infinity && object !== -Infinity;
     }
     static isTypeOfVector(object) {
         return object && typeof object[0] === "number" && typeof object[1] === "number";

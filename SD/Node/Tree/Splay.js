@@ -1,4 +1,3 @@
-import { effect, uneffect } from "@/Node/Core/Reactive";
 import { BinaryTree } from "@/Node/Tree/BinaryTree";
 import { trim } from "@/Utility/Trim";
 
@@ -7,8 +6,8 @@ export function Splay(parent) {
 
     this.type("Splay");
 
-    uneffect(this._.updater);
-    this._.updater = effect(() => {
+    this.uneffect("binaryTree");
+    this.effect("splay", () => {
         SplayLayout.call(this, "vertical");
     });
 }
@@ -18,20 +17,20 @@ Splay.prototype = {
 };
 
 function SplayLayout(mode) {
-    const biChildren = this._.biChildren;
+    const childrenMap = this._.childrenMap;
     const roots = this.findNodes(node => this.father(node) === undefined);
     if (roots.length > 1) return;
     const root = roots[0];
     if (!root) return;
     let maxDepth = 0;
-    const convertX = mode === "vertical" ? (rank, gap, depth) => this.x() + (rank + 1) * gap : (rank, gap, depth) => this.x() + this.layerWidth() * depth;
-    const convertY = mode === "horizontal" ? (rank, gap, depth) => this.y() + (rank + 1) * gap : (rank, gap, depth) => this.y() + this.layerHeight() * depth;
+    const convertX = mode === "vertical" ? (rank, gap, depth) => this.x() + (rank + 1) * gap : (rank, gap, depth) => this.x() + this.layerWidth() * (depth - 1);
+    const convertY = mode === "horizontal" ? (rank, gap, depth) => this.y() + (rank + 1) * gap : (rank, gap, depth) => this.y() + this.layerHeight() * (depth - 1);
     const convert = (rank, gap, depth) => [convertX(rank, gap, depth), convertY(rank, gap, depth)];
     const sequence = [];
     const dfs = (current, depth) => {
         maxDepth = Math.max(maxDepth, depth);
-        const lc = biChildren[this.element(current).id][0];
-        const rc = biChildren[this.element(current).id][1];
+        const lc = childrenMap[this.element(current).id][0];
+        const rc = childrenMap[this.element(current).id][1];
         if (lc) dfs(this.element(lc), depth + 1);
         sequence.push([current, depth]);
         if (rc) dfs(this.element(rc), depth + 1);
@@ -39,9 +38,9 @@ function SplayLayout(mode) {
     dfs(root, 1);
 
     if (mode === "vertical") {
-        this.vars.height = maxDepth * this.layerHeight();
+        this.vars.height = (maxDepth - 1) * this.layerHeight();
     } else {
-        this.vars.width = maxDepth * this.layerWidth();
+        this.vars.width = (maxDepth - 1) * this.layerWidth();
     }
 
     const gap = (mode === "vertical" ? this.width() : this.height()) / (sequence.length + 1);

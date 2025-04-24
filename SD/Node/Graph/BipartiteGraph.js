@@ -18,7 +18,7 @@ export function BipartiteGraph(parent) {
 
     this._.no = {};
 
-    this.effect("bipartiteGraph", () => {
+    this.effect("nodes", () => {
         const no = this._.no;
         const orderedNodes = [];
         const count = [0, 0];
@@ -42,15 +42,6 @@ export function BipartiteGraph(parent) {
                 currentIndex[no[node.id]]++;
             });
         }
-        this.forEachLink((link, sourceId, targetId) => {
-            const source = this.findNodeById(sourceId);
-            const target = this.findNodeById(targetId);
-            this.tryUpdate(link, () => {
-                link.source(source.center());
-                link.target(target.center());
-                trim(link, source, target);
-            });
-        });
     });
 }
 

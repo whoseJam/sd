@@ -5,7 +5,6 @@ import { SDRule } from "@/Rule/Rule";
 
 export class BaseSVGLine extends BaseSVG {
     constructor(target: SDNode | RenderNode, tag: string);
-
     markerStart(): string;
     markerStart(marker: string): this;
     markerMid(): string;

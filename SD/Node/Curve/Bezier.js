@@ -7,7 +7,7 @@ export function Bezier(parent) {
 
     this.type("Bezier");
 
-    this.effect("bezier", () => {
+    this.effect("curve", () => {
         const v1 = this.source();
         const v2 = this.target();
         const d = V.sub(v2, v1);

@@ -4,6 +4,7 @@ import { Line } from "@/Node/SVG/Line";
 import { BaseTree } from "@/Node/Tree/BaseTree";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
+import { trim } from "@/Utility/Trim";
 
 export function BaseGraph(parent) {
     SD2DNode.call(this, parent);
@@ -25,6 +26,20 @@ export function BaseGraph(parent) {
     this._.linksMap = {}; // GraphID-GraphID -> SDNode
     this._.nodeType = Vertex;
     this._.linkType = Line;
+
+    this.effect("links", () => {
+        this.forEachLink((link, sourceId, targetId) => {
+            const source = this.findNodeById(sourceId);
+            const target = this.findNodeById(targetId);
+            this.tryUpdate(link, () => {
+                link.source(source.center());
+                link.target(target.center());
+                if (link.effect("curve")) link.triggerEffect("curve");
+                trim(link, source, target);
+                if (link.effect("curve")) link.triggerEffect("curve");
+            });
+        });
+    });
 }
 
 BaseGraph.prototype = {
@@ -35,6 +50,15 @@ BaseGraph.prototype = {
     width: Factory.handlerLowPrecise("width"),
     height: Factory.handlerLowPrecise("height"),
     element: BaseTree.prototype.element,
+
+    linkType(type) {
+        this._.linkType = type;
+        return this;
+    },
+    nodeType(type) {
+        this._.nodeType = type;
+        return this;
+    },
 
     nodes: BaseTree.prototype.nodes,
     nodesId: BaseTree.prototype.nodesId,
@@ -154,4 +178,6 @@ BaseGraph.prototype = {
         this.vars.links.push(element);
         return this;
     },
+    __getNodeWithMethod: BaseTree.prototype.__getNodeWithMethod,
+    __getLinkWithMethod: BaseTree.prototype.__getLinkWithMethod,
 };

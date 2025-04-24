@@ -83,6 +83,32 @@ export function Path(parent) {
 
 Path.prototype = {
     ...BaseSVGLine.prototype,
+    x(x) {
+        if (arguments.length === 0) return this.vars.x;
+        const [x0, y0, dx, dy, sx, sy] = [this.x(), this.y(), x - this.vars.x, 0, 1, 1];
+        this.d(update(this.vars.d, x0, y0, dx, dy, sx, sy));
+        return this;
+    },
+    y(y) {
+        if (arguments.length === 0) return this.vars.y;
+        const [x0, y0, dx, dy, sx, sy] = [this.x(), this.y(), 0, y - this.vars.y, 1, 1];
+        this.d(update(this.vars.d, x0, y0, dx, dy, sx, sy));
+        return this;
+    },
+    width(width) {
+        if (arguments.length === 0) return this.vars.width;
+        if (this.width() === 0) return this;
+        const [x0, y0, dx, dy, sx, sy] = [this.x(), this.y(), 0, 0, width / this.width(), 1];
+        this.d(update(this.vars.d, x0, y0, dx, dy, sx, sy));
+        return this;
+    },
+    height(height) {
+        if (arguments.length === 0) return this.vars.height;
+        if (this.height() === 0) return this;
+        const [x0, y0, dx, dy, sx, sy] = [this.x(), this.y(), 0, 0, 1, height / this.height()];
+        this.d(update(this.vars.d, x0, y0, dx, dy, sx, sy));
+        return this;
+    },
     at(k) {
         return getPointByRate(this.d(), k);
     },
@@ -92,18 +118,8 @@ Path.prototype = {
     totalLength() {
         return getTotalLength(this.d());
     },
-    x(x) {
-        if (x === undefined) return this.vars.x;
-        this.d(move(this.vars.d, x - this.vars.x, 0));
-        return this;
-    },
-    y(y) {
-        if (y === undefined) return this.vars.y;
-        this.d(move(this.vars.d, 0, y - this.vars.y));
-        return this;
-    },
     d(d) {
-        if (d === undefined) return this.vars.d;
+        if (arguments.length === 0) return this.vars.d;
         this.vars.d = d;
         const box = pathToBox(d);
         this.vars.x = box.x;
@@ -112,15 +128,9 @@ Path.prototype = {
         this.vars.height = box.height;
         return this;
     },
-    width() {
-        return this.vars.width;
-    },
-    height() {
-        return this.vars.height;
-    },
 };
 
-function move(d, dx, dy) {
+function update(d, x0, y0, dx, dy, sx, sy) {
     let i = 0;
     function alphabeta(ch) {
         return ("A" <= ch && ch <= "Z") || ("a" <= ch && ch <= "z");
@@ -139,83 +149,73 @@ function move(d, dx, dy) {
         if (alphabeta(ans[0])) return ans;
         return +ans;
     }
-    let ans = "",
-        x1,
-        y1,
-        x2,
-        y2,
-        x,
-        y,
-        rx,
-        ry,
-        D,
-        f0,
-        f1;
+    function fx(x) {
+        return (x - x0) * sx + x0 + dx;
+    }
+    function fy(y) {
+        return (y - y0) * sy + y0 + dy;
+    }
+    let ans = "";
     while (i < d.length) {
-        let flag = read();
+        const operator = read();
         if (i >= d.length) break;
-        switch (flag) {
-            case "M":
-                x = read();
-                y = read();
-                ans = ans + "M " + (x + dx) + " " + (y + dy) + " ";
+        switch (operator) {
+            case "M": {
+                const [x, y] = [read(), read()];
+                ans += `M ${fx(x)} ${fy(y)} `;
                 break;
-            case "L":
-                x = read();
-                y = read();
-                ans = ans + "L " + (x + dx) + " " + (y + dy) + " ";
+            }
+            case "L": {
+                const [x, y] = [read(), read()];
+                ans += `L ${fx(x)} ${fy(y)} `;
                 break;
-            case "H":
-                x = read();
-                ans = ans + "H " + (x + dx) + " ";
+            }
+            case "H": {
+                const x = read();
+                ans += `H ${fx(x)} `;
                 break;
-            case "V":
-                y = read();
-                ans = ans + "V " + (y + dy) + " ";
+            }
+            case "V": {
+                const y = read();
+                ans += `V ${fy(y)} `;
                 break;
-            case "Q":
-                x1 = read();
-                y1 = read();
-                x = read();
-                y = read();
-                ans = ans + "Q " + (x1 + dx) + " " + (y1 + dy) + " " + (x + dx) + " " + (y + dy) + " ";
+            }
+            case "Q": {
+                const [x1, y1] = [read(), read()];
+                const [x, y] = [read(), read()];
+                ans += `Q ${fx(x1)} ${fy(y1)} ${fx(x)} ${fy(y)} `;
                 break;
-            case "T":
-                x = read();
-                y = read();
-                ans = ans + "T " + (x + dx) + " " + (y + dy) + " ";
+            }
+            case "T": {
+                const [x, y] = [read(), read()];
+                ans += `T ${fx(x)} ${fy(y)} `;
                 break;
-            case "C":
-                x1 = read();
-                y1 = read();
-                x2 = read();
-                y2 = read();
-                x = read();
-                y = read();
-                ans = ans + "C " + (x1 + dx) + " " + (y1 + dy) + " " + (x2 + dx) + " " + (y2 + dy) + " " + (x + dx) + " " + (y + dy) + " ";
+            }
+            case "C": {
+                const [x1, y1] = [read(), read()];
+                const [x2, y2] = [read(), read()];
+                const [x, y] = [read(), read()];
+                ans += `C ${fx(x1)} ${fy(y1)} ${fx(x2)} ${fy(y2)} ${fx(x)} ${fy(y)} `;
                 break;
-            case "S":
-                x2 = read();
-                y2 = read();
-                x = read();
-                y = read();
-                ans = ans + "S " + (x2 + dx) + " " + (y2 + dy) + " " + (x + dx) + " " + (y + dy) + " ";
+            }
+            case "S": {
+                const [x2, y2] = [read(), read()];
+                const [x, y] = [read(), read()];
+                ans += `S ${fx(x2)} ${fy(y2)} ${fx(x)} ${fy(y)} `;
                 break;
-            case "A":
-                rx = read();
-                ry = read();
-                D = read();
-                f0 = read();
-                f1 = read();
-                x = read();
-                y = read();
-                ans = ans + "A " + rx + " " + ry + " " + D + " " + f0 + " " + f1 + " " + (x + dx) + " " + (y + dy) + " ";
+            }
+            case "A": {
+                const [rx, ry, rotation, f0, f1, x, y] = [read(), read(), read(), read(), read(), read(), read()];
+                ans += `A ${rx * sx} ${ry * sy} ${rotation} ${f0} ${f1} ${fx(x)} ${fy(y)} `;
                 break;
-            case "Z":
-                ans = ans + "Z ";
+            }
+            case "Z": {
+                ans += "Z";
                 break;
-            default:
+            }
+            default: {
                 throw new Error(flag + " Unknown");
+            }
         }
     }
     return ans;

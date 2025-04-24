@@ -11,7 +11,7 @@ export function BraceCurve(parent) {
         bending: 5,
     });
 
-    this.effect("braceCurve", () => {
+    this.effect("curve", () => {
         const vs = this.source();
         const vt = this.target();
         const vc = V.numberMul(V.add(vs, vt), 0.5);

@@ -28,16 +28,6 @@ function extractReversedNames() {
     }
 }
 
-const obfuscator = new JavaScriptObfuscator({
-    identifierNamesGenerator: "mangled",
-    splitStrings: true,
-    rotateStringArray: true,
-    shuffleStringArray: true,
-    stringArray: true,
-    simplify: true,
-    reservedNames: extractReversedNames(),
-});
-
 /**
  * Compile sd.js to the target folder.
  * @param {string} targetFolder The folder to hold the output.
@@ -56,7 +46,18 @@ module.exports = function (targetFolder) {
 
 function getConfiguration() {
     const plugins = [];
-    if (!global["d"]) plugins.push(obfuscator);
+    if (!global["d"]) {
+        const obfuscator = new JavaScriptObfuscator({
+            identifierNamesGenerator: "mangled",
+            splitStrings: true,
+            rotateStringArray: true,
+            shuffleStringArray: true,
+            stringArray: true,
+            simplify: true,
+            reservedNames: extractReversedNames(),
+        });
+        plugins.push(obfuscator);
+    }
     const mode = global["d"] ? "development" : "production";
     const watch = global["w"] ? true : false;
     return {

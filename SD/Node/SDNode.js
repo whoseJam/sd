@@ -8,7 +8,6 @@ import { Check } from "@/Utility/Check";
 
 let id = 0;
 
-// javascript-obfuscator:disable
 export function SDNode(target) {
     this.id = ++id;
     this._ = {
@@ -144,6 +143,10 @@ SDNode.prototype = {
         for (const name in this._.updaters) this.uneffect(name);
         return this;
     },
+    triggerEffect(name) {
+        this._.updaters[name].trigger();
+        return this;
+    },
 
     drag: forward("interact", "drag"),
     clickable: function (type) {
@@ -155,7 +158,7 @@ SDNode.prototype = {
     onDblClick: forward("interact", "onDblClick"),
 
     onEnter(enter) {
-        if (enter === undefined) return this._.enter;
+        if (arguments.length === 0) return this._.enter;
         this._.enter = enter;
         return this;
     },
@@ -174,7 +177,7 @@ SDNode.prototype = {
         return this._.entering !== undefined;
     },
     onExit(exit) {
-        if (exit === undefined) return this._.exit;
+        if (arguments.length === 0) return this._.exit;
         this._.exit = exit;
         return this;
     },

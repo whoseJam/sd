@@ -10,7 +10,7 @@ export function CircleCurve(parent) {
         r: 20,
     });
 
-    this.effect("circleCurve", () => {
+    this.effect("curve", () => {
         const r = this.r();
         const x1 = this.x1();
         const y1 = this.y1();

@@ -52,7 +52,14 @@ export function Code(parent, source = undefined) {
         this.vars.height = height;
     });
 
-    this.childAs("focus", new Rect(this).color(Color.BLUE).opacity(0), focusRule);
+    this.childAs(
+        "focus",
+        new Rect(this)
+            .color(Color.BLUE)
+            .opacity(0)
+            .onEnter(() => {}),
+        focusRule
+    );
 
     this.newLayer("elements");
 

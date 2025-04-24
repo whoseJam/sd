@@ -3,7 +3,6 @@ import { effect } from "@/Node/Core/Reactive";
 import { BaseGraph } from "@/Node/Graph/BaseGraph";
 import { GridGraph } from "@/Node/Graph/GridGraph";
 import { Cast } from "@/Utility/Cast";
-import { trim } from "@/Utility/Trim";
 
 export function TinyGraph(parent) {
     BaseGraph.call(this, parent);
@@ -14,15 +13,6 @@ export function TinyGraph(parent) {
     this._.updater = effect(() => {
         const update = updateMap[this.vars.nodes.length];
         update?.call(this, this.vars.nodes);
-        this.forEachLink((link, sourceId, targetId) => {
-            const source = this.findNodeById(sourceId);
-            const target = this.findNodeById(targetId);
-            this.tryUpdate(link, () => {
-                link.source(source.center());
-                link.target(target.center());
-                trim(link, source, target);
-            });
-        });
     });
 }
 

@@ -23,12 +23,12 @@ function replaceBrace(brace, l, r) {
     r.childAs(brace);
 }
 
-export function Brace(parent) {
+export function Brace(parent, location) {
     const brace = new BraceCurve(parent).opacity(0);
     brace.vars.merge({
         element1: undefined,
         element2: undefined,
-        location: "t",
+        location: location || "t",
         braceGap: 5,
         valueGap: 5,
     });

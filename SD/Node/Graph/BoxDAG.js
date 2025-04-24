@@ -18,8 +18,8 @@ export function BoxDAG(parent) {
     this._.nodeType = Box;
     const graph = this._.graph;
 
-    this.uneffect("DAG");
-    this.effect("boxDAG", () => {
+    this.uneffect("nodes");
+    this.effect("nodes", () => {
         this._.graph.setGraph({
             align: this.align(),
             rankdir: this.rankDir(),
@@ -37,15 +37,6 @@ export function BoxDAG(parent) {
                 node.width(this.elementWidth());
                 node.height(this.elementHeight());
                 node.center(position(layout));
-            });
-        });
-        this.forEachLink((link, sourceId, targetId) => {
-            const source = this.findNodeById(sourceId);
-            const target = this.findNodeById(targetId);
-            this.tryUpdate(link, () => {
-                link.source(source.center());
-                link.target(target.center());
-                trim(link, source, target);
             });
         });
     });

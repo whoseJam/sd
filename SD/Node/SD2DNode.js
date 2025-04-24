@@ -23,11 +23,6 @@ function opacityInterp(node, attrs) {
     };
 }
 
-/* javascript-obfuscator:disable */
-const who = 1;
-console.log(who);
-
-// javascript-obfuscator:disable
 export function SD2DNode(target) {
     SDNode.call(this, target);
 
@@ -46,9 +41,7 @@ export function SD2DNode(target) {
 
 SD2DNode.prototype = {
     ...SDNode.prototype,
-
     opacity: Factory.handlerMediumPrecise("opacity"),
-
     inRange(point) {
         return this.x() <= point[0] && point[0] <= this.mx() && this.y() <= point[1] && point[1] <= this.my();
     },

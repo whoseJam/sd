@@ -306,6 +306,9 @@ export function effect(innerEffect, tag) {
         freeze--;
         if (freeze === 0) transferMeltingEffect();
     };
+    effect.trigger = function () {
+        innerEffect();
+    };
     effectsMap.set(effect, new EffectManager(effect));
     afterEffects.push([]);
     globalAllowUpdate = false;

@@ -7,7 +7,7 @@ export function VHBezier(parent) {
 
     this.type("VHBezier");
 
-    this.effect("VHBezier", () => {
+    this.effect("curve", () => {
         const v1 = [this.x1(), this.y1()];
         const v2 = [this.x2(), this.y2()];
         let d = V.sub(v2, v1);

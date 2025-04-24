@@ -1,9 +1,6 @@
 import { SDNode } from "@/Node/SDNode";
-import { RenderNode } from "@/Renderer/RenderNode";
 
 export class SD3DNode extends SDNode {
-    constructor(target: SDNode | RenderNode);
-
     opacity(): number;
     opacity(opacity: number): this;
 

@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>窗口的星星</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1502"></problem>
+    <section>
+        <h2>窗口的星星</h2>
+        <iframe data-animation="./窗口的星星.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p>使用一个 $W\times H$ 的窗口框住最多的星星</p>
+        <p class="fragment">考虑一个星星在什么时候会被窗口框住...</p>
+        <p class="fragment">每个星星做出一个矩形范围，只要窗户的左下角在这个范围内，都能看到这颗星星</p>
+        <p class="fragment"><b>看到星星最多的地方</b>，就是坐标系中<b>被最多的矩形覆盖的地方</b></p>
+    </section>
+    <section>
+        <h2>窗口的星星</h2>
+        <p>每个星星做出一个矩形范围，只要窗户的左下角在这个范围内，都能看到这颗星星</p>
+        <p><b>看到星星最多的地方</b>，就是坐标系中<b>被最多的矩形覆盖的地方</b></p>
+        <iframe data-animation="./窗口的星星扫描线.js" class="fragment"
+            style="width: 1000px; height: 400px;"></iframe>
+        <ul class="fragment">
+            <li>区间加</li>
+            <li>区间查最大值</li>
+        </ul>
+    </section>
+</section>

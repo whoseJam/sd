@@ -4,7 +4,6 @@ import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Line extends BaseSVGLine {
     constructor(target: SDNode | RenderNode, value?: any);
-
     x1(): number;
     x1(x: number): this;
     x2(): number;

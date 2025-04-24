@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>不无聊的序列</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/UVA1608"></problem>
+    <section>
+        <h2>不无聊的序列</h2>
+        <p>我们不妨把包含某个唯一元素的区间称为<b>独特区间</b></p>
+        <iframe data-animation="./不无聊的序列单元素贡献.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p>某个元素能让一堆区间变得<b>独特</b></p>
+        <p class="fragment">设 $L_i$ 表示左边第一个和 $a_i$ 相同的元素位置</p>
+        <p class="fragment">设 $R_i$ 表示右边第一个和 $a_i$ 相同的元素位置</p>
+        <p class="fragment">容易发现，左端点落在 $[L_i,i]$，右端点落在 $[i,R_i]$ 的子区间，都会因为 $a_i$ 的存在而变得<b>独特</b></p>
+        <p class="fragment quote">序列上的区间 $[l,r]$ 同样可以看作空间中的一个坐标 $(l,r)$</p>
+    </section>
+    <section>
+        <h2>不无聊的序列</h2>
+        <iframe data-animation="./思路转换.js"
+            style="width: 1000px; height: 450px;"></iframe>
+        <p class="fragment">构造出 $n$ 个矩形，第 $i$ 个矩形的信息为 $[i,R_i]\times [L_i,i]$</p>
+        <p class="fragment">求矩形面积并，若面积最终等于 $n(n-1)/2$，那么意味着所有子区间都是独特的区间，整个序列就不无聊</p>
+    </section>
+    <section>
+        <h2>不无聊的序列</h2>
+        <p class="quote">这是一个无聊的序列</p>
+        <iframe data-animation="./反例.js"
+            style="width: 1000px; height: 450px;"></iframe>
+    </section>
+</section>

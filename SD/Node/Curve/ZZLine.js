@@ -12,7 +12,7 @@ export function ZZLine(parent) {
         location: "b",
     });
 
-    this.effect("ZZLine", () => {
+    this.effect("curve", () => {
         const s = this.source();
         const t = this.target();
         const bending = this.bending();

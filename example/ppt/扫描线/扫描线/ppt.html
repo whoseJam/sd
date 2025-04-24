@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>扫描线</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5490"></problem>
+    <section>
+        <h2>扫描线</h2>
+        <iframe data-animation="./扫描线.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">需要某种序列数据结构支持</p>
+        <ul>
+            <li class="fragment">添加一条线段</li>
+            <li class="fragment">查询有多长的区间被线段覆盖</li>
+        </ul>
+    </section>
+    <section>
+        <h2>扫描线</h2>
+        <ul>
+            <li>添加一条线段</li>
+            <li>查询有多长的区间被线段覆盖</li>
+        </ul>
+        <p class="fragment">由于被线段覆盖一次或者多次，都算是被线段覆盖，直接统计<b>被线段覆盖的区间的长度</b>有点麻烦，我们从反面考虑</p>
+        <p class="fragment">
+            $$
+            被线段覆盖的区间的长度=总长度-不被线段覆盖的长度
+            $$
+        </p>
+        <p class="fragment">我们维护<b>区间最小值</b>，以及<b>区间最小值的数量</b>...</p>
+        <ul>
+            <li class="fragment">如果区间最小值为 $0$，则不被线段覆盖的长度就是区间最小值的数量</li>
+            <li class="fragment">如果区间最小值大于 $0$，则区间全都被线段覆盖</li>
+            <li class="fragment">显然不会有区间最小值小于 $0$ 的情况</li>
+        </ul>
+    </section>
+</section>

@@ -27,7 +27,6 @@ export function Tree(parent) {
     });
 
     this.effect("tree", () => {
-        console.log("tree update");
         const mode = this.layout();
         let data, root, layout, result, convert;
         try {
@@ -69,7 +68,6 @@ export function Tree(parent) {
                     trim(link, source, target);
                 });
             });
-            console.log("tree update end");
         } catch (error) {
             if (error.message === "no root" || error.message === "multiple roots") {
                 this.forEachNode(node => {

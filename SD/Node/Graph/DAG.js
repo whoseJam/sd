@@ -22,7 +22,7 @@ export function DAG(parent) {
         return {};
     });
 
-    this.effect("DAG", () => {
+    this.effect("nodes", () => {
         this._.graph.setGraph({
             align: this.align(),
             rankdir: this.rankDir(),
@@ -38,15 +38,6 @@ export function DAG(parent) {
             const layout = this._.graph.node(id);
             this.tryUpdate(node, () => {
                 node.center(position(layout));
-            });
-        });
-        this.forEachLink((link, sourceId, targetId) => {
-            const source = this.findNodeById(sourceId);
-            const target = this.findNodeById(targetId);
-            this.tryUpdate(link, () => {
-                link.source(source.center());
-                link.target(target.center());
-                trim(link, source, target);
             });
         });
     });
