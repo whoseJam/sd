@@ -1,25 +1,20 @@
-import { Action } from "@/Animate/Action";
 import { SDNode } from "@/Node/SDNode";
+import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 import { createRenderNode } from "@/Renderer/RenderNode";
+import { SVGNode } from "@/Renderer/SVG/SVGNode";
 import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
-function interp(node, attrs) {
-    return function (t) {
-        const k = this.source + (this.target - this.source) * t;
-        attrs.setAttribute("opacity", k);
-        if (t === 1 && !node._.clickableCalled) {
-            attrs.setAttribute("pointer-events", k === 0 ? "none" : "auto");
-        }
-    };
-}
-
-function opacityInterp(node, attrs) {
-    return function (newValue, oldValue) {
-        const l = node.delay();
-        const r = node.delay() + node.duration();
-        new Action(l, r, oldValue, newValue, interp(node, attrs), node, "opacity");
+function interp(node) {
+    return function (object, key = "opacity") {
+        return function (t) {
+            const k = this.source + (this.target - this.source) * t;
+            object.setAttribute(key, k);
+            if (t === 1 && !node._.clickableCalled) {
+                object.setAttribute("pointer-events", k === 0 ? "none" : "auto");
+            }
+        };
     };
 }
 
@@ -32,15 +27,30 @@ export function SD2DNode(target) {
 
     if (Check.isTypeOfHTML(this)) {
         this._.layer = createRenderNode(this, this._.layers.__targetLayer, "div");
+    } else if (Check.isTypeOfSVG(this)) {
+        this._.layer = createRenderNode(this, this._.layers.__targetLayer, "g");
+    } else if (this._.layers.__targetLayer instanceof HTMLNode) {
+        this._.layer = createRenderNode(this, this._.layers.__targetLayer, "div");
     } else {
         this._.layer = createRenderNode(this, this._.layers.__targetLayer, "g");
     }
 
-    this.vars.associate("opacity", opacityInterp(this, this._.layer));
+    this.vars.associate("opacity", Factory.action(this, this._.layer, "opacity", interp(this)));
 }
 
 SD2DNode.prototype = {
     ...SDNode.prototype,
+    newLayer(name) {
+        let layer = undefined;
+        if (this._.layer instanceof HTMLNode) {
+            layer = new HTMLNode(this, this._.layer, "div");
+        } else {
+            layer = new SVGNode(this, this._.layer, "g");
+        }
+        this._.layers[name] = layer;
+        layer.setAttribute("layer", name);
+        return this;
+    },
     opacity: Factory.handlerMediumPrecise("opacity"),
     inRange(point) {
         return this.x() <= point[0] && point[0] <= this.mx() && this.y() <= point[1] && point[1] <= this.my();
@@ -68,11 +78,13 @@ SD2DNode.prototype = {
         }
         return this;
     },
-    pos(xLocator, yLocator, dx = 0, dy = 0) {
+    pos(x, y, dx = 0, dy = 0) {
+        if (typeof x === "number" && typeof y === "number") return this.freeze().x(x).y(y).unfreeze();
+        if (Array.isArray(x)) return this.pos(x[0], x[1]);
         return [
             // vector 2
-            this[xLocator]() + dx,
-            this[yLocator]() + dy,
+            this[x]() + dx,
+            this[y]() + dy,
         ];
     },
     center(cx, cy) {
@@ -115,3 +127,5 @@ SD2DNode.prototype = {
         return this.y(my - this.height());
     },
 };
+
+SD2DNode.prototype.position = SD2DNode.prototype.pos;

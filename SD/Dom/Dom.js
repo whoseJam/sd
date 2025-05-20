@@ -1,4 +1,3 @@
-
 export class Dom {
     static createElement(tag, id) {
         const element = document.createElement(tag);
@@ -36,6 +35,7 @@ export class Dom {
 
     static addEventListener(element, event, callback) {
         element.addEventListener(event, callback);
+        // if (element.click) element.click();
     }
 
     static clone(element) {

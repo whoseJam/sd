@@ -2,7 +2,7 @@ import { dqual } from "@/Math/Math";
 import { Vector as V } from "@/Math/Vector";
 import { BaseAxis } from "@/Node/Axis/BaseAxis";
 import { Enter as EN } from "@/Node/Core/Enter";
-import { Line } from "@/Node/SVG/Line";
+import { Line } from "@/Node/Path/Line";
 import { Text } from "@/Node/SVG/Text";
 import { Factory } from "@/Utility/Factory";
 import { ObjectPool } from "@/Utility/Pool/ObjectPool";

@@ -3,10 +3,15 @@ import { Children } from "@/Node/Core/Children";
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Interact } from "@/Node/Core/Interact";
 import { effect, reactive, uneffect } from "@/Node/Core/Reactive";
-import { SVGNode } from "@/Renderer/SVG/SVGNode";
 import { Check } from "@/Utility/Check";
+import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
 let id = 0;
+
+export function getTargetLayer(target) {
+    if (Check.isTypeOfSDNode(target)) return target.layer();
+    return target;
+}
 
 export function SDNode(target) {
     this.id = ++id;
@@ -22,8 +27,7 @@ export function SDNode(target) {
         freezing: 0,
     };
 
-    if (Check.isTypeOfSDNode(target)) target = target.layer();
-    this._.layers.__targetLayer = target;
+    this._.layers.__targetLayer = getTargetLayer(target);
 
     this.vars = reactive({});
 }
@@ -59,11 +63,8 @@ SDNode.prototype = {
     layer(name) {
         return name === undefined ? this._.layer : this._.layers[name];
     },
-    newLayer(name) {
-        const layer = new SVGNode(this, this._.layer, "g");
-        this._.layers[name] = layer;
-        layer.setAttribute("layer", name);
-        return this;
+    newLayer() {
+        ErrorLauncher.notImplementedYet("newLayer", this.type());
     },
     attachTo(parent) {
         if (Check.isTypeOfSDNode(parent)) {
@@ -156,6 +157,7 @@ SDNode.prototype = {
     },
     onClick: forward("interact", "onClick"),
     onDblClick: forward("interact", "onDblClick"),
+    onChange: forward("interact", "onChange"),
 
     onEnter(enter) {
         if (arguments.length === 0) return this._.enter;

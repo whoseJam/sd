@@ -1,7 +1,7 @@
 import { Context } from "@/Animate/Context";
 import { svg } from "@/Interact/Root";
 import { Exit as EX } from "@/Node/Core/Exit";
-import { Line } from "@/Node/SVG/Line";
+import { Line } from "@/Node/Path/Line";
 import { Factory } from "@/Utility/Factory";
 import { trim } from "@/Utility/Trim";
 

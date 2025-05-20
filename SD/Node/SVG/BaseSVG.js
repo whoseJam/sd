@@ -5,8 +5,8 @@ import { Check } from "@/Utility/Check";
 import { Color as C } from "@/Utility/Color";
 import { Factory } from "@/Utility/Factory";
 
-export function BaseSVG(parent, label) {
-    SD2DNode.call(this, parent, undefined, "g");
+export function BaseSVG(target, label) {
+    SD2DNode.call(this, target, undefined, "g");
 
     this.vars.merge({
         fill: C.white,

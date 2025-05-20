@@ -1,6 +1,6 @@
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Vertex } from "@/Node/Element/Vertex";
-import { Line } from "@/Node/SVG/Line";
+import { LineSVG } from "@/Node/SVG/Path/LineSVG";
 import { BaseTree } from "@/Node/Tree/BaseTree";
 import { Cast } from "@/Utility/Cast";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
@@ -16,7 +16,7 @@ export function Tree(parent) {
     this.newLayer("nodes");
 
     this._.nodeType = Vertex;
-    this._.linkType = Line;
+    this._.linkType = LineSVG;
 
     this.vars.merge({
         r: 20,

@@ -1,6 +1,6 @@
 import { Vertex } from "@/Node/Element/Vertex";
+import { Line } from "@/Node/Path/Line";
 import { SD2DNode } from "@/Node/SD2DNode";
-import { Line } from "@/Node/SVG/Line";
 import { BaseTree } from "@/Node/Tree/BaseTree";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
@@ -50,15 +50,6 @@ BaseGraph.prototype = {
     width: Factory.handlerLowPrecise("width"),
     height: Factory.handlerLowPrecise("height"),
     element: BaseTree.prototype.element,
-
-    linkType(type) {
-        this._.linkType = type;
-        return this;
-    },
-    nodeType(type) {
-        this._.nodeType = type;
-        return this;
-    },
 
     nodes: BaseTree.prototype.nodes,
     nodesId: BaseTree.prototype.nodesId,
@@ -161,6 +152,9 @@ BaseGraph.prototype = {
     value: BaseTree.prototype.value,
     nodeValue: BaseTree.prototype.nodeValue,
     linkValue: BaseTree.prototype.linkValue,
+
+    linkType: BaseTree.prototype.linkType,
+    nodeType: BaseTree.prototype.nodeType,
 
     __insertNode(id, element) {
         id = String(id);

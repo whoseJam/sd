@@ -87,6 +87,7 @@ export class Color {
     static random: () => HexColor;
     static equal(a: SDColor, b: SDColor): boolean;
     static gradient: (start: HexColor, end: HexColor, l: number, r: number) => (grad: number) => HexColor;
+    static doubleGradient: (start: HexColor, mid: HexColor, end: HexColor, l: number, m: number, r: number) => (grad: number) => HexColor;
 }
 
 export function color(): typeof Color;

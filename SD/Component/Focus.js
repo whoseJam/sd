@@ -1,12 +1,12 @@
 import { Context } from "@/Animate/Context";
-import { Rect } from "@/Node/SVG/Rect";
+import { RectSVG } from "@/Node/SVG/Shape/RectSVG";
 import { Check } from "@/Utility/Check";
 import { Color as C } from "@/Utility/Color";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
 export function Focus(parent) {
-    const focus = new Rect(parent).opacity(0).fillOpacity(0).stroke(C.red).strokeWidth(3);
+    const focus = new RectSVG(parent).opacity(0).fillOpacity(0).stroke(C.red).strokeWidth(3);
     focus.vars.merge({
         element1: undefined,
         element2: undefined,

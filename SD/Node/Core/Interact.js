@@ -7,6 +7,8 @@ export class Interact {
         this.onclick = undefined;
         this.ondblclick = undefined;
         this.timeout = undefined;
+        this.onchange = undefined;
+        this.oninput = undefined;
     }
     onClick(callback) {
         const nake = this.parent._.layer.nake();
@@ -28,6 +30,24 @@ export class Interact {
             callback(this.parent);
         };
         Dom.addEventListener(nake, "dblclick", this.ondblclick);
+        return this;
+    }
+    onChange(callback) {
+        const control = this.parent.control().nake();
+        Dom.removeEventListener(control, "change", this.onchange);
+        this.onchange = event => {
+            callback(event.target.value);
+        };
+        Dom.addEventListener(control, "change", this.onchange);
+        return this;
+    }
+    onInput(callback) {
+        const control = this.parent.control().nake();
+        Dom.removeEventListener(control, "input", this.oninput);
+        this.oninput = event => {
+            callback(event.target.value);
+        };
+        Dom.addEventListener(control, "input", this.oninput);
         return this;
     }
     drag(arg) {

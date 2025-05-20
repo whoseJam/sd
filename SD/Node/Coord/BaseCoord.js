@@ -61,4 +61,8 @@ BaseCoord.prototype = {
         if (Array.isArray(x)) return this.globalY(x[0], x[1]);
         return this.globalY(0, x);
     },
+    globalK(x, y) {
+        if (arguments.length === 1) return this.globalK(x[0], x[1]);
+        return (this.globalY(x, y) - this.globalY(0, 0)) / (this.globalX(x, y) - this.globalX(0, 0));
+    },
 };

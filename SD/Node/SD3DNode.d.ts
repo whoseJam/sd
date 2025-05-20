@@ -18,6 +18,7 @@ export class SD3DNode extends SDNode {
     lz(lz: number): this;
     scale(scale: number): this;
     pos(xLocator: string, yLocator: string, zLocator: string, dx?: string, dy?: number, dz?: number): [number, number, number];
+    position(x: number, y: number, z: number): this;
     center(): [number, number, number];
     center(center: [number, number, number]): this;
     center(cx: number, cy: number, cy: number): this;
@@ -39,4 +40,11 @@ export class SD3DNode extends SDNode {
     my(my: number): this;
     mz(): number;
     mz(mz: number): this;
+    rx(): number;
+    rx(rx: number): this;
+    ry(): number;
+    ry(ry: number): this;
+    rz(): number;
+    rz(rz: number): this;
+    rotation(rx: number, ry: number, rz: number): this;
 }

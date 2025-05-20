@@ -1,33 +1,37 @@
+import { svg } from "@/Interact/Root";
+import { Path } from "@/Node/Path/Path";
+import { BooleanOperations, Polygon as PolygonLogic } from "@flatten-js/core";
+
 function ddcmp(x) {
     if (Math.abs(x) > 1e-2) return 1;
     return Math.abs(x) < -1e-2 ? -1 : 0;
 }
 
 export class Vector {
-    static getIns() {
-        return Vector;
-    }
     static add(a, b) {
-        return [a[0] + b[0], a[1] + b[1]];
+        if (a.length === 2) return [a[0] + b[0], a[1] + b[1]];
+        return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
     }
     static sub(a, b) {
-        return [a[0] - b[0], a[1] - b[1]];
+        if (a.length === 2) return [a[0] - b[0], a[1] - b[1]];
+        return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
     }
     static dotMul(a, b) {
-        return a[0] * b[0] + a[1] * b[1];
+        if (a.length === 2) return a[0] * b[0] + a[1] * b[1];
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
     }
     static numberMul(a, b) {
-        return [a[0] * b, a[1] * b];
+        if (a.length === 2) return [a[0] * b, a[1] * b];
+        return [a[0] * b, a[1] * b, a[2] * b];
     }
     static length(a) {
-        return Math.sqrt(a[0] * a[0] + a[1] * a[1]);
+        if (a.length === 2) return Math.sqrt(a[0] * a[0] + a[1] * a[1]);
+        return Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     }
     static identity(a) {
         const length = this.length(a);
-        if (ddcmp(length) > 0) {
-            return [a[0] / length, a[1] / length];
-        }
-        return [0, 0];
+        if (a.length === 2) return ddcmp(length) > 0 ? [a[0] / length, a[1] / length] : [0, 0];
+        return ddcmp(length) > 0 ? [a[0] / length, a[1] / length, a[2] / length] : [0, 0, 0];
     }
     static complexMul(a, b) {
         return [a[0] * b[0] - a[1] * b[1], a[0] * b[1] - a[1] * b[0]];
@@ -134,52 +138,67 @@ export class Vector {
         }
         return answer;
     }
+
+    static polyIntersect(polygons) {
+        if (!Array.isArray(polygons) && arguments.length > 1) return this.polyIntersect(arguments);
+        let result = castAnyToPologonLogic(polygons[0]);
+        for (let i = 1; i < polygons.length; i++) {
+            const polygon = castAnyToPologonLogic(polygons[i]);
+            result = BooleanOperations.intersect(result, polygon);
+        }
+        return castPolygonLogicToPath(result);
+    }
+    static polyIntersectLogic(polygons) {
+        if (!Array.isArray(polygons) && arguments.length > 1) return this.polyIntersectLogic(arguments);
+        let result = castAnyToPologonLogic(polygons[0]);
+        for (let i = 1; i < polygons.length; i++) {
+            const polygon = castAnyToPologonLogic(polygons[i]);
+            result = BooleanOperations.intersect(result, polygon);
+        }
+        return result;
+    }
+    static polyUnion(polygons) {
+        if (!Array.isArray(polygons) && arguments.length > 1) return this.polyUnion(arguments);
+        let result = castAnyToPologonLogic(polygons[0]);
+        for (let i = 1; i < polygons.length; i++) {
+            const polygon = castAnyToPologonLogic(polygons[i]);
+            result = BooleanOperations.unify(result, polygon);
+        }
+        return castPolygonLogicToPath(result);
+    }
+    static polyUnionLogic(polygons) {
+        if (!Array.isArray(polygons) && arguments.length > 1) return this.polyUnionLogic(arguments);
+        let result = castAnyToPologonLogic(polygons[0]);
+        for (let i = 1; i < polygons.length; i++) {
+            const polygon = castAnyToPologonLogic(polygons[i]);
+            result = BooleanOperations.unify(result, polygon);
+        }
+        return result;
+    }
+    static polySubtract(a, b) {
+        return castPolygonLogicToPath(this.polySubtractLogic(a, b));
+    }
+    static polySubtractLogic(a, b) {
+        a = castAnyToPologonLogic(a);
+        b = castAnyToPologonLogic(b);
+        return BooleanOperations.subtract(a, b);
+    }
 }
 
-function CastKToDirection(k) {
-    if (k === Infinity || k === -Infinity) return [0, 1];
-    return Vector.norm([1, k]);
+function castAnyToPologonLogic(object) {
+    return object instanceof PolygonLogic ? object : object.toPolygon();
 }
 
-function IntersectLineWithLine(point1, direction1, point2, direction2) {
-    if (typeof direction1 === "number") direction1 = CastKToDirection(direction1);
-    if (typeof direction2 === "number") direction2 = CastKToDirection(direction2);
-    // Cross(p1+xd1-p2,d2)=0
-    const x = -Vector.cross(Vector.sub(point1, point2), direction2) / Vector.cross(direction1, direction2);
-    return [true, Vector.add(point1, Vector.numberMul(direction1, x))];
-}
-
-function IntersectLineWithShootLine(point1, direction1, point2, direction2) {
-    if (typeof direction1 === "number") direction1 = CastKToDirection(direction1);
-    if (typeof direction2 === "number") direction2 = CastKToDirection(direction2);
-    // Cross(p2+xd2-p1,d1)=0
-    const x = -Vector.cross(Vector.sub(point2, point1), direction1) / Vector.cross(direction2, direction1);
-    return [x >= 0, Vector.add(point2, Vector.numberMul(direction2, x))];
-}
-
-function IntersectLineWithSegment(point, direction, source, target) {
-    if (arguments.length === 3) return IntersectLineWithSegment(point, direction, [source.x1, source.y1], [source.x2, source.y2]);
-    if (typeof direction === "number") direction = CastKToDirection(direction);
-    const dst = Vector.sub(target, source);
-    const x = -Vector.cross(Vector.sub(source, point), direction) / Vector.cross(Vector.norm(dst), direction);
-    return [0 <= x && x <= Vector.length(dst), Vector.add(source, Vector.numberMul(Vector.norm(dst), x))];
-}
-
-function IntersectLineWithBox(point, direction, x, y, width, height) {
-    if (arguments.length === 3) return IntersectLineWithBox(point, direction, x.x, x.y, x.width, x.height);
-    if (typeof direction === "number") direction = CastKToDirection(direction);
-    const [successA, A] = IntersectLineWithSegment(point, direction, [x, y], [x + width, y]);
-    const [successB, B] = IntersectLineWithSegment(point, direction, [x + width, y], [x + width, y + height]);
-    const [successC, C] = IntersectLineWithSegment(point, direction, [x + width, y + height], [x, y + height]);
-    const [successD, D] = IntersectLineWithSegment(point, direction, [x, y], [x, y + height]);
-    const result = [];
-    if (successA) result.push(A);
-    if (successB) result.push(B);
-    if (successC) result.push(C);
-    if (successD) result.push(D);
-    if (result.length === 0) return [false, [0, 0], [0, 0]];
-    if (result.length === 1) return [true, result[0], result[0]];
-    return [true, result[0], result[1]];
+function castPolygonLogicToPath(polygon) {
+    const str = polygon.svg();
+    const regex = /d="([^"]*)"/;
+    const match = str.match(regex);
+    const d = match[1];
+    const path = new Path(svg()).d(d).fillOpacity(1);
+    path.toPolygon = function () {
+        return polygon;
+    };
+    return path;
 }
 
 export function vec() {

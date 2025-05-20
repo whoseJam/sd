@@ -1,4 +1,4 @@
-import { Pool } from "@/Utility/Pool";
+import { Pool } from "@/Utility/Pool/Pool";
 
 interface ArrayPoolParams {
     onIdle: (resource: any) => void;

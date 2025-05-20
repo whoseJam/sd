@@ -17,7 +17,12 @@ export class SD2DNode extends SDNode {
     height(): number;
     height(height: number): this;
     scale(scale: number): this;
+    pos(x: number, y: number): this;
+    pos(v: [number, number]): this;
     pos(xLocator: XLocator, yLocator: YLocator, dx?: number, dy?: number): [number, number];
+    position(x: number, y: number): this;
+    position(v: [number, number]): this;
+    position(xLocator: XLocator, yLocator: YLocator, dx?: number, dy?: number): [number, number];
     center(): [number, number];
     center(center: [number, number]): this;
     center(cx: number, cy: number): this;

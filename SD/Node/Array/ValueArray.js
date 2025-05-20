@@ -3,8 +3,8 @@ import { Enter as EN } from "@/Node/Core/Enter";
 import { Cast } from "@/Utility/Cast";
 import { Factory } from "@/Utility/Factory";
 
-export function ValueArray(parent) {
-    Array.call(this, parent);
+export function ValueArray(target) {
+    Array.call(this, target);
 
     this.type("ValueArray");
 

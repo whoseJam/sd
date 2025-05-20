@@ -21,10 +21,10 @@ export class SDNode {
     eraseChild(child: string | SDNode): SDNode;
     remove(): void;
 
+    startAnimate(): this;
     startAnimate(duration: number): this;
     startAnimate(other: SDNode): this;
     startAnimate(start: number, end: number): this;
-    startAnimate(): this;
     endAnimate(): this;
     isAnimating(): boolean;
     delay(): number;

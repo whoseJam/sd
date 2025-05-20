@@ -22,7 +22,6 @@ export class Factory {
             return this;
         };
     }
-
     static handlerLowPrecise(key) {
         return function (value) {
             if (value === undefined) return this.vars[key];
@@ -31,7 +30,6 @@ export class Factory {
             return this;
         };
     }
-
     static handlerMediumPrecise(key) {
         return function (value) {
             if (value === undefined) return this.vars[key];
@@ -40,7 +38,6 @@ export class Factory {
             return this;
         };
     }
-
     static handlerHighPrecise(key) {
         return function (value) {
             if (value === undefined) return this.vars[key];
@@ -49,12 +46,12 @@ export class Factory {
             return this;
         };
     }
-
-    static action(node, attrs, key, interp) {
-        let object = () => attrs;
-        if (typeof attrs === "string") object = () => node._[attrs];
-        else if (typeof attrs === "function") object = attrs;
+    static action(node, _object, key, interp) {
+        let object = () => _object;
+        if (typeof _object === "string") object = () => node._[_object];
+        else if (typeof _object === "function") object = _object;
         return function (newValue, oldValue) {
+            // console.log("key=", key, "new=", newValue, "old=", oldValue);
             if (global.ACTION_TICK !== 0) {
                 const obj = object();
                 if (obj.setAttribute) obj.setAttribute(key, newValue);
@@ -64,5 +61,15 @@ export class Factory {
                 new Action(node.delay(), node.delay() + node.duration(), oldValue, newValue, interp(object(), key), node, key);
             }
         };
+    }
+    static actionForCamera(node, object, key, interp) {
+        const i1 = interp(object, key);
+        const i2 = function (object, key) {
+            return function (t) {
+                i1.call(this, t);
+                object.updateProjectionMatrix();
+            };
+        };
+        return this.action(node, object, key, i2);
     }
 }

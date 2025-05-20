@@ -3,8 +3,8 @@ import { Enter as EN } from "@/Node/Core/Enter";
 import { Box } from "@/Node/Element/Box";
 import { Factory } from "@/Utility/Factory";
 
-export function Array(parent) {
-    BaseArray.call(this, parent);
+export function Array(target) {
+    BaseArray.call(this, target);
 
     this.type("Array");
 

@@ -55,17 +55,25 @@ export class Color {
         return false;
     }
 
-    static gradient(source, target, l, r) {
-        source = HexToRGB(source);
-        target = HexToRGB(target);
+    static gradient(start, end, l, r) {
+        [start, end] = [HexToRGB(start), HexToRGB(end)];
         return function (at) {
             const k = (at - l) / (r - l);
+            console.log("get color l=", l, "r=", r, "at=", at, "k=", k);
             const color = {
-                r: source.r + (target.r - source.r) * k,
-                g: source.g + (target.g - source.g) * k,
-                b: source.b + (target.b - source.b) * k,
+                r: start.r + (end.r - start.r) * k,
+                g: start.g + (end.g - start.g) * k,
+                b: start.b + (end.b - start.b) * k,
             };
             return RGBToHex(color);
+        };
+    }
+    static doubleGradient(start, mid, end, l, m, r) {
+        const g1 = this.gradient(start, mid, l, m);
+        const g2 = this.gradient(mid, end, m, r);
+        return function (at) {
+            if (at <= m) return g1(at);
+            return g2(at);
         };
     }
 }

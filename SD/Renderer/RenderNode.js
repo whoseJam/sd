@@ -1,9 +1,10 @@
 import { Action } from "@/Animate/Action";
 import { div, svg } from "@/Interact/Root";
+import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
 export const SVGLabel = new Set(["circle", "ellipse", "image", "line", "path", "polygon", "rect", "text", "svg", "g", "marker", "defs"]);
-export const HTMLLabel = new Set(["div", "input", "button", "label", "textarea", "canvas"]);
+export const HTMLLabel = new Set(["div", "input", "button", "label", "textarea", "canvas", "img"]);
 
 /**
  * Change the structure of the render tree. Append or remove a render node.
@@ -48,6 +49,13 @@ export function createRenderNode(parent, render, label) {
             return new HTMLNode(parent, div(), label);
         }
     } else return new SVGNode(parent, render, label);
+}
+
+export function createHtmlNodeOnForeignObject(parent, render, label) {
+    // if (render.label && render.label === "foreignObject") {
+    return new HTMLNode(parent, render, label);
+    // }
+    // ErrorLauncher.invalidArguments();
 }
 
 export function RenderNode(parent, render, label) {

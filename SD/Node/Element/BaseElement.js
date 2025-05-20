@@ -7,11 +7,8 @@ import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
-export function BaseElement(parent) {
-    SD2DNode.call(this, parent);
-
-    this.newLayer("background");
-    this.newLayer("value");
+export function BaseElement(target) {
+    SD2DNode.call(this, target);
 
     this.vars.merge({
         x: 0,
@@ -67,16 +64,13 @@ BaseElement.prototype = {
         if (Check.isEmptyType(value)) return this;
         rule = getValueRule(rule);
         value = Cast.castToSDNode(this, value);
-        value.onEnterDefault(EN.appear("value"));
-        value.onExitDefault(EX.fade());
         this.childAs("value", value, rule);
         return this;
     },
     valueFromExist(value, rule) {
         if (this.hasChild("value")) this.eraseChild("value");
         rule = getValueRule(rule);
-        value.onEnter(EN.moveTo("value"));
-        value.onExitDefault(EX.fade());
+        value.onEnter(EN.moveTo());
         this.childAs("value", value, rule);
         return this;
     },

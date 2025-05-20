@@ -14,7 +14,6 @@ export class Enter {
             });
         };
     }
-
     static pointStoT(layer) {
         return function (element, move) {
             element.after(this.delay());
@@ -29,7 +28,6 @@ export class Enter {
             });
         };
     }
-
     static moveTo(layer) {
         return function (element, move) {
             element.after(this.delay());

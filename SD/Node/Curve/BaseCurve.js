@@ -1,10 +1,10 @@
 import { Vector as V } from "@/Math/Vector";
-import { Line } from "@/Node/SVG/Line";
-import { Path } from "@/Node/SVG/Path";
+import { LineSVG } from "@/Node/SVG/Path/LineSVG";
+import { PathSVG } from "@/Node/SVG/Path/PathSVG";
 import { Factory } from "@/Utility/Factory";
 
 export function BaseCurve(parent) {
-    Path.call(this, parent);
+    PathSVG.call(this, parent);
 
     this.vars.merge({
         x1: 0,
@@ -16,14 +16,14 @@ export function BaseCurve(parent) {
 }
 
 BaseCurve.prototype = {
-    ...Path.prototype,
+    ...PathSVG.prototype,
     BASE_CURVE: true,
     x1: Factory.handler("x1"),
     y1: Factory.handler("y1"),
     x2: Factory.handler("x2"),
     y2: Factory.handler("y2"),
-    source: Line.prototype.source,
-    target: Line.prototype.target,
+    source: LineSVG.prototype.source,
+    target: LineSVG.prototype.target,
     dx(dx) {
         this.freeze();
         this.source(V.add(this.source(), [dx, 0]));

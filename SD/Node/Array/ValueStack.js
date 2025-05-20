@@ -2,8 +2,8 @@ import { Stack } from "@/Node/Array/Stack";
 import { ValueArray } from "@/Node/Array/ValueArray";
 import { Factory } from "@/Utility/Factory";
 
-export function ValueStack(parent) {
-    Stack.call(this, parent);
+export function ValueStack(target) {
+    Stack.call(this, target);
 
     this.type("ValueStack");
 

@@ -88,4 +88,7 @@ export class BaseTree extends SD2DNode {
     value(source: number | string | SDNode, target: number | string | SDNode, value: any): this;
     linkValue(source: number | string | SDNode, target: number | string | SDNode): SDNode | undefined;
     linkValue(source: number | string | SDNode, target: number | string | SDNode, value: any): this;
+
+    linkType(type: any): this;
+    nodeType(type: any): this;
 }

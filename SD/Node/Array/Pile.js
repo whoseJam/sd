@@ -2,8 +2,8 @@ import { Array } from "@/Node/Array/Array";
 import { BaseArray } from "@/Node/Array/BaseArray";
 import { Factory } from "@/Utility/Factory";
 
-export function Pile(parent) {
-    BaseArray.call(this, parent);
+export function Pile(target) {
+    BaseArray.call(this, target);
 
     this.type("Pile");
 

@@ -1,13 +1,17 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseHTML } from "@/Node/HTML/BaseHTML";
-import { Camera } from "@/Node/Three/Camera";
-import { Renderer } from "@/Node/Three/Renderer";
 import { Scene } from "@/Node/Three/Scene";
 import { createRenderNode } from "@/Renderer/RenderNode";
+import { Color as C } from "@/Utility/Color";
 import { Factory } from "@/Utility/Factory";
+import { WebGLRenderer } from "three";
+import { OrthographicCamera } from "../Three/Camera/OrthgraphicCamera";
+import { PerspectiveCamera } from "../Three/Camera/PerspectiveCamera";
 
-export function Canvas(parent) {
-    BaseHTML.call(this, parent);
+export function Canvas(target) {
+    BaseHTML.call(this, target);
+
+    this.type("Canvas");
 
     this.vars.merge({
         x: 0,
@@ -41,9 +45,15 @@ Canvas.prototype = {
         if (!this._.three) {
             this._.three = true;
             this._.scene = new Scene(this);
-            this._.camera = new Camera(this);
-            this._.renderer = new Renderer(this);
-            this._.renderer.start(this._.scene, this._.camera);
+            this._.camera = new PerspectiveCamera(this);
+            this.childAs(this._.scene);
+            this.childAs(this._.camera);
+            render(this, this._.scene, this._.camera);
+            // this._.camera.position(0, 0, 5);
+            // this._.camera.lookAt(0, 0, 0);
+        } else {
+            OrthographicCamera(this);
+            PerspectiveCamera(this);
         }
         return this;
     },
@@ -51,3 +61,37 @@ Canvas.prototype = {
         return this._.camera;
     },
 };
+
+function render(canvas, scene, camera) {
+    const renderer = new WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        precision: "highp",
+        canvas: canvas.canvas().nake(),
+    });
+    renderer.setPixelRatio(window.devicePixelRatio * 2);
+    canvas.effect("size", () => {
+        const width = canvas.width();
+        const height = canvas.height();
+        renderer.setSize(width, height, false);
+        camera.resize(width, height);
+    });
+    renderer.setClearColor(C.white, 1);
+    renderer.setAnimationLoop(() => {
+        renderer.render(scene._.scene, camera._.camera);
+        if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect(canvas.clientWidth / canvas.clientHeight);
+        }
+    });
+    return renderer;
+}
+
+function resizeRendererToDisplaySize(renderer) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) renderer.setSize(width, height, false);
+    return needResize;
+}

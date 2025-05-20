@@ -447,6 +447,16 @@ BaseTree.prototype = {
         dfs(root, 1);
         return result[this.nodeId(root)];
     },
+
+    linkType(type) {
+        this._.linkType = type;
+        return this;
+    },
+    nodeType(type) {
+        this._.nodeType = type;
+        return this;
+    },
+
     __insertNode(id, element) {
         id = String(id);
         this._.sdnodesMap[element.id] = { node: element, id };

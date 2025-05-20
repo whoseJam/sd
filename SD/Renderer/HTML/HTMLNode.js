@@ -5,7 +5,7 @@ import { HTMLLabel, RenderNode } from "@/Renderer/RenderNode";
 
 const innerHTMLKey = new Set(["innerHTML", "text"]);
 const callbackKey = new Set(["onclick", "onchange"]);
-const styleKey = new Set(["position", "left", "top", "pointer-events", "width", "height", "border", "overflow", "transform", "opacity", "display", "min-width", "min-height", "white-space", "background-color", "color", "border-color"]);
+const styleKey = new Set(["position", "left", "top", "pointer-events", "width", "height", "border", "overflow", "transform", "opacity", "display", "min-width", "min-height", "white-space", "background-color", "color", "border-color", "border-style", "border-width", "border-radius", "aspect-ratio", "object-fit"]);
 
 export function HTMLNode(parent, render, label) {
     RenderNode.call(this, parent, render, label);
@@ -31,9 +31,11 @@ HTMLNode.prototype = {
     class: HTMLNode,
     moveTo(render) {
         if (HTMLLabel.has(render.label)) {
-            const t = this.parent.delay() + this.parent.duration();
-            new Action(t, t, this.render, render, moveTo(this), this, "moveTo");
-            this.render = render;
+            if (this.render !== render) {
+                const t = this.parent.delay() + this.parent.duration();
+                new Action(t, t, this.render, render, moveTo(this), this, "moveTo");
+                this.render = render;
+            }
         } else {
             this.moveTo(div());
         }
@@ -63,6 +65,19 @@ HTMLNode.prototype = {
             this.element[key] = value;
         } else {
             this.element.setAttribute(key, value);
+        }
+    },
+    removeAttribute(key) {
+        if (innerHTMLKey.has(key)) {
+            this.element.innerHTML = "";
+        } else if (key === "value") {
+            this.element.value = undefined;
+        } else if (styleKey.has(key)) {
+            this.element.style.removeProperty(key);
+        } else if (callbackKey.has(key)) {
+            this.element[key] = undefined;
+        } else {
+            this.element.removeAttribute(key);
         }
     },
 };

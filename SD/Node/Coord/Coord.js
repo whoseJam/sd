@@ -3,9 +3,9 @@ import { Vector as V } from "@/Math/Vector";
 import { Axis } from "@/Node/Axis/Axis";
 import { BaseCoord } from "@/Node/Coord/BaseCoord";
 import { Enter as EN } from "@/Node/Core/Enter";
-import { Circle } from "@/Node/SVG/Circle";
-import { Path } from "@/Node/SVG/Path";
-import { Rect } from "@/Node/SVG/Rect";
+import { Path } from "@/Node/Path/Path";
+import { CircleSVG } from "@/Node/SVG/Shape/CircleSVG";
+import { RectSVG } from "@/Node/SVG/Shape/RectSVG";
 import { Check } from "@/Utility/Check";
 import { PathPen } from "@/Utility/PathPen";
 
@@ -55,7 +55,7 @@ Coord.prototype = {
         return [this.axis("x").globalX(x), this.axis("y").globalY(y)];
     },
     drawRect(x, y, width, height) {
-        const rect = new Rect(this).opacity(0).onEnter(EN.appear());
+        const rect = new RectSVG(this).opacity(0).onEnter(EN.appear());
         this.vars.elements.push({
             element: rect,
             x,
@@ -71,7 +71,7 @@ Coord.prototype = {
     rectWidth: elementProp1("width"),
     rectHeight: elementProp1("height"),
     drawCircle(x, y, r) {
-        const circle = new Circle(this).opacity(0).onEnter(EN.appear());
+        const circle = new CircleSVG(this).opacity(0).onEnter(EN.appear());
         if (r !== undefined) circle.r(r);
         this.vars.elements.push({
             element: circle,

@@ -1,5 +1,5 @@
 import { SDNode } from "@/Node/SDNode";
-import { Line } from "@/Node/SVG/Line";
+import { Line } from "@/Node/SVG/Path/LineSVG";
 
 export class CompPointer {
     moveTo(): this;

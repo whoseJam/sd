@@ -1,6 +1,4 @@
-import { SDNode } from "@/Node/SDNode";
-import { Path } from "@/Node/SVG/Path";
-import { RenderNode } from "@/Renderer/RenderNode";
+import { Path } from "@/Node/SVG/Path/PathSVG";
 
 export class BaseCurve extends Path {
     x1(): number;

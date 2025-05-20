@@ -1,7 +1,7 @@
 import { BaseCoord } from "@/Node/Coord/BaseCoord";
-import { Circle } from "@/Node/SVG/Circle";
-import { Path } from "@/Node/SVG/Path";
-import { Rect } from "@/Node/SVG/Rect";
+import { Path } from "@/Node/SVG/Path/PathSVG";
+import { Circle } from "@/Node/SVG/Shape/CircleSVG";
+import { Rect } from "@/Node/SVG/Shape/RectSVG";
 
 export class Coord extends BaseCoord {
     drawRect(x: number, y: number, width: number, height: number): Rect;

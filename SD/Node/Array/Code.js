@@ -1,7 +1,7 @@
 import { Context } from "@/Animate/Context";
 import { BaseArray } from "@/Node/Array/BaseArray";
 import { Enter as EN } from "@/Node/Core/Enter";
-import { Rect } from "@/Node/SVG/Rect";
+import { RectSVG } from "@/Node/SVG/Shape/RectSVG";
 import { Cast } from "@/Utility/Cast";
 import { Check } from "@/Utility/Check";
 import { Color } from "@/Utility/Color";
@@ -16,8 +16,8 @@ function focusRule(parent, child) {
     child.height(r.my() - l.y());
 }
 
-export function Code(parent, source = undefined) {
-    BaseArray.call(this, parent);
+export function Code(target, source = undefined) {
+    BaseArray.call(this, target);
 
     this.type("Code");
 
@@ -54,7 +54,7 @@ export function Code(parent, source = undefined) {
 
     this.childAs(
         "focus",
-        new Rect(this)
+        new RectSVG(this)
             .color(Color.BLUE)
             .opacity(0)
             .onEnter(() => {}),

@@ -1,14 +1,13 @@
-import { Enter as EN } from "@/Node/Core/Enter";
 import { BaseElement } from "@/Node/Element/BaseElement";
-import { Rect } from "@/Node/SVG/Rect";
+import { Rect } from "@/Node/Shape/Rect";
 import { Rule as R } from "@/Rule/Rule";
 
-export function Box(parent, value) {
-    BaseElement.call(this, parent);
+export function Box(target, value) {
+    BaseElement.call(this, target);
 
     this.type("Box");
 
-    const background = new Rect(this.layer("background")).onEnter(EN.appear("background"));
+    const background = new Rect(this);
     this.childAs("background", background, R.background());
 
     this.value(value);

@@ -1,4 +1,4 @@
+import { BasePath } from "@/Node/Path/BasePath";
 import { SDNode } from "@/Node/SDNode";
-import { BaseSVGLine } from "@/Node/SVG/BaseSVGLine";
 
-export function trim(link: BaseSVGLine, source: SDNode | null | undefined, target: SDNode | null | undefined): void;
+export function trim(link: BasePath, source: SDNode | null | undefined, target: SDNode | null | undefined): void;

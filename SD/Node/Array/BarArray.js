@@ -1,12 +1,12 @@
 import { Array } from "@/Node/Array/Array";
 import { BaseArray } from "@/Node/Array/BaseArray";
 import { Enter as EN } from "@/Node/Core/Enter";
-import { Rect } from "@/Node/SVG/Rect";
+import { RectSVG } from "@/Node/SVG/Shape/RectSVG";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
-export function BarArray(parent) {
-    BaseArray.call(this, parent);
+export function BarArray(target) {
+    BaseArray.call(this, target);
 
     this.type("BarArray");
 
@@ -53,7 +53,7 @@ BarArray.prototype = {
     insert(id, value) {
         value = +value;
         if (typeof value !== "number") ErrorLauncher.invalidArguments();
-        const element = new Rect(this.layer("elements")).opacity(0);
+        const element = new RectSVG(this.layer("elements")).opacity(0);
         element.value = function () {
             return value;
         };
