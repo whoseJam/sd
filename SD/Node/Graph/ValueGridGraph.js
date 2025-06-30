@@ -1,14 +1,15 @@
 import { Enter as EN } from "@/Node/Core/Enter";
 import { GridGraph } from "@/Node/Graph/GridGraph";
 
-export function ValueGridGraph(parent) {
-    GridGraph.call(this, parent);
+export class ValueGridGraph extends GridGraph {
+    constructor(target) {
+        super(target);
 
-    this.type("ValueGridGraph");
+        this.type("ValueGridGraph");
+    }
 }
 
-ValueGridGraph.prototype = {
-    ...GridGraph.prototype,
+Object.assign(ValueGridGraph.prototype, {
     newNode(id, value) {
         const element = value;
         this._.pos[element.id] = { x: this._.curN, y: this._.curM };
@@ -23,6 +24,6 @@ ValueGridGraph.prototype = {
         this.__insertNode(id, element);
         return this;
     },
-};
+});
 
 ValueGridGraph.prototype.newNodeFromExistValue = ValueGridGraph.prototype.newNodeFromExistElement;

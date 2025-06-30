@@ -9,27 +9,56 @@ import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 let id = 0;
 
 export function getTargetLayer(target) {
-    if (Check.isTypeOfSDNode(target)) return target.layer();
+    if (target instanceof SDNode) return target.layer();
     return target;
 }
 
-export function SDNode(target) {
-    this.id = ++id;
-    this._ = {
-        ready: false, // only when ready = true, the action can impact the node
-        layer: undefined,
-        layers: {},
-        parent: undefined,
-        animate: new Animate(this),
-        children: new Children(this),
-        interact: new Interact(this),
-        updaters: {},
-        freezing: 0,
-    };
+export class SDNode {
+    constructor(target) {
+        this.id = ++id;
+        this._ = {
+            ready: false, 
+            layer: undefined,
+            layers: {},
+            parent: undefined,
+            animate: new Animate(this),
+            children: new Children(this),
+            interact: new Interact(this),
+            updaters: {},
+            freezing: 0,
+        };
 
-    this._.layers.__targetLayer = getTargetLayer(target);
+        this._.layers.__targetLayer = getTargetLayer(target);
 
-    this.vars = reactive({});
+        this.vars = reactive({});
+    }
+    static extend(clazz) {
+        if (!this.__parentClass) this.__parentClass = [];
+        this.__parentClass.push(clazz);
+    }
+    static [Symbol.hasInstance](object) {
+        if (!object) return false;
+        let flag = false;
+        const visited = new Set();
+        const dfs = currentProto => {
+            if (currentProto === null) return;
+            if (visited.has(currentProto)) return;
+            if (currentProto === this.prototype) flag = true;
+            if (flag) return;
+            visited.add(currentProto);
+            if (currentProto.constructor.__parentClass) {
+                currentProto.constructor.__parentClass.forEach(clazz => {
+                    if (flag) return;
+                    dfs(clazz.prototype);
+                    if (flag) return;
+                });
+            }
+            if (flag) return;
+            dfs(Object.getPrototypeOf(currentProto));
+        };
+        dfs(Object.getPrototypeOf(object));
+        return flag;
+    }
 }
 
 function forward(comp, func) {
@@ -47,10 +76,7 @@ function forwardWithReturn(comp, func) {
     };
 }
 
-SDNode.prototype = {
-    ...SDNode.prototype,
-    BASE_SDNODE: true,
-
+Object.assign(SDNode.prototype, {
     type(type) {
         if (type === undefined) return this._.layer.getAttribute("type");
         this._.layer.setAttribute("type", type);
@@ -66,20 +92,18 @@ SDNode.prototype = {
     newLayer() {
         ErrorLauncher.notImplementedYet("newLayer", this.type());
     },
-    attachTo(parent) {
-        if (Check.isTypeOfSDNode(parent)) {
-            // parent is SDNode
-            this._.layer.moveTo(parent.layer());
+    attachTo(target) {
+        if (target instanceof SDNode) {
+            this._.layer.moveTo(target.layer());
         } else {
-            // parent is RenderNode
-            this._.layer.moveTo(parent);
+            this._.layer.moveTo(target);
         }
         return this;
     },
 
     childAs() {
         const args = [...arguments];
-        const child = args.filter(arg => Check.isTypeOfSDNode(arg))[0];
+        const child = args.filter(arg => arg instanceof SDNode)[0];
         const rule = args.filter(arg => typeof arg === "function")[0];
         const update = () => {
             if (child._.parent !== this && !child.onEnter()) child.attachTo(this);
@@ -150,12 +174,14 @@ SDNode.prototype = {
     },
 
     drag: forward("interact", "drag"),
-    clickable: function (type) {
-        this._.layer.setAttribute("pointer-events", Check.isFalseType(type) ? "none" : "auto");
+    clickable(type) {
+        this._.layer.setAttribute("pointer-events", Check.isFalse(type) ? "none" : "auto");
         this._.clickableCalled = true;
         return this;
     },
+    click: forward("interact", "click"),
     onClick: forward("interact", "onClick"),
+    dblClick: forward("interact", "dblClick"),
     onDblClick: forward("interact", "onDblClick"),
     onChange: forward("interact", "onChange"),
 
@@ -198,4 +224,4 @@ SDNode.prototype = {
             element.triggerEnter(this, update);
         } else update();
     },
-};
+});

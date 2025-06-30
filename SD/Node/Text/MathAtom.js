@@ -3,22 +3,21 @@ import { SD2DNode } from "@/Node/SD2DNode";
 import { Color as C } from "@/Utility/Color";
 import { Factory } from "@/Utility/Factory";
 
-export function MathAtom(target) {
-    SD2DNode.call(this, target);
+export class MathAtom extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.vars.merge({
-        stroke: C.black,
-        fill: C.black,
-    });
+        this.vars.merge({
+            stroke: C.black,
+            fill: C.black,
+        });
 
-    this._.ready = true;
-
-    this.vars.associate("fill", Factory.action(this, "math", "fill", Interp.colorInterp));
-    this.vars.associate("stroke", Factory.action(this, "math", "stroke", Interp.colorInterp));
+        this.vars.watch("fill", Factory.action(this, "math", "fill", Interp.colorInterp));
+        this.vars.watch("stroke", Factory.action(this, "math", "stroke", Interp.colorInterp));
+    }
 }
 
-MathAtom.prototype = {
-    ...SD2DNode.prototype,
+Object.assign(MathAtom.prototype, {
     fill: Factory.handler("fill"),
     stroke: Factory.handler("stroke"),
     color(color) {
@@ -27,4 +26,4 @@ MathAtom.prototype = {
         else this.fill(color.fill).stroke(color.stroke);
         return this;
     },
-};
+});

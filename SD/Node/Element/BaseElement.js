@@ -7,22 +7,22 @@ import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
-export function BaseElement(target) {
-    SD2DNode.call(this, target);
+export class BaseElement extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.vars.merge({
-        x: 0,
-        y: 0,
-        width: 40,
-        height: 40,
-        rate: 1.3,
-        value: undefined,
-    });
+        this.vars.merge({
+            x: 0,
+            y: 0,
+            width: 40,
+            height: 40,
+            rate: 1.3,
+            value: undefined,
+        });
+    }
 }
 
-BaseElement.prototype = {
-    ...SD2DNode.prototype,
-    BASE_ELEMENT: true,
+Object.assign(BaseElement.prototype, {
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     width: Factory.handlerLowPrecise("width"),
@@ -61,7 +61,7 @@ BaseElement.prototype = {
     value(value, rule) {
         if (arguments.length === 0) return this.child("value");
         if (this.hasChild("value")) this.eraseChild("value");
-        if (Check.isEmptyType(value)) return this;
+        if (Check.isEmpty(value)) return this;
         rule = getValueRule(rule);
         value = Cast.castToSDNode(this, value);
         this.childAs("value", value, rule);
@@ -81,7 +81,7 @@ BaseElement.prototype = {
         this.eraseChild(value);
         return value;
     },
-};
+});
 
 function backgroundHandler(key) {
     return function (value) {

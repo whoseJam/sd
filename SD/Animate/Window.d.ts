@@ -1,7 +1,7 @@
-export const NORMAL_FRAME = 0;
-export const LAST_MAIN_FRAME = 1;
-export const LAST_INTER_FRAME = 2;
-export const FIRST_INTER_FRAME = 3;
-export const CONTINUE_FRAME = 4;
+export const NORMAL_STAGE = 0;
+export const LAST_MAIN_STAGE = 1;
+export const LAST_INTER_STAGE = 2;
+export const FIRST_INTER_STAGE = 3;
+export const CONTINUE_STAGE = 4;
 
-export function pause(): Promise<any>;
+export async function pause(type?: 0 | 1 | 2 | 3 | 4): Promise<void>;

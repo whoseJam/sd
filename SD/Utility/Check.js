@@ -1,48 +1,75 @@
-function isTypeOf(type) {
-    const label = `BASE_${type}`;
-    return function (node) {
-        if (node) return node[label];
-        return false;
-    };
-}
+import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
 export class Check {
-    static isTypeOfSDNode = isTypeOf("SDNODE");
-    static isTypeOfArray = isTypeOf("ARRAY");
-    static isTypeOfElement = isTypeOf("ELEMENT");
-    static isTypeOfCurve = isTypeOf("CURVE");
-    static isTypeOfGraph = isTypeOf("GRAPH");
-    static isTypeOfGrid = isTypeOf("GRID");
-    static isTypeOfHTML = isTypeOf("HTML");
-    static isTypeOfSVG = isTypeOf("SVG");
-    static isTypeOfTree = isTypeOf("TREE");
-    static isTypeOfSVGLine = isTypeOf("SVGLINE");
-    static isTypeOfThree = isTypeOf("THREE");
-    static isFalseType(object) {
+    static isFalse(object) {
         return object === null || object === undefined || object === false;
     }
-    static isEmptyType(object) {
+    static isEmpty(object) {
         return object === null || object === undefined;
     }
-    static isNumberOrString(object) {
-        return typeof object === "number" || typeof object === "string";
-    }
-    static isTypeOfString(object) {
+    static isString(object) {
         return typeof object === "string";
     }
-    static isTypeOfOpacity(object) {
+    static isOpacity(object) {
         if (typeof object !== "number") return false;
         return 0 <= object && object <= 1;
     }
-    static isTypeOfColor(object) {
+    static isColor(object) {
         if (typeof object === "string" && object.startsWith("#")) return true;
         else if (typeof object === "object" && object.main && object.border) return true;
         return false;
     }
-    static isValidNumber(object) {
+    static isNumber(object) {
         return typeof object === "number" && !isNaN(object) && object !== Infinity && object !== -Infinity;
     }
-    static isTypeOfVector(object) {
+    static isNumberOrString(object) {
+        return typeof object === "number" || typeof object === "string";
+    }
+    static isVector(object) {
         return object && typeof object[0] === "number" && typeof object[1] === "number";
+    }
+    static isColor(object) {
+        return this.isHexColor(object) || this.isSDColor(object);
+    }
+    static isSDColor(object) {
+        if (!object) return false;
+        if (typeof object !== "object") return false;
+        return this.isHexColor(object.fill) && this.isHexColor(object.stroke);
+    }
+    static isHexColor(object) {
+        if (!object) return false;
+        if (typeof object !== "string") return false;
+        if (object.length !== 7) return false;
+        if (object[0] !== "#") return false;
+        for (let i = 1; i <= 6; i++) if ("0123456789aAbBcCdDeEfF".indexOf(object[i]) === -1) return false;
+        return true;
+    }
+    static isAsyncFunction(object) {
+        if (typeof object !== "function") return false;
+        const str = object.toString();
+        return str.startsWith("async");
+    }
+    static isSyncFunction(object) {
+        if (typeof object !== "function") return false;
+        return !this.isAsyncFunction(object);
+    }
+
+    static validateOpacity(object, method, i = 1, suggestions = []) {
+        if (!this.isOpacity(object)) ErrorLauncher.invalidOpacity(object, method, i, suggestions);
+    }
+    static validateNumber(object, method, i = 1, suggestions = []) {
+        if (!this.isNumber(object)) ErrorLauncher.invalidNumber(object, method, i, suggestions);
+    }
+    static validateNumberOrString(object, method, i = 1, suggestions = []) {
+        if (!this.isNumberOrString(object)) ErrorLauncher.invalidNumberOrString(object, method, i, suggestions);
+    }
+    static validateColor(object, method, i = 1, suggestions = []) {
+        if (!this.isColor(object)) ErrorLauncher.invalidColorFormat(object, method, i, suggestions);
+    }
+    static validateSyncFunction(object, method, i = 1, suggestions = []) {
+        if (!this.isSyncFunction(object)) ErrorLauncher.invalidSyncFunction(object, method, i, suggestions);
+    }
+    static validateArgumentsCountEqualTo(args, count, method) {
+        if (args.length !== count) throw new Error(`The ${method} expect ${count} arguments, but got ${args.length} arguments.`);
     }
 }

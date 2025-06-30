@@ -3,7 +3,7 @@ import { Vector as V } from "@/Math/Vector";
 import { BaseAxis } from "@/Node/Axis/BaseAxis";
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Line } from "@/Node/Path/Line";
-import { Text } from "@/Node/SVG/Text";
+import { Text } from "@/Node/Text/Text";
 import { Factory } from "@/Utility/Factory";
 import { ObjectPool } from "@/Utility/Pool/ObjectPool";
 
@@ -45,100 +45,101 @@ function createTickLabelPool(axis) {
     });
 }
 
-export function Axis(parent, vars = {}) {
-    BaseAxis.call(this, parent);
+export class Axis extends BaseAxis {
+    constructor(target, vars = {}) {
+        super(target);
 
-    this.type("Axis");
+        this.type("Axis");
 
-    this.vars.merge({
-        direction: [1, 0],
-        sx: 0,
-        sy: 0,
-        length: 300,
-        ticks: 10,
-        withTick: true,
-        withTickLabel: false,
-        tickLength: 5,
-        tickAlign: "center",
-        fontSize: 20,
-        tickLabelAlign: "source",
-        tickLabelFormat: i => i,
-        ...vars,
-    });
+        this.vars.merge({
+            direction: [1, 0],
+            sx: 0,
+            sy: 0,
+            length: 300,
+            ticks: 10,
+            withTick: true,
+            withTickLabel: false,
+            tickLength: 5,
+            tickAlign: "center",
+            fontSize: 20,
+            tickLabelAlign: "source",
+            tickLabelFormat: i => i,
+            ...vars,
+        });
 
-    const tickPool = createTickPool(this);
-    const tickLabelPool = createTickLabelPool(this);
-    this._.tickPool = tickPool;
-    this._.tickLabelPool = tickLabelPool;
+        const tickPool = createTickPool(this);
+        const tickLabelPool = createTickLabelPool(this);
+        this._.tickPool = tickPool;
+        this._.tickLabelPool = tickLabelPool;
 
-    this.childAs("line", new Line(this), (parent, child) => {
-        const length = parent.length();
-        const direction = V.norm(parent.direction());
-        const [x, y] = [parent.sx(), parent.sy()];
-        child.source(x, y).target(V.add([x, y], V.numberMul(direction, length)));
-    });
-    this.effect("tick", () => {
-        const direction = V.norm(this.direction());
-        const rotate = V.complexMul(direction, V.makeComplex(1, -Math.PI / 2));
-        const tickAlign = this.tickAlign();
-        const tickLength = this.tickLength();
-        tickPool.beforeAllocate();
-        if (this.withTick()) {
-            this.forEachTick((_, i) => {
-                const at = this.global(i);
-                const tick = tickPool.allocate(i);
-                const [x, y] = tick.pos("x", "y");
-                this.tryUpdate(tick, () => {
-                    tick.source(x, y).target(V.add([x, y], V.numberMul(rotate, tickLength)));
-                    if (tickAlign === "center") tick.center(at);
-                    else if (tickAlign === "source") tick.dx(at[0] - tick.x1()).dy(at[1] - tick.y1());
-                    else tick.dx(at[0] - tick.x2()).dy(at[1] - tick.y2());
+        this.childAs("line", new Line(this), (parent, child) => {
+            const length = parent.length();
+            const direction = V.norm(parent.direction());
+            const [x, y] = [parent.sx(), parent.sy()];
+            child.source(x, y).target(V.add([x, y], V.numberMul(direction, length)));
+        });
+        this.effect("tick", () => {
+            const direction = V.norm(this.direction());
+            const rotate = V.complexMul(direction, V.makeComplex(1, -Math.PI / 2));
+            const tickAlign = this.tickAlign();
+            const tickLength = this.tickLength();
+            tickPool.beforeAllocate();
+            if (this.withTick()) {
+                this.forEachTick((_, i) => {
+                    const at = this.global(i);
+                    const tick = tickPool.allocate(i);
+                    const [x, y] = tick.pos("x", "y");
+                    this.tryUpdate(tick, () => {
+                        tick.source(x, y).target(V.add([x, y], V.numberMul(rotate, tickLength)));
+                        if (tickAlign === "center") tick.center(at);
+                        else if (tickAlign === "source") tick.dx(at[0] - tick.x1()).dy(at[1] - tick.y1());
+                        else tick.dx(at[0] - tick.x2()).dy(at[1] - tick.y2());
+                    });
                 });
-            });
-        }
-        tickPool.afterAllocate();
-    });
-    this.effect("tickLabel", () => {
-        const direction = V.norm(this.direction());
-        const rotate = V.complexMul(direction, V.makeComplex(1, -Math.PI / 2));
-        const tickAlign = this.tickAlign();
-        const tickLength = this.withTick() ? this.tickLength() : 0;
-        const tickLabelAlign = this.tickLabelAlign();
-        const tickLabelFormat = this.tickLabelFormat();
-        const fontSize = this.fontSize();
-        tickLabelPool.beforeAllocate();
-        if (this.withTickLabel()) {
-            this.forEachTick((_, i) => {
-                const at = this.global(i);
-                const tickLabel = tickLabelPool.allocate(tickLabelFormat(i));
-                this.tryUpdate(tickLabel, () => {
-                    tickLabel.fontSize(fontSize);
-                    if (tickLabelAlign === "source") {
-                        if (tickAlign === "source") {
-                            tickLabel.center(V.add(at, V.numberMul(rotate, -10)));
-                        } else if (tickAlign === "center") {
-                            tickLabel.center(V.add(at, V.numberMul(rotate, -10 - tickLength / 2)));
+            }
+            tickPool.afterAllocate();
+        });
+        this.effect("tickLabel", () => {
+            const direction = V.norm(this.direction());
+            const rotate = V.complexMul(direction, V.makeComplex(1, -Math.PI / 2));
+            const tickAlign = this.tickAlign();
+            const tickLength = this.withTick() ? this.tickLength() : 0;
+            const tickLabelAlign = this.tickLabelAlign();
+            const tickLabelFormat = this.tickLabelFormat();
+            const fontSize = this.fontSize();
+            tickLabelPool.beforeAllocate();
+            if (this.withTickLabel()) {
+                this.forEachTick((_, i) => {
+                    const at = this.global(i);
+                    const tickLabel = tickLabelPool.allocate(tickLabelFormat(i));
+                    this.tryUpdate(tickLabel, () => {
+                        tickLabel.fontSize(fontSize);
+                        if (tickLabelAlign === "source") {
+                            if (tickAlign === "source") {
+                                tickLabel.center(V.add(at, V.numberMul(rotate, -10)));
+                            } else if (tickAlign === "center") {
+                                tickLabel.center(V.add(at, V.numberMul(rotate, -10 - tickLength / 2)));
+                            } else {
+                                tickLabel.center(V.add(at, V.numberMul(rotate, -10 - tickLength)));
+                            }
                         } else {
-                            tickLabel.center(V.add(at, V.numberMul(rotate, -10 - tickLength)));
+                            if (tickAlign === "source") {
+                                tickLabel.center(V.add(at, V.numberMul(rotate, 10 + tickLength)));
+                            } else if (tickAlign === "center") {
+                                tickLabel.center(V.add(at, V.numberMul(rotate, 10 + tickLength / 2)));
+                            } else {
+                                tickLabel.center(V.add(at, V.numberMul(rotate, 10)));
+                            }
                         }
-                    } else {
-                        if (tickAlign === "source") {
-                            tickLabel.center(V.add(at, V.numberMul(rotate, 10 + tickLength)));
-                        } else if (tickAlign === "center") {
-                            tickLabel.center(V.add(at, V.numberMul(rotate, 10 + tickLength / 2)));
-                        } else {
-                            tickLabel.center(V.add(at, V.numberMul(rotate, 10)));
-                        }
-                    }
+                    });
                 });
-            });
-        }
-        tickLabelPool.afterAllocate();
-    });
+            }
+            tickLabelPool.afterAllocate();
+        });
+    }
 }
 
-Axis.prototype = {
-    ...BaseAxis.prototype,
+Object.assign(Axis.prototype, {
     tick(i) {
         if (this._.tickPool.isUsing(i)) return this._.tickPool.get(i);
         return undefined;
@@ -219,4 +220,4 @@ Axis.prototype = {
     fontSize: Factory.handler("fontSize"),
     tickLabelAlign: Factory.handler("tickLabelAlign"),
     tickLabelFormat: Factory.handler("tickLabelFormat"),
-};
+});

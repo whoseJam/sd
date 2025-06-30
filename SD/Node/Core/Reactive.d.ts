@@ -1,7 +1,7 @@
 type Effect = () => void;
 type Precise = (oldValue: any, newValue: any) => boolean;
 export function reactive<T>(object: T): T & {
-    associate(key: string, func: any);
+    watch(key: string, func: any);
 };
 export function freeze();
 export function unfreeze();

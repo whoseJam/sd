@@ -1,13 +1,16 @@
-import { SliderHTML } from "@/Node/HTML/Control/SliderHTML";
+import { BaseControl } from "@/Node/Control/BaseControl";
 import { getTargetLayer } from "@/Node/SDNode";
-import { SliderSVG } from "@/Node/SVG/Control/SliderSVG";
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 
-export function Slider(target) {
-    const targetLayer = getTargetLayer(target);
-    if (targetLayer instanceof HTMLNode) {
-        return new SliderHTML(target);
-    } else {
-        return new SliderSVG(target);
+export class Slider extends BaseControl {
+    constructor(target) {
+        const targetLayer = getTargetLayer(target);
+        if (targetLayer instanceof HTMLNode) {
+            const { SliderHTML } = require("@/Node/Control/SliderHTML");
+            return new SliderHTML(target);
+        } else {
+            const { SliderSVG } = require("@/Node/Control/SliderSVG");
+            return new SliderSVG(target);
+        }
     }
 }

@@ -15,56 +15,56 @@ function offsetM(m, length) {
     return m - length;
 }
 
-export function Grid(parent) {
-    BaseGrid.call(this, parent);
+export class Grid extends BaseGrid {
+    constructor(target) {
+        super(target);
 
-    this.type("Grid");
-    this.newLayer("elements");
+        this.type("Grid");
 
-    this.vars.merge({
-        x: 0,
-        y: 0,
-        elementWidth: 40,
-        elementHeight: 40,
-        width: 0,
-        height: 0,
-        main: "row",
-        align: "x",
-    });
+        this.vars.merge({
+            x: 0,
+            y: 0,
+            elementWidth: 40,
+            elementHeight: 40,
+            width: 0,
+            height: 0,
+            main: "row",
+            align: "x",
+        });
 
-    this.effect("grid", () => {
-        const dict = {
-            x: this.x(),
-            y: this.y(),
-            mx: this.mx(),
-            my: this.my(),
-            lx: this.elementWidth(),
-            ly: this.elementHeight(),
-        };
-        const elements = this.vars.elements;
-        const main = this.axis();
-        const align = this.align();
-        const mainAxis = main === "row" ? "y" : "x";
-        const auxiAxis = main === "row" ? "x" : "y";
-        const m = this.m();
-        const offset = align === "x" || align === "y" ? offsetN : align === "cx" || align === "cy" ? offsetC : offsetM;
-        for (let i = 0; i < elements.length; i++) {
-            if (!elements[i]) continue;
-            for (let j = 0; j < elements[i].length; j++) {
-                const element = elements[i][j];
-                this.tryUpdate(element, () => {
-                    element.width(dict["lx"]);
-                    element.height(dict["ly"]);
-                    element[mainAxis](dict[mainAxis] + i * dict[`l${mainAxis}`]);
-                    element[auxiAxis](dict[auxiAxis] + (offset(m, elements[i].length) + j) * dict[`l${auxiAxis}`]);
-                });
+        this.effect("grid", () => {
+            const dict = {
+                x: this.x(),
+                y: this.y(),
+                mx: this.mx(),
+                my: this.my(),
+                lx: this.elementWidth(),
+                ly: this.elementHeight(),
+            };
+            const elements = this.vars.elements;
+            const main = this.axis();
+            const align = this.align();
+            const mainAxis = main === "row" ? "y" : "x";
+            const auxiAxis = main === "row" ? "x" : "y";
+            const m = this.m();
+            const offset = align === "x" || align === "y" ? offsetN : align === "cx" || align === "cy" ? offsetC : offsetM;
+            for (let i = 0; i < elements.length; i++) {
+                if (!elements[i]) continue;
+                for (let j = 0; j < elements[i].length; j++) {
+                    const element = elements[i][j];
+                    this.tryUpdate(element, () => {
+                        element.width(dict["lx"]);
+                        element.height(dict["ly"]);
+                        element[mainAxis](dict[mainAxis] + i * dict[`l${mainAxis}`]);
+                        element[auxiAxis](dict[auxiAxis] + (offset(m, elements[i].length) + j) * dict[`l${auxiAxis}`]);
+                    });
+                }
             }
-        }
-    });
+        });
+    }
 }
 
-Grid.prototype = {
-    ...BaseGrid.prototype,
+Object.assign(Grid.prototype, {
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     width(width) {
@@ -103,4 +103,4 @@ Grid.prototype = {
     elementHeight: Factory.handlerLowPrecise("elementHeight"),
     axis: Factory.handlerLowPrecise("main"),
     align: Factory.handlerLowPrecise("align"),
-};
+});

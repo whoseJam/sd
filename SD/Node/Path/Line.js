@@ -1,5 +1,8 @@
-import { LineSVG } from "@/Node/SVG/Path/LineSVG";
+import { BasePath } from "@/Node/Path/BasePath";
 
-export function Line(target, value) {
-    return new LineSVG(target, value);
+export class Line extends BasePath {
+    constructor(target, value) {
+        const { LineSVG } = require("@/Node/Path/LineSVG");
+        return new LineSVG(target, value);
+    }
 }

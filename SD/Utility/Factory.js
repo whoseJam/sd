@@ -1,5 +1,6 @@
 import { Action } from "@/Animate/Action";
 import { setPrecise } from "@/Node/Core/Reactive";
+import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
 function lowPrecise(oldValue, newValue) {
@@ -22,9 +23,10 @@ export class Factory {
             return this;
         };
     }
-    static handlerLowPrecise(key) {
+    static handlerLowPrecise(key, validate, method) {
         return function (value) {
             if (value === undefined) return this.vars[key];
+            if (validate && method) validate.call(Check, value, method);
             setPrecise(this.vars, key, lowPrecise);
             this.vars[key] = value;
             return this;
@@ -51,7 +53,6 @@ export class Factory {
         if (typeof _object === "string") object = () => node._[_object];
         else if (typeof _object === "function") object = _object;
         return function (newValue, oldValue) {
-            // console.log("key=", key, "new=", newValue, "old=", oldValue);
             if (global.ACTION_TICK !== 0) {
                 const obj = object();
                 if (obj.setAttribute) obj.setAttribute(key, newValue);

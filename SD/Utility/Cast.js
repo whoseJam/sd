@@ -1,4 +1,4 @@
-import { Text } from "@/Node/SVG/Text";
+import { Text } from "@/Node/Text/Text";
 
 export class Cast {
     static castToSDNode(target, any, id) {

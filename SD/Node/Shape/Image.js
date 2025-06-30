@@ -1,18 +1,21 @@
-import { ImageHTML } from "@/Node/HTML/Shape/ImageHTML";
 import { getTargetLayer } from "@/Node/SDNode";
+import { BaseShape } from "@/Node/Shape/BaseShape";
 import { Rect } from "@/Node/Shape/Rect";
-import { ImageSVG } from "@/Node/SVG/Shape/ImageSVG";
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 
-export function Image(target) {
-    const targetLayer = getTargetLayer(target);
-    if (targetLayer instanceof HTMLNode) {
-        return new ImageHTML(target);
-    } else {
-        return new ImageSVG(target);
+export class Image extends BaseShape {
+    constructor(target) {
+        const targetLayer = getTargetLayer(target);
+        if (targetLayer instanceof HTMLNode) {
+            const { ImageHTML } = require("@/Node/Shape/ImageHTML");
+            return new ImageHTML(target);
+        } else {
+            const { ImageSVG } = require("@/Node/Shape/ImageSVG");
+            return new ImageSVG(target);
+        }
     }
 }
 
-Image.prototype = {
+Object.assign(Image.prototype, {
     toPolygon: Rect.prototype.toPolygon,
-};
+});

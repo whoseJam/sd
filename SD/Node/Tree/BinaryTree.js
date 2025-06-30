@@ -3,21 +3,22 @@ import { Tree } from "@/Node/Tree/Tree";
 import { Cast } from "@/Utility/Cast";
 import { trim } from "@/Utility/Trim";
 
-export function BinaryTree(parent) {
-    Tree.call(this, parent);
+export class BinaryTree extends Tree {
+    constructor(target) {
+        super(target);
 
-    this.type("BinaryTree");
+        this.type("BinaryTree");
 
-    this._.childrenMap = {}; // SDNode id -> [leftChildId, rightChildId]
+        this._.childrenMap = {}; 
 
-    this.uneffect("tree");
-    this.effect("binaryTree", () => {
-        BinaryTreeLayout.apply(this, ["vertical"]);
-    });
+        this.uneffect("tree");
+        this.effect("tree", () => {
+            BinaryTreeLayout.apply(this, ["vertical"]);
+        });
+    }
 }
 
-BinaryTree.prototype = {
-    ...Tree.prototype,
+Object.assign(BinaryTree.prototype, {
     newNode(id, value) {
         const element = new this._.nodeType(this.layer("nodes")).opacity(0);
         this._.childrenMap[element.id] = [undefined, undefined];
@@ -80,11 +81,8 @@ BinaryTree.prototype = {
         return this;
     },
     nodesOnPreorderTraversal(node) {
-        console.log("NODE=", node);
         const nodes = [];
         const traversal = node => {
-            console.log("node=", node);
-            console.log("node=", node, "int=", node.intValue());
             nodes.push(node);
             if (this.leftChild(node)) {
                 console.log("left=", this.leftChild(node));
@@ -136,7 +134,7 @@ BinaryTree.prototype = {
         this.nodesOnPostorderTraversal(node).forEach(node => callback(node, this.nodeId(node)));
         return this;
     },
-};
+});
 
 BinaryTree.prototype.link = function (x, y, dir, value = null) {
     if (dir === undefined) {
@@ -185,39 +183,4 @@ export function BinaryTreeLayout(mode) {
             trim(link, source, target);
         });
     });
-}
-
-/**
- * @param {"vertical"|"horizontal"} mode
- */
-export function binaryTreeLayout(mode) {
-    const sidToChildren = this._.sidToChildren;
-    const root = this.root();
-    if (!root) return this;
-    let maxDepth = 0;
-    const realX = mode === "vertical" ? (rank, gap, depth) => this.x() + (rank * 2 + 1) * gap : (rank, gap, depth) => this.x() + this.layerWidth() * depth;
-    const realY = mode === "horizontal" ? (rank, gap, depth) => this.y() + (rank * 2 + 1) * gap : (rank, gap, depth) => this.y() + this.layerHeight() * depth;
-    const dfs = (current, rank, gap, depth) => {
-        maxDepth = Math.max(maxDepth, depth);
-        const x = realX(rank, gap, depth);
-        const y = realY(rank, gap, depth);
-        this.tryMove(current, () => {
-            current.cx(x);
-            current.cy(y);
-        });
-        if (sidToChildren[current.id][0]) dfs(this.element(sidToChildren[current.id][0]), rank * 2, gap / 2, depth + 1);
-        if (sidToChildren[current.id][1]) dfs(this.element(sidToChildren[current.id][1]), rank * 2 + 1, gap / 2, depth + 1);
-    };
-    const gap = (mode === "vertical" ? this.width() : this.height()) / 2;
-    dfs(root, 0, gap, 0);
-
-    const links = this.vars.links;
-    for (let link of links) {
-        const src = this.findNodeById(this.sourceId(link));
-        const tgt = this.findNodeById(this.targetId(link));
-        link.source(src.cx(), src.cy());
-        link.target(tgt.cx(), tgt.cy());
-        trim(link, src, tgt);
-    }
-    this.vars[mode === "vertical" ? "height" : "width"] = maxDepth * this[mode === "vertical" ? "layerHeight" : "layerWidth"];
 }

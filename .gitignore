@@ -2,5 +2,6 @@
 *.pyc
 /.vscode
 /.CodeCounter
+/.VSCodeCounter
 node_modules
 myconfig.json

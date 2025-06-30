@@ -10,49 +10,62 @@ export class Interact {
         this.onchange = undefined;
         this.oninput = undefined;
     }
+    click() {
+        const event = new MouseEvent("click", { button: 1, view: window, bubbles: true, cancelable: true });
+        const nake = this.parent._.layer.nake();
+        nake.dispatchEvent(event);
+    }
     onClick(callback) {
         const nake = this.parent._.layer.nake();
         Dom.removeEventListener(nake, "click", this.onclick);
-        this.onclick = () => {
-            clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-                callback(this.parent);
-            }, 200);
-        };
-        Dom.addEventListener(nake, "click", this.onclick);
+        if (callback) {
+            this.onclick = () => {
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    callback(this.parent);
+                }, 200);
+            };
+            Dom.addEventListener(nake, "click", this.onclick);
+        }
         return this;
     }
     onDblClick(callback) {
         const nake = this.parent._.layer.nake();
         Dom.removeEventListener(nake, "dblclick", this.ondblclick);
-        this.ondblclick = () => {
-            clearTimeout(this.timeout);
-            callback(this.parent);
-        };
-        Dom.addEventListener(nake, "dblclick", this.ondblclick);
+        if (callback) {
+            this.ondblclick = () => {
+                clearTimeout(this.timeout);
+                callback(this.parent);
+            };
+            Dom.addEventListener(nake, "dblclick", this.ondblclick);
+        }
         return this;
     }
     onChange(callback) {
-        const control = this.parent.control().nake();
+        const control = this.parent._.nake.nake();
         Dom.removeEventListener(control, "change", this.onchange);
-        this.onchange = event => {
-            callback(event.target.value);
-        };
-        Dom.addEventListener(control, "change", this.onchange);
+        if (callback) {
+            this.onchange = event => {
+                callback(event.target.value);
+            };
+            Dom.addEventListener(control, "change", this.onchange);
+        }
         return this;
     }
     onInput(callback) {
-        const control = this.parent.control().nake();
+        const control = this.parent._.nake.nake();
         Dom.removeEventListener(control, "input", this.oninput);
-        this.oninput = event => {
-            callback(event.target.value);
-        };
-        Dom.addEventListener(control, "input", this.oninput);
+        if (callback) {
+            this.oninput = event => {
+                callback(event.target.value);
+            };
+            Dom.addEventListener(control, "input", this.oninput);
+        }
         return this;
     }
     drag(arg) {
         const nake = this.parent._.layer.nake();
-        if (Check.isFalseType(arg)) {
+        if (Check.isFalse(arg)) {
             Snap(nake).undrag();
             return this;
         }

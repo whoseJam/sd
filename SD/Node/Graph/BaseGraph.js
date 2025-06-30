@@ -6,45 +6,45 @@ import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 import { trim } from "@/Utility/Trim";
 
-export function BaseGraph(parent) {
-    SD2DNode.call(this, parent);
+export class BaseGraph extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.newLayer("nodes");
-    this.newLayer("links");
+        this.newLayer("nodes");
+        this.newLayer("links");
 
-    this.vars.merge({
-        x: 0,
-        y: 0,
-        width: 300,
-        height: 300,
-        links: [],
-        nodes: [],
-    });
+        this.vars.merge({
+            x: 0,
+            y: 0,
+            width: 300,
+            height: 300,
+            links: [],
+            nodes: [],
+        });
 
-    this._.sdnodesMap = {}; // SDNode id -> { node: SDNode, id: GraphID } | { link: SDNode, sourceId: GraphId, targetId: GraphID }
-    this._.nodesMap = {}; // GraphID -> SDNode
-    this._.linksMap = {}; // GraphID-GraphID -> SDNode
-    this._.nodeType = Vertex;
-    this._.linkType = Line;
+        this._.sdnodesMap = {}; 
+        this._.nodesMap = {}; 
+        this._.linksMap = {}; 
+        this._.nodeType = Vertex;
+        this._.linkType = Line;
 
-    this.effect("links", () => {
-        this.forEachLink((link, sourceId, targetId) => {
-            const source = this.findNodeById(sourceId);
-            const target = this.findNodeById(targetId);
-            this.tryUpdate(link, () => {
-                link.source(source.center());
-                link.target(target.center());
-                if (link.effect("curve")) link.triggerEffect("curve");
-                trim(link, source, target);
-                if (link.effect("curve")) link.triggerEffect("curve");
+        this.effect("links", () => {
+            this.forEachLink((link, sourceId, targetId) => {
+                const source = this.findNodeById(sourceId);
+                const target = this.findNodeById(targetId);
+                this.tryUpdate(link, () => {
+                    link.source(source.center());
+                    link.target(target.center());
+                    if (link.effect("curve")) link.triggerEffect("curve");
+                    trim(link, source, target);
+                    if (link.effect("curve")) link.triggerEffect("curve");
+                });
             });
         });
-    });
+    }
 }
 
-BaseGraph.prototype = {
-    ...SD2DNode.prototype,
-    BASE_GRAPH: true,
+Object.assign(BaseGraph.prototype, {
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     width: Factory.handlerLowPrecise("width"),
@@ -174,4 +174,4 @@ BaseGraph.prototype = {
     },
     __getNodeWithMethod: BaseTree.prototype.__getNodeWithMethod,
     __getLinkWithMethod: BaseTree.prototype.__getLinkWithMethod,
-};
+});

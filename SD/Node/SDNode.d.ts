@@ -1,35 +1,33 @@
 import { RenderNode } from "@/Renderer/RenderNode";
+import { SDRule } from "@/Rule/Rule";
 
 export class SDNode {
+    _: Record<string, any>;
+
     constructor(target: SDNode | RenderNode);
 
+    type(): string | undefined;
     type(type: string): this;
     fixAspect(): boolean;
 
     layer(): RenderNode;
     layer(name: string): RenderNode;
     newLayer(name: string): this;
-    attachTo(target: SDNode): this;
-    attachTo(target: RenderNode): this;
+    attachTo(target: SDNode | RenderNode): this;
 
-    childAs(name: string, child: SDNode, rule: Rule): this;
-    childAs(name: string, child: SDNode): this;
-    childAs(child: SDNode, rule: Rule): this;
-    childAs(child: SDNode): this;
-    child(name: string): SDNode;
-    hasChild(child: string | SDNode): SDNode;
-    eraseChild(child: string | SDNode): SDNode;
-    remove(): void;
+    childAs(name?: string | number, child: SDNode, rule?: SDRule): this;
+    child(name: string | number): SDNode;
+    hasChild(child: string | number | SDNode): boolean;
+    eraseChild(child: string | number | SDNode): SDNode | undefined;
+    remove(): this;
 
-    startAnimate(): this;
-    startAnimate(duration: number): this;
+    startAnimate(duration?: number): this;
     startAnimate(other: SDNode): this;
     startAnimate(start: number, end: number): this;
     endAnimate(): this;
     isAnimating(): boolean;
     delay(): number;
-    after(delay: number): this;
-    after(other: SDNode): this;
+    after(delay: number | SDNode): this;
     duration(): number;
 
     freeze(): this;
@@ -43,13 +41,13 @@ export class SDNode {
     uneffectAll(): this;
     triggerEffect(): this;
 
-    drag(type: true): this;
-    drag(type: false | null | undefined);
+    drag(type: true | false | null | undefined): this;
     drag(onDrag: (dx: number, dy: number) => [number, number]): this;
-    clickable(type: true): this;
-    clickable(type: false | null | undefined);
-    onClick(onClick: (node: this) => void): this;
-    onDblClick(onClick: (node: this) => void): this;
+    clickable(type: true | false | null | undefined): this;
+    click(): this;
+    onClick(onClick: (node: this) => void | false | null | undefined): this;
+    dblClick(): this;
+    onDblClick(onClick: (node: this) => void | false | null | undefined): this;
 
     onEnter(): (element: SDNode) => void | undefined;
     onEnter(enter: (element: SDNode, move: () => void) => void): this;

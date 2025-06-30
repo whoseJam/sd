@@ -1,11 +1,7 @@
-import { SD2DNode } from "@/Node/SD2DNode";
-import { SDNode } from "@/Node/SDNode";
+import { BaseText } from "@/Node/Text/BaseText";
 import { MathAtom } from "@/Node/Text/MathAtom";
-import { RenderNode } from "@/Renderer/RenderNode";
 
-export class Mathjax extends SD2DNode {
-    constructor(target: SDNode | RenderNode, text?: string);
-
+export class Mathjax extends BaseText {
     math(text: string): this;
     createMath(id: number): Mathjax;
     transformMath(text: string, relations: {}): this;

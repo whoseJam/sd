@@ -1,3 +1,4 @@
+const fs = require("fs");
 const gulp = require("gulp");
 
 module.exports = {
@@ -8,5 +9,11 @@ module.exports = {
      */
     copyFile(src, dest) {
         return gulp.src(src).pipe(gulp.dest(dest));
+    },
+    copyFonts(src, dest) {
+        const fonts = ["Consolas.ttf", "Arial.ttf", "Times New Roman.ttf"];
+        fonts.forEach(font => {
+            fs.copyFileSync(`${src}/${font}`, `${dest}/${font}`);
+        });
     },
 };

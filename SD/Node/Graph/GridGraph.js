@@ -3,41 +3,42 @@ import { BaseGraph } from "@/Node/Graph/BaseGraph";
 import { Cast } from "@/Utility/Cast";
 import { Factory } from "@/Utility/Factory";
 
-export function GridGraph(parent) {
-    BaseGraph.call(this, parent);
+export class GridGraph extends BaseGraph {
+    constructor(target) {
+        super(target);
 
-    this.type("GridGraph");
+        this.type("GridGraph");
 
-    this.vars.merge({
-        n: 1,
-        m: 1,
-    });
+        this.vars.merge({
+            n: 1,
+            m: 1,
+        });
 
-    this._.curN = 0;
-    this._.curM = 0;
-    this._.pos = {};
+        this._.curN = 0;
+        this._.curM = 0;
+        this._.pos = {};
 
-    this.effect("nodes", () => {
-        const pos = this._.pos;
-        const x = this.x();
-        const mx = this.mx();
-        const w = (mx - x) / this.m();
-        const y = this.y();
-        const my = this.my();
-        const h = (my - y) / this.n();
-        const position = node => {
-            return [pos[node.id].y * w + x, pos[node.id].x * h + y];
-        };
-        for (const node of this.vars.nodes) {
-            this.tryUpdate(node, () => {
-                node.center(position(node));
-            });
-        }
-    });
+        this.effect("nodes", () => {
+            const pos = this._.pos;
+            const x = this.x();
+            const mx = this.mx();
+            const w = (mx - x) / this.m();
+            const y = this.y();
+            const my = this.my();
+            const h = (my - y) / this.n();
+            const position = node => {
+                return [pos[node.id].y * w + x, pos[node.id].x * h + y];
+            };
+            for (const node of this.vars.nodes) {
+                this.tryUpdate(node, () => {
+                    node.center(position(node));
+                });
+            }
+        });
+    }
 }
 
-GridGraph.prototype = {
-    ...BaseGraph.prototype,
+Object.assign(GridGraph.prototype, {
     n: Factory.handler("n"),
     m: Factory.handler("m"),
     at(i, j) {
@@ -88,4 +89,4 @@ GridGraph.prototype = {
         this.__insertLink(sourceId, targetId, element);
         return this;
     },
-};
+});

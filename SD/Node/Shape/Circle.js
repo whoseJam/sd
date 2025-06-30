@@ -1,20 +1,22 @@
 import { Vector as V } from "@/Math/Vector";
-import { CircleHTML } from "@/Node/HTML/Shape/CircleHTML";
 import { getTargetLayer } from "@/Node/SDNode";
-import { CircleSVG } from "@/Node/SVG/Shape/CircleSVG";
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 import { polygon } from "@flatten-js/core";
 
-export function Circle(target) {
-    const targetLayer = getTargetLayer(target);
-    if (targetLayer instanceof HTMLNode) {
-        return new CircleHTML(target);
-    } else {
-        return new CircleSVG(target);
+export class Circle {
+    constructor(target) {
+        const targetLayer = getTargetLayer(target);
+        if (targetLayer instanceof HTMLNode) {
+            const { CircleHTML } = require("@/Node/Shape/CircleHTML");
+            return new CircleHTML(target);
+        } else {
+            const { CircleSVG } = require("@/Node/Shape/CircleSVG");
+            return new CircleSVG(target);
+        }
     }
 }
 
-Circle.prototype = {
+Object.assign(Circle.prototype, {
     toPolygon() {
         const vertices = [];
         for (let i = 0; i < 128; i++) {
@@ -24,4 +26,4 @@ Circle.prototype = {
         }
         return polygon(vertices);
     },
-};
+});

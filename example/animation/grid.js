@@ -27,7 +27,7 @@ sd.init(() => {
     // 添加一行，该行有 3 个元素
     // 再添加一行，该行有 2 个元素
     // 再添加一行，该行有 1 个元素
-    grid.pushRow(3).pushRow(2).pushRow(1);
+    grid.pushPrimary(3).pushPrimary(2).pushPrimary(1);
 
     // 向 sd.Grid 的 (1, 1) 处插入数值
     grid.value(1, 1, 1);

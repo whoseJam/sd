@@ -1,13 +1,15 @@
+import { BaseShape } from "@/Node/Shape/BaseShape";
 import { Cast } from "@/Utility/Cast";
-import { Factory } from "@/Utility/Factory";
 import { polygon } from "@flatten-js/core";
 
-export function Polygon(target, points = []) {
-    const { PolygonSVG } = require("@/Node/SVG/Shape/PolygonSVG");
-    return new PolygonSVG(target, points);
+export class Polygon extends BaseShape {
+    constructor(target, points = []) {
+        const { PolygonSVG } = require("@/Node/Shape/PolygonSVG");
+        return new PolygonSVG(target, points);
+    }
 }
 
-Polygon.prototype = {
+Object.assign(Polygon.prototype, {
     toPolygon() {
         return polygon(this.vars.points.map(v => v));
     },
@@ -47,5 +49,9 @@ Polygon.prototype = {
         this.vars.height = box.height;
         return this;
     },
-    __points: Factory.handler("points"),
-};
+    __points(points) {
+        if (arguments.length === 0) return this.vars.points;
+        this.vars.points = points;
+        return this;
+    },
+});

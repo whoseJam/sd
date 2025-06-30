@@ -1,4 +1,4 @@
-import { Check } from "./Check";
+import { SDNode } from "@/Node/SDNode";
 
 export class ErrorLauncher {
     static unknownKeyError(key) {
@@ -21,7 +21,7 @@ export class ErrorLauncher {
         throw new Error("The component somehow get into an invalid status.");
     }
     static nodeNotFound(node) {
-        if (Check.isTypeOfSDNode(node)) {
+        if (node instanceof SDNode) {
             console.log(node);
             throw new Error("Tree/Graph node above not found.");
         } else {
@@ -29,19 +29,17 @@ export class ErrorLauncher {
         }
     }
     static linkNotFound(source, target) {
-        if (Check.isTypeOfSDNode(source) && !Check.isTypeOfSDNode(target)) {
+        let sourceLabel;
+        let targetLabel;
+        if (source instanceof SDNode) {
             console.log("source =", source);
-            throw new Error(`Tree/Graph link[source, ${target}] not found.`);
-        } else if (!Check.isTypeOfSDNode(source) && Check.isTypeOfSDNode(target)) {
+            sourceLabel = "source";
+        } else sourceLabel = source;
+        if (target instanceof SDNode) {
             console.log("target =", target);
-            throw new Error(`Tree/Graph link[${source}, target] not found.`);
-        } else if (Check.isTypeOfSDNode(source) && Check.isTypeOfSDNode(target)) {
-            console.log("source =", source);
-            console.log("target =", target);
-            throw new Error(`Tree/Graph link[source, target] not found`);
-        } else {
-            throw new Error(`Tree/Graph link[${source}, ${target}] not found.`);
+            targetLabel = "target";
         }
+        throw new Error(`Tree/Graph link[${source},${target}] not found.`);
     }
     static lcaNotFound() {
         throw new Error("LCA NOT FOUND.");
@@ -69,7 +67,38 @@ export class ErrorLauncher {
     static gridElementNotFound(rowId, colId) {
         throw new Error(`Grid element[${rowId}, ${colId}] not found.`);
     }
+    static invalidOpacity(opacity, method, i = 1, suggestions = []) {
+        throw new Error(`We expect an opacity for the ${generateLocation(i)} argument when calling ${method} but got <${opacity}>[type is ${typeof opacity}]. ${generateSuggestion(opacity, suggestions)}`);
+    }
+    static invalidNumber(number, method, i = 1, suggestions = []) {
+        throw new Error(`We expect a number for the ${generateLocation(i)} argument when calling ${method} but got <${number}>[type is ${typeof number}]. ${generateSuggestion(number, suggestions)}`);
+    }
+    static invalidNumberOrString(object, method, i = 1, suggestion = []) {
+        throw new Error(`We expect a number or a string for the ${generateLocation(i)} argument when calling ${method} but got <${object}>[type is ${typeof object}]. ${generateSuggestion(object, suggestions)}`);
+    }
+    static invalidColorFormat(color, method, i = 1, suggestions = []) {
+        throw new Error(`We expect a hex-color or a { fill: hex-color, stroke: hex-color } for the ${generateLocation(i)} argument when calling ${method} but got <${color}>[type is ${typeof color}]. ${generateSuggestion(color, suggestions)}`);
+    }
+    static invalidSyncFunction(callback, method) {
+        throw new Error(`We expect a synchronized function for the ${generateLocation(i)} argument when calling the ${method} but got <${callback}>[type is ${typeof callback}]. ${generateSuggestion(callback, suggestions)}`);
+    }
+
     static warnNotImplementedYet(method) {
         console.warn(`Function ${method} not implemented yet.`);
     }
+}
+
+function generateSuggestion(object, suggestions) {
+    for (const suggestion of suggestions) {
+        const [check, result] = suggestion;
+        if (check(object)) return result;
+    }
+    return "";
+}
+
+function generateLocation(i) {
+    if (i === 1) return "1st";
+    if (i === 2) return "2nd";
+    if (i === 3) return "3rd";
+    return `${i}th`;
 }

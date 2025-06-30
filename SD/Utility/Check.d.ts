@@ -1,21 +1,21 @@
 export class Check {
-    static isTypeOfSDNode(object: any): boolean;
-    static isTypeOfArray(object: any): boolean;
-    static isTypeOfElement(object: any): boolean;
-    static isTypeOfCurve(object: any): boolean;
-    static isTypeOfGraph(object: any): boolean;
-    static isTypeOfGrid(object: any): boolean;
-    static isTypeOfHTML(object: any): boolean;
-    static isTypeOfSVG(object: any): boolean;
-    static isTypeOfTree(object: any): boolean;
-    static isTypeOfSVGLine(object: any): boolean;
-    static isTypeOfThree(object: any): boolean;
-    static isFalseType(object: any): boolean;
-    static isEmptyType(object: any): boolean;
+    static isFalse(object: any): boolean;
+    static isEmpty(object: any): boolean;
+    static isString(object: any): boolean;
+    static isOpacity(object: any): boolean;
+    static isNumber(object: any): boolean;
     static isNumberOrString(object: any): boolean;
-    static isTypeOfString(object: any): boolean;
-    static isTypeOfOpacity(object: any): boolean;
-    static isTypeOfColor(object: any): boolean;
-    static isValidNumber(object: any): boolean;
-    static isTypeOfVector(object: any): boolean;
+    static isVector(object: any): boolean;
+    static isColor(object: any): boolean;
+    static isSDColor(object: any): boolean;
+    static isHexColor(object: any): boolean;
+    static isAsyncFucntion(object: any): boolean;
+    static isSyncFunction(object: any): boolean;
+
+    static validateOpacity(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateNumber(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateNumberOrString(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateColor(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateSyncFunction(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateArgumentsCountEqualTo(arguments: Array<any>, count: number, method: string): void;
 }

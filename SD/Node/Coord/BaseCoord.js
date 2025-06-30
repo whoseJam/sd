@@ -1,17 +1,19 @@
+import { SD2DNode } from "@/Node/SD2DNode";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
-import { SD2DNode } from "../SD2DNode";
 
-export function BaseCoord(parent) {
-    SD2DNode.call(this, parent);
+export class BaseCoord extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.vars.merge({
-        x: 0,
-        y: 0,
-        width: 300,
-        height: 300,
-        elements: [],
-    });
+        this.vars.merge({
+            x: 0,
+            y: 0,
+            width: 300,
+            height: 300,
+            elements: [],
+        });
+    }
 }
 
 function handler(key) {
@@ -22,9 +24,7 @@ function handler(key) {
     };
 }
 
-BaseCoord.prototype = {
-    ...SD2DNode.prototype,
-    BASE_COORD: true,
+Object.assign(BaseCoord.prototype, {
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     width: Factory.handlerLowPrecise("width"),
@@ -65,4 +65,4 @@ BaseCoord.prototype = {
         if (arguments.length === 1) return this.globalK(x[0], x[1]);
         return (this.globalY(x, y) - this.globalY(0, 0)) / (this.globalX(x, y) - this.globalX(0, 0));
     },
-};
+});

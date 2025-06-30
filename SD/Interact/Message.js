@@ -28,10 +28,31 @@ export class Message {
             A.start();
         };
 
+        window.Reload = function () {
+            window.location.reload();
+        };
+
+        window.OnInited = function () {
+            window.parent.postMessage("inited", "*");
+        };
+
+        window.addEventListener("message", event => {
+            const data = event.data;
+            if (data.operator && data.arguments) {
+                window[data.operator].apply(window, data.arguments);
+            }
+        });
+
         window.parent.postMessage("inited", "*");
     }
 
     static notifyParent() {
-        window.parent.SetAnimationSize(window.IFRAME_ID, window.IFRAME_URL, window.SVG_MINX, window.SVG_MINY, window.SVG_MAXX - window.SVG_MINX, window.SVG_MAXY - window.SVG_MINY);
+        window.parent.postMessage(
+            {
+                operator: "SetAnimationSize",
+                arguments: [window.IFRAME_ID, window.IFRAME_URL, window.SVG_MINX, window.SVG_MINY, window.SVG_MAXX - window.SVG_MINX, window.SVG_MAXY - window.SVG_MINY],
+            },
+            "*"
+        );
     }
 }

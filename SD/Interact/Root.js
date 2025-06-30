@@ -1,9 +1,9 @@
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { SVGNode } from "@/Renderer/SVG/SVGNode";
 import { Check } from "@/Utility/Check";
 
 const markerHardcode = [
-    // format
     `<marker id="arrow" markerUnits="userSpaceOnUse" viewBox="0 0 12 12" refX="9.5" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M2,2 L10,6 L2,10 L6,6 L2,2" stroke="context-stroke" fill="context-stroke"></path></marker>`,
     `<marker id="adaptiveArrow" markerUnits="strokeWidth" viewBox="0 0 12 12" refX="9.5" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M2,2 L10,6 L2,10 L6,6 L2,2" stroke="context-stroke" fill="context-stroke"></path></marker>`,
 ];
@@ -70,12 +70,11 @@ export class Root {
     static svg = undefined;
 
     static init() {
-        // screen delta / window.RATE = svg delta
         this.viewBox = { x: 0, y: 0, width: 1200, height: 600 };
         window.RATE = 1;
 
         if (true) {
-            this.svg = new HTMLNode(undefined, document.body, "div");
+            this.svg = new HTMLNode(undefined, new RenderNode(document.body), "div");
             this.svg.setAttribute("width", "100%");
             this.svg.setAttribute("height", "100%");
             this.svg.setAttribute("position", "absolute");
@@ -87,7 +86,7 @@ export class Root {
         }
 
         if (true) {
-            this.div = new HTMLNode(undefined, document.body, "div");
+            this.div = new HTMLNode(undefined, new RenderNode(document.body), "div");
             this.div.setAttribute("width", "100vw");
             this.div.setAttribute("height", "100vh");
             this.div.setAttribute("overflow", "hidden");
@@ -111,30 +110,14 @@ export class Root {
     }
 
     static setViewBox(x, y, width, height, rate) {
-        /*
-            |-----------W-----------|
-            X           cX          mX
-        Y   +-----------+-----------+  -
-            |   x       cx      mx  |  |
-            |   +-------+-------+   |  |
-            |   |       |       |   |  |
-            |   |       |       |   |  |
-        cY  |   +-------+-------+   +  H
-            |   |       |       |   |  |
-            |   |       |       |   |  |
-            |   +-------+-------+   |  |
-            |                       |  |
-        mY  +-----------+-----------+  -
-        
-        */
         const cx = x + width / 2;
         const cy = y + height / 2;
         const mx = x + width;
         const my = y + height;
         const X = x + ((x - cx) * (rate - 1)) / 2;
         const Y = y + ((y - cy) * (rate - 1)) / 2;
-        if (!Check.isValidNumber(X)) return;
-        if (!Check.isValidNumber(Y)) return;
+        if (!Check.isNumber(X)) return;
+        if (!Check.isNumber(Y)) return;
         const mX = mx + ((mx - cx) * (rate - 1)) / 2;
         const mY = my + ((my - cy) * (rate - 1)) / 2;
         const W = mX > X ? mX - X : 1200;

@@ -1,38 +1,42 @@
 import { SD2DNode } from "@/Node/SD2DNode";
+import { SDNode } from "@/Node/SDNode";
+import { RectSVG } from "@/Node/Shape/RectSVG";
 import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
-import { Factory } from "@/Utility/Factory";
 
 function castToId(tree, object) {
-    return Check.isTypeOfSDNode(object) ? tree.nodeId(object) : object;
+    return object instanceof SDNode ? tree.nodeId(object) : object;
 }
 
-export function BaseTree(parent) {
-    SD2DNode.call(this, parent);
+export class BaseTree extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.vars.merge({
-        x: 0,
-        y: 0,
-        links: [],
-        nodes: [],
-    });
+        this.newLayer("links");
+        this.newLayer("nodes");
 
-    this._.sdnodesMap = {}; // SDNode id -> { node: SDNode, id: TreeID } | { link: SDNode, sourceId: TreeID, targetId: TreeID }
-    this._.nodesMap = {}; // TreeID -> SDNode
-    this._.linksMap = new Map(); // TreeID -> SDNode
+        this.vars.merge({
+            x: 0,
+            y: 0,
+            links: [],
+            nodes: [],
+        });
+
+        this._.sdnodesMap = {}; 
+        this._.nodesMap = {}; 
+        this._.linksMap = new Map(); 
+    }
 }
 
-BaseTree.prototype = {
-    ...SD2DNode.prototype,
-    BASE_TREE: true,
-    x: Factory.handlerLowPrecise("x"),
-    y: Factory.handlerLowPrecise("y"),
+Object.assign(BaseTree.prototype, {
+    x: RectSVG.prototype.x,
+    y: RectSVG.prototype.y,
     rootId() {
         return this.nodeId(this.root());
     },
     nodeId(node) {
         if (node === undefined) return undefined;
-        if (Check.isTypeOfSDNode(node)) {
+        if (node instanceof SDNode) {
             if (!this._.sdnodesMap[node.id]) return undefined;
             return this._.sdnodesMap[node.id].id;
         } else {
@@ -169,14 +173,18 @@ BaseTree.prototype = {
         return linkList;
     },
     forEachNodeInSubtree(node, callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachNodeInSubtree`);
         this.nodesInSubtree(node).forEach(node => {
             callback(node, this.nodeId(node));
         });
+        return this;
     },
     forEachLinkInSubtree(node, callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachLinkInSubtree`);
         this.linksInSubtree(node).forEach(link => {
             callback(link, this.sourceId(link), this.targetId(link));
         });
+        return this;
     },
     nodesOnPath(source, target) {
         source = this.element(source);
@@ -219,18 +227,22 @@ BaseTree.prototype = {
         return [...sourceList, ...targetList.reverse()];
     },
     forEachNodeOnPath(source, target, callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachNodeOnPath`);
         this.nodesOnPath(source, target).forEach(node => callback(node, this.nodeId(node)));
         return this;
     },
     forEachLinkOnPath(source, target, callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachLinkOnPath`);
         this.linksOnPath(source, target).forEach(link => callback(link, this.sourceId(link), this.targetId(link)));
         return this;
     },
     forEachNode(callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachNode`);
         this.vars.nodes.forEach(node => callback(node, this.nodeId(node)));
         return this;
     },
     forEachLink(callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachLink`);
         this.vars.links.forEach(link => callback(link, this.sourceId(link), this.targetId(link)));
         return this;
     },
@@ -240,9 +252,11 @@ BaseTree.prototype = {
         return this;
     },
     link(sourceId, targetId, value) {
+        this.freeze();
         if (!this.findNodeById(targetId)) this.newNode(targetId);
         if (!this.findNodeById(sourceId)) this.newNode(sourceId);
         this.newLink(sourceId, targetId, value);
+        this.unfreeze();
         return this;
     },
     newNode() {
@@ -270,7 +284,7 @@ BaseTree.prototype = {
     element() {
         if (arguments.length === 1) {
             const [node] = arguments;
-            if (Check.isTypeOfSDNode(node)) return node;
+            if (node instanceof SDNode) return node;
             const [id] = arguments;
             return this.findNodeById(id);
         } else {
@@ -283,7 +297,7 @@ BaseTree.prototype = {
         if (arguments.length === 0) {
             return SD2DNode.prototype.opacity.call(this);
         } else if (arguments.length === 1) {
-            if (Check.isTypeOfOpacity(arguments[0])) {
+            if (Check.isOpacity(arguments[0])) {
                 const [opacity] = arguments;
                 return SD2DNode.prototype.opacity.call(this, opacity);
             } else {
@@ -291,7 +305,7 @@ BaseTree.prototype = {
                 return this.nodeOpacity(node);
             }
         } else if (arguments.length === 2) {
-            if (Check.isTypeOfOpacity(arguments[1])) {
+            if (Check.isOpacity(arguments[1])) {
                 const [node, opacity] = arguments;
                 return this.nodeOpacity(node, opacity);
             } else {
@@ -317,7 +331,7 @@ BaseTree.prototype = {
     },
     color() {
         if (arguments.length === 1) {
-            if (Check.isTypeOfColor(arguments[0])) {
+            if (Check.isColor(arguments[0])) {
                 const [color] = arguments;
                 return this.forEachNode(node => node.color(color));
             } else {
@@ -326,7 +340,7 @@ BaseTree.prototype = {
                 return _node.color();
             }
         } else if (arguments.length === 2) {
-            if (Check.isTypeOfColor(arguments[1])) {
+            if (Check.isColor(arguments[1])) {
                 const [node, color] = arguments;
                 const _node = this.__getNodeWithMethod(node, "color");
                 _node.color(color);
@@ -496,4 +510,4 @@ BaseTree.prototype = {
         if (typeof element[method] !== "function") ErrorLauncher.methodNotFound(element, method);
         return element;
     },
-};
+});

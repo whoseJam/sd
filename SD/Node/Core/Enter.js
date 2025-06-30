@@ -2,6 +2,14 @@ import { svg } from "@/Interact/Root";
 import { afterEffect } from "@/Node/Core/Reactive";
 
 export class Enter {
+    static nothing(layer) {
+        return function (element, move) {
+            move();
+            afterEffect(() => {
+                element.startAnimate(this);
+            });
+        };
+    }
     static appear(layer) {
         return function (element, move) {
             element.after(this.delay());

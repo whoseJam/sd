@@ -1,6 +1,7 @@
 const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
+const utils = require("./utils");
 const webpack = require("webpack-stream");
 const TerserPlugin = require("terser-webpack-plugin");
 const JavaScriptObfuscator = require("webpack-obfuscator");
@@ -16,7 +17,7 @@ function extractReversedNames() {
             const contents = match[1].split(",");
             contents.forEach(content => {
                 content = content.trim();
-                if (content === "CONTINUE_FRAME") return;
+                if (content === "CONTINUE_STAGE") return;
                 if (/^[A-Z]/.test(content)) matches.push(content);
             });
         }
@@ -34,6 +35,7 @@ function extractReversedNames() {
  * @returns {NodeJS.ReadWriteStream}
  */
 module.exports = function (targetFolder) {
+    if (targetFolder !== "./dist") utils.copyFonts("./dist/fonts", targetFolder);
     const config = getConfiguration();
     return (
         gulp
@@ -74,11 +76,21 @@ function getConfiguration() {
         module: {
             rules: [
                 {
-                    test: /.js$/,
+                    test: /\.(ts|tsx|js|jsx)$/,
+                    exclude: /node_modules/,
                     use: {
                         loader: "babel-loader",
                         options: {
-                            presets: ["@babel/preset-react", "@babel/preset-env"],
+                            presets: [
+                                "@babel/preset-react",
+                                "@babel/preset-env",
+                                [
+                                    "@babel/preset-typescript",
+                                    {
+                                        allowDeclareFields: true,
+                                    },
+                                ],
+                            ],
                         },
                     },
                 },

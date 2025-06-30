@@ -1,93 +1,70 @@
-export type HexColor = string;
-export type PacketColor = { fill: HexColor; stroke: HexColor };
-export type SDColor = HexColor | PacketColor;
+export class SDColor {
+    fill: string;
+    stroke: string;
+}
 
 export class Color {
-    static red: HexColor;
-    static blue: HexColor;
-    static cyan: HexColor;
-    static grey: HexColor;
-    static pink: HexColor;
+    static red: string;
+    static blue: string;
+    static cyan: string;
+    static grey: string;
+    static pink: string;
 
-    /**
-     * 雪白色
-     */
-    static snow: HexColor;
+    static snow: string;
 
-    static azure: HexColor;
-    static black: HexColor;
+    static azure: string;
+    static black: string;
 
-    /**
-     * 珊瑚红
-     */
-    static coral: HexColor;
+    static coral: string;
 
-    static green: HexColor;
-    static white: HexColor;
-    static orange: HexColor;
-    static purple: HexColor;
+    static green: string;
+    static white: string;
+    static orange: string;
+    static purple: string;
 
-    /**
-     * 紫罗兰色
-     */
-    static violet: HexColor;
+    static violet: string;
 
-    static yellow: HexColor;
-    static darkRed: HexColor;
-    static pureRed: HexColor;
-    static darkBlue: HexColor;
-    static darkGrey: HexColor;
-    static darkPink: HexColor;
-    static pureBlue: HexColor;
+    static yellow: string;
+    static darkRed: string;
+    static pureRed: string;
+    static darkBlue: string;
+    static darkGrey: string;
+    static darkPink: string;
+    static pureBlue: string;
 
-    /**
-     * 文本蓝
-     */
-    static textBlue: HexColor;
+    static textBlue: string;
 
-    static aliceBlue: HexColor;
-    static chocolate: HexColor;
-    static darkGreen: HexColor;
-    static paleGreen: HexColor;
+    static aliceBlue: string;
+    static chocolate: string;
+    static darkGreen: string;
+    static paleGreen: string;
 
-    /**
-     * 粉红桃色
-     */
-    static peachPuff: HexColor;
-    static pureGreen: HexColor;
-    static buttonGrey: HexColor;
-    static darkOrange: HexColor;
-    static darkPurple: HexColor;
+    static peachPuff: string;
+    static pureGreen: string;
+    static buttonGrey: string;
+    static darkOrange: string;
+    static darkPurple: string;
 
-    /**
-     * 幽灵白
-     */
-    static ghostWhite: HexColor;
+    static ghostWhite: string;
 
-    /**
-     * 天空蓝
-     */
-    static deepSkyBlue: HexColor;
+    static deepSkyBlue: string;
 
-    /**
-     * 柠檬绸色
-     */
-    static lemonChiffon: HexColor;
-    static darkButtonGrey: HexColor;
+    static lemonChiffon: string;
+    static darkButtonGrey: string;
 
-    static RED: PacketColor;
-    static BLUE: PacketColor;
-    static GREY: PacketColor;
-    static GREEN: PacketColor;
-    static ORANGE: PacketColor;
-    static PURPLE: PacketColor;
-    static DEFAULT: PacketColor;
-    static BUTTON_GREY: PacketColor;
+    static RED: SDColor;
+    static BLUE: SDColor;
+    static GREY: SDColor;
+    static GREEN: SDColor;
+    static ORANGE: SDColor;
+    static PURPLE: SDColor;
+    static DEFAULT: SDColor;
+    static BUTTON_GREY: SDColor;
 
-    static random: () => HexColor;
+    static random: () => string;
     static equal(a: SDColor, b: SDColor): boolean;
-    static gradient: (start: HexColor, end: HexColor, l: number, r: number) => (grad: number) => HexColor;
-    static doubleGradient: (start: HexColor, mid: HexColor, end: HexColor, l: number, m: number, r: number) => (grad: number) => HexColor;
+    static gradient: (start: string, end: string, l: number, r: number) => (grad: number) => string;
+    static doubleGradient: (start: string, mid: string, end: string, l: number, m: number, r: number) => (grad: number) => string;
 }
 
 export function color(): typeof Color;

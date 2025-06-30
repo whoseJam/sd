@@ -35,7 +35,6 @@ export class Dom {
 
     static addEventListener(element, event, callback) {
         element.addEventListener(event, callback);
-        // if (element.click) element.click();
     }
 
     static clone(element) {

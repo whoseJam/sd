@@ -1,22 +1,22 @@
 import { FixGapAxis } from "@/Node/Axis/FixGapAxis";
-import { BaseCoord } from "@/Node/Coord/BaseCoord";
 import { Coord } from "@/Node/Coord/Coord";
 
-export function FixGapCoord(parent) {
-    BaseCoord.call(this, parent);
+export class FixGapCoord extends Coord {
+    constructor(target) {
+        super(target, true);
 
-    this.type("FixGapCoord");
+        this.type("FixGapCoord");
 
-    this.childAs("y", new FixGapAxis(this).direction(0, -1).withTickLabel(true).tickLabelAlign("target"), (parent, child) => {
-        child.source(parent.pos("x", "my"));
-    });
-    this.childAs("x", new FixGapAxis(this).direction(1, 0).withTickLabel(true), (parent, child) => {
-        child.source(parent.pos("x", "my"));
-    });
+        this.childAs("y", new FixGapAxis(this).direction(0, -1).withTickLabel(true).tickLabelAlign("target"), (parent, child) => {
+            child.source(parent.pos("x", "my"));
+        });
+        this.childAs("x", new FixGapAxis(this).direction(1, 0).withTickLabel(true), (parent, child) => {
+            child.source(parent.pos("x", "my"));
+        });
+    }
 }
 
-FixGapCoord.prototype = {
-    ...Coord.prototype,
+Object.assign(FixGapCoord.prototype, {
     gap(by, gap) {
         if (arguments.length === 1) return this.axis(by).gap();
         this.axis(by).gap(gap);
@@ -32,4 +32,4 @@ FixGapCoord.prototype = {
         this.axis("y").length(height);
         return this;
     },
-};
+});

@@ -1,41 +1,41 @@
-import { randHexColor } from "@/Utility/Random";
+import { rand } from "@/Utility/Random";
 
 export class Color {
     static red = "#f14c4c";
     static blue = "#bbe0e3";
-    static cyan = "#00FFFF";
+    static cyan = "#00ffff";
     static grey = "#cccccc";
-    static pink = "#FF69B4";
+    static pink = "#ff69b4";
     static snow = "#fffafa";
-    static azure = "#F0FFFF";
+    static azure = "#f0ffff";
     static black = "#000000";
-    static brown = "#8B4726";
-    static coral = "#FF7256";
+    static brown = "#8b4726";
+    static coral = "#ff7256";
     static green = "#92d050";
     static white = "#ffffff";
     static orange = "#f58617";
-    static purple = "#DA70D6";
+    static purple = "#da70d6";
     static violet = "#ee82ee";
     static yellow = "#ffff4d";
     static darkRed = "#b13535";
     static pureRed = "#ff0000";
     static darkBlue = "#89a4a7";
     static darkGrey = "#808080";
-    static darkPink = "#FF1493";
+    static darkPink = "#ff1493";
     static pureBlue = "#0000ff";
     static textBlue = "#24b7ff";
-    static aliceBlue = "#F0F8FF";
-    static chocolate = "#D2691E";
+    static aliceBlue = "#f0f8ff";
+    static chocolate = "#d2691e";
     static darkGreen = "#006400";
-    static paleGreen = "#98FB98";
-    static peachPuff = "#FFDAB9";
+    static paleGreen = "#98fb98";
+    static peachPuff = "#ffdaB9";
     static pureGreen = "#00ff00";
-    static buttonGrey = "#F0F0F0";
+    static buttonGrey = "#f0f0f0";
     static darkOrange = "#b4610e";
-    static darkPurple = "#9932CC";
-    static ghostWhite = "#F8F8FF";
+    static darkPurple = "#9932cc";
+    static ghostWhite = "#f8f8ff";
     static deepSkyBlue = "#00bfff";
-    static lemonChiffon = "#FFFACD";
+    static lemonChiffon = "#fffacd";
     static darkButtonGrey = "#767676";
 
     static RED = { fill: this.red, stroke: this.darkRed };
@@ -47,7 +47,11 @@ export class Color {
     static DEFAULT = { fill: this.white, stroke: this.black };
     static BUTTON_GREY = { fill: this.buttonGrey, stroke: this.darkButtonGrey };
 
-    static random = randHexColor;
+    static random() {
+        const hexCharacters = "0123456789abcdef";
+        const randHex = () => hexCharacters[rand(0, hexCharacters.length - 1)];
+        return "#" + randHex() + randHex() + randHex() + randHex() + randHex() + randHex();
+    }
 
     static equal(a, b) {
         if (a.fill && b.fill) return a.fill === b.fill && a.stroke === b.stroke;
@@ -59,7 +63,6 @@ export class Color {
         [start, end] = [HexToRGB(start), HexToRGB(end)];
         return function (at) {
             const k = (at - l) / (r - l);
-            console.log("get color l=", l, "r=", r, "at=", at, "k=", k);
             const color = {
                 r: start.r + (end.r - start.r) * k,
                 g: start.g + (end.g - start.g) * k,

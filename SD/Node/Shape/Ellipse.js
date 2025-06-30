@@ -2,24 +2,26 @@ import { Vector as V } from "@/Math/Vector";
 import { getTargetLayer } from "@/Node/SDNode";
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
 import { polygon } from "@flatten-js/core";
+import { BaseShape } from "./BaseShape";
 
-export function Ellipse(target) {
-    const targetLayer = getTargetLayer(target);
-    if (targetLayer instanceof HTMLNode) {
-        const { EllipseHTML } = require("@/Node/HTML/Shape/EllipseHTML");
-        return new EllipseHTML(target);
-    } else {
-        const { EllipseSVG } = require("@/Node/SVG/Shape/EllipseSVG");
-        return new EllipseSVG(target);
+export class Ellipse extends BaseShape {
+    constructor(target) {
+        const targetLayer = getTargetLayer(target);
+        if (targetLayer instanceof HTMLNode) {
+            const { EllipseHTML } = require("@/Node/Shape/EllipseHTML");
+            return new EllipseHTML(target);
+        } else {
+            const { EllipseSVG } = require("@/Node/Shape/EllipseSVG");
+            return new EllipseSVG(target);
+        }
     }
 }
 
-Ellipse.prototype = {
+Object.assign(Ellipse.prototype, {
     toPolygon() {
         const vertices = [];
         for (let i = 0; i < 128; i++) {
             const direction = [
-                // format
                 this.rx() * Math.cos(Math.PI * 2 * (i / 128)),
                 this.ry() * Math.sin(Math.PI * 2 * (i / 128)),
             ];
@@ -28,4 +30,4 @@ Ellipse.prototype = {
         }
         return polygon(vertices);
     },
-};
+});

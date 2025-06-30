@@ -14,6 +14,7 @@ export class BaseCoord extends SD2DNode {
     localY(x: number, y: number): number;
     localY(v: [number, number]): number;
     global(x: number, y: number): [number, number];
+    global(v: [number, number]): [number, number];
     globalX(x: number): number;
     globalX(x: number, y: number): number;
     globalX(v: [number, number]): number;

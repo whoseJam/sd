@@ -1,28 +1,29 @@
 import { BaseElement } from "@/Node/Element/BaseElement";
 import { Circle } from "@/Node/Shape/Circle";
-import { CircleSVG } from "@/Node/SVG/Shape/CircleSVG";
+import { CircleSVG } from "@/Node/Shape/CircleSVG";
 import { Rule as R } from "@/Rule/Rule";
 import { Factory } from "@/Utility/Factory";
 
-export function Vertex(target, value) {
-    BaseElement.call(this, target);
+export class Vertex extends BaseElement {
+    constructor(target, value) {
+        super(target);
 
-    this.type("Vertex");
+        this.type("Vertex");
 
-    this.vars.merge({
-        r: 20,
-    });
+        this.vars.merge({
+            r: 20,
+        });
 
-    const background = new Circle(this);
-    this.childAs("background", background, R.circleBackground());
+        const background = new Circle(this);
+        this.childAs("background", background, R.circleBackground());
 
-    this.value(value);
+        this.value(value);
+    }
 }
 
-Vertex.prototype = {
-    ...BaseElement.prototype,
+Object.assign(Vertex.prototype, {
     r: Factory.handlerLowPrecise("r"),
     width: CircleSVG.prototype.width,
     height: CircleSVG.prototype.height,
     inRange: CircleSVG.prototype.inRange,
-};
+});

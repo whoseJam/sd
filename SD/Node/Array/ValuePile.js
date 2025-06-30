@@ -1,28 +1,32 @@
 import { Pile } from "@/Node/Array/Pile";
+import { Check } from "@/Utility/Check";
 import { Factory } from "@/Utility/Factory";
 
-export function ValuePile(target) {
-    Pile.call(this, target);
+export class ValuePile extends Pile {
+    constructor(target) {
+        super(target);
 
-    this.type("ValuePile");
+        this.type("ValuePile");
 
-    this.vars.merge({
-        align: "cx",
-    });
+        Check.validateArgumentsCountEqualTo(arguments, 1, `${this.type()}.constructor`);
 
-    this.uneffect("pile");
-    this.effect("valuePile", () => {
-        const align = this.align();
-        this.vars.elements.forEach((element, i) => {
-            this.tryUpdate(element, () => {
-                element.cy(this.my() - this.elementHeight() * (i + 0.5));
-                element[align](this[align]());
+        this.vars.merge({
+            align: "cx",
+        });
+
+        this.uneffect("array");
+        this.effect("array", () => {
+            const align = this.align();
+            this.vars.elements.forEach((element, i) => {
+                this.tryUpdate(element, () => {
+                    element.cy(this.my() - this.elementHeight() * (i + 0.5));
+                    element[align](this[align]());
+                });
             });
         });
-    });
+    }
 }
 
-ValuePile.prototype = {
-    ...Pile.prototype,
+Object.assign(ValuePile.prototype, {
     align: Factory.handler("align"),
-};
+});

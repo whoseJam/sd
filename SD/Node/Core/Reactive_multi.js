@@ -1,4 +1,4 @@
-import { Check } from "@/Utility/Check";
+import { SDNode } from "@/Node/SDNode";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 
 function hasChanged(oldValue, newValue, precise) {
@@ -27,12 +27,12 @@ class Queue {
     has(callback) {
         return callback[this.label];
     }
-    execute(init = false) {
+    execute() {
         while (this.queue.length > 0) {
             const callback = this.queue[0];
             this.queue.shift();
             const effectManager = effectsMap.get(callback);
-            if (init || effectManager.anyInputHasChanged()) callback();
+            if (effectManager.anyInputHasChanged()) callback();
             callback[this.label] = false;
         }
     }
@@ -46,9 +46,9 @@ class Queue {
     }
 }
 
-const proxiesMap = new WeakMap(); // proxy -> object
-const effectsMap = new WeakMap(); // effect -> EffectManager
-const objectsMap = new WeakMap(); // object -> ObjectManager
+const proxiesMap = new WeakMap(); 
+const effectsMap = new WeakMap(); 
+const objectsMap = new WeakMap(); 
 const effectQueue = new Queue("Effect");
 const freezeQueue = new Queue("Freeze");
 const afterEffects = [];
@@ -98,6 +98,10 @@ class EffectManager {
         return hasChanged(old.value, object[key], objectManager.precise.get(key));
     }
     anyInputHasChanged() {
+        if (!this.inited) {
+            this.inited = true;
+            return true;
+        }
         for (let i = 0; i < this.in.length; i++) {
             const old = this.in[i];
             const objectManager = objectsMap.get(old.object);
@@ -197,6 +201,18 @@ export function setPrecise(proxy, key, type) {
     objectManager.precise.set(key, type);
 }
 
+function lowPrecise(oldValue, newValue) {
+    return Math.abs(oldValue - newValue) >= 1;
+}
+
+function mediumPrecise(oldValue, newValue) {
+    return Math.abs(oldValue - newValue) >= 1e-1;
+}
+
+function highPrecise(oldValue, newValue) {
+    return Math.abs(oldValue - newValue) >= 1e-2;
+}
+
 export function reactive(object) {
     if (objectsMap.has(object)) return objectsMap.get(object).proxy;
     let associated = {};
@@ -204,7 +220,7 @@ export function reactive(object) {
         get(object, key, receiver) {
             const value = Reflect.get(object, key, receiver);
             traceInput(object, key, value);
-            if (Check.isTypeOfSDNode(value)) return value;
+            if (value instanceof SDNode) return value;
             if (typeof value === "object") {
                 return reactive(value, object);
             }
@@ -224,13 +240,16 @@ export function reactive(object) {
                 }
             }
             Reflect.set(object, key, value, receiver);
+            if (key === "x") {
+                console.log("GlobalAllow=", GlobalAllow(), "value=", value);
+            }
             triggerUpdate(object, key);
             return true;
         },
     });
     proxiesMap.set(proxy, object);
     objectsMap.set(object, new ObjectManager(object, proxy));
-    object.associate = function (key, callback) {
+    object.watch = function (key, callback) {
         if (arguments.length === 0) return associated;
         const keys = key.split(".");
         for (let i = 0; i < keys.length; i++) {
@@ -239,7 +258,7 @@ export function reactive(object) {
                 associated[keys[i]].push(callback);
             } else {
                 const str = keys.slice(i + 1).join(".");
-                proxy[keys[i]].associate(str, callback);
+                proxy[keys[i]].watch(str, callback);
             }
         }
     };
@@ -251,6 +270,7 @@ export function reactive(object) {
     object.setTogether = function (items) {
         const objects = [];
         const keys = [];
+        const callbacks = [];
         for (const key in items) {
             const value = items[key];
             if (proxiesMap.get(object)) object = proxiesMap.get(object);
@@ -262,14 +282,31 @@ export function reactive(object) {
             if (associated[key]) {
                 if (hasChanged(oldValue, newValue) || (Array.isArray(object) && key === "length")) {
                     associated[key].forEach(callback => {
-                        callback(newValue, oldValue);
+                        callbacks.push(() => {
+                            callback(newValue, oldValue);
+                        });
                     });
                 }
             }
             objects.push(object);
             keys.push(key);
         }
+        callbacks.forEach(callback => {
+            callback();
+        });
         triggerUpdates(objects, keys);
+    };
+    object.lpset = function (key, value) {
+        setPrecise(proxy, key, lowPrecise);
+        proxy[key] = value;
+    };
+    object.mpset = function (key, value) {
+        setPrecise(proxy, key, mediumPrecise);
+        proxy[key] = value;
+    };
+    object.hpset = function (key, value) {
+        setPrecise(proxy, key, highPrecise);
+        proxy[key] = value;
     };
     return proxy;
 }
@@ -277,12 +314,7 @@ export function reactive(object) {
 export function effect(innerEffect, tag) {
     const effect = () => {
         window.EFFECT_COUNT++;
-        let tmpEffect = undefined;
-        let tmpQueue = undefined;
-        if (globalActiveEffect) {
-            [tmpEffect, tmpQueue] = [globalActiveEffect, effectQueue.queue];
-            [globalActiveEffect, effectQueue.queue] = [undefined, []];
-        }
+        if (globalActiveEffect) throw new Error("Invalid Status");
         globalActiveEffect = effect;
         const effectManager = effectsMap.get(effect);
         const out = effectManager.out;
@@ -290,10 +322,6 @@ export function effect(innerEffect, tag) {
         innerEffect();
         effectManager.outputUpdate(out);
         globalActiveEffect = undefined;
-        if (tmpEffect) {
-            [globalActiveEffect, effectQueue.queue] = [tmpEffect, tmpQueue];
-            [tmpEffect, tmpQueue] = [undefined, undefined];
-        }
     };
     let freeze = 0;
     effect.freeze = function () {
@@ -311,13 +339,21 @@ export function effect(innerEffect, tag) {
     };
     effectsMap.set(effect, new EffectManager(effect));
     afterEffects.push([]);
-    globalAllowUpdate = false;
-    effectQueue.pushBack(effect);
-    effect.tag = tag || innerEffect;
-    effectQueue.execute(true);
-    globalAllowUpdate = true;
-    const callbacks = afterEffects.shift();
-    callbacks.forEach(callback => callback());
+    if (!globalAllowUpdate) {
+        effectQueue.pushBack(effect);
+        effect.tag = tag || innerEffect;
+        const callbacks = afterEffects.shift();
+        callbacks.forEach(callback => callback());
+        console.log("effect in effect! current effect queue=", effectQueue.queue.length);
+    } else {
+        globalAllowUpdate = false;
+        effectQueue.pushBack(effect);
+        effect.tag = tag || innerEffect;
+        effectQueue.execute(true);
+        globalAllowUpdate = true;
+        const callbacks = afterEffects.shift();
+        callbacks.forEach(callback => callback());
+    }
     return effect;
 }
 

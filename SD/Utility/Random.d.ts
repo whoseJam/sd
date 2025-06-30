@@ -7,5 +7,3 @@ export function randLowerCaseAlphabet(): string;
 export function randUpperCaseAlphabet(): string;
 
 export function randSpecialChar(): string;
-
-export function randHexColor(): string;

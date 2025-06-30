@@ -1,6 +1,12 @@
 const iframesMap = new Map();
 const cache = {};
-let globalArgs = {};
+let globalArgs = {
+    getURL(iframe) {
+        let url = iframe.getAttribute("data-animation");
+        if (url.endsWith(".js")) url = url.replace(".js", ".html");
+        return url;
+    },
+};
 let id = 0;
 
 function getAttribute(iframe, key, _default = undefined) {
@@ -12,7 +18,12 @@ function getAttribute(iframe, key, _default = undefined) {
 function getBox(str) {
     if (str === undefined) return undefined;
     const values = str.split(" ");
-    return { x: +values[0], y: +values[1], width: +values[2], height: +values[3] };
+    return {
+        x: +values[0],
+        y: +values[1],
+        width: +values[2],
+        height: +values[3],
+    };
 }
 
 window.SetAnimationSize = function (id, url, x, y, width, height) {
@@ -26,6 +37,13 @@ window.ResetAnimationSize = function (id, url) {
     const iframeManager = iframesMap.get(iframe);
     iframeManager.reload();
 };
+
+window.addEventListener("message", event => {
+    const data = event.data;
+    if (data.operator && data.arguments) {
+        window[data.operator].apply(window, data.arguments);
+    }
+});
 
 class IFrameManager {
     constructor(iframe) {
@@ -49,29 +67,103 @@ class IFrameManager {
             this.iframe.onload = () => {
                 const callback = event => {
                     if (event && event.source !== this.iframe.contentWindow) return;
-                    this.iframe.contentWindow.SetViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height, this.rate);
-                    this.iframe.contentWindow.Message("IFRAME_ID", this.id);
-                    this.iframe.contentWindow.Message("IFRAME_URL", this.url);
-                    if (this.args) this.iframe.contentWindow.Message("IFRAME_ARGS", this.args());
-                    this.iframe.contentWindow.Message("IFRAME_INITED", true);
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "SetViewBox",
+                            arguments: [viewBox.x, viewBox.y, viewBox.width, viewBox.height, this.rate],
+                        },
+                        "*"
+                    );
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_ID", this.id],
+                        },
+                        "*"
+                    );
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_URL", this.url],
+                        },
+                        "*"
+                    );
+                    if (this.args)
+                        this.iframe.contentWindow.postMessage(
+                            {
+                                operator: "Message",
+                                arguments: ["IFRAME_ARGS", this.args()],
+                            },
+                            "*"
+                        );
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_INITED", true],
+                        },
+                        "*"
+                    );
                     window.removeEventListener("message", callback);
                 };
-                if (!this.iframe.contentWindow.SetViewBox) window.addEventListener("message", callback);
-                else callback();
+                window.addEventListener("message", callback);
+                this.iframe.contentWindow.postMessage(
+                    {
+                        operator: "OnInited",
+                        arguments: [],
+                    },
+                    "*"
+                );
             };
         } else {
             this.iframe.onload = () => {
                 const callback = event => {
                     if (event && event.source !== this.iframe.contentWindow) return;
-                    this.iframe.contentWindow.Message("IFRAME_ID", this.id);
-                    this.iframe.contentWindow.Message("IFRAME_URL", this.url);
-                    if (this.args) iframe.contentWindow.Message("IFRAME_ARGS", this.args());
-                    this.iframe.contentWindow.Message("IFRAME_INITED", true);
-                    this.iframe.contentWindow.Flush(this.id, this.url, this.rate, false, this.maxFrame);
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_ID", this.id],
+                        },
+                        "*"
+                    );
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_URL", this.url],
+                        },
+                        "*"
+                    );
+                    if (this.args)
+                        iframe.contentWindow.postMessage(
+                            {
+                                operator: "Message",
+                                arguments: ["IFRAME_ARGS", this.args()],
+                            },
+                            "*"
+                        );
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_INITED", true],
+                        },
+                        "*"
+                    );
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            operator: "Flush",
+                            arguments: [this.id, this.url, this.rate, false, this.maxFrame],
+                        },
+                        "*"
+                    );
                     window.removeEventListener("message", callback);
                 };
-                if (!this.iframe.contentWindow.SetViewBox) window.addEventListener("message", callback);
-                else callback();
+                window.addEventListener("message", callback);
+                this.iframe.contentWindow.postMessage(
+                    {
+                        operator: "OnInited",
+                        arguments: [],
+                    },
+                    "*"
+                );
             };
         }
         this.iframe.setAttribute("src", this.url);
@@ -122,25 +214,80 @@ class IFrameManager {
         this.iframe.onload = () => {
             const callback = event => {
                 if (event && event.source !== this.iframe.contentWindow) return;
-                this.iframe.contentWindow.SetViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height, this.rate);
-                this.iframe.contentWindow.Message("IFRAME_ID", this.id);
-                this.iframe.contentWindow.Message("IFRAME_URL", this.url);
-                if (this.args) iframe.contentWindow.Message("IFRAME_ARGS", this.args());
-                this.iframe.contentWindow.Message("IFRAME_INITED", true);
+                this.iframe.contentWindow.postMessage(
+                    {
+                        operator: "SetViewBox",
+                        arguments: [viewBox.x, viewBox.y, viewBox.width, viewBox.height, this.rate],
+                    },
+                    "*"
+                );
+                this.iframe.contentWindow.postMessage(
+                    {
+                        operator: "Message",
+                        arguments: ["IFRAME_ID", this.id],
+                    },
+                    "*"
+                );
+                this.iframe.contentWindow.postMessage(
+                    {
+                        operator: "Message",
+                        arguments: ["IFRAME_URL", this.url],
+                    },
+                    "*"
+                );
+                if (this.args)
+                    iframe.contentWindow.postMessage(
+                        {
+                            operator: "Message",
+                            arguments: ["IFRAME_ARGS", this.args()],
+                        },
+                        "*"
+                    );
+                this.iframe.contentWindow.postMessage(
+                    {
+                        operator: "Message",
+                        arguments: ["IFRAME_INITED", true],
+                    },
+                    "*"
+                );
                 window.removeEventListener("message", callback);
             };
-            if (!this.iframe.contentWindow.SetViewBox) window.addEventListener("message", callback);
-            else callback();
+            window.addEventListener("message", callback);
+            this.iframe.contentWindow.postMessage(
+                {
+                    operator: "OnInited",
+                    arguments: [],
+                },
+                "*"
+            );
         };
-        this.iframe.contentWindow.location.reload();
+        this.iframe.contentWindow.postMessage(
+            {
+                operator: "Reload",
+                arguments: [],
+            },
+            "*"
+        );
     }
 
     startAnimateRequest() {
-        this.iframe.contentWindow.StartAnimate();
+        this.iframe.contentWindow.postMessage(
+            {
+                operator: "StartAnimate",
+                arguments: [],
+            },
+            "*"
+        );
     }
 
     stopAnimateRequest() {
-        this.iframe.contentWindow.StopAnimate();
+        this.iframe.contentWindow.postMessage(
+            {
+                operator: "StopAnimate",
+                arguments: [],
+            },
+            "*"
+        );
     }
 }
 

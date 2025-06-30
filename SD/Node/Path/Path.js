@@ -1,5 +1,8 @@
-import { PathSVG } from "@/Node/SVG/Path/PathSVG";
+import { BasePath } from "@/Node/Path/BasePath";
 
-export function Path(target) {
-    return new PathSVG(target);
+export class Path extends BasePath {
+    constructor(target) {
+        const { PathSVG } = require("@/Node/Path/PathSVG");
+        return new PathSVG(target);
+    }
 }

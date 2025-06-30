@@ -1,23 +1,22 @@
 import { Enter as EN } from "@/Node/Core/Enter";
-import { effect } from "@/Node/Core/Reactive";
 import { BaseGraph } from "@/Node/Graph/BaseGraph";
 import { GridGraph } from "@/Node/Graph/GridGraph";
 import { Cast } from "@/Utility/Cast";
 
-export function TinyGraph(parent) {
-    BaseGraph.call(this, parent);
+export class TinyGraph extends BaseGraph {
+    constructor(target) {
+        super(target);
 
-    this.type("TinyGraph");
+        this.type("TinyGraph");
 
-    this.effect("tinyGraph", () => {});
-    this._.updater = effect(() => {
-        const update = updateMap[this.vars.nodes.length];
-        update?.call(this, this.vars.nodes);
-    });
+        this.effect("tinyGraph", () => {
+            const update = updateMap[this.vars.nodes.length];
+            update?.call(this, this.vars.nodes);
+        });
+    }
 }
 
-TinyGraph.prototype = {
-    ...BaseGraph.prototype,
+Object.assign(TinyGraph.prototype, {
     newNode(id, value) {
         const element = new this._.nodeType(this.layer("nodes"));
         element.value(Cast.castToSDNode(element, value, id));
@@ -26,7 +25,7 @@ TinyGraph.prototype = {
         return this;
     },
     newLink: GridGraph.prototype.newLink,
-};
+});
 
 const updateMap = {
     1: function (nodes) {

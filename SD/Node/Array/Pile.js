@@ -1,33 +1,37 @@
 import { Array } from "@/Node/Array/Array";
 import { BaseArray } from "@/Node/Array/BaseArray";
+import { Check } from "@/Utility/Check";
 import { Factory } from "@/Utility/Factory";
 
-export function Pile(target) {
-    BaseArray.call(this, target);
+export class Pile extends BaseArray {
+    constructor(target) {
+        super(target);
 
-    this.type("Pile");
+        this.type("Pile");
 
-    this.vars.merge({
-        x: 0,
-        my: 0,
-        elementWidth: 40,
-        elementHeight: 40,
-    });
+        Check.validateArgumentsCountEqualTo(arguments, 1, `${this.type()}.constructor`);
 
-    this.effect("pile", () => {
-        this.vars.elements.forEach((element, i) => {
-            this.tryUpdate(element, () => {
-                element.width(this.elementWidth());
-                element.height(this.elementHeight());
-                element.x(this.x());
-                element.y(this.my() - (i + 1) * this.elementHeight());
+        this.vars.merge({
+            x: 0,
+            my: 0,
+            elementWidth: 40,
+            elementHeight: 40,
+        });
+
+        this.effect("array", () => {
+            this.vars.elements.forEach((element, i) => {
+                this.tryUpdate(element, () => {
+                    element.width(this.elementWidth());
+                    element.height(this.elementHeight());
+                    element.x(this.x());
+                    element.y(this.my() - (i + 1) * this.elementHeight());
+                });
             });
         });
-    });
+    }
 }
 
-Pile.prototype = {
-    ...BaseArray.prototype,
+Object.assign(Pile.prototype, {
     y(y) {
         if (y === undefined) return this.my() - this.height();
         this.my(y + this.height());
@@ -45,6 +49,6 @@ Pile.prototype = {
         this.elementHeight(height / length);
         return this;
     },
-};
+});
 
 Pile.prototype.width = Pile.prototype.elementWidth;

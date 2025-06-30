@@ -21,7 +21,7 @@ PathPen.prototype = {
 };
 
 function checkNumberIsValid(label, x) {
-    if (!Check.isValidNumber(x)) {
+    if (!Check.isNumber(x)) {
         throw new Error(`Number ${label} = ${x} Is Not Valid`);
     }
 }

@@ -4,20 +4,20 @@ import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
-export function BaseArray(target) {
-    SD2DNode.call(this, target);
+export class BaseArray extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.newLayer("elements");
+        this.newLayer("elements");
 
-    this.vars.merge({
-        start: 0,
-        elements: [],
-    });
+        this.vars.merge({
+            start: 0,
+            elements: [],
+        });
+    }
 }
 
-BaseArray.prototype = {
-    ...SD2DNode.prototype,
-    BASE_ARRAY: true,
+Object.assign(BaseArray.prototype, {
     x: Factory.handlerLowPrecise("x"),
     y: Factory.handlerLowPrecise("y"),
     start: Factory.handler("start"),
@@ -37,16 +37,13 @@ BaseArray.prototype = {
     resize(size) {
         return this.length(size);
     },
-    idx(i) {
-        return i - this.start();
-    },
     indexOf(element) {
         for (let i = this.start(); i <= this.end(); i++) if (this.element(i) === element) return i;
         return -1;
     },
 
     element(i) {
-        const id = this.idx(i);
+        const id = this.__idx(i);
         if (0 <= id && id < this.length()) return this.vars.elements[id];
         return undefined;
     },
@@ -60,6 +57,7 @@ BaseArray.prototype = {
         return this.element(this.end());
     },
     forEachElement(callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachElement`);
         this.vars.elements.forEach((element, id) => callback(element, id + this.start()));
         return this;
     },
@@ -68,7 +66,7 @@ BaseArray.prototype = {
         if (arguments.length === 0) {
             return SD2DNode.prototype.opacity.call(this);
         } else if (arguments.length === 1) {
-            if (Check.isTypeOfOpacity(arguments[0])) {
+            if (Check.isOpacity(arguments[0])) {
                 const [opacity] = arguments;
                 return SD2DNode.prototype.opacity.call(this, opacity);
             } else {
@@ -85,7 +83,7 @@ BaseArray.prototype = {
     },
     color() {
         if (arguments.length === 1) {
-            if (Check.isTypeOfColor(arguments[0])) {
+            if (Check.isColor(arguments[0])) {
                 const [color] = arguments;
                 return this.forEachElement(element => element.color(color));
             } else {
@@ -126,8 +124,9 @@ BaseArray.prototype = {
         }
         return element.intValue();
     },
-    value(id, value) {
-        const element = this.__getElementWithMethod(id, "value");
+    value(i, value) {
+        Check.validateNumber(i, `${this.type()}.value`);
+        const element = this.__getElementWithMethod(i, "value");
         if (arguments.length === 1) {
             return element.value();
         } else {
@@ -212,9 +211,12 @@ BaseArray.prototype = {
         return this;
     },
 
+    __idx(i) {
+        return i - this.start();
+    },
     __insert(id, element) {
         this.childAs(element);
-        const idx = this.idx(id);
+        const idx = this.__idx(id);
         if (idx < 0 || idx > this.length()) ErrorLauncher.outOfRangeError(id);
         this.vars.elements.splice(idx, 0, element);
         return this;
@@ -222,7 +224,7 @@ BaseArray.prototype = {
     __erase(id) {
         const element = this.element(id);
         const elements = this.vars.elements;
-        elements.splice(this.idx(id), 1);
+        elements.splice(this.__idx(id), 1);
         this.eraseChild(element);
         return this;
     },
@@ -232,4 +234,4 @@ BaseArray.prototype = {
         if (typeof element[method] !== "function") ErrorLauncher.methodNotFound(element, method);
         return element;
     },
-};
+});

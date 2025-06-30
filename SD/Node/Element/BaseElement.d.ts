@@ -1,33 +1,35 @@
 import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
+import { BaseShape } from "@/Node/Shape/BaseShape";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { SDRule } from "@/Rule/Rule";
-import { HexColor, PacketColor, SDColor } from "@/Utility/Color";
+import { SDColor } from "@/Utility/Color";
 
 export class BaseElement extends SD2DNode {
     constructor(target: SDNode | RenderNode, value?: any);
 
     rate(): number;
     rate(rate: number): this;
-    color(): PacketColor;
-    color(color: SDColor): this;
-    fill(): HexColor;
-    fill(fill: HexColor): this;
+    color(): SDColor;
+    color(color: SDColor | string): this;
+    fill(): string;
+    fill(fill: string): this;
     fillOpacity(): number;
     fillOpacity(opacity: number): this;
-    stroke(): HexColor;
-    stroke(stroke: HexColor): this;
+    stroke(): string;
+    stroke(stroke: string): this;
     strokeOpacity(): number;
     strokeOpacity(opacity: number): this;
     strokeWidth(): number;
     strokeWidth(width: number): this;
-    background(): SDNode;
+
+    background(): BaseShape;
 
     text(): string;
-    text(text: string): this;
+    text(text: number | string): this;
     intValue(): number;
-    value(): SDNode | undefined;
+    value(): SD2DNode | undefined;
     value(value: any, rule?: SDRule): this;
-    valueFromExist(value: SDNode, rule?: SDRule): this;
-    drop(): SDNode | undefined;
+    valueFromExist(value: SD2DNode, rule?: SDRule): this;
+    drop(): SD2DNode | undefined;
 }

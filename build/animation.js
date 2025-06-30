@@ -27,6 +27,11 @@ function validateJSFile(sourceFilePath) {
     }
 }
 
+function truncateAtStackTrace(errorMessage) {
+    const index = errorMessage.indexOf("    at");
+    return index !== -1 ? errorMessage.substring(0, index) : errorMessage;
+}
+
 /**
  * Compile xxx.js to the target folder.
  * @param {string} source The source js file path.
@@ -34,7 +39,7 @@ function validateJSFile(sourceFilePath) {
  * @returns {NodeJS.ReadWriteStream}
  */
 function task(source, targetFolder) {
-    source = source.replace("\\", "/");
+    source = source.replaceAll("\\", "/");
     validateJSFile(source);
     const file = String(source).split("/").slice(-1)[0].split(".")[0];
     const config = getConfiguration(file);
@@ -43,6 +48,12 @@ function task(source, targetFolder) {
             // webpack stream
             .src(source)
             .pipe(webpack(config))
+            .on("error", error => {
+                if (global["s"]) {
+                    console.error(truncateAtStackTrace(error.message));
+                    process.exit(1);
+                }
+            })
             .pipe(gulp.dest(targetFolder))
     );
 }
@@ -63,7 +74,8 @@ function launch(selfLaunch = true) {
         console.log(colors("cyan", "Usage: animation -i <source file path> [-o <target path>]"));
         process.exit();
     }
-    if (global["l"] && !global["sd"]) utils.copyFile("./dist/sd.js", parser.parseConfig("pptOutputPath"));
+    if (global["l"] && !global["sd"] && !global["s"]) utils.copyFile("./dist/sd.js", parser.parseConfig("pptOutputPath"));
+    if (global["l"] && !global["sd"] && !global["s"]) utils.copyFonts("./dist/fonts", parser.parseConfig("pptOutputPath"));
     return task(sourceFilePath, animationOutputPath);
 }
 

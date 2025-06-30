@@ -1,34 +1,38 @@
 import { BaseArray } from "@/Node/Array/BaseArray";
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Box } from "@/Node/Element/Box";
+import { Check } from "@/Utility/Check";
 import { Factory } from "@/Utility/Factory";
 
-export function Array(target) {
-    BaseArray.call(this, target);
+export class Array extends BaseArray {
+    constructor(target) {
+        super(target);
 
-    this.type("Array");
+        this.type("Array");
 
-    this.vars.merge({
-        x: 0,
-        y: 0,
-        elementWidth: 40,
-        elementHeight: 40,
-    });
+        Check.validateArgumentsCountEqualTo(arguments, 1, `${this.type()}.constructor`);
 
-    this.effect("array", () => {
-        this.vars.elements.forEach((element, id) => {
-            this.tryUpdate(element, () => {
-                element.x(this.x() + id * this.elementWidth());
-                element.y(this.y());
-                element.width(this.elementWidth());
-                element.height(this.elementHeight());
+        this.vars.merge({
+            x: 0,
+            y: 0,
+            elementWidth: 40,
+            elementHeight: 40,
+        });
+
+        this.effect("array", () => {
+            this.vars.elements.forEach((element, id) => {
+                this.tryUpdate(element, () => {
+                    element.x(this.x() + id * this.elementWidth());
+                    element.y(this.y());
+                    element.width(this.elementWidth());
+                    element.height(this.elementHeight());
+                });
             });
         });
-    });
+    }
 }
 
-Array.prototype = {
-    ...BaseArray.prototype,
+Object.assign(Array.prototype, {
     width(width) {
         if (width === undefined) return this.elementWidth() * this.length();
         const length = this.length() ? this.length() : 1;
@@ -55,6 +59,6 @@ Array.prototype = {
     },
     elementWidth: Factory.handlerLowPrecise("elementWidth"),
     elementHeight: Factory.handlerLowPrecise("elementHeight"),
-};
+});
 
 Array.prototype.height = Array.prototype.elementHeight;

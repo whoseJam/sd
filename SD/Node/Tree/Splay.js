@@ -1,20 +1,18 @@
 import { BinaryTree } from "@/Node/Tree/BinaryTree";
 import { trim } from "@/Utility/Trim";
 
-export function Splay(parent) {
-    BinaryTree.call(this, parent);
+export class Splay extends BinaryTree {
+    constructor(target) {
+        super(target);
 
-    this.type("Splay");
+        this.type("Splay");
 
-    this.uneffect("binaryTree");
-    this.effect("splay", () => {
-        SplayLayout.call(this, "vertical");
-    });
+        this.uneffect("tree");
+        this.effect("tree", () => {
+            SplayLayout.call(this, "vertical");
+        });
+    }
 }
-
-Splay.prototype = {
-    ...BinaryTree.prototype,
-};
 
 function SplayLayout(mode) {
     const childrenMap = this._.childrenMap;

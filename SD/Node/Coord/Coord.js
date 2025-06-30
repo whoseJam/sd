@@ -4,22 +4,35 @@ import { Axis } from "@/Node/Axis/Axis";
 import { BaseCoord } from "@/Node/Coord/BaseCoord";
 import { Enter as EN } from "@/Node/Core/Enter";
 import { Path } from "@/Node/Path/Path";
-import { CircleSVG } from "@/Node/SVG/Shape/CircleSVG";
-import { RectSVG } from "@/Node/SVG/Shape/RectSVG";
+import { CircleSVG } from "@/Node/Shape/CircleSVG";
+import { RectSVG } from "@/Node/Shape/RectSVG";
 import { Check } from "@/Utility/Check";
+import { Factory } from "@/Utility/Factory";
 import { PathPen } from "@/Utility/PathPen";
 
-export function Coord(parent) {
-    BaseCoord.call(this, parent);
+export class Coord extends BaseCoord {
+    constructor(target, prevent = false) {
+        super(target);
 
-    this.type("Coord");
+        this.type("Coord");
 
-    this.childAs("x", new Axis(this).direction(1, 0).withTickLabel(true), (parent, child) => {
-        child.source(parent.pos("x", "my")).length(parent.width());
-    });
-    this.childAs("y", new Axis(this).direction(0, -1).withTickLabel(true).tickLabelAlign("target"), (parent, child) => {
-        child.source(parent.pos("x", "my")).length(parent.height());
-    });
+        this.vars.merge({
+            origin: "bl",
+        });
+
+        if (!prevent) {
+            this.childAs("x", new Axis(this).direction(1, 0).withTickLabel(true), (parent, child) => {
+                if (this.origin() === "bl") child.source(parent.pos("x", "my"));
+                else if (this.origin() === "c") child.source(parent.pos("x", "cy"));
+                child.length(parent.width());
+            });
+            this.childAs("y", new Axis(this).direction(0, -1).withTickLabel(true).tickLabelAlign("target"), (parent, child) => {
+                if (this.origin() === "bl") child.source(parent.pos("x", "my"));
+                else if (this.origin() === "c") child.source(parent.pos("cx", "my"));
+                child.length(parent.height());
+            });
+        }
+    }
 }
 
 function elementProp1(key) {
@@ -41,8 +54,7 @@ function elementProp2(key) {
     };
 }
 
-Coord.prototype = {
-    ...BaseCoord.prototype,
+Object.assign(Coord.prototype, {
     axis(by) {
         return this.child(by);
     },
@@ -54,6 +66,7 @@ Coord.prototype = {
         if (arguments.length === 1) return this.global(x[0], x[1]);
         return [this.axis("x").globalX(x), this.axis("y").globalY(y)];
     },
+    origin: Factory.handler("origin"),
     drawRect(x, y, width, height) {
         const rect = new RectSVG(this).opacity(0).onEnter(EN.appear());
         this.vars.elements.push({
@@ -154,10 +167,10 @@ Coord.prototype = {
         for (const _element of this.vars.elements) if (_element.element === element) return _element;
         return undefined;
     },
-};
+});
 
 function valid(v) {
-    return Check.isValidNumber(v[0]) && Check.isValidNumber(v[1]);
+    return Check.isNumber(v[0]) && Check.isNumber(v[1]);
 }
 
 function circleRule(parent, child) {

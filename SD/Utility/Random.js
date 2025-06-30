@@ -2,12 +2,7 @@ const numberCharacters = "0123456789";
 const lowerCaseAlphabetCharacters = "abcdefghijklmnopqrstuvwxyz";
 const upperCaseAlphabetCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const specialCharacters = "!@#$%^&*()_+-=<>,.?:;'[]{}|";
-const hexCharacters = "0123456789abcdef";
-const allCharacters = 
-    numberCharacters + 
-    lowerCaseAlphabetCharacters + 
-    upperCaseAlphabetCharacters + 
-    specialCharacters;
+const allCharacters = numberCharacters + lowerCaseAlphabetCharacters + upperCaseAlphabetCharacters + specialCharacters;
 
 export function rand(l, r) {
     l = +l;
@@ -30,11 +25,4 @@ export function randUpperCaseAlphabet() {
 
 export function randSpecialChar() {
     return specialCharacters[rand(0, specialCharacters.length - 1)];
-}
-
-export function randHexColor() {
-    function randHex() {
-        return hexCharacters[rand(0, hexCharacters.length - 1)];
-    }
-    return "#" + randHex() + randHex() + randHex() + randHex() + randHex() + randHex();
 }

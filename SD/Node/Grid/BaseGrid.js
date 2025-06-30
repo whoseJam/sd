@@ -1,25 +1,28 @@
 import { Exit as EX } from "@/Node/Core/Exit";
 import { SD2DNode } from "@/Node/SD2DNode";
+import { Check } from "@/Utility/Check";
 import { ErrorLauncher } from "@/Utility/ErrorLauncher";
 import { Factory } from "@/Utility/Factory";
 
-export function BaseGrid(parent) {
-    SD2DNode.call(this, parent);
+export class BaseGrid extends SD2DNode {
+    constructor(target) {
+        super(target);
 
-    this.vars.merge({
-        n: 0,
-        m: 0,
-        x: 0,
-        y: 0,
-        startN: 0,
-        startM: 0,
-        elements: [],
-    });
+        this.newLayer("elements");
+
+        this.vars.merge({
+            n: 0,
+            m: 0,
+            x: 0,
+            y: 0,
+            startN: 0,
+            startM: 0,
+            elements: [],
+        });
+    }
 }
 
-BaseGrid.prototype = {
-    ...SD2DNode.prototype,
-    BASE_GRID: true,
+Object.assign(BaseGrid.prototype, {
     startN: Factory.handler("startN"),
     startM: Factory.handler("startM"),
     endN() {
@@ -27,35 +30,30 @@ BaseGrid.prototype = {
     },
     endM(i) {
         if (arguments.length === 0) return this.startM() + this.m() - 1;
-        const _i = this.idxN(i);
+        const _i = this.__idxN(i);
         if (_i >= this.vars.elements.length || _i < 0) return this.startM() - 1;
-        return this.startM() + this.vars.elements[this.idxN(i)].length - 1;
-    },
-    idxN(i) {
-        return i - this.startN();
-    },
-    idxM(j) {
-        return j - this.startM();
+        return this.startM() + this.vars.elements[this.__idxN(i)].length - 1;
     },
     n(n) {
         if (arguments.length === 0) return this.vars.n;
-        while (this.n() < n) this.pushRow();
-        while (this.n() > n) this.popRow();
+        while (this.n() < n) this.pushPrimary();
+        while (this.n() > n) this.popPrimary();
         return this;
     },
     m(m) {
         if (arguments.length === 0) return this.vars.m;
-        while (this.m() < m) this.pushCol();
-        while (this.m() > m) this.popCol();
+        while (this.m() < m) this.pushSecondary();
+        while (this.m() > m) this.popSecondary();
         return this;
     },
 
     element(i, j) {
-        const [_i, _j] = [this.idxN(i), this.idxM(j)];
+        const [_i, _j] = [this.__idxN(i), this.__idxM(j)];
         if (0 <= _i && _i < this.vars.elements.length && 0 <= _j && _j < this.vars.elements[_i].length) return this.vars.elements[_i][_j];
         return undefined;
     },
     forEachElement(callback) {
+        Check.validateSyncFunction(callback, `${this.type()}.forEachElement`);
         this.vars.elements.forEach((row, i) => {
             row.forEach((element, j) => {
                 callback(element, i + this.startN(), j + this.startM());
@@ -87,11 +85,11 @@ BaseGrid.prototype = {
             return this.forEachElement(element => element.color(color));
         } else if (arguments.length === 2) {
             const [i, j] = arguments;
-            const element = this.__getElementWithMethod(i, j);
+            const element = this.__getElementWithMethod(i, j, "color");
             return element.color();
         } else {
             const [i, j, color] = arguments;
-            const element = this.element(i, j);
+            const element = this.__getElementWithMethod(i, j, "color");
             element.color(color);
             return this;
         }
@@ -137,14 +135,14 @@ BaseGrid.prototype = {
     insertFromExistElement() {
         ErrorLauncher.notImplementedYet("insertFromExistElement", this.type());
     },
-    pushCol(count) {
+    pushSecondary(count) {
         const l = this.startN();
         const r = count === undefined ? this.endN() : l + count - 1;
         for (let i = l; i <= r; i++) this.insert(i, this.endM(i) + 1, null);
         if (l > r) this.vars.m++;
         return this;
     },
-    pushRow(count) {
+    pushPrimary(count) {
         let n = this.endN() + 1;
         let l = this.startM();
         let r = count === undefined ? this.endM() : l + count - 1;
@@ -176,7 +174,7 @@ BaseGrid.prototype = {
         if (!element.drop) ErrorLauncher.methodNotFound(element, "drop");
         return element.drop();
     },
-    popCol() {
+    popSecondary() {
         let erased = false;
         const elements = this.vars.elements;
         for (let i = 0; i < elements.length; i++) {
@@ -189,7 +187,7 @@ BaseGrid.prototype = {
         if (erased) this.vars.m--;
         return this;
     },
-    popRow() {
+    popPrimary() {
         const row = this.vars.elements.pop();
         if (!row) return this;
         row.forEach(element => this.eraseChild(element));
@@ -197,9 +195,15 @@ BaseGrid.prototype = {
         return this;
     },
 
+    __idxN(i) {
+        return i - this.startN();
+    },
+    __idxM(j) {
+        return j - this.startM();
+    },
     __insert(i, j, element) {
-        const ri = this.idxN(i);
-        const rj = this.idxM(j);
+        const ri = this.__idxN(i);
+        const rj = this.__idxM(j);
         if (ri < 0) ErrorLauncher.outOfRangeError(i, j);
         this.childAs(element);
         const elements = this.vars.elements;
@@ -212,8 +216,8 @@ BaseGrid.prototype = {
     },
     __erase(i, j) {
         const element = this.element(i, j);
-        const ri = this.idxN(i);
-        const rj = this.idxM(j);
+        const ri = this.__idxN(i);
+        const rj = this.__idxM(j);
         const elements = this.vars.elements;
         elements[ri].splice(rj, 1);
         this.eraseChild(element);
@@ -229,4 +233,4 @@ BaseGrid.prototype = {
         if (typeof element[method] !== "function") ErrorLauncher.methodNotFound(element, method);
         return element;
     },
-};
+});

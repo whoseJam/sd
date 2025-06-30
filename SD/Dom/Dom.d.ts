@@ -1,7 +1,7 @@
 export class Dom {
-    static createElement(tag: string, id: number | string): HTMLElement;
+    static createElement(tag: string, id?: number | string): HTMLElement;
     static createElementAndAppendToBody(tag: string, id: number | string): HTMLElement;
-    static createSVGElement(tag: string, id: number | string): SVGElement;
+    static createSVGElement(tag: string, id?: number | string): SVGElement;
     static getByID(id: number | string): Element;
     static tagName(element: Element): string;
     static parent(element: Element): Element;

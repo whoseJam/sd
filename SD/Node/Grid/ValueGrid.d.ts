@@ -1,8 +1,13 @@
 import { BaseGrid } from "@/Node/Grid/BaseGrid";
-import { SDNode } from "@/Node/SDNode";
-import { RenderNode } from "@/Renderer/RenderNode";
 
-export class ValueGrid extends Grid {
-    constructor(target: SDNode | RenderNode);
-    insert(i: number, j: number, value: SDNode): this;
+export class ValueGrid extends BaseGrid {
+    axis(): "row" | "col";
+    axis(axis: "row" | "col"): this;
+
+    align(): "x" | "y" | "cx" | "cy" | "mx" | "my";
+    align(align: "x" | "y" | "cx" | "cy" | "mx" | "my"): this;
+    elementWidth(): number;
+    elementWidth(width: number): this;
+    elementHeight(): number;
+    elementHeight(height: number): this;
 }

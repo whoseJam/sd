@@ -1,23 +1,23 @@
 import { Vector as V } from "@/Math/Vector";
-import { LineSVG } from "@/Node/SVG/Path/LineSVG";
-import { PathSVG } from "@/Node/SVG/Path/PathSVG";
+import { LineSVG } from "@/Node/Path/LineSVG";
+import { PathSVG } from "@/Node/Path/PathSVG";
 import { Factory } from "@/Utility/Factory";
 
-export function BaseCurve(parent) {
-    PathSVG.call(this, parent);
+export class BaseCurve extends PathSVG {
+    constructor(target) {
+        super(target);
 
-    this.vars.merge({
-        x1: 0,
-        y1: 0,
-        x2: 40,
-        y2: 40,
-        update: false,
-    });
+        this.vars.merge({
+            x1: 0,
+            y1: 0,
+            x2: 40,
+            y2: 40,
+            update: false,
+        });
+    }
 }
 
-BaseCurve.prototype = {
-    ...PathSVG.prototype,
-    BASE_CURVE: true,
+Object.assign(BaseCurve.prototype, {
     x1: Factory.handler("x1"),
     y1: Factory.handler("y1"),
     x2: Factory.handler("x2"),
@@ -38,7 +38,7 @@ BaseCurve.prototype = {
         this.unfreeze();
         return this;
     },
-};
+});
 
 export function curveHandler(key) {
     return function (value) {
