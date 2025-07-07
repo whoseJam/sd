@@ -72,7 +72,6 @@ export { PolygonSVG } from "./Node/Shape/PolygonSVG";
 export { Rect } from "./Node/Shape/Rect";
 export { RectHTML } from "./Node/Shape/RectHTML";
 export { RectSVG } from "./Node/Shape/RectSVG";
-export { MathAtom } from "./Node/Text/MathAtom";
 export { Mathjax } from "./Node/Text/Mathjax";
 export { Text } from "./Node/Text/Text";
 export { TextSVG } from "./Node/Text/TextSVG";

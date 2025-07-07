@@ -17,7 +17,7 @@ function moveTo(element: HTMLNode) {
 
 export class HTMLNode extends RenderNode {
     declare element: HTMLElement;
-    class: typeof HTMLNode;
+    declare class: typeof HTMLNode;
     constructor(parent: SDNode, render: RenderNode, element: string | HTMLElement) {
         if (typeof element === "string") {
             super(parent, render, element);

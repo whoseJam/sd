@@ -45,9 +45,11 @@ export class SDNode {
     drag(onDrag: (dx: number, dy: number) => [number, number]): this;
     clickable(type: true | false | null | undefined): this;
     click(): this;
-    onClick(onClick: (node: this) => void | false | null | undefined): this;
+    onClick(onClick: false | null | undefined): this;
+    onClick(onClick: (node: this) => void): this;
     dblClick(): this;
-    onDblClick(onClick: (node: this) => void | false | null | undefined): this;
+    onDblClick(onClick: false | null | undefined): this;
+    onDblClick(onClick: (node: this) => void): this;
 
     onEnter(): (element: SDNode) => void | undefined;
     onEnter(enter: (element: SDNode, move: () => void) => void): this;

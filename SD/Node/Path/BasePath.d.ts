@@ -1,15 +1,35 @@
 import { SD2DNode } from "@/Node/SD2DNode";
+import { SDColor } from "@/Utility/Color";
 
 export class BasePath extends SD2DNode {
+    fill(): string;
+    fill(fill: string): this;
+    fillOpacity(): number;
+    fillOpacity(opacity: number): this;
+    stroke(): string;
+    stroke(stroke: string): this;
+    strokeOpacity(): number;
+    strokeOpacity(opacity: number): this;
+    strokeWidth(): number;
+    strokeWidth(width: number): this;
+    strokeDashOffset(): number;
+    strokeDashOffset(offset: number): this;
+    strokeDashArray(): Array<number>;
+    strokeDashArray(array: Array<number>): this;
+    color(): SDColor;
+    color(color: string | SDColor): this;
     markerStart(): string;
     markerStart(marker: string): this;
     markerMid(): string;
     markerMid(marker: string): this;
     markerEnd(): string;
     markerEnd(marker: string): this;
-    arrow(arrow?: boolean | undefined | null): this;
-    revArrow(arrow?: boolean | undefined | null): this;
-    doubleArrow(arrow?: boolean | undefined | null): this;
+    arrow(arrow?: true): this;
+    arrow(arrow: null | undefined | false): this;
+    revArrow(arrow?: true): this;
+    revArrow(arrow: null | undefined | false): this;
+    doubleArrow(arrow?: true): this;
+    doubleArrow(arrow: null | undefined | false): this;
     pointStoT(): this;
     pointTtoS(): this;
     fadeStoT(): this;
@@ -20,8 +40,8 @@ export class BasePath extends SD2DNode {
     text(): string;
     text(text: string): this;
     intValue(): number;
-    value(): SDNode | undefined;
+    value(): any;
     value(value: any, rule?: SDRule): this;
     valueFromExist(value: SDNode, rule?: SDRule): this;
-    drop(): SDNode;
+    drop(): any;
 }

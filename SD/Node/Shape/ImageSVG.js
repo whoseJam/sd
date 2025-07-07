@@ -52,21 +52,4 @@ Object.assign(ImageSVG.prototype, {
         this.vars.lpset("y", y);
         return this;
     },
-    width(width) {
-        if (arguments.length === 0) return this.vars.width;
-        Check.validateNumber(width, `${this.constructor.name}.width`);
-        this.vars.lpset("width", width);
-        return this;
-    },
-    height(height) {
-        if (arguments.length === 0) return this.vars.height;
-        Check.validateNumber(height, `${this.constructor.name}.height`);
-        this.vars.lpset("height", height);
-        return this;
-    },
-    href(href) {
-        if (arguments.length === 0) return this.vars.href;
-        this.vars.href = href;
-        return this;
-    },
 });

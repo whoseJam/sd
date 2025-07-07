@@ -64,7 +64,13 @@ export class Check {
         if (!this.isNumberOrString(object)) ErrorLauncher.invalidNumberOrString(object, method, i, suggestions);
     }
     static validateColor(object, method, i = 1, suggestions = []) {
-        if (!this.isColor(object)) ErrorLauncher.invalidColorFormat(object, method, i, suggestions);
+        if (!this.isColor(object)) ErrorLauncher.invalidColor(object, method, i, suggestions);
+    }
+    static validateSDColor(object, method, i = 1, suggestions = []) {
+        if (!this.isSDColor(object)) ErrorLauncher.invalidSDColor(object, method, i, suggestions);
+    }
+    static validateHexColor(object, method, i = 1, suggestions = []) {
+        if (!this.isHexColor(object)) ErrorLauncher.invalidHexColor(object, method, i, suggestions);
     }
     static validateSyncFunction(object, method, i = 1, suggestions = []) {
         if (!this.isSyncFunction(object)) ErrorLauncher.invalidSyncFunction(object, method, i, suggestions);

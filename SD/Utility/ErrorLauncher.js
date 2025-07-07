@@ -73,16 +73,21 @@ export class ErrorLauncher {
     static invalidNumber(number, method, i = 1, suggestions = []) {
         throw new Error(`We expect a number for the ${generateLocation(i)} argument when calling ${method} but got <${number}>[type is ${typeof number}]. ${generateSuggestion(number, suggestions)}`);
     }
-    static invalidNumberOrString(object, method, i = 1, suggestion = []) {
+    static invalidNumberOrString(object, method, i = 1, suggestions = []) {
         throw new Error(`We expect a number or a string for the ${generateLocation(i)} argument when calling ${method} but got <${object}>[type is ${typeof object}]. ${generateSuggestion(object, suggestions)}`);
     }
-    static invalidColorFormat(color, method, i = 1, suggestions = []) {
+    static invalidColor(color, method, i = 1, suggestions = []) {
         throw new Error(`We expect a hex-color or a { fill: hex-color, stroke: hex-color } for the ${generateLocation(i)} argument when calling ${method} but got <${color}>[type is ${typeof color}]. ${generateSuggestion(color, suggestions)}`);
     }
-    static invalidSyncFunction(callback, method) {
+    static invalidSDColor(color, method, i = 1, suggestions = []) {
+        throw new Error(`We expect a { fill: hex-color, stroke: hex-color } for the ${generateLocation(i)} argument when calling ${method} but got <${color}>[type is ${typeof color}]. ${generateSuggestion(color, suggestions)}`);
+    }
+    static invalidHexColor(color, method, i = 1, suggestions = []) {
+        throw new Error(`We expect a hex-color for the ${generateLocation(i)} argument when calling ${method} but got <${color}>[type is ${typeof color}]. ${generateSuggestion(color, suggestions)}`);
+    }
+    static invalidSyncFunction(callback, method, i = 1, suggestions = []) {
         throw new Error(`We expect a synchronized function for the ${generateLocation(i)} argument when calling the ${method} but got <${callback}>[type is ${typeof callback}]. ${generateSuggestion(callback, suggestions)}`);
     }
-
     static warnNotImplementedYet(method) {
         console.warn(`Function ${method} not implemented yet.`);
     }

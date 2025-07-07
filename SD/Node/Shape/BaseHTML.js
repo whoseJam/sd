@@ -1,4 +1,5 @@
 import { Interp } from "@/Animate/Interp";
+import { createRenderNode } from "@/Renderer/RenderNode";
 import { Check } from "@/Utility/Check";
 import { Color as C } from "@/Utility/Color";
 import { Factory } from "@/Utility/Factory";
@@ -29,7 +30,7 @@ export function BaseHTML(label) {
     this.vars.watch("stroke", Factory.action(this, this._.nake, "border-color", Interp.colorInterp));
 }
 
-Object.assign(BaseHTML.prototype, {
+BaseHTML.prototype = {
     x(x) {
         if (arguments.length === 0) return this.vars.x;
         Check.validateNumber(x, `${this.type()}.x`);
@@ -44,14 +45,14 @@ Object.assign(BaseHTML.prototype, {
     },
     fill(fill) {
         if (arguments.length === 0) return this.vars.fill;
-        Check.validateColor(fill, `${this.type()}.fill`);
+        Check.validateHexColor(fill, `${this.type()}.fill`);
         this.vars.lpset("fill", fill);
         return this;
     },
     stroke(stroke) {
         if (arguments.length === 0) return this.vars.stroke;
-        Check.validateColor(stroke, `${this.type()}.stroke`);
+        Check.validateHexColor(stroke, `${this.type()}.stroke`);
         this.vars.lpset("stroke", stroke);
         return this;
     },
-});
+};

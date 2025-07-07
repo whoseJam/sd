@@ -1,6 +1,5 @@
 import { SD2DNode } from "@/Node/SD2DNode";
 import { SDNode } from "@/Node/SDNode";
-import { BaseShape } from "@/Node/Shape/BaseShape";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { SDRule } from "@/Rule/Rule";
 import { SDColor } from "@/Utility/Color";
@@ -11,7 +10,7 @@ export class BaseElement extends SD2DNode {
     rate(): number;
     rate(rate: number): this;
     color(): SDColor;
-    color(color: SDColor | string): this;
+    color(color: string | SDColor): this;
     fill(): string;
     fill(fill: string): this;
     fillOpacity(): number;
@@ -22,14 +21,12 @@ export class BaseElement extends SD2DNode {
     strokeOpacity(opacity: number): this;
     strokeWidth(): number;
     strokeWidth(width: number): this;
-
-    background(): BaseShape;
-
+    background(): any;
     text(): string;
     text(text: number | string): this;
     intValue(): number;
-    value(): SD2DNode | undefined;
+    value(): any;
     value(value: any, rule?: SDRule): this;
-    valueFromExist(value: SD2DNode, rule?: SDRule): this;
-    drop(): SD2DNode | undefined;
+    valueFromExist(value: SDNode, rule?: SDRule): this;
+    drop(): any;
 }

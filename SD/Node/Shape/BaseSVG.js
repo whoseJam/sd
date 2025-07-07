@@ -28,16 +28,16 @@ export function BaseSVG(label) {
     this.vars.watch("strokeDashArray", Factory.action(this, this._.nake, "stroke-dasharray", Interp.arrayInterp));
 }
 
-Object.assign(BaseSVG.prototype, {
+BaseSVG.prototype = {
     fill(fill) {
         if (arguments.length === 0) return this.vars.fill;
-        Check.validateColor(fill, `${this.constructor.name}.fill`);
+        Check.validateHexColor(fill, `${this.constructor.name}.fill`);
         this.vars.fill = fill;
         return this;
     },
     stroke(stroke) {
         if (arguments.length === 0) return this.vars.stroke;
-        Check.validateColor(stroke, `${this.constructor.name}.stroke`);
+        Check.validateHexColor(stroke, `${this.constructor.name}.stroke`);
         this.vars.stroke = stroke;
         return this;
     },
@@ -81,4 +81,4 @@ Object.assign(BaseSVG.prototype, {
         else this.fill(color.fill).stroke(color.stroke);
         return this;
     },
-});
+};

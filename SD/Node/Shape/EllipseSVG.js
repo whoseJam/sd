@@ -49,18 +49,6 @@ Object.assign(EllipseSVG.prototype, {
         this.vars.lpset("cy", cy);
         return this;
     },
-    rx(rx) {
-        if (arguments.length === 0) return this.vars.rx;
-        Check.validateNumber(rx, `${this.type()}.rx`);
-        this.vars.lpset("rx", rx);
-        return this;
-    },
-    ry(ry) {
-        if (arguments.length === 0) return this.vars.ry;
-        Check.validateNumber(ry, `${this.type()}.ry`);
-        this.vars.lpset("ry", ry);
-        return this;
-    },
     x(x) {
         if (x === undefined) return this.cx() - this.rx();
         return this.cx(x - this.x() + this.cx());
@@ -68,13 +56,5 @@ Object.assign(EllipseSVG.prototype, {
     y(y) {
         if (y === undefined) return this.cy() - this.ry();
         return this.cy(y - this.y() + this.cy());
-    },
-    width(width) {
-        if (width === undefined) return this.rx() * 2;
-        return this.rx(width / 2);
-    },
-    height(height) {
-        if (height === undefined) return this.ry() * 2;
-        return this.ry(height / 2);
     },
 });

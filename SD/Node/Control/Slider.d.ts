@@ -7,4 +7,6 @@ export class Slider extends BaseControl {
     min(min: number): this;
     value(): number;
     value(value: number): this;
+    onChange(onChange: (value: number) => void): this;
+    onChange(onChange: false | null | undefined): this;
 }

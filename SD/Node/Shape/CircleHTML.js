@@ -22,9 +22,13 @@ export class CircleHTML extends BaseShape {
         this._.layer.setAttribute("height", `${this.vars.r * 2}px`);
         this._.nake.setAttribute("border-radius", "50%");
 
-        const helper = createHelper(this._.layer);
-        this.vars.watch("r", Factory.action(this, helper, "width", Interp.numberInterp));
-        this.vars.watch("r", Factory.action(this, helper, "height", Interp.numberInterp));
+        const r = {
+            setAttribute: (key, value) => {
+                this._.layer.setAttribute(key, `${value * 2}px`);
+            },
+        };
+        this.vars.watch("r", Factory.action(this, r, "width", Interp.numberInterp));
+        this.vars.watch("r", Factory.action(this, r, "height", Interp.numberInterp));
     }
 }
 
@@ -33,21 +37,4 @@ CircleHTML.extend(Circle);
 Object.assign(CircleHTML.prototype, {
     ...Circle.prototype,
     ...BaseHTML.prototype,
-    r: Factory.handlerLowPrecise("r"),
-    width(width) {
-        if (arguments.length === 0) return this.vars.r * 2;
-        return this.r(width / 2);
-    },
-    height(height) {
-        if (arguments.length === 0) return this.vars.r * 2;
-        return this.r(height / 2);
-    },
 });
-
-function createHelper(layer) {
-    return {
-        setAttribute(key, value) {
-            layer.setAttribute(key, `${value * 2}px`);
-        },
-    };
-}

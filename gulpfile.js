@@ -1,5 +1,6 @@
 const gulp = require("gulp");
 const sd = load("./build/sd");
+const type = require("./build/type");
 const animation = require("./build/animation");
 const animationGroup = require("./build/animationGroup");
 const github = load("./build/github");
@@ -48,6 +49,10 @@ gulp.task("theme", async () => {
     return theme(pptOutputPath);
 });
 
+gulp.task("type", () => {
+    return type.launch(false);
+});
+
 gulp.task("animation", () => {
     return animation.launch(false);
 });
@@ -80,7 +85,7 @@ gulp.task("serve", done => {
     const port = global["p"] || "8080";
     const exec = require("child_process").exec;
     const pptOutputPath = parser.parseConfig("pptOutputPath");
-    exec(`cd ${pptOutputPath} && live-server --port=${port}`, function (error, stdout, stderr) {
+    exec(`cd ${pptOutputPath} && live-server --cors --port=${port}`, function (error, stdout, stderr) {
         if (error) console.log(error);
         else console.log("success");
         done();

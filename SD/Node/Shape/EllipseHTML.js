@@ -23,9 +23,13 @@ export class EllipseHTML extends BaseShape {
         this._.layer.setAttribute("height", `${this.vars.ry * 2}px`);
         this._.nake.setAttribute("border-radius", "50%");
 
-        const helper = createHelper(this._.layer);
-        this.vars.watch("rx", Factory.action(this, helper, "width", Interp.numberInterp));
-        this.vars.watch("ry", Factory.action(this, helper, "height", Interp.numberInterp));
+        const r = {
+            setAttribute: (key, value) => {
+                this._.layer.setAttribute(key, `${value * 2}px`);
+            },
+        };
+        this.vars.watch("rx", Factory.action(this, r, "width", Interp.numberInterp));
+        this.vars.watch("ry", Factory.action(this, r, "height", Interp.numberInterp));
     }
 }
 
@@ -34,22 +38,4 @@ EllipseHTML.extend(Ellipse);
 Object.assign(EllipseHTML.prototype, {
     ...Ellipse.prototype,
     ...BaseHTML.prototype,
-    rx: Factory.handlerLowPrecise("rx"),
-    ry: Factory.handlerLowPrecise("ry"),
-    width(width) {
-        if (arguments.length === 0) return this.vars.rx * 2;
-        return this.rx(width / 2);
-    },
-    height(height) {
-        if (arguments.length === 0) return this.vars.ry * 2;
-        return this.ry(height / 2);
-    },
 });
-
-function createHelper(layer) {
-    return {
-        setAttribute(key, value) {
-            layer.setAttribute(key, `${value * 2}px`);
-        },
-    };
-}

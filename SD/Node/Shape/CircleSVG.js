@@ -1,5 +1,4 @@
 import { Interp } from "@/Animate/Interp";
-import { Vector as V } from "@/Math/Vector";
 import { BaseShape } from "@/Node/Shape/BaseShape";
 import { BaseSVG } from "@/Node/Shape/BaseSVG";
 import { Circle } from "@/Node/Shape/Circle";
@@ -35,12 +34,6 @@ CircleSVG.extend(Circle);
 Object.assign(CircleSVG.prototype, {
     ...Circle.prototype,
     ...BaseSVG.prototype,
-    r(r) {
-        if (arguments.length === 0) return this.vars.r;
-        Check.validateNumber(r, `${this.constructor.name}.r`);
-        this.vars.lpset("r", r);
-        return this;
-    },
     cx(cx) {
         if (arguments.length === 0) return this.vars.cx;
         Check.validateNumber(cx, `${this.constructor.name}.cx`);
@@ -60,16 +53,5 @@ Object.assign(CircleSVG.prototype, {
     y(y) {
         if (y === undefined) return this.cy() - this.r();
         return this.cy(y - this.y() + this.cy());
-    },
-    width(width) {
-        if (width === undefined) return this.r() * 2;
-        return this.r(width / 2);
-    },
-    height(height) {
-        if (height === undefined) return this.r() * 2;
-        return this.r(height / 2);
-    },
-    inRange(vec) {
-        return V.length(V.sub(this.center(), vec)) <= this.r();
     },
 });

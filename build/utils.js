@@ -12,7 +12,9 @@ module.exports = {
     },
     copyFonts(src, dest) {
         const fonts = ["Consolas.ttf", "Arial.ttf", "Times New Roman.ttf"];
+        if (!fs.existsSync(dest)) fs.mkdirSync(dest);
         fonts.forEach(font => {
+            if (fs.existsSync(`${dest}/${font}`)) return;
             fs.copyFileSync(`${src}/${font}`, `${dest}/${font}`);
         });
     },

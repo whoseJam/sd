@@ -4,6 +4,7 @@ const w = require("webpack");
 const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
+const utils = require("./utils");
 const parser = require("./parser");
 const webpack = require("webpack-stream");
 const animation = require("./animation");
@@ -56,6 +57,7 @@ function task(source, targetFolder) {
 
     cleanAllFiles(targetFolder);
     cleanAllEmptyDirectories(targetFolder);
+    utils.copyFonts("./dist/fonts", `${targetFolder}/fonts`);
     walk(source, path => {
         const suffix = path.split(".").slice(-1)[0];
         if (!eventListener[suffix] || !eventListener[suffix].onAdd) {

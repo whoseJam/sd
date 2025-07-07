@@ -16,6 +16,8 @@ export class Check {
     static validateNumber(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
     static validateNumberOrString(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
     static validateColor(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateSDColor(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
+    static validateHexColor(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
     static validateSyncFunction(object: any, method: string, i?: number, suggestions: Array<[(object: any) => boolean, string]>): void;
     static validateArgumentsCountEqualTo(arguments: Array<any>, count: number, method: string): void;
 }

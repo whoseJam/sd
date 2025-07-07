@@ -65,11 +65,11 @@ export class BaseTree extends SD2DNode {
     opacity(source: number | string | SDNode, target: number | string | SDNode, opacity: number): this;
     linkOpacity(source: number | string | SDNode, target: number | string | SDNode): number;
     linkOpacity(source: number | string | SDNode, target: number | string | SDNode): number;
-    color(color: SDColor | string): this;
+    color(color: string | SDColor): this;
     color(node: number | string | SDNode): SDColor;
-    color(node: number | string | SDNode, color: SDColor | string): this;
+    color(node: number | string | SDNode, color: string | SDColor): this;
     color(source: number | string | SDNode, target: number | string | SDNode): SDColor;
-    color(source: number | string | SDNode, target: number | string | SDNode, color: SDColor | string): this;
+    color(source: number | string | SDNode, target: number | string | SDNode, color: string | SDColor): this;
     text(node: number | string | SDNode): string;
     text(node: number | string | SDNode, text: string): this;
     nodeText(node: number | string | SDNode): string;

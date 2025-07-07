@@ -24,8 +24,9 @@ export class SliderHTML extends BaseControl {
         });
 
         this._.nake.setAttribute("type", "range");
-        this._.nake.setAttribute("min", 0);
-        this._.nake.setAttribute("max", 10);
+        this._.nake.setAttribute("min", this.vars.min);
+        this._.nake.setAttribute("max", this.vars.max);
+        this._.nake.setAttribute("value", this.vars.value);
 
         Dom.addEventListener(this._.nake.nake(), "mousedown", e => {
             if (!Status.isInteractable()) e.preventDefault();

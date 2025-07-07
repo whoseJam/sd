@@ -1,10 +1,3 @@
-import { BaseHTML } from "@/Node/HTML/BaseHTML";
+import { Slider } from "@/Node/Control/Slider";
 
-export class SliderHTML extends BaseHTML {
-    max(): number;
-    max(max: number): this;
-    min(): number;
-    min(min: number): this;
-    value(): number;
-    value(value: number): this;
-}
+export class SliderHTML extends Slider {}

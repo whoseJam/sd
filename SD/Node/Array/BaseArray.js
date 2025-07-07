@@ -165,6 +165,7 @@ Object.assign(BaseArray.prototype, {
         const element = this.element(id);
         if (!element) ErrorLauncher.arrayElementNotFound(id);
         element.onExitDefault(EX.fade());
+        console.log("exit=", element.onExit());
         this.__erase(id);
         return this;
     },

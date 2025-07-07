@@ -24,8 +24,9 @@ export class SliderSVG extends BaseControl {
         });
 
         this._.nake.setAttribute("type", "range");
-        this._.nake.setAttribute("min", 0);
-        this._.nake.setAttribute("max", 10);
+        this._.nake.setAttribute("min", this.vars.min);
+        this._.nake.setAttribute("max", this.vars.max);
+        this._.nake.setAttribute("value", this.vars.value);
 
         Dom.addEventListener(this._.nake.nake(), "mousedown", e => {
             if (!Status.isInteractable()) e.preventDefault();
@@ -51,12 +52,14 @@ Object.assign(SliderSVG.prototype, {
         if (arguments.length === 0) return this.vars.max;
         Check.validateNumber(+value, `${this.constructor.name}.max`);
         this.vars.max = +value;
+        if (this.value() > +value) this.value(+value);
         return this;
     },
     min(value) {
         if (arguments.length === 0) return this.vars.min;
         Check.validateNumber(+value, `${this.constructor.name}.min`);
         this.vars.min = +value;
+        if (this.value() < +value) this.value(+value);
         return this;
     },
     value(value) {

@@ -1,15 +1,15 @@
 import { SD2DNode } from "@/Node/SD2DNode";
 import { SDColor } from "@/Utility/Color";
-import { Polygon as PolygonLogic } from "@flatten-js/core";
+import { Polygon } from "@flatten-js/core";
 
 export class BaseShape extends SD2DNode {
-    toPolygon(): PolygonLogic;
+    toPolygon(): Polygon;
     fill(): string;
-    fill(fill: SDColor | string): this;
+    fill(fill: string): this;
     fillOpacity(): number;
     fillOpacity(opacity: number): this;
     stroke(): string;
-    stroke(stroke: SDColor | string): this;
+    stroke(stroke: string): this;
     strokeOpacity(): number;
     strokeOpacity(opacity: number): this;
     strokeWidth(): number;
@@ -19,5 +19,5 @@ export class BaseShape extends SD2DNode {
     strokeDashArray(): Array<number>;
     strokeDashArray(array: Array<number>): this;
     color(): SDColor;
-    color(color: SDColor | string): this;
+    color(color: string | SDColor): this;
 }

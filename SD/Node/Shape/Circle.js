@@ -1,6 +1,7 @@
 import { Vector as V } from "@/Math/Vector";
 import { getTargetLayer } from "@/Node/SDNode";
 import { HTMLNode } from "@/Renderer/HTML/HTMLNode";
+import { Check } from "@/Utility/Check";
 import { polygon } from "@flatten-js/core";
 
 export class Circle {
@@ -25,5 +26,22 @@ Object.assign(Circle.prototype, {
             vertices.push(at);
         }
         return polygon(vertices);
+    },
+    r(r) {
+        if (arguments.length === 0) return this.vars.r;
+        Check.validateNumber(r, `${this.constructor.name}.r`);
+        this.vars.lpset("r", r);
+        return this;
+    },
+    width(width) {
+        if (arguments.length === 0) return this.r() * 2;
+        return this.r(width / 2);
+    },
+    height(height) {
+        if (arguments.length === 0) return this.r() * 2;
+        return this.r(height / 2);
+    },
+    inRange(vec) {
+        return V.length(V.sub(this.center(), vec)) <= this.r();
     },
 });

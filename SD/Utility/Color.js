@@ -34,6 +34,7 @@ export class Color {
     static darkOrange = "#b4610e";
     static darkPurple = "#9932cc";
     static ghostWhite = "#f8f8ff";
+    static lightCoral = "#f08080";
     static deepSkyBlue = "#00bfff";
     static lemonChiffon = "#fffacd";
     static darkButtonGrey = "#767676";

@@ -19,9 +19,9 @@ export class BaseGrid extends SD2DNode {
 
     opacity(i: number, j: number): number;
     opacity(i: number, j: number, opacity: number): this;
-    color(color: SDColor | string): this;
+    color(color: string | SDColor): this;
     color(i: number, j: number): SDColor;
-    color(i: number, j: number, color: SDColor | string): this;
+    color(i: number, j: number, color: string | SDColor): this;
     text(i: number, j: number): string;
     text(i: number, j: number, text: number | string): this;
     intValue(i: number, j: number): number;

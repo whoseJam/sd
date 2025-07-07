@@ -30,7 +30,7 @@ export class ValueGrid extends BaseGrid {
                 if (!elements[i]) continue;
                 for (let j = 0; j < elements[i].length; j++) {
                     const element = elements[i][j];
-                    this.tryMove(element, () => {
+                    this.tryUpdate(element, () => {
                         element.cx(x + j * elementWidth + elementWidth / 2);
                         element.cy(y + i * elementHeight + elementHeight / 2);
                     });

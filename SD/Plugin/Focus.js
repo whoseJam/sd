@@ -1,4 +1,5 @@
 import { Context } from "@/Animate/Context";
+import { BaseGrid } from "@/Node/Grid/BaseGrid";
 import { SDNode } from "@/Node/SDNode";
 import { RectSVG } from "@/Node/Shape/RectSVG";
 import { Check } from "@/Utility/Check";
@@ -25,7 +26,7 @@ export function Focus(parent) {
         } else if (arguments.length === 2) {
             const dontNeedIndex = (a instanceof SDNode || Check.isFalse(a)) && (b instanceof SDNode || Check.isFalse(b));
             if (!dontNeedIndex) {
-                if (Check.isTypeOfGrid(parent)) return this.focus(parent.element(a, b), parent.element(a, b));
+                if (parent instanceof BaseGrid) return this.focus(parent.element(a, b), parent.element(a, b));
                 if (!a instanceof SDNode) a = parent.element(a);
                 if (!b instanceof SDNode) b = parent.element(b);
                 return this.focus(a, b);
