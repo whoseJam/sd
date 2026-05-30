@@ -8,8 +8,8 @@
         "lib": ["es6", "DOM"],
         "baseUrl": ".",
         "paths": {
-            "@/*": ["SD/*"],
-            "@/sd": ["SD/sd.ts"]
+            "@/*": ["packages/core/src/*"],
+            "@/sd": ["packages/core/src/sd.ts"]
         },
         "strict": false,
         "noImplicitAny": false,
@@ -25,6 +25,6 @@
         "resolveJsonModule": true,
         "incremental": true
     },
-    "include": ["SD/**/*", "unit/**/*"],
+    "include": ["packages/core/src/**/*", "unit/**/*"],
     "exclude": ["node_modules", "dist", "**/*.spec.ts", "work", "题库"]
 }

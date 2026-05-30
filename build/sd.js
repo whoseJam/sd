@@ -5,7 +5,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = function (targetFolder) {
     return gulp
-        .src(["./SD/sd.ts"])
+        .src(["./packages/core/src/sd.ts"])
         .pipe(webpack(getConfiguration()))
         .on("error", function (err) {
             console.error("Webpack compilation error:", err.message);
@@ -89,7 +89,7 @@ function getConfiguration() {
             buildDependencies: { config: [__filename] },
         },
         resolve: {
-            alias: { "@": path.resolve(global["projectRoot"], "SD") },
+            alias: { "@": path.resolve(global["projectRoot"], "packages/core/src") },
             extensions: [".tsx", ".ts", ".jsx", ".js"],
             symlinks: false,
         },
