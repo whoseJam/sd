@@ -46,7 +46,7 @@ function task(source, targetFolder) {
  */
 function launch(selfLaunch = true) {
     if (require.main !== module && selfLaunch) return;
-    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
+    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..", "..", "..");
     parser.parseInput();
     const animationOutputPath = global["o"] || parser.parseConfig("animationOutputPath");
     const sourceFilePath = global["i"];
@@ -68,7 +68,7 @@ function getConfiguration(file) {
     const suffix = global["domain"] !== undefined ? "" : global["l"] ? "Local" : "Remote";
     const plugins = [
         new HtmlWebpackPlugin({
-            template: `${global["projectRoot"]}/build/aniIndex${suffix}.html`,
+            template: `${global["projectRoot"]}/packages/cli/src/aniIndex${suffix}.html`,
             inject: "body",
             inlineSource: ".(js)$",
             minify: false,

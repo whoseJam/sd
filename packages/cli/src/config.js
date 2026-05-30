@@ -53,7 +53,7 @@ function updateConfig(configPath, key, value) {
 }
 
 function main() {
-    const configPath = path.join(__dirname, "..", "myconfig.json");
+    const configPath = path.join(__dirname, "..", "..", "..", "myconfig.json");
     if (process.argv.length !== 4) {
         console.log(colors("cyan", "Usage: ") + colors("green", "node config.js <key> <value>"));
         printSupportedKeys();

@@ -109,7 +109,7 @@ function task(source, targetFolder) {
  */
 function launch(selfLaunch = true) {
     if (require.main !== module && selfLaunch) return;
-    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
+    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..", "..", "..");
     parser.parseInput();
     const pptOutputPath = global["o"] || parser.parseConfig("pptOutputPath");
     const source = global["i"];
@@ -234,7 +234,7 @@ function getConfiguration() {
     const domain = global["domain"] !== undefined ? global["domain"] : global["l"] ? "http://localhost:8080" : "https://whosejam.site";
     const plugins = [
         new HtmlWebpackPlugin({
-            template: `${global["projectRoot"]}/build/pptIndex${suffix}.html`,
+            template: `${global["projectRoot"]}/packages/cli/src/pptIndex${suffix}.html`,
             inject: "body",
             inlineSource: ".(js)$",
             minify: false,
@@ -252,7 +252,7 @@ function getConfiguration() {
         mode,
         watch,
         plugins,
-        entry: `${global["projectRoot"]}/build/pptMain.js`,
+        entry: `${global["projectRoot"]}/packages/cli/src/pptMain.js`,
         module: {
             rules: [
                 {

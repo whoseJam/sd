@@ -5,10 +5,10 @@
     "main": "./SD/sd.d.ts",
     "scripts": {},
     "bin": {
-        "sd-animation": "./build/animation.js",
-        "sd-animationGroup": "./build/animationGroup.js",
-        "sd-ppt": "./build/ppt.js",
-        "sd-config": "./build/config.js"
+        "sd-animation": "./packages/cli/src/animation.js",
+        "sd-animationGroup": "./packages/cli/src/animationGroup.js",
+        "sd-ppt": "./packages/cli/src/ppt.js",
+        "sd-config": "./packages/cli/src/config.js"
     },
     "repository": {
         "type": "",

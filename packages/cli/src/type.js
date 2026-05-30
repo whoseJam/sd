@@ -29,7 +29,7 @@ function task(source) {
 
 function launch(selfLaunch = false) {
     if (require.main !== module && selfLaunch) return;
-    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
+    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..", "..", "..");
     parser.parseInput();
     const sourceFilePath = global["i"];
     if (!sourceFilePath) {

@@ -40,9 +40,9 @@ module.exports = {
     parseConfig(key) {
         if (config === undefined) {
             try {
-                config = require("../myconfig.json");
+                config = require("../../../myconfig.json");
             } catch (e) {
-                const configPath = path.join(__dirname, "..", "myconfig.json");
+                const configPath = path.join(__dirname, "..", "..", "..", "myconfig.json");
                 fs.writeFileSync(configPath, JSON.stringify({}, null, 4));
             }
         }

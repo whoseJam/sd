@@ -66,7 +66,7 @@ function task(source, targetFolder) {
  */
 function launch(selfLaunch = true) {
     if (require.main !== module && selfLaunch) return;
-    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..");
+    if (require.main === module) global["projectRoot"] = path.resolve(__dirname, "..", "..", "..");
     parser.parseInput();
     const animationOutputPath = global["o"] || parser.parseConfig("animationOutputPath");
     const source = global["i"];

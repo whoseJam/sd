@@ -1,16 +1,16 @@
 const gulp = require("gulp");
-const sd = load("./build/sd");
-const type = require("./build/type");
-const animation = require("./build/animation");
-const animationGroup = require("./build/animationGroup");
-const github = load("./build/github");
-const iframe = load("./build/iframe");
-const ppt = require("./build/ppt");
-const release = load("./build/release");
-const reveal = require("./build/reveal");
-const revealPlugin = require("./build/revealPlugin");
-const theme = require("./build/theme");
-const parser = require("./build/parser");
+const sd = load("./packages/cli/src/sd");
+const type = require("./packages/cli/src/type");
+const animation = require("./packages/cli/src/animation");
+const animationGroup = require("./packages/cli/src/animationGroup");
+const github = load("./packages/cli/src/github");
+const iframe = load("./packages/cli/src/iframe");
+const ppt = require("./packages/cli/src/ppt");
+const release = load("./packages/cli/src/release");
+const reveal = require("./packages/cli/src/reveal");
+const revealPlugin = require("./packages/cli/src/revealPlugin");
+const theme = require("./packages/cli/src/theme");
+const parser = require("./packages/cli/src/parser");
 
 function load(path) {
     try {
