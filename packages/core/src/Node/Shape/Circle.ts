@@ -7,6 +7,14 @@ import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { TransformOrigin } from "@/Node/SDNode";
 
 export class Circle extends BaseShape {
+    // Model fields — store SVG attribute values directly. cy and r are
+    // identity with the SVG attribute; cy stores the SVG cy (= -math_cy).
+    // User-facing getters/setters handle the math flip; never touch these
+    // fields directly from outside Circle.
+    protected cx: number = 0;
+    protected cy: number = 0;
+    protected r: number = 20;
+
     constructor(args?: {
         targetNode?: Group;
         cx?: number;
@@ -34,12 +42,16 @@ export class Circle extends BaseShape {
     }) {
         super();
 
+        this.cx = args?.cx ?? args?.centerX ?? 0;
+        // Flip math cy → SVG cy at construction so this.cy and the SVG
+        // attribute agree with the rest of setCy/getCy.
+        this.cy = -(args?.cy ?? args?.centerY ?? 0);
+        this.r = args?.r ?? 20;
+
         this.renderer = this.createSVGNode("circle", {
-            cx: args?.cx ?? args?.centerX ?? 0,
-            // Flip math cy → SVG cy at construction so this._.cy and the SVG
-            // attribute agree with the rest of setCy/getCy.
-            cy: -(args?.cy ?? args?.centerY ?? 0),
-            r: args?.r ?? 20,
+            cx: this.cx,
+            cy: this.cy,
+            r: this.r,
             transformOrigin: args?.transformOrigin ?? ["center", "center"],
             translate: args?.translate ?? [0, 0],
             rotate: args?.rotate ?? 0,
@@ -61,11 +73,13 @@ export class Circle extends BaseShape {
     }
 
     getCx(): number {
-        return this._.cx;
+        return this.cx;
     }
 
     setCx(cx: number): this {
-        return this.triggerAttributeChanged(this.renderer, "cx", cx, this._.cx, Interp.numberInterp);
+        const oldCx = this.cx;
+        this.cx = cx;
+        return this.triggerAttributeChanged(this.renderer, "cx", cx, oldCx, Interp.numberInterp);
     }
 
     onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -93,14 +107,17 @@ export class Circle extends BaseShape {
     }
 
     getCy(): number {
-        // _.cy stores the SVG attribute value; flip back to math y for the caller.
-        return -this._.cy;
+        // this.cy stores the SVG attribute value; flip back to math for callers.
+        return -this.cy;
     }
 
     setCy(cy: number): this {
         // cy is math y from the user. Store and write SVG (-cy) so the on-screen
         // position matches math convention (y grows up).
-        return this.triggerAttributeChanged(this.renderer, "cy", -cy, this._.cy, Interp.numberInterp);
+        const svgCy = -cy;
+        const oldSvgCy = this.cy;
+        this.cy = svgCy;
+        return this.triggerAttributeChanged(this.renderer, "cy", svgCy, oldSvgCy, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
@@ -135,7 +152,7 @@ export class Circle extends BaseShape {
     }
 
     getR(): number {
-        return this._.r;
+        return this.r;
     }
 
     getRadius(): number {
@@ -143,7 +160,9 @@ export class Circle extends BaseShape {
     }
 
     setR(r: number): this {
-        return this.triggerAttributeChanged(this.renderer, "r", r, this._.r, Interp.numberInterp);
+        const oldR = this.r;
+        this.r = r;
+        return this.triggerAttributeChanged(this.renderer, "r", r, oldR, Interp.numberInterp);
     }
 
     setRadius(r: number): this {
