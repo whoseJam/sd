@@ -131,6 +131,10 @@ export abstract class SDNode {
         this.getRootRenderNode().remove();
     }
 
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        renderer.setAttribute(key, value);
+    }
+
     getOpacity(): number {
         return this._.opacity;
     }
@@ -409,7 +413,7 @@ export abstract class SDNode {
             Animate.push(
                 new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this.timingFunction, this, key)
             );
-        } else object?.setAttribute(key, vn);
+        } else if (object) this.renderAttribute(object, key, vn);
         this.listeners[key]?.forEach(listener => listener(vn, vo));
         return this;
     }

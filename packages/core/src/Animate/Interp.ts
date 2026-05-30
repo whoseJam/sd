@@ -16,8 +16,10 @@ type AfterInterpFunction = (this: Action) => void;
 type Setter = (value: any) => void;
 type AttrTarget = { setAttribute(key: string, value: any): void };
 
-function setter(object: AttrTarget, key: string): Setter {
-    return value => object.setAttribute(key, value);
+function setter(object: AttrTarget, key: string): (this: Action, value: any) => void {
+    return function (value) {
+        this.entity.renderAttribute(object, key, value);
+    };
 }
 
 function interpCreator(fn: (object: any, key: string) => InterpObject): InterpCreator {
@@ -82,7 +84,7 @@ export class Interp {
         const set = setter(object, key);
         const parse = (value: string) => +value.slice(0, -2);
         return new InterpObject(function (t) {
-            set(`${lerp(this._source, this._target, t)}ex`);
+            set.call(this, `${lerp(this._source, this._target, t)}ex`);
         }).onInit(function () {
             this._source = parse(this.source);
             this._target = parse(this.target);
@@ -92,14 +94,14 @@ export class Interp {
     static numberInterp = interpCreator((object, key) => {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            set(lerp(this.source, this.target, t));
+            set.call(this, lerp(this.source, this.target, t));
         });
     });
 
     static pixelInterp = interpCreator((object, key) => {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            set(`${lerp(this.source, this.target, t)}px`);
+            set.call(this, `${lerp(this.source, this.target, t)}px`);
         });
     });
 
@@ -108,7 +110,7 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this._source;
             const B = this._target;
-            set({
+            set.call(this, {
                 r: lerp(A.r, B.r, t),
                 g: lerp(A.g, B.g, t),
                 b: lerp(A.b, B.b, t),
@@ -123,16 +125,16 @@ export class Interp {
     static stringInterp = interpCreator((object, key) => {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            if (!this.reverse && t === 1) set(this.target);
-            if (this.reverse && t === 0) set(this.target);
+            if (!this.reverse && t === 1) set.call(this, this.target);
+            if (this.reverse && t === 0) set.call(this, this.target);
         });
     });
 
     static stringBlankInMiddleInterp = interpCreator((object, key) => {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            if (t === 0) set(" ");
-            if (t === 1) set(this.target);
+            if (t === 0) set.call(this, " ");
+            if (t === 1) set.call(this, this.target);
         });
     });
 
@@ -152,7 +154,7 @@ export class Interp {
             const len = Math.max(A.length, B.length);
             const ans = [];
             for (let i = 0; i < len; i++) ans.push(lerp(A[i] ?? 0, B[i] ?? 0, t));
-            set(ans);
+            set.call(this, ans);
         }).onInit(function () {
             this._source = toArr(this.source);
             this._target = toArr(this.target);
@@ -164,7 +166,7 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this.source;
             const B = this.target;
-            set([lerp(A[0], B[0], t), lerp(A[1], B[1], t)]);
+            set.call(this, [lerp(A[0], B[0], t), lerp(A[1], B[1], t)]);
         });
     });
 
@@ -174,7 +176,7 @@ export class Interp {
             const A = this.source;
             const B = this.target;
             const v = (k: "a" | "b" | "c" | "d" | "e" | "f") => lerp(A[k], B[k], t);
-            set(`matrix(${v("a")}, ${v("b")}, ${v("c")}, ${v("d")}, ${v("e")}, ${v("f")})`);
+            set.call(this, `matrix(${v("a")}, ${v("b")}, ${v("c")}, ${v("d")}, ${v("e")}, ${v("f")})`);
         });
     });
 
@@ -183,7 +185,7 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this.source;
             const B = this.target;
-            set(`${lerp(A.x, B.x, t)} ${lerp(A.y, B.y, t)} ${lerp(A.width, B.width, t)} ${lerp(A.height, B.height, t)}`);
+            set.call(this, `${lerp(A.x, B.x, t)} ${lerp(A.y, B.y, t)} ${lerp(A.width, B.width, t)} ${lerp(A.height, B.height, t)}`);
         });
     });
 
@@ -192,7 +194,7 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this.source;
             const B = this.target;
-            set(`translate(${lerp(A[0], B[0], t)},${lerp(A[1], B[1], t)})`);
+            set.call(this, `translate(${lerp(A[0], B[0], t)},${lerp(A[1], B[1], t)})`);
         });
     });
 
@@ -207,13 +209,13 @@ export class Interp {
                 for (let j = 1; j < A[i].length; j++) operator.push(lerp(A[i][j], B[i][j], t));
                 operators.push(operator);
             }
-            set(PathEngine.toString(operators));
+            set.call(this, PathEngine.toString(operators));
         })
             .onInit(function () {
                 [this._source, this._target] = PathEngine.toCubics(this.source, this.target);
             })
             .onAfterInterp(function () {
-                set(this.target);
+                set.call(this, this.target);
             });
     });
 
@@ -228,7 +230,7 @@ export class Interp {
             const B = this._target;
             const ans = [];
             for (let i = 0; i < A.length; i++) ans.push([lerp(A[i][0], B[i][0], t), lerp(A[i][1], B[i][1], t)]);
-            set(ans);
+            set.call(this, ans);
         }).onInit(function () {
             const length = Math.max(this.source.length, this.target.length);
             this._source = pad(this.source, length);

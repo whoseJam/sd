@@ -6,9 +6,15 @@ import { Window } from "@/Animate/Window";
 const linear = (t: number) => t;
 
 const buildAction = (l: number, r: number, source: any, target: any, key = "x") => {
-    const entity = { setAttribute: vi.fn(), id: 1 };
+    const entity: any = {
+        setAttribute: vi.fn(),
+        id: 1,
+        renderAttribute(renderer: any, k: string, value: any) {
+            renderer.setAttribute(k, value);
+        },
+    };
     const interp = Interp.numberInterp(entity, key);
-    const action = new Action(l, r, source, target, interp, linear, entity as any, key);
+    const action = new Action(l, r, source, target, interp, linear, entity, key);
     return { action, entity };
 };
 

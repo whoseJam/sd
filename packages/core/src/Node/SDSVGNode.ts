@@ -243,7 +243,7 @@ export abstract class SDSVGNode extends SDNode {
         Object.assign(this._, attributes);
         const object = RenderNode.createRenderNode(this, undefined, label);
         this.renderer = object;
-        for (const key in attributes) object.setAttribute(key, attributes[key]);
+        for (const key in attributes) this.renderAttribute(object, key, attributes[key]);
         return object;
     }
 

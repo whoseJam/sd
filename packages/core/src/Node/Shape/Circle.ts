@@ -1,5 +1,6 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { SDColor, Color as C } from "@/Utility/Color";
 import { Group } from "@/Node/Other/Group";
 import { Filter, SDFilter } from "@/Node/Filter/Filter";
@@ -7,13 +8,14 @@ import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { TransformOrigin } from "@/Node/SDNode";
 
 export class Circle extends BaseShape {
-    // Model fields — store SVG attribute values directly. cy and r are
-    // identity with the SVG attribute; cy stores the SVG cy (= -math_cy).
-    // User-facing getters/setters handle the math flip; never touch these
-    // fields directly from outside Circle.
     protected cx: number = 0;
     protected cy: number = 0;
     protected r: number = 20;
+
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        if (key === "cy") return renderer.setAttribute("cy", -value);
+        super.renderAttribute(renderer, key, value);
+    }
 
     constructor(args?: {
         targetNode?: Group;
@@ -43,9 +45,7 @@ export class Circle extends BaseShape {
         super();
 
         this.cx = args?.cx ?? args?.centerX ?? 0;
-        // Flip math cy → SVG cy at construction so this.cy and the SVG
-        // attribute agree with the rest of setCy/getCy.
-        this.cy = -(args?.cy ?? args?.centerY ?? 0);
+        this.cy = args?.cy ?? args?.centerY ?? 0;
         this.r = args?.r ?? 20;
 
         this.renderer = this.createSVGNode("circle", {
@@ -107,21 +107,17 @@ export class Circle extends BaseShape {
     }
 
     getCy(): number {
-        // this.cy stores the SVG attribute value; flip back to math for callers.
-        return -this.cy;
+        return this.cy;
     }
 
     setCy(cy: number): this {
-        // cy is math y from the user. Store and write SVG (-cy) so the on-screen
-        // position matches math convention (y grows up).
-        const svgCy = -cy;
-        const oldSvgCy = this.cy;
-        this.cy = svgCy;
-        return this.triggerAttributeChanged(this.renderer, "cy", svgCy, oldSvgCy, Interp.numberInterp);
+        const oldCy = this.cy;
+        this.cy = cy;
+        return this.triggerAttributeChanged(this.renderer, "cy", cy, oldCy, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("cy", (svgVn, svgVo) => listener(-svgVn, -svgVo));
+        return this.onAttributeChanged("cy", listener);
     }
 
     offCyChanged(listener: (vn: number, vo: number) => void) {

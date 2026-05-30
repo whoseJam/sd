@@ -9,6 +9,12 @@ const mockTarget = () => ({ setAttribute: vi.fn() });
 // so we need a real prototype chain — Object.create(Action.prototype) is the
 // minimal way to get past instanceof without going through `new Action(...)`
 // (which would also build an InterpObject and capture Window state).
+const defaultEntity = {
+    renderAttribute(renderer: any, key: string, value: any) {
+        renderer.setAttribute(key, value);
+    },
+};
+
 const fakeAction = (overrides: any = {}): Action =>
     Object.assign(Object.create(Action.prototype), {
         source: 0,
@@ -16,7 +22,7 @@ const fakeAction = (overrides: any = {}): Action =>
         _source: undefined,
         _target: undefined,
         reverse: false,
-        entity: {},
+        entity: defaultEntity,
         ...overrides,
     });
 
