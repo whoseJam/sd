@@ -45,6 +45,6 @@ window.MyRevealCallback = function () {
                 { color: "rgba(255,220,0,1)", cursor: "url(https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/chalkboard/img/boardmarker-yellow.png), auto" },
             ],
         },
-        plugins: plugins,
+        plugins: plugins.filter(Boolean),
     });
 };
