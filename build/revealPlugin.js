@@ -11,7 +11,7 @@ module.exports = function (targetFolder) {
     return (
         gulp
             // webpack stream
-            .src("./Reveal/plugin/SDAnimation.js")
+            .src("./packages/reveal/src/plugin/SDAnimation.js")
             .pipe(webpack(config))
             .pipe(gulp.dest(targetFolder))
     );

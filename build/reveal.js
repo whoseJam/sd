@@ -12,7 +12,7 @@ module.exports = function (targetFolder) {
     return (
         gulp
             // webpack stream
-            .src("./Reveal/MyReveal.js")
+            .src("./packages/reveal/src/MyReveal.js")
             .pipe(webpack(config))
             .pipe(gulp.dest(targetFolder))
     );

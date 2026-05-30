@@ -10,7 +10,7 @@ const autoprefixer = require("gulp-autoprefixer");
  * @returns {NodeJS.ReadWriteStream}
  */
 module.exports = function (targetFolder) {
-    const themePath = path.join(__dirname, "../Reveal/css/theme");
+    const themePath = path.join(__dirname, "../packages/reveal/src/css/theme");
     const sourcePath = path.join(themePath, "source/**/*.scss");
     return gulp
         .src(sourcePath)

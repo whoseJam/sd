@@ -11,7 +11,7 @@ module.exports = function (targetFolder) {
     return (
         gulp
             // webpack stream
-            .src("./IFrame/IFrame.js")
+            .src("./packages/iframe/src/IFrame.js")
             .pipe(webpack(config))
             .pipe(gulp.dest(targetFolder))
     );
