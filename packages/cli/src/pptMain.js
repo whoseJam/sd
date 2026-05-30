@@ -1,7 +1,7 @@
-import includeHTML from "../../reveal/src/Inject";
-import "../../reveal/src/plugin/Chalkboard.css";
-import "../../reveal/src/plugin/reset.css";
-import "../../reveal/src/plugin/reveal.css";
+import includeHTML from "@sd/reveal/Inject";
+import "@sd/reveal/plugin/Chalkboard.css";
+import "@sd/reveal/plugin/reset.css";
+import "@sd/reveal/plugin/reveal.css";
 
 class ThemeManager {
     static AVAILABLE_THEMES = ["beige", "dracula", "serif", "simple", "sky", "solarized", "white"];

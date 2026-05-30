@@ -1,4 +1,4 @@
-import { configure, has, start, stop, update } from "../../../iframe/src/IFrame";
+import { configure, has, start, stop, update } from "@sd/iframe";
 import { getLocationFromAncestor } from "../Inject";
 
 export default function SDAnimation() {

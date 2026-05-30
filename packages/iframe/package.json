@@ -3,6 +3,6 @@
     "version": "0.0.1",
     "private": true,
     "description": "IFrame wrapper",
-    "main": "dist/iframe.js",
+    "main": "src/IFrame.js",
     "license": "ISC"
 }

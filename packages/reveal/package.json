@@ -3,6 +3,13 @@
     "version": "0.0.1",
     "private": true,
     "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
-    "main": "dist/myreveal.js",
+    "main": "src/MyReveal.js",
+    "exports": {
+        ".": "./src/MyReveal.js",
+        "./*": "./src/*"
+    },
+    "dependencies": {
+        "@sd/iframe": "workspace:*"
+    },
     "license": "ISC"
 }

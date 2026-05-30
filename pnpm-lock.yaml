@@ -198,13 +198,21 @@ importers:
 
   packages/assets: {}
 
-  packages/cli: {}
+  packages/cli:
+    dependencies:
+      '@sd/reveal':
+        specifier: workspace:*
+        version: link:../reveal
 
   packages/core: {}
 
   packages/iframe: {}
 
-  packages/reveal: {}
+  packages/reveal:
+    dependencies:
+      '@sd/iframe':
+        specifier: workspace:*
+        version: link:../iframe
 
 packages:
 

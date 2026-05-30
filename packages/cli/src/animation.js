@@ -122,7 +122,7 @@ function getConfiguration(file) {
         cache: true,
         resolve: {
             alias: {
-                "@": path.resolve(global["projectRoot"], "SD"),
+                "@": path.resolve(global["projectRoot"], "packages/core/src"),
             },
             extensions: [".tsx", ".ts", ".jsx", ".js"],
         },
