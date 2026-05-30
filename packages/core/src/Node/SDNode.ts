@@ -43,7 +43,7 @@ export abstract class SDNode {
         transformOrigin: [NumberOrPercent, NumberOrPercent];
         [key: string]: any;
     };
-    listeners: { [key: string]: Array<AttributeListener> };
+    private listeners: { [key: string]: Array<AttributeListener> };
     static NODE_ID = 0;
     constructor() {
         this.id = ++SDNode.NODE_ID;
