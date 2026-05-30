@@ -75,7 +75,10 @@ function launch(selfLaunch = true) {
         console.log(colors("cyan", "Usage: animationGroup -i <source folder path> [-o <target folder path>]"));
         process.exit();
     }
-    if (global["l"] && !global["sd"]) utils.copyFile("./dist/sd.js", parser.parseConfig("pptOutputPath"));
+    if (!global["sd"]) {
+        utils.copyFile("./dist/sd.js", animationOutputPath);
+        utils.copyVendorAssets(global["projectRoot"], animationOutputPath);
+    }
     task(source, animationOutputPath);
 }
 

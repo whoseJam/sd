@@ -8,11 +8,11 @@ This is a pnpm-workspace monorepo. All library code lives under `packages/`; use
 
 ```
 packages/
-  core/      @sd/core    Rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)
-  reveal/    @sd/reveal  reveal.js integration layer (plugins, MathJax, theme SCSS)
-  iframe/    @sd/iframe  IFrame wrapper
-  cli/       @sd/cli     Build tasks + CLI entries (sd-animation, sd-animationGroup, sd-ppt, sd-config)
-  assets/    @sd/assets  Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome)
+  core/      @sd/core     Rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)
+  reveal/    @sd/reveal   reveal.js integration layer (plugins, MathJax, theme SCSS)
+  element/   @sd/element  <sd-animation> custom element that wraps an iframe (host-side embedding)
+  cli/       @sd/cli      Build tasks + CLI entries (sd-animation, sd-animationGroup, sd-ppt, sd-config)
+  assets/    @sd/assets   Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
 examples/
   animations/  Single-animation demo scripts (former unit/)
   decks/       Sample PPT decks (former example/)
@@ -23,9 +23,9 @@ docs/        Markdown notes
 gulpfile.js  Workspace-root build entry; tasks live in @sd/cli
 ```
 
-Cross-package imports go through workspace deps (e.g. `import "@sd/iframe"`, `import "@sd/reveal/plugin/reveal.css"`). The `@sd/reveal` package.json has an `exports` map (`"./*": "./src/*"`) that makes subpath imports look natural.
+Cross-package imports go through workspace deps (e.g. `import "@sd/element"`, `import "@sd/reveal/plugin/reveal.css"`). The `@sd/reveal` package.json has an `exports` map (`"./*": "./src/*"`) that makes subpath imports look natural.
 
-The `dist/` outputs from `gulp sd`, `gulp reveal`, `gulp iframe` are written to whatever path `-o` specifies (or `pptOutputPath` from `myconfig.json`); they are not committed.
+The `dist/` outputs from `gulp sd`, `gulp reveal`, `gulp element` are written to whatever path `-o` specifies (or `pptOutputPath` from `myconfig.json`); they are not committed.
 
 ## Build and Development Commands
 
@@ -44,10 +44,10 @@ gulp ppt -i <deck-dir> -o <output-dir>
 gulp ppt -i <deck-dir> -w
 gulp ppt -i <deck-dir> -l                             # use locally-built sd.js / myreveal.js
 
-# Library bundles (run individually when you want fresh sd.js / myreveal.js / iframe.js)
+# Library bundles (run individually when you want fresh sd.js / myreveal.js / sd-element.js)
 gulp sd      -o <output-dir>
 gulp reveal  -o <output-dir>
-gulp iframe  -o <output-dir>
+gulp element -o <output-dir>     # IIFE bundle: vanilla HTML can <script src="sd-element.js">
 
 # Theme CSS compile (Reveal/css/theme/source/*.scss -> compiled .css)
 gulp theme   -o <output-dir>
@@ -73,22 +73,22 @@ gulp serve -p 8080
 - `MyReveal.js` is the bundle entry; ships as global `MyReveal` (UMD).
 - Plugins (MathJax2, Codeblock, Chalkboard, SDAnimation, ...) live under `plugin/`.
 - Theme SCSS lives under `css/theme/source/`; `gulp theme` compiles them.
-- `plugin/SDAnimation.js` is the bridge to `@sd/iframe`.
+- `plugin/SDAnimation.js` drives `<sd-animation>` elements across slide transitions (start/stop the active slide's animations); `MyReveal.js` imports `@sd/element` so the bundle auto-registers the tag.
 
 ### `@sd/cli` (packages/cli/src/)
-- Each gulp task (`sd.js`, `reveal.js`, `iframe.js`, `animation.js`, `ppt.js`, `theme.js`, ...) wraps a webpack-stream pipeline.
+- Each gulp task (`sd.js`, `reveal.js`, `element.js`, `animation.js`, `ppt.js`, `theme.js`, ...) wraps a webpack-stream pipeline.
 - `parser.js` holds CLI arg parsing and `myconfig.json` IO.
-- HTML templates for the animation/PPT entry pages (`aniIndex*.html`, `pptIndex*.html`) sit alongside the task files.
+- HTML templates `aniIndex.html` and `pptIndex.html` use a single `<%= base %>` placeholder (".") for self-contained local builds, or the `-d <domain>` value for remote deploys.
 - The CLI bin scripts (`#!/usr/bin/env node` on `animation.js`, `ppt.js`, `animationGroup.js`, `config.js`) are exposed via the root `package.json#bin` as `sd-animation` etc.
 
 ## Build Flow
 
 Animation bundles do NOT inline `@sd/core`. Instead:
-- `aniIndex*.html` loads `sd.js` first (as global `sd`), then the per-animation bundle.
+- `aniIndex.html` loads `sd.js` first (as global `sd`), then the per-animation bundle.
 - The per-animation webpack config marks `@/sd` and `slidew` as externals mapping to global `sd`.
 - This keeps each animation script tiny (~5-20 KB) and the shared engine cacheable.
 
-PPT bundles work the same way: `pptIndex*.html` loads `sd.js` and `myreveal.js` globals; each slide's animation is a separate small bundle.
+PPT bundles work the same way: `pptIndex.html` loads `sd.js` and `myreveal.js` globals; each slide's animation is a separate small bundle.
 
 The `-l` flag tells the CLI to copy `dist/sd.js` (or `dist/myreveal.js`) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
