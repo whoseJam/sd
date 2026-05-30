@@ -57,7 +57,7 @@ function task(source, targetFolder) {
 
     cleanAllFiles(targetFolder);
     cleanAllEmptyDirectories(targetFolder);
-    if (global["l"]) utils.copyVendorAssets(global["projectRoot"], targetFolder);
+    utils.copyVendorAssets(global["projectRoot"], targetFolder);
     walk(source, path => {
         const suffix = path.split(".").slice(-1)[0];
         if (!eventListener[suffix] || !eventListener[suffix].onAdd) {
@@ -119,8 +119,8 @@ function launch(selfLaunch = true) {
         console.log(colors("cyan", "Usage: ppt -i <source folder path> [-o <target folder path>]"));
         process.exit();
     }
-    if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
-    if (global["l"] && !global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
+    if (!global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
+    if (!global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
     return task(source, pptOutputPath);
 }
 
@@ -231,22 +231,22 @@ function getConfiguration() {
     // pptFilePath: ./work/xxx/ppt.html
     const mode = global["d"] ? "development" : "production";
     const watch = global["w"] ? true : false;
-    const suffix = global["domain"] !== undefined ? "" : global["l"] ? "Local" : "Remote";
-    const domain = global["domain"] !== undefined ? global["domain"] : global["l"] ? "http://localhost:8080" : "https://whosejam.site";
+    // Asset base URL: a remote deploy passes -d https://your-domain; otherwise the
+    // output is self-contained and loads everything from "./vendor/..." next to the
+    // HTML. There is no implicit CDN fallback.
+    const base = global["domain"] !== undefined ? global["domain"] : ".";
     const plugins = [
         new HtmlWebpackPlugin({
-            template: `${global["projectRoot"]}/packages/cli/src/pptIndex${suffix}.html`,
+            template: `${global["projectRoot"]}/packages/cli/src/pptIndex.html`,
             inject: "body",
             inlineSource: ".(js)$",
             minify: false,
             scriptLoading: "blocking",
-            templateParameters: {
-                domain: global["domain"],
-            },
+            templateParameters: { base },
         }),
         new w.DefinePlugin({
             __VERSION__: JSON.stringify("1.0.0"),
-            DOMAIN: JSON.stringify(domain),
+            DOMAIN: JSON.stringify(base),
         }),
     ];
     return {

@@ -16,15 +16,16 @@ export class FontManager {
     }
 
     private static load(family: string) {
-        const base = (typeof window !== "undefined" && (window as any).__SD_FONTS_URL__) || "https://whosejam.site/public/fonts";
+        const base = typeof window !== "undefined" ? (window as any).__SD_FONTS_URL__ : undefined;
+        if (!base) return;
         const url = `${base}/${family}.ttf`;
         fetch(url)
             .then(res => res.arrayBuffer())
             .then(buffer => {
                 this.fonts[family] = opentype.parse(buffer);
             })
-            .catch(err => {
-                console.warn(`[sd] failed to load font ${family} from ${url}:`, err);
+            .catch(() => {
+                /* network failure is silent; the font just won't be available */
             });
     }
 

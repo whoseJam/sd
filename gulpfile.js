@@ -3,7 +3,7 @@ const sd = require("./packages/cli/src/sd");
 const type = require("./packages/cli/src/type");
 const animation = require("./packages/cli/src/animation");
 const animationGroup = require("./packages/cli/src/animationGroup");
-const iframe = require("./packages/cli/src/iframe");
+const element = require("./packages/cli/src/element");
 const ppt = require("./packages/cli/src/ppt");
 const reveal = require("./packages/cli/src/reveal");
 const revealPlugin = require("./packages/cli/src/revealPlugin");
@@ -50,9 +50,9 @@ gulp.task("animationGroup", done => {
     done();
 });
 
-gulp.task("iframe", () => {
-    const pptOutputPath = global["o"] || parser.parseConfig("pptOutputPath");
-    return iframe(pptOutputPath);
+gulp.task("element", () => {
+    const outputPath = global["o"] || parser.parseConfig("pptOutputPath");
+    return element(outputPath);
 });
 
 gulp.task("ppt", () => {

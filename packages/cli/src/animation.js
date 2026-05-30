@@ -55,10 +55,9 @@ function launch(selfLaunch = true) {
         console.log(colors("cyan", "Usage: animation -i <source file path> [-o <target path>]"));
         process.exit();
     }
-    if (global["l"] && !global["sd"] && !global["s"]) {
-        const dest = parser.parseConfig("pptOutputPath");
-        utils.copyFile("./dist/sd.js", dest);
-        utils.copyVendorAssets(global["projectRoot"], dest);
+    if (!global["sd"] && !global["s"]) {
+        utils.copyFile("./dist/sd.js", animationOutputPath);
+        utils.copyVendorAssets(global["projectRoot"], animationOutputPath);
     }
     return task(sourceFilePath, animationOutputPath);
 }
@@ -66,18 +65,19 @@ function launch(selfLaunch = true) {
 function getConfiguration(file) {
     const mode = "development";
     const watch = global["w"] ? true : false;
-    const suffix = global["domain"] !== undefined ? "" : global["l"] ? "Local" : "Remote";
+    // Asset base URL: a remote deploy passes -d https://your-domain; otherwise the
+    // output is self-contained and loads everything from "./vendor/..." next to the
+    // HTML. There is no implicit CDN fallback.
+    const base = global["domain"] !== undefined ? global["domain"] : ".";
     const plugins = [
         new HtmlWebpackPlugin({
-            template: `${global["projectRoot"]}/packages/cli/src/aniIndex${suffix}.html`,
+            template: `${global["projectRoot"]}/packages/cli/src/aniIndex.html`,
             inject: "body",
             inlineSource: ".(js)$",
             minify: false,
             filename: `${file}.html`,
             scriptLoading: "blocking",
-            templateParameters: {
-                domain: global["domain"],
-            },
+            templateParameters: { base },
         }),
     ];
     return {

@@ -103,10 +103,11 @@ class ThemeManager {
         }
     }
     applyNewTheme(themeName) {
+        const base = window.__SD_THEMES_URL__;
+        if (!base) return;
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
-        const base = window.__SD_THEMES_URL__ || "https://whosejam.site/public/themes";
         link.href = `${base}/${themeName}.css`;
         link.dataset.theme = themeName;
         document.head.appendChild(link);

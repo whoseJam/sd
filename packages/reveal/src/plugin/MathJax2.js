@@ -8,7 +8,7 @@ const DEFAULT_OPTIONS = {
         skipTags: ["script", "noscript", "style", "textarea", "pre"],
     },
     skipStartupTypeset: true,
-    mathjax: (typeof window !== "undefined" && window.__SD_MATHJAX2_URL__) || "https://whosejam.site/public/MathJax2/MathJax.js",
+    mathjax: typeof window !== "undefined" ? window.__SD_MATHJAX2_URL__ : undefined,
 };
 
 // "TeX-AMS_SVG"  : Chinese Character Display Error
@@ -38,7 +38,8 @@ export default function MathJax2() {
         init: async function (reveal) {
             const revealOptions = reveal.getConfig().mathjax2 || reveal.getConfig().math || {};
             const options = { ...DEFAULT_OPTIONS, ...revealOptions };
-            const script = options.mathjax || "https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js";
+            const script = options.mathjax;
+            if (!script) return;
             const config = options.config || DEFAULT_CONFIG;
             const url = script + "?config=" + config;
 
