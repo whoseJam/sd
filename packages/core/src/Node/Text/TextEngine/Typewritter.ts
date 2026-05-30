@@ -4,6 +4,7 @@ import { Animate as A } from "@/Animate/Animate";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { Text } from "@/Node/Text/Text";
 import { Action } from "@/Animate/Action";
+import { lazyInterp } from "@/Animate/Interp";
 
 export function typewritterProcess() {
     return function (source: TextView, target: TextView): Array<[SubtextView, SubtextView]> {
@@ -12,7 +13,7 @@ export function typewritterProcess() {
 }
 
 export function typewritterPostProcess(text: Text, targetLayer: RenderNode) {
-    return function (l: number, r: number, source: Array<SubtextView>, target: Array<SubtextView>) {
+    return lazyInterp(function (l: number, r: number, source: Array<SubtextView>, target: Array<SubtextView>) {
         const sourcePaths = getTextPaths2(text, l, A.getAttribute(text, "text", r, text.getText()));
         const targetPaths = getTextPaths(text, r);
         const group = RenderNode.createRenderNodeWithTime(targetLayer, l, l, "g");
@@ -45,5 +46,5 @@ export function typewritterPostProcess(text: Text, targetLayer: RenderNode) {
         );
 
         group.__animate(r, r).remove();
-    };
+    });
 }

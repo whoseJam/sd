@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { Interp, InterpObject } from "@/Animate/Interp";
+import { Interp, InterpObject, isInterpCreator, isLazyInterpFunction, lazyInterp } from "@/Animate/Interp";
 import { Action } from "@/Animate/Action";
 
 const mockTarget = () => ({ setAttribute: vi.fn() });
@@ -211,6 +211,37 @@ describe("Interp.emptyInterp", () => {
         interp.call(fakeAction(), 0.5);
         interp.call(fakeAction(), 1);
         expect(target.setAttribute).not.toHaveBeenCalled();
+    });
+});
+
+describe("brand discrimination", () => {
+    it("every Interp.* static is recognized as an InterpCreator", () => {
+        expect(isInterpCreator(Interp.numberInterp)).toBe(true);
+        expect(isInterpCreator(Interp.colorInterp)).toBe(true);
+        expect(isInterpCreator(Interp.pathInterp)).toBe(true);
+        expect(isInterpCreator(Interp.emptyInterp)).toBe(true);
+    });
+
+    it("a plain (obj, key) => InterpObject function is NOT a creator unless branded", () => {
+        const userFactory = (object: any, key: string) => new InterpObject(() => {});
+        expect(isInterpCreator(userFactory)).toBe(false);
+    });
+
+    it("lazyInterp() wraps a function so isLazyInterpFunction recognizes it", () => {
+        const branded = lazyInterp((l, r, s, t) => {});
+        expect(isLazyInterpFunction(branded)).toBe(true);
+    });
+
+    it("an unbranded 4-arg function is NOT a LazyInterpFunction", () => {
+        const bare = (l: number, r: number, s: any, t: any) => {};
+        expect(isLazyInterpFunction(bare)).toBe(false);
+    });
+
+    it("type guards reject non-functions cleanly", () => {
+        expect(isInterpCreator(null)).toBe(false);
+        expect(isInterpCreator({})).toBe(false);
+        expect(isLazyInterpFunction(undefined)).toBe(false);
+        expect(isLazyInterpFunction(42)).toBe(false);
     });
 });
 

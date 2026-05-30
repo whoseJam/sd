@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Action } from "@/Animate/Action";
-import { Interp } from "@/Animate/Interp";
+import { Interp, lazyInterp } from "@/Animate/Interp";
 import { Window } from "@/Animate/Window";
 
 const linear = (t: number) => t;
@@ -134,8 +134,8 @@ describe("Action.fromAction (clone)", () => {
 describe("Action.clone instance method", () => {
     it("returns undefined for lazy-interp actions (they cannot be replayed)", () => {
         const entity = { setAttribute: vi.fn(), id: 1 };
-        const lazyInterp = (l: number, r: number, source: any, target: any) => {};
-        const action = new Action(0, 100, 0, 10, lazyInterp, linear, entity as any, "x");
+        const lazy = lazyInterp((l, r, source, target) => {});
+        const action = new Action(0, 100, 0, 10, lazy, linear, entity as any, "x");
         expect(action.clone()).toBeUndefined();
     });
 

@@ -4,7 +4,7 @@ import { PathStyle, SubtextView, TextView } from "@/Node/Text/TextEngine/TextVie
 import { getPaths } from "@/Node/Text/TextEngine/Path";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { Action } from "@/Animate/Action";
-import { Interp } from "@/Animate/Interp";
+import { Interp, lazyInterp } from "@/Animate/Interp";
 import { Animate as A } from "@/Animate/Animate";
 
 export function transformProcess(mapping: TextMapping) {
@@ -14,7 +14,7 @@ export function transformProcess(mapping: TextMapping) {
 }
 
 export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
-    return function (l: number, r: number, source: Array<SubtextView>, target: Array<SubtextView>) {
+    return lazyInterp(function (l: number, r: number, source: Array<SubtextView>, target: Array<SubtextView>) {
         if (l === r) return;
         const createAction = (character: RenderNode, source: any, target: any, interp: any, animatedKey: string) => {
             if (animatedKey === "transform") {
@@ -89,7 +89,7 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
             }
             group.__animate(r, r).remove();
         }
-    };
+    });
 }
 
 function buildMapping(sourceCount: number, targetCount: number): Array<[number, number]> {

@@ -1,7 +1,7 @@
 import { Action } from "@/Animate/Action";
 import { Animate } from "@/Animate/Animate";
 import { Context } from "@/Animate/Context";
-import { Interp, InterpCreator, InterpFunction, InterpObject, LazyInterpFunction } from "@/Animate/Interp";
+import { Interp, InterpCreator, InterpFunction, InterpObject, LazyInterpFunction, isInterpCreator } from "@/Animate/Interp";
 import { SDEasingFunction, EasingFunction as T } from "@/Math/EasingFunction";
 import { RenderNode } from "@/Renderer/RenderNode";
 import { Group } from "@/Node/Other/Group";
@@ -404,7 +404,7 @@ export abstract class SDNode {
     ) {
         this._[key] = vn;
         if (interp && Window.SHOULD_INTERP) {
-            const interp_ = isBuiltinInterp(interp) ? interp(object, key) : interp;
+            const interp_ = isInterpCreator(interp) ? interp(object, key) : interp;
             Animate.push(
                 new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this._.timingFunction, this, key)
             );
@@ -438,18 +438,6 @@ export type SDNodeWithText = SDNode & { text: AnyFunction };
 export type SDNodeWithValue = SDNode & { value: AnyFunction };
 export type SDNodeWithValueFromExist = SDNode & { valueFromExist: AnyFunction };
 export type SDNodeWithRadius = SDNode & { r: AnyFunction };
-
-function isBuiltinInterp(
-    method: InterpObject | InterpFunction | LazyInterpFunction | InterpCreator
-): method is InterpCreator {
-    if (typeof method !== "function") return false;
-    const statics = Object.getOwnPropertyNames(Interp);
-    for (const propName of statics) {
-        const propValue = Interp[propName];
-        if (propValue === method) return true;
-    }
-    return false;
-}
 
 function isPercent(value: any): value is Percent {
     return typeof value === "string" && value.endsWith("%");

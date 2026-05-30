@@ -1,4 +1,4 @@
-import { InterpFunction, InterpObject, LazyInterpFunction } from "@/Animate/Interp";
+import { InterpFunction, InterpObject, LazyInterpFunction, isLazyInterpFunction } from "@/Animate/Interp";
 import { Window } from "@/Animate/Window";
 import { SDEasingFunction } from "@/Math/EasingFunction";
 import { SDNode } from "@/Node/SDNode";
@@ -44,12 +44,12 @@ export class Action {
         if (interp instanceof InterpObject) {
             this.interp = interp;
             this.lazyInterp = undefined;
-        } else if (interp.length === 1) {
-            this.interp = new InterpObject(interp as InterpFunction);
-            this.lazyInterp = undefined;
-        } else {
+        } else if (isLazyInterpFunction(interp)) {
             this.interp = undefined;
-            this.lazyInterp = interp as LazyInterpFunction;
+            this.lazyInterp = interp;
+        } else {
+            this.interp = new InterpObject(interp);
+            this.lazyInterp = undefined;
         }
         this.timingFunction = timingFunction;
         this.entity = entity;
