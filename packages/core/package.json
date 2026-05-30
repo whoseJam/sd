@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "description": "SD rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)",
-    "main": "dist/sd.js",
+    "main": "src/sd.ts",
     "license": "ISC",
     "dependencies": {
         "@flatten-js/core": "^1.6.2",

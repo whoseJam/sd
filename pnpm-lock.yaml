@@ -22,6 +22,10 @@ importers:
 
   packages/cli:
     dependencies:
+      '@sd/reveal':
+        specifier: workspace:*
+        version: link:../reveal
+    devDependencies:
       '@babel/core':
         specifier: ^7.24.9
         version: 7.29.7
@@ -37,9 +41,6 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.27.1
         version: 7.29.7(@babel/core@7.29.7)
-      '@sd/reveal':
-        specifier: workspace:*
-        version: link:../reveal
       autoprefixer:
         specifier: ^10.4.19
         version: 10.5.0(postcss@8.5.15)
