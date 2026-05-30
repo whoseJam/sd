@@ -8,8 +8,9 @@
         ".": "./src/MyReveal.js",
         "./*": "./src/*"
     },
+    "license": "ISC",
     "dependencies": {
-        "@sd/iframe": "workspace:*"
-    },
-    "license": "ISC"
+        "@sd/iframe": "workspace:*",
+        "reveal.js": "^5.1.0"
+    }
 }

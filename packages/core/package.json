@@ -4,5 +4,13 @@
     "private": true,
     "description": "SD rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)",
     "main": "dist/sd.js",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "@flatten-js/core": "^1.6.2",
+        "dagre": "^0.8.5",
+        "opentype.js": "^1.3.4"
+    },
+    "devDependencies": {
+        "@types/opentype.js": "^1.3.8"
+    }
 }
