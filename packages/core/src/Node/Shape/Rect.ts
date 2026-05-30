@@ -43,9 +43,12 @@ export class Rect extends BaseShape {
     }) {
         super();
 
+        // Math y is the bottom edge; SVG y attribute is the top edge. They
+        // relate via svg_y = -(math_y + height). Pre-flip the construction
+        // value so _.y and the SVG attribute both start as SVG.
         this.createSVGNode("rect", {
             x: args?.x ?? 0,
-            y: args?.y ?? 0,
+            y: -((args?.y ?? 0) + (args?.height ?? 40)),
             width: args?.width ?? 40,
             height: args?.height ?? 40,
             rx: args?.rx ?? 0,
@@ -88,15 +91,24 @@ export class Rect extends BaseShape {
     }
 
     getY(): number {
-        return this._.y;
+        // _.y holds SVG top-edge y; height is identity. Math bottom y is the
+        // negation of the SVG top edge minus the height.
+        return -this._.y - this._.height;
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "y", y, this._.y, Interp.numberInterp);
+        // y is math bottom edge. SVG y attribute = -(y + height).
+        const svgY = -(y + this._.height);
+        return this.triggerAttributeChanged(this._.renderer, "y", svgY, this._.y, Interp.numberInterp);
     }
 
     onYChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("y", listener);
+        // Listener receives math y. Note: when fired from setHeight, the height
+        // used to convert vo is the post-update height, so listeners that mix
+        // y- and height-change observation will see a vo offset by the delta.
+        return this.onAttributeChanged("y", (svgVn, svgVo) =>
+            listener(-svgVn - this._.height, -svgVo - this._.height)
+        );
     }
 
     offYChanged(listener: (vn: number, vo: number) => void) {
@@ -124,7 +136,14 @@ export class Rect extends BaseShape {
     }
 
     setHeight(height: number) {
-        return this.triggerAttributeChanged(this._.renderer, "height", height, this._.height, Interp.numberInterp);
+        // Math y (bottom edge) should not move when height changes. Since
+        // SVG y attr = -(math_y + height), a height change forces an
+        // accompanying SVG y attr change to keep math_y constant.
+        const oldHeight = this._.height;
+        const oldSvgY = this._.y;
+        const newSvgY = oldSvgY + oldHeight - height;
+        this.triggerAttributeChanged(this._.renderer, "height", height, oldHeight, Interp.numberInterp);
+        return this.triggerAttributeChanged(this._.renderer, "y", newSvgY, oldSvgY, Interp.numberInterp);
     }
 
     onHeightChanged(listener: (vn: number, vo: number) => void): this {
