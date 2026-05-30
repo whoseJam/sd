@@ -23,6 +23,8 @@ export type SDBox = {
     height: number;
 };
 
+type AttributeListener = (vn: any, vo: any) => void;
+
 export abstract class SDNode {
     id: number;
     _: {
@@ -39,9 +41,9 @@ export abstract class SDNode {
         rotate: number;
         translate: [number, number];
         transformOrigin: [NumberOrPercent, NumberOrPercent];
-        attributeListeners: { [key: string]: Array<(vn: any, vo: any) => void> };
         [key: string]: any;
     };
+    listeners: { [key: string]: Array<AttributeListener> };
     static NODE_ID = 0;
     constructor() {
         this.id = ++SDNode.NODE_ID;
@@ -59,8 +61,8 @@ export abstract class SDNode {
             rotate: 0,
             translate: [0, 0],
             transformOrigin: ["50%", "50%"],
-            attributeListeners: {},
         };
+        this.listeners = {};
     }
 
     getRootRenderNode(): RenderNode {
@@ -381,15 +383,15 @@ export abstract class SDNode {
         return this.disappear();
     }
 
-    protected onAttributeChanged(key: string, listener: (vn: any, vo: any) => void) {
-        if (!this._.attributeListeners[key]) this._.attributeListeners[key] = [];
-        this._.attributeListeners[key].push(listener);
+    protected onAttributeChanged(key: string, listener: AttributeListener) {
+        if (!this.listeners[key]) this.listeners[key] = [];
+        this.listeners[key].push(listener);
         return this;
     }
 
-    protected offAttributeChanged(key: string, listener: (vn: any, vo: any) => void) {
-        const index = this._.attributeListeners[key].indexOf(listener);
-        if (index !== -1) this._.attributeListeners[key].splice(index, 1);
+    protected offAttributeChanged(key: string, listener: AttributeListener) {
+        const index = this.listeners[key].indexOf(listener);
+        if (index !== -1) this.listeners[key].splice(index, 1);
         return this;
     }
 
@@ -407,7 +409,7 @@ export abstract class SDNode {
                 new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this._.timingFunction, this, key)
             );
         } else object?.setAttribute(key, vn);
-        this._.attributeListeners[key]?.forEach(listener => listener(vn, vo));
+        this.listeners[key]?.forEach(listener => listener(vn, vo));
         return this;
     }
 
