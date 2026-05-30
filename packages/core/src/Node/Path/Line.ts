@@ -36,9 +36,10 @@ export class Line extends BasePath {
 
         this.createSVGNode("line", {
             x1: args?.x1 ?? 0,
-            y1: args?.y1 ?? 0,
+            // Math y → SVG y flip at construction (see Circle.ts).
+            y1: -(args?.y1 ?? 0),
             x2: args?.x2 ?? 40,
-            y2: args?.y2 ?? 40,
+            y2: -(args?.y2 ?? 40),
             transformOrigin: args?.transformOrigin ?? ["center", "center"],
             translate: args?.translate ?? [0, 0],
             rotate: args?.rotate ?? 0,
@@ -116,15 +117,15 @@ export class Line extends BasePath {
     }
 
     getY1(): number {
-        return this._.y1;
+        return -this._.y1;
     }
 
     setY1(y1: number) {
-        return this.triggerAttributeChanged(this._.renderer, "y1", y1, this._.y1, Interp.numberInterp);
+        return this.triggerAttributeChanged(this._.renderer, "y1", -y1, this._.y1, Interp.numberInterp);
     }
 
     onY1Changed(listener: (vn: number, vo: number) => void): this {
-        return this.onAttributeChanged("y1", listener);
+        return this.onAttributeChanged("y1", (svgVn, svgVo) => listener(-svgVn, -svgVo));
     }
 
     offY1Changed(listener: (vn: number, vo: number) => void): this {
@@ -132,15 +133,15 @@ export class Line extends BasePath {
     }
 
     getY2(): number {
-        return this._.y2;
+        return -this._.y2;
     }
 
     setY2(y2: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "y2", y2, this._.y2, Interp.numberInterp);
+        return this.triggerAttributeChanged(this._.renderer, "y2", -y2, this._.y2, Interp.numberInterp);
     }
 
     onY2Changed(listener: (vn: number, vo: number) => void): this {
-        return this.onAttributeChanged("y2", listener);
+        return this.onAttributeChanged("y2", (svgVn, svgVo) => listener(-svgVn, -svgVo));
     }
 
     offY2Changed(listener: (vn: number, vo: number) => void): this {

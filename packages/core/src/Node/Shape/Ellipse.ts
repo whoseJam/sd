@@ -32,7 +32,8 @@ export class Ellipse extends BaseShape {
             rx: args?.rx ?? 20,
             ry: args?.ry ?? 20,
             cx: args?.cx ?? 20,
-            cy: args?.cy ?? 20,
+            // Math cy → SVG cy flip at construction (see Circle.ts).
+            cy: -(args?.cy ?? 20),
             opacity: args?.opacity ?? 1,
             fill: args?.fill ?? C.black,
             fillOpacity: args?.fillOpacity ?? 1,
@@ -114,15 +115,15 @@ export class Ellipse extends BaseShape {
     }
 
     getCy(): number {
-        return this._.cy;
+        return -this._.cy;
     }
 
     setCy(cy: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "cy", cy, this._.cy, Interp.numberInterp);
+        return this.triggerAttributeChanged(this._.renderer, "cy", -cy, this._.cy, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("cy", listener);
+        return this.onAttributeChanged("cy", (svgVn, svgVo) => listener(-svgVn, -svgVo));
     }
 
     offCyChanged(listener: (vn: number, vo: number) => void) {
