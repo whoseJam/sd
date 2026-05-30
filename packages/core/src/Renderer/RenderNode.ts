@@ -1,4 +1,5 @@
 import { Action } from "@/Animate/Action";
+import { Animate } from "@/Animate/Animate";
 import { EasingFunction as T } from "@/Math/EasingFunction";
 import { SDNode } from "@/Node/SDNode";
 import { isStyleKey, setAttribute } from "@/Renderer/Attribute";
@@ -133,7 +134,7 @@ export class RenderNode {
             }
         }
         element.targetLayer = target;
-        new Action(l, r, source, target, structure, T.linear, element, "layer(append)");
+        Animate.push(new Action(l, r, source, target, structure, T.linear, element, "layer(append)"));
         return this;
     }
 
@@ -154,7 +155,7 @@ export class RenderNode {
             }
         }
         element.targetLayer = target;
-        new Action(l, r, source, target, structure, T.linear, element, "layer(appendChild)");
+        Animate.push(new Action(l, r, source, target, structure, T.linear, element, "layer(appendChild)"));
         return this;
     }
 
@@ -175,7 +176,7 @@ export class RenderNode {
             }
         }
         element.targetLayer = target;
-        new Action(l, r, source, target, structure, T.linear, element, "layer(insertBefore)");
+        Animate.push(new Action(l, r, source, target, structure, T.linear, element, "layer(insertBefore)"));
         return this;
     }
 
@@ -194,7 +195,7 @@ export class RenderNode {
             if (!this.reverse && t === 1) element.__remove();
             else if (this.reverse && t === 0) this.target.__appendChild(element);
         }
-        new Action(l, r, source, target, structure, T.linear, element, "layer(remove)");
+        Animate.push(new Action(l, r, source, target, structure, T.linear, element, "layer(remove)"));
         return this;
     }
 

@@ -22,15 +22,17 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
                 const target_ = target as SVGMatrix;
                 if (source_.toString() === target_.toString()) return;
             }
-            new Action(
-                l,
-                r,
-                source,
-                target,
-                interp(character, animatedKey),
-                this.timingFunction,
-                character,
-                animatedKey
+            A.push(
+                new Action(
+                    l,
+                    r,
+                    source,
+                    target,
+                    interp(character, animatedKey),
+                    this.timingFunction,
+                    character,
+                    animatedKey
+                )
             );
         };
 

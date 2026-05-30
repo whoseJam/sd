@@ -1,4 +1,5 @@
 import { Action } from "@/Animate/Action";
+import { Animate } from "@/Animate/Animate";
 import { Context } from "@/Animate/Context";
 import { Interp, InterpCreator, InterpFunction, InterpObject, LazyInterpFunction } from "@/Animate/Interp";
 import { SDEasingFunction, EasingFunction as T } from "@/Math/EasingFunction";
@@ -402,7 +403,9 @@ export abstract class SDNode {
         this._[key] = vn;
         if (interp && Window.SHOULD_INTERP) {
             const interp_ = isBuiltinInterp(interp) ? interp(object, key) : interp;
-            new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this._.timingFunction, this, key);
+            Animate.push(
+                new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this._.timingFunction, this, key)
+            );
         } else object?.setAttribute(key, vn);
         this._.attributeListeners[key]?.forEach(listener => listener(vn, vo));
         return this;

@@ -1,4 +1,5 @@
 import { Action } from "@/Animate/Action";
+import { Animate } from "@/Animate/Animate";
 import { createTextView, PathStyle, SubtextView, TextView } from "@/Node/Text/TextEngine/TextView";
 import { LazyInterpFunction } from "@/Animate/Interp";
 import { BaseText } from "@/Node/Text/BaseText";
@@ -16,15 +17,17 @@ export function buildAnimation(
     const mappings = process(sourceView, targetView);
     const l = text.delay();
     const r = text.delay() + text.duration();
-    new Action(
-        l,
-        r,
-        mappings.map(mapping => mapping[0]),
-        mappings.map(mapping => mapping[1]),
-        postProcess,
-        text._.timingFunction,
-        text,
-        "text:" + animatedKey
+    Animate.push(
+        new Action(
+            l,
+            r,
+            mappings.map(mapping => mapping[0]),
+            mappings.map(mapping => mapping[1]),
+            postProcess,
+            text._.timingFunction,
+            text,
+            "text:" + animatedKey
+        )
     );
     return targetView.styles;
 }

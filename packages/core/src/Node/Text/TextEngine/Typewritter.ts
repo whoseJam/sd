@@ -24,22 +24,24 @@ export function typewritterPostProcess(text: Text, targetLayer: RenderNode) {
             characters.push(character);
         }
 
-        new Action(
-            l,
-            r,
-            0,
-            1,
-            function (t: number) {
-                const time = 1.0 / characters.length;
-                for (let i = 0; i < characters.length; i++) {
-                    const k = this.reverse ? (characters.length - i - 0.5) * time : (i + 0.5) * time;
-                    if (t >= k) characters[i].setAttribute("opacity", this.target);
-                    else characters[i].setAttribute("opacity", this.source);
-                }
-            },
-            this.timingFunction,
-            text,
-            "typewritter"
+        A.push(
+            new Action(
+                l,
+                r,
+                0,
+                1,
+                function (t: number) {
+                    const time = 1.0 / characters.length;
+                    for (let i = 0; i < characters.length; i++) {
+                        const k = this.reverse ? (characters.length - i - 0.5) * time : (i + 0.5) * time;
+                        if (t >= k) characters[i].setAttribute("opacity", this.target);
+                        else characters[i].setAttribute("opacity", this.source);
+                    }
+                },
+                this.timingFunction,
+                text,
+                "typewritter"
+            )
         );
 
         group.__animate(r, r).remove();
