@@ -4,4 +4,6 @@
 /.CodeCounter
 /.VSCodeCounter
 node_modules
+dist
 myconfig.json
+tsconfig.tsbuildinfo
