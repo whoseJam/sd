@@ -1,0 +1,164 @@
+<section>
+    <section>
+        <h1>线性基</h1>
+        <p>从线性空间开始...</p>
+        <p>叠个甲，有一些抽象的概念为了更方便理解进行了不严谨的改造</p>
+    </section>
+    <section>
+        <h2><ruby>向量<rt>vector</rt></ruby></h2>
+        <p>一个有方向的量，目前可以<del>不严谨地</del>认为它就是一个 $k$ 个数字构成的 $k$ 元组</p>
+        <ul>
+            <li class="fragment">一个二维向量：$\vec{v_1}=(3,4)$</li>
+            <li class="fragment">一个三维向量：$\vec{v_2}=(5,6,7)$</li>
+        </ul>
+        <p class="fragment quote">感觉向量和坐标一样，事实上既可以把向量理解为一种坐标，又可以理解为相对于原点的一个方向</p>
+        <iframe data-animation="./二维向量.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+    <section>
+        <h2><ruby>空间<rt>Space</rt></ruby></h2>
+        <ul>
+            <li>空间的囊括范围<span class="fragment">：$V$，是一个集合，里面装了空间所囊括的所有向量</span></li>
+            <div class="fragment quote" style="margin-top: 0px;">
+                比如二维笛卡尔坐标系所表示的空间，就囊括了 $\{(x,y)|x,y\in R\}$ 这个集合中的所有向量
+            </div>
+            <li class="fragment">向量的加法<span class="fragment">：$+$，是一个<b>可以自定义</b>的运算</span></li>
+            <div class="fragment quote" style="margin-top: 0px;">
+                对实数向量 $(a,b)+(c,d)$，其结果通常被定义为 $(a+c,b+d)$<br>
+                对布尔向量 $(a,b)+(c,d)$，其结果可能被定义为 $(a\otimes c,b\otimes d)$，其中 $\otimes$ 表示异或<br>
+                <span class="fragment">布尔向量没办法按照实数向量那样去定义加法，因为不封闭，会出现 $(1,1)+(1,1)=(2,2)$ 的情况，$(2,2)$ 它就不是一个布尔向量了</span>
+            </div>
+            <li class="fragment">向量的数乘<span class="fragment">：$\times$，是一个<b>可以自定义</b>的运算，要求参与运算的数字只能在某个集合 $P$ 中选取</span></li>
+            <div class="fragment quote" style="margin-top: 0px;">
+                对实数向量 $(a,b)\times c$，其结果通常被定义为 $(ac,bc)$，其中 $c\in R$<br>
+                对布尔向量 $(a,b)\times c$，其结果也可被定义为 $(ac,bc)$，其中 $c\in \{0,1\}$<br>
+                <span class="fragment">上文提到的 $P$ 集合中任取两个数字应该也能进行 $(+,\times)$ 运算，且运算封闭</span>
+            </div>
+        </ul>
+        <p class="fragment">那么一个空间就可以用一个四元组 $(V,+,\times,P)$ 表示</p>
+    </section>
+    <section>
+        <h2><ruby>线性空间<rt>Linear Space</rt></ruby></h2>
+        <p>如果 $(V,+,\times,P)$ 选择是<b style="color: red;">恰当</b>的...</p>
+        <ul>
+            <li class="fragment">$\times$ 对向量加法满足分配律：对于任意 $\vec{a},\vec{b}\in V$，$c\in P$，都有 $(\vec{a}+\vec{b})c=\vec{a}c+\vec{b}c$</li>
+            <li class="fragment">$\times$ 对标量加法满足分配律：对于任意 $a,b\in P$，$\vec{c}\in V$，都有 $(a+b)\vec{c}=a\vec{c}+b\vec{c}$</li>
+            <li class="fragment">数乘结合律：对任意 $a,b\in P$，$\vec{c}\in V$，都有 $a(b\vec{c})=(ab)\vec{c}$</li>
+            <li class="fragment">标量乘法单位元：对于任意 $\vec{v}\in V$，取 $1\in P$，则有 $1\vec{v}=\vec{v}$</li>
+        </ul>
+        <p class="fragment">那么 $(V,+,\times,P)$ 就是一个线性空间</p>
+    </section>
+    <section>
+        <h2><ruby>线性组合<rt>Linear Combination</rt></ruby></h2>
+        <p>如果一个向量 $\vec{x}$ 能被一组向量 $\vec{a},\vec{b},\vec{c}...$ 搭配上一定的系数组合出来，即</p>
+        <p>
+            $$
+            \vec{x}=A\vec{a}+B\vec{b}+C\vec{c}+...
+            $$
+        </p>
+        <p class="fragment">那么 $\vec{x}$ 就可以被这组向量<b style="color: red;">线性组合</b>出来，或者说 $\vec{x}$ 能被这组向量<b style="color: red;">线性表出</b></p>
+        <iframe data-animation="./二维线性组合.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment quote" style="margin-top: 10px;">从几何角度可以看出，如果两个二维向量不共线，那么它们必然能线性组合出平面内的任意一个向量<span class="fragment">，事实上，对于 $D$ 维空间，最优情况下也能用 $D$ 个向量组合出空间内的任意一个向量</span></p>
+    </section>
+    <section>
+        <h2><ruby>线性无关<rt>Linear Independency</rt></ruby>与<ruby>线性相关<rt>Linear Dependency</rt></ruby></h2>
+        <ul>
+            <li>对于一组向量 $\vec{a},\vec{b},\vec{c}...$，如果任意一个向量都不能被剩余的向量线性表出，则这些向量是<b style="color: red;">线性无关</b>的</li>
+            <li>对于一组向量 $\vec{a},\vec{b},\vec{c}...$，如果存在一个向量能被剩余的向量线性表出，则这些向量是<b style="color: red;">线性相关</b>的</li>
+        </ul>
+        <iframe data-animation="./二维线性组合.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <ul>
+            <li class="fragment">对二维空间，如果两个二维向量是线性无关的，那么它们必然能线性组合出平面内的任意一个向量</li>
+            <li class="fragment">对 $D$ 维空间，如果 $D$ 个 $D$ 维向量是线性无关的，那么它们必然能线性组合出空间内的任意一个向量</li>
+        </ul>
+    </section>
+    <section>
+        <h2><ruby>基向量<rt>Basis Vector</rt></ruby></h2>
+        <p>对于一个给定的向量集合 $S$，<b style="color: red;">基向量</b>是满足以下条件的一组向量</p>
+        <ul>
+            <li class="fragment">它能够线性表出 $S$ 内的所有向量</li>
+            <li class="fragment">它的大小需要尽可能小</li>
+        </ul>
+        <div style="display: flex;">
+            <iframe data-animation="./二维基向量1.js" class="fragment"
+                style="width: 1000px; height: 300px;"></iframe>
+            <iframe data-animation="./二维基向量2.js" class="fragment"
+                style="width: 1000px; height: 300px;"></iframe>
+        </div>
+        <p class="fragment quote">显然基向量不止一组</p>
+        <p class="fragment quote">基向量的数量不一定就等同于向量的维度，可能小于向量的维度，但绝不可能大于向量的维度</p>
+    </section>
+    <section>
+        <h2><ruby>线性基<rt>Linear Basis</rt></ruby></h2>
+        <p>线性基就是在尝试找到某组向量的基向量，线性基可以被看作这么一个数据结构 $S$，在这个数据结构里面存放了若干基向量，支持</p>
+        <ul class="fragment">
+            <li>插入一个向量 $v$ 到线性基中</li>
+            <ul>
+                <li class="fragment">如果插入成功了，$v$ 不能被已有的基向量线性表示出来，那么将构造一个新的基向量 $b$，让 $v$ 能够被线性表出</li>
+                <li class="fragment">如果插入失败了，意味着 $v$ 本身就能被已有的基向量线性表出了，没有必要往线性基中添加新的基向量</li>
+            </ul>
+        </ul>
+        <p class="fragment">线性基有以下特点</p>
+        <ul>
+            <li class="fragment">对于任意目标向量组，它们以任意的顺序依次插入到线性基中，最终构造出的线性基所拥有的基向量数量应该是相等的</li>
+            <div class="fragment quote" style="margin-top: 0px;">基向量集合的<b style="color: red;">大小最小</b></div>
+            <li class="fragment">当从线性基中移去一个基向量后，需要再往里面塞至少一个向量，才能让线性基的表达能力不变</li>
+            <div class="fragment quote" style="margin-top: 0px;">从基向量集合中任意删去一个基向量，都无法完整表达出目标向量组</div>
+        </ul>
+    </section>
+    <section>
+        <h2>两种重要的线性空间</h2>
+        <ul>
+            <li>$n$ 维实数线性空间 $R^n$</li>
+            <li>$n$ 维布尔线性空间 $\{0,1\}^n$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>异或线性基</h2>
+        <p>假设往线性基中先后添加 $(00001)_2,(00101)_2,(01001)_2,(00100)_2$...</p>
+        <iframe data-animation="./异或线性基.js"
+            style="width: 1000px; height: 250px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                bool insert(int v) {
+                    for (int i = DIM - 1; i >= 0; i--) {
+                        if ((v >> i) & 1) {
+                            if (linearSet[i]) {
+                                v ^= linearSet[i];
+                            } else {
+                                linearSet[i] = v;
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>实数线性基</h2>
+        <p>实数线性基写起来会稍微麻烦一点，因为不像二进制数那样可以方便地对一整行进行操作</p>
+        <iframe data-animation="./实数线性基.js"
+            style="width: 1000px; height: 250px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                bool insert(vector< int > v) { // v 是一个实数向量
+                    for (int i = DIM - 1; i >= 0; i--) {
+                        if (v[i]) {
+                            if (linearSet[i][i]) {
+                                v 减去 v[i]/linearSet[i][i] 倍的 linearSet[i];
+                            } else {
+                                linearSet[i] = v;
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

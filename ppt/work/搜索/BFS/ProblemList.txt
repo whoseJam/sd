@@ -1,0 +1,7 @@
+BFS：
+离开中山路：https://www.luogu.com.cn/problem/P1746
+马的遍历：https://www.luogu.com.cn/problem/P1443
+八数码难题：https://www.luogu.com.cn/problem/P1379
+
+01BFS：
+电路维修：https://www.luogu.com.cn/problem/P4667

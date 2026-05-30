@@ -1,0 +1,58 @@
+<section>
+    <section>
+        <h1>驱赶小猪</h1>
+        <p>高斯消元也能和概率期望产生联系</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2973"></problem>
+    <section>
+        <h2>驱赶小猪</h2>
+        <p>在一张无向图上的 $1$ 号节点处投放一颗炸弹</p>
+        <p class="fragment">炸弹有两种行为：</p>
+        <ul>
+            <li class="fragment">在所在节点处炸开，这种行为发生的概率是 $p$</li>
+            <li class="fragment"><b>等概率地</b>随机选择一条离开当前节点的通路，并沿着这条通路行走到一个新的节点</li>
+        </ul>
+        <p class="fragment">求炸弹在每个节点处炸开的概率</p>
+    </section>
+    <section>
+        <h2>驱赶小猪</h2>
+        <p>假设炸弹来到第 $i$ 个节点上的概率为 $P_i$<span class="fragment">，设第 $i$ 个节点的度为 $d_i$</span></p>
+        <p class="fragment">考虑节点 $i$ 上的炸弹是怎样来的</p>
+    </section>
+    <section>
+        <h2>驱赶小猪</h2>
+        <p>如果这个点是 $1$ 号节点，那么......</p>
+        <iframe data-animation="./炸弹来源1.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">
+            $$
+            P_1=p+\sum_{(1,j)\in E}P_j(1-p)\frac{1}{d_j}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>驱赶小猪</h2>
+        <p>如果这个点是 $i(i\ne 1)$ 号节点，那么......</p>
+        <iframe data-animation="./炸弹来源2.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">
+            $$
+            P_i=\sum_{(i,j)\in E}P_j(1-p)\frac{1}{d_j}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>驱赶小猪</h2>
+        <p>
+            $$
+            \begin{cases}
+            P_1=p+\sum_{(1,j)\in E}P_j(1-p)\frac{1}{d_j} \\
+            P_i=\sum_{(i,j)\in E}P_j(1-p)\frac{1}{d_j}
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">其中 $p$，$\{d_i\}$ 都是题目给我们的，只有 $\{P_i\}$ 是未知的</p>
+        <p class="fragment">现在相当于我们对每个节点都列了这么一个方程，总共有 $n$ 个方程，$n$ 个未知数</p>
+        <p class="fragment">用高斯消元把这个方程组解出来即可</p>
+    </section>
+</section>

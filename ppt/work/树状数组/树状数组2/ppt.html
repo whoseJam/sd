@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>树状数组2</h1>
+        <p>区间修改，单点查询——树状数组与差分数组</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3368"></problem>
+    <section>
+        <h2>放线段</h2>
+        <p>给定一个 $n$ 个元素的数组 $\{A\}$，你的任务是设计一种数据结构，支持以下两种操作：</p>
+        <ul>
+            <li class="fragment"><code>Add(l, r, k)</code>：让 $A_l,A_{l+1},...,A_r$ 的数值都增加 $k$</li>
+            <li class="fragment"><code>Query(x)</code>：求 $A_x$ 的数值</li>
+        </ul>
+        <p class="fragment">如何才能让两种操作都能快速完成呢？</p>
+        <p class="fragment quote">remind：树状数组原生支持单点修改，区间查询；而这里是区间修改，单点查询</p>
+    </section>
+    <section>
+        <h2>放线段</h2>
+        <p>我们借助差分数组</p>
+        <p class="fragment">设 $D_i=A_i-A_{i-1}$，特别的，$D_1=A_1$</p>
+        <p class="fragment">若 <code>Query(x)</code>，则
+            $$
+            \begin{aligned}
+            Query(x)&=A_x \\
+            &=D_1+D_2+...+D_x
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">若 <code>Add(l, r, d)</code>，则可以转化为</p>
+        <codeblock>
+            <script type="text/template">
+                D[l] += d;
+                D[r + 1] -= d;
+            </script>
+        </codeblock>
+        <p class="fragment">至此，问题可以用树状数组解决</p>
+    </section>
+</section>

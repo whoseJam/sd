@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>病毒</h1>
+        <p>trie图除了可以用来做匹配，还可以用来构造字符串</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2444"></problem>
+    <section>
+        <h2>病毒</h2>
+        <p>给定 $n$ 个病毒代码（01串），你需要判断能否找到一个长度无限的<b>安全序列</b>（01序列），使得这个序列中<b>不存在任何病毒代码</b></p>
+        <p class="fragment quote">如果我们把这 $n$ 个病毒代码建成一个trie图，找得到长度无限的<b>安全序列</b>的trie图应该有什么性质呢？</p>
+        <div class="fragment quote">
+            以前我们已知主串，然后把主串放在trie图上行走，在trie图上走出一条路径，这条路径对应了主串的匹配情况<span class="fragment">；如果主串尚不存在，直接在trie图上行走，是否意味着我们在构造一个主串呢？</span>
+            <iframe data-animation="./匹配与构造.js"
+                style="width: 1000px; height: 300px;"></iframe>
+        </div>
+    </section>
+    <section>
+        <h2>病毒</h2>
+        <p>如果我们把所有的病毒代码建立成一个trie图，能找到无限长的安全序列意味着图中存在一个<b>不含终止点的环</b></p>
+        <div style="display: flex;">
+            <div style="text-align: center;">
+                <span>$\{01,11,000\}$</span>
+                <iframe data-animation="./无环.js"
+                    style="width: 1000px; height: 400px;"></iframe>
+            </div>
+            <div style="text-align: center;">
+                <span>$\{011,11,000\}$</span>
+                <iframe data-animation="./有环.js"
+                    style="width: 1000px; height: 400px;"></iframe>
+            </div>
+        </div>
+        <p class="fragment">判断有没有环，用DFS就行</p>
+    </section>
+</section>

@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>格子游戏</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/U513724"></problem>
+    <section>
+        <h2>格子游戏</h2>
+        <p>有一个 $n\times n$ 的棋盘，玩家依次在格子间连边</p>
+        <iframe data-animation="./题目理解.js"
+            data-description="题目理解与样例演示"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">当某条边连接后，恰好形成一个闭环时，游戏结束</p>
+        <p class="fragment">求当第几条边被连接后，游戏结束</p>
+        <p class="fragment quote">如何判断新连的边是否形成闭环</p>
+    </section>
+    <section>
+        <h2>建模思路</h2>
+        <p class="quote">如果一条新边两端的点原本就是连通的，那么这条边的加入就会导致一个闭环的形成</p>
+        <p class="fragment">为每个交叉点分配唯一编号</p>
+        <p class="fragment">依次处理每条边的连接</p>
+        <p class="fragment">判断两端点是否已连通<span class="fragment">，若是则输出当前步数</span></p>
+        <iframe data-animation="./建模过程.js"
+            data-description="从网格到并查集的建模"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+</section>

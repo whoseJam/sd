@@ -1,0 +1,246 @@
+import { Animate as A } from "@/Animate/Animate";
+import { Device as D } from "@/Interact/Device";
+import { Root } from "@/Interact/Root";
+import { Status as S, Status } from "@/Interact/Status";
+
+export const NORMAL_FRAME = -1;
+export const LAST_MAIN_STAGE = -2;
+export const LAST_INTER_STAGE = -3;
+export const FIRST_INTER_STAGE = -4;
+export const CONTINUE_STAGE = -5;
+
+export class Window {
+    static DEBUG = true;
+    static RATE = 1;
+    static ACTION_TICK = 0;
+    static ACTION_DELAY = 0;
+    static SHOULD_INTERP = true;
+    static CURRENT_FRAME = 0;
+    static MAXIMUM_FRAME = 0;
+    static WHOSEJAM = 0;
+    static SHOULD_EXPORT = false;
+    static SHOULD_FLUSH = false;
+    static IS_CONTINUING = false;
+    static IS_INTERACTING = false;
+    static SVG_MINX = 1200;
+    static SVG_MINY = 600;
+    static SVG_MAXX = 0;
+    static SVG_MAXY = 0;
+    static PUPPETEER = false;
+    static IFRAME_ID = undefined;
+    static IFRAME_URL = undefined;
+    static IFRAME_RATE = undefined;
+    static IFRAME_MAX_FRAME = Infinity;
+    static IFRAME_INITED = true;
+    static IFRAME_ARGS = {};
+    static attributes = {};
+    static init() {
+        window.addEventListener("message", event => {
+            const data = event.data;
+            if (data.operator && data.arguments) Window[data.operator].apply(Window, data.arguments);
+        });
+        window.parent.postMessage("inited", "*");
+    }
+    static Message(key: string, value: any) {
+        this.attributes[key] = value;
+    }
+    static Flush(id: number, url: string, rate: number, pdf: boolean, maxFrame = Infinity) {
+        this.SHOULD_FLUSH = true;
+        this.SHOULD_EXPORT = pdf;
+        this.IFRAME_ID = id;
+        this.IFRAME_URL = url;
+        this.IFRAME_RATE = rate;
+        this.IFRAME_MAX_FRAME = maxFrame;
+    }
+    static SetViewBox(x: number, y: number, width: number, height: number, rate: number) {
+        Root.setViewBox(x, y, width, height, rate);
+    }
+    static SetDescription(description: string) {
+        Status.setDescription(description);
+    }
+    static StopAnimate() {
+        A.stop();
+    }
+    static StartAnimate() {
+        A.start();
+    }
+    static Reload() {
+        window.location.reload();
+    }
+    static OnInited() {
+        window.parent.postMessage("inited", "*");
+    }
+    static notifyParent() {
+        window.parent.postMessage(
+            {
+                operator: "SetAnimationSize",
+                arguments: [
+                    // (id, url, x, y, width, height)
+                    this.IFRAME_ID,
+                    this.IFRAME_URL,
+                    this.SVG_MINX,
+                    this.SVG_MINY,
+                    this.SVG_MAXX - this.SVG_MINX,
+                    this.SVG_MAXY - this.SVG_MINY,
+                ],
+            },
+            "*"
+        );
+    }
+}
+
+D.onKeyDown("nN", nextFrame);
+D.onKeyDown("pP", prevFrame);
+
+function lastMainFrame() {
+    if (Window.SHOULD_EXPORT) A.forceToFinish();
+    if (Window.SHOULD_FLUSH) {
+        if (Window.PUPPETEER) return;
+        Window.notifyParent(); // set the animation size of parent window
+        if (Window.SHOULD_EXPORT) throw new Error("Not implemented yet");
+        else throw new Error("Reload (not an error)");
+    }
+}
+
+function promiseOfFirstInterFrame(): Promise<void> {
+    if (Window.IS_CONTINUING) throw new Error();
+    if (Window.IS_INTERACTING) throw new Error();
+    if (Window.MAXIMUM_FRAME !== Window.CURRENT_FRAME) throw new Error("Prevent Execution (Not an Error)");
+    Window.IS_INTERACTING = true;
+    S.updateFrameStatus();
+    return new Promise(function (resolve) {
+        const fn = function () {
+            if (Window.IS_CONTINUING) return setTimeout(fn, 10); // 主流程的动画不可被打断
+            if (!A.finished()) return setTimeout(fn, 10); // 当前 inter frame 过去已经生成，现在触发，需要等待上一帧动画完全结束
+            A.startNewFrame();
+            resolve();
+        };
+        fn();
+    });
+}
+
+function promiseOfLastInterFrame(): Promise<void> {
+    Window.IS_INTERACTING = false;
+    S.updateFrameStatus();
+    return Promise.resolve();
+}
+
+function promiseOfNormalFrame(): Promise<void> {
+    const currentInteracting = Window.IS_INTERACTING;
+    return new Promise(function (resolve) {
+        const fn = function () {
+            if (Window.SHOULD_FLUSH) {
+                A.currentActionList.updateWindowSize();
+                return resolve();
+            }
+            if (Window.IS_CONTINUING) return setTimeout(fn, 10);
+            if (Window.IS_INTERACTING && !currentInteracting) return setTimeout(fn, 10);
+            if (Window.WHOSEJAM === 0) return setTimeout(fn, 10);
+            Window.WHOSEJAM--;
+            return resolve();
+        };
+        fn();
+    });
+}
+
+function promiseOfContinueFrame(): Promise<void> {
+    Window.IS_CONTINUING = true;
+    S.updateFrameStatus();
+    return new Promise(function (resolve) {
+        const fn = function () {
+            if (Window.SHOULD_FLUSH) {
+                A.currentActionList.updateWindowSize();
+                return resolve();
+            }
+            if (Window.WHOSEJAM === 0) return setTimeout(fn, 10);
+            Window.IS_CONTINUING = false;
+            S.updateFrameStatus();
+            Window.WHOSEJAM--;
+            return resolve();
+        };
+        fn();
+    });
+}
+
+function promiseOfLastMainFrame(): Promise<void> {
+    return new Promise(function (resolve) {
+        const fn = function () {
+            if (Window.SHOULD_FLUSH) {
+                A.currentActionList.updateWindowSize();
+                lastMainFrame();
+                return resolve();
+            }
+            setTimeout(fn, 10);
+        };
+        fn();
+    });
+}
+
+function promiseForMilliseconds(ms: number): Promise<void> {
+    Window.ACTION_DELAY += ms;
+    return Promise.resolve();
+}
+
+/**
+ * Pauses execution flow until the user triggers the next stage.
+ * Acts as an interactive breakpoint between two animation stage.
+ * @param frameType - The type of frame pause. Can be a predefined constant or a positive number representing milliseconds to pause.
+ * @returns A promise that resolves when the pause condition is met.
+ * @example
+ * await sd.pause(); // Wait for user to click 'N'('N' for next) button.
+ * // Operations to execute in the next animation stage.
+ * await sd.pause(1000); // Wait for 1000 milliseconds (1 second).
+ * // Operations to execute in the next animation stage.
+ * await sd.pause(); // Wait for another user interaction.
+ * // Operations to execute in the next animation stage.
+ */
+export function pause(ms?: number): Promise<void> {
+    const pauseBehavior = ms ?? NORMAL_FRAME;
+    if (Window.SHOULD_FLUSH) {
+        A.currentActionList.updateWindowSize();
+        // limit frame count, to handle the infinite animation
+        if (Window.CURRENT_FRAME <= Window.IFRAME_MAX_FRAME && pauseBehavior !== LAST_MAIN_STAGE) {
+            Window.CURRENT_FRAME++;
+            return; // no block
+        } else {
+            lastMainFrame();
+            return;
+        }
+    }
+    A.firstTick();
+    A.trigger();
+    A.debug();
+    if (ms > 0) return promiseForMilliseconds(ms);
+    Window.ACTION_DELAY = 0;
+    switch (pauseBehavior) {
+        case FIRST_INTER_STAGE:
+            return promiseOfFirstInterFrame();
+        case LAST_INTER_STAGE:
+            return promiseOfLastInterFrame();
+        case CONTINUE_STAGE:
+            return promiseOfContinueFrame();
+        case NORMAL_FRAME:
+            return promiseOfNormalFrame();
+        case LAST_MAIN_STAGE:
+            return promiseOfLastMainFrame();
+    }
+}
+
+function prevFrame() {
+    if (Window.CURRENT_FRAME < 0) return;
+    if (!A.finished()) A.forceToFinish();
+    else A.rollbackFrame();
+}
+
+function nextFrame() {
+    if (Window.CURRENT_FRAME + 1 > Window.MAXIMUM_FRAME) {
+        if (!A.finished()) A.forceToFinish();
+        else if (Window.WHOSEJAM === 0) {
+            Window.WHOSEJAM++;
+            A.startNewFrame();
+        }
+    } else {
+        if (!A.finished()) A.forceToFinish();
+        else A.replayFrame();
+    }
+}

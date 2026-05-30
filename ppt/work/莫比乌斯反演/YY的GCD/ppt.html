@@ -1,0 +1,70 @@
+<section>
+    <section>
+        <h1>YY的GCD</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2257"></problem>
+    <section>
+        <h2>YY的GCD</h2>
+        <p>给定 $n,m$，求 $1\le x\le n,1\le y\le m$ 且 $gcd(x,y)$ 为质数的 $(x,y)$ 有多少对</p>
+        <p class="fragment">
+            $$
+            \sum_{x=1}^n\sum_{y=1}^m[gcd(x,y)是质数]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>YY的GCD</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \sum_{x=1}^n\sum_{y=1}^m[gcd(x,y)是质数]
+            &=\sum_{x=1}^n\sum_{y=1}^m\sum_{k\in P}[gcd(x,y)=k] \\
+            &=\sum_{k\in P}\sum_{x=1}^n\sum_{y=1}^m[gcd(\frac x k,\frac y k)=1] \\
+            &=\sum_{k\in P}\sum_{x=1}^{n/k}\sum_{y=1}^{m/k}[gcd(x,y)=1] \\
+            &=\sum_{k\in P}\sum_{x=1}^{n/k}\sum_{y=1}^{m/k}\sum_{d|x\\d|y}\mu(d) \\
+            &=\sum_{k\in P}\sum_{d=1}^{min(n/k,m/k)}\mu(d)\sum_{x=1\\d|x}^{n/k}\sum_{y=1\\d|y}^{m/k}1
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>YY的GCD</h2>
+        <p>
+            $$
+            \begin{aligned}
+            answer
+            &=\sum_{k\in P}\sum_{d=1}^{min(n/k,m/k)}\mu(d)\sum_{x=1\\d|x}^{n/k}\sum_{y=1\\d|y}^{m/k}1 \\
+            &=\sum_{k\in P}\sum_{d=1}^{min(n/k,m/k)}\mu(d) \lfloor\frac{n}{kd}\rfloor \lfloor\frac{m}{kd}\rfloor \\
+            &=\sum_{T=1}^{min(n,m)} \lfloor\frac n T\rfloor \lfloor\frac m T\rfloor \sum_{d|T}\mu(d)[\frac T d\in P]
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">设 $F(n)=\sum_{d|n}\mu(d)[\frac n d\in P]$，则
+            $$
+            answer=\sum_{T=1}^{min(n,m)}\lfloor\frac n T\rfloor \lfloor\frac m T\rfloor F(T)
+            $$
+        </p>
+        <p class="fragment">只要能在可接受的复杂度内预处理 $F$ 函数就行了</p>
+    </section>
+    <section>
+        <h2>YY的GCD</h2>
+        <p>
+            $$
+            \begin{aligned}
+            F(n)&=\sum_{d|n}\mu(d)[\frac n d\in P] \\
+            &=\sum_{p|n}\mu(\frac n p)[p\in P]
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">枚举每个质数 $p$，把 $p\rightarrow F(kp)$ 的贡献 $\mu(k)$ 累加到 $F(kp)$ 里面去</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= tot; i++)
+                    for (int j = 1; j * prim[i] <= N; j++)
+                        F[j * prim[i]] += mu[j];
+                for (int i = 1; i <= N; i++)
+                    sum[i] = sum[i - 1] + (LL) F[i];
+            </script>
+        </codeblock>
+    </section>
+</section>

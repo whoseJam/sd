@@ -1,0 +1,69 @@
+<section>
+    <section>
+        <h1>括号</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P7044"></problem>
+    <section>
+        <h2>括号</h2>
+        <p>先思考如何计算出一个括号串的 $0$ 级偏移</p>
+        <iframe data-animation="./括号匹配.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">一个括号串的 $0$ 级偏移就是进行括号匹配后<b>还未匹配的左括号和右括号数之和</b></p>
+        <p class="fragment">而 $1$ 级偏移等于所有子串的 $0$ 级偏移</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            Answer_1(s)&=\sum_{l=1}^n\sum_{r=l}^n [s[l...r]括号匹配后剩下的左括号数+剩下的右括号数] \\
+            &=\sum_{i=1}^n 1[s[i]这个括号在多少个括号序列中会被剩下]
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>括号</h2>
+        <p>
+            $$
+            Answer_1(s)=\sum_{i=1}^n 1[s[i]这个括号在多少个括号序列中会被剩下]
+            $$
+        </p>
+        <p>考虑 $s[i]$ 这个左括号，会在哪些括号序列中被剩下</p>
+        <iframe data-animation="./括号贡献.js"
+            style="width: 1000px; height: 120px;"></iframe>
+        <p class="fragment">设与之匹配的右括号为 $s[j]$</p>
+        <p class="fragment">那么 $s[i]$ 会在左端点位于 $[1,i]$，右端点位于 $[i,j-1]$ 的括号序列中被剩下<span class="fragment">——换言之，$s[i]$ 对这些区间有 $+1$ 的贡献</span></p>
+        <p class="fragment quote">对右括号也要同理讨论它会在哪些括号序列中被剩下，由于和左括号的情况过于雷同，在此不做展开</p>
+        <p class="fragment">那对于 $Answer_{2|3|4...}(s)$ 呢？</p>
+    </section>
+    <section>
+        <h2>括号</h2>
+        <p>我们尝试讨论一个左括号对 $Answer_k(s)$ 的贡献</p>
+        <iframe data-animation="./括号k层贡献.js"
+            style="width: 1000px; height: 180px;"></iframe>
+        <p>一个 $k$ 级偏移的字符串，只会对包含它的 $k+1$ 级偏移值产生贡献</p>
+        <p class="fragment">那我们只需要 $s[i]$ 被多少个<b>$k$ 层嵌套</b>框住，就能算出它会对 $Answer_k(s)$ 产生多少贡献</p>
+        <p class="fragment">我们可以把 $k$ 层嵌套的括号分开看，左边选 $k$ 个左端点出来，右边选 $k$ 个右端点</p>
+    </section>
+    <section>
+        <h2>括号</h2>
+        <iframe data-animation="./括号k层贡献.js"
+            style="width: 1000px; height: 180px;"></iframe>
+        <p>左边相当于从长度为 $i$ 序列中选 $k$ 个端点，可以重复选，求方案数</p>
+        <p class="fragment">我们可以想象有 $k$ 个隔板把 $i-1$ 个单位长度隔开，两个隔板之间的长度之和，就是前一个端点到下一个端点的距离，隔板之间可以为空（最后一块隔板后面的长度之和，就是最右侧的端点到 $i$ 的距离）</p>
+        <p class="fragment">
+            $$
+            C_{(i-1)+k}^{k}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>括号</h2>
+        <iframe data-animation="./括号k层贡献.js"
+            style="width: 1000px; height: 180px;"></iframe>
+        <p>对于右边，我们需要保证选择的第一个端点位于 $[i,j-1]$ 这个范围内，从第二个端点开始就无所谓了，可以用容斥实现这个计数</p>
+        <p class="fragment">
+            $$
+            C_{((n-i+1)-1)+k}^{k}-C_{((n-j+1)-1)+k}^{k}
+            $$
+        </p>
+    </section>
+</section>

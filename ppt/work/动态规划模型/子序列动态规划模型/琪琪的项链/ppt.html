@@ -1,0 +1,66 @@
+<section>
+    <section>
+        <h1>琪琪的项链</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2267"></problem>
+    <section>
+        <h2>琪琪的项链</h2>
+        <iframe data-animation="./样例解释.html"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p>给定一排 $n$ 颗珠子，你需要从左往右选出一些来构成一条项链</p>
+        <p class="fragment">求一共能构成多少种<b>本质不同</b>的项链</p>
+        <p class="fragment quote">一串项链显然可以被看作一个子序列...</p>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <p>我们需要对子序列进行计数，但不同的子序列对应的项链，在本质上可能是相同的——这要求我们对子序列计数时进行某种去重</p>
+        <div>
+            <p style="text-align: center; font-size: 20px; margin-bottom: -30px;">以<b style="color: red;">红</b>，<b style="color: green;">绿</b>项链为例</p>
+            <iframe data-animation="./排除重复.js"
+                style="width: 1000px; height: 200px;"></iframe>
+        </div>
+        <p class="fragment quote">需要排除掉重复的方案<span class="fragment">，我们约定，任意一种被计入统计的方案，每一个✔都应该尽可能往后靠</span></p>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <iframe data-animation="./转移裁剪.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p>设 $f_i$ 表示第 $i$ 颗珠子<b>一定要选且作为项链末尾</b>的方案数，$has(l,r,x)$ 表示判断 $[l,r]$ 区间内是否存在颜色 $x$</p>
+        <p class="fragment" style="font-size: 20px;">
+            $$
+            f_i=1+\sum_{\begin{aligned}j&\lt i \\ !has(j+&1,i-1,a[j])\end{aligned} }f_j
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    f[i] = 1;
+                    set< int > S;
+                    for (int j = i - 1; j >= 1; j--) {
+                        if (S 中存在 a[j]) continue;
+                        S.insert(a[j]);
+                        f[i] += f[j];
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <iframe data-animation="./减少状态转移数量.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p style="font-size: 20px;">
+            $$
+            f_i=1+\sum_{\begin{aligned}j&\lt i \\ !has(j+&1,i-1,a[j])\end{aligned} }f_j
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    f[i] = 1 + 所有桶的和;
+                    桶[a[i]] = f[i];
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

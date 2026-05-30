@@ -1,0 +1,112 @@
+<section>
+    <section>
+        <h1>带权并查集</h1>
+        <p>用于解决一类 $a=b+k$ 问题</p>
+    </section>
+    <section>
+        <h2>带权并查集</h2>
+        <p>在一条数轴上随意选两个点 $x$ 和 $y$</p>
+        <p class="fragment">
+            $$
+            x+dis(x\rightarrow y)=y \\
+            dis(x\rightarrow y)=y-x
+            $$
+        </p>
+        <p class="fragment">
+            此处的 $dis(x\rightarrow y)$ 就是 $x$ 到 $y$ 的<b>相对距离</b>
+        </p>
+        <iframe data-animation="./相对距离.js" class="fragment"
+            style="width: 1000px; height: 100px;"></iframe>
+        <div class="fragment quote">
+            例如 $dis(x\rightarrow y)=5$，我们实际上有无穷多组 $(x,y)$ 满足这个相对距离关系<br>
+            <ul>
+                <li>$x=0,y=5$</li>
+                <li>$x=6,y=11$</li>
+                <li>$x=-2,y=3$</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+        <h2>带权并查集</h2>
+        <p>假设有 $n$ 个变量 $x_1,x_2...x_n$，给出 $m$ 对相对距离关系，形如
+            $$
+            dis(x_a\rightarrow x_b)=k
+            $$
+        </p>
+        <p class="fragment">请你判断这 $m$ 对相对距离是否是<b>不冲突的</b></p>
+    </section>
+    <section>
+        <h2>带权并查集</h2>
+        <p class="quote">
+            $$
+            \left\{
+            \begin{aligned}
+            dis(x_1\rightarrow x_2)&=1\\
+            dis(x_2\rightarrow x_3)&=3\\
+            dis(x_3\rightarrow x_1)&=-4
+            \end{aligned}
+            \right.
+            $$
+            是不冲突的
+        </p>
+    </section>
+    <section>
+        <h2>带权并查集</h2>
+        <p class="quote">
+            $$
+            \left\{
+            \begin{aligned}
+            dis(x_1\rightarrow x_2)&=1\\
+            dis(x_2\rightarrow x_3)&=3\\
+            dis(x_3\rightarrow x_1)&=2
+            \end{aligned}
+            \right.
+            $$
+            是冲突的
+        </p>
+    </section>
+    <section>
+        <h2>带权并查集</h2>
+        <p>我们发现如果 $x_1,x_2...x_k$ 被相对距离连通起来，那么任意一个 $x_i$ 被确定，其余 $x_j$ 也一定随之确定</p>
+        <p class="fragment">所以我们不妨把它们看作在一个集合内，用并查集维护他们的相对距离</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int fa[N], dis[N];
+                // dis[x] 表示 x 到 fa[x] 的相对距离，即 dis(x->fa[x])
+            </script>
+        </codeblock>
+        <p class="fragment">在并查集路径压缩的时候，需要顺便维护 $dis$ 数组</p>
+        <div class="fragment" style="display: flex; align-items: center;">
+            <codeblock>
+                <script type="text/template">
+                    int F(int x) {
+                        if (fa[x] == x) return x;
+                        int f = fa[x];
+                        fa[x] = F(fa[x]);
+                        dis[x] += dis[f];
+                        return fa[x];
+                    }
+                </script>
+            </codeblock>
+            <iframe data-animation="./带权并查集路径压缩.js"
+                style="width: 1000px; height: 300px;"></iframe>
+        </div>
+    </section>
+    <section>
+        <h2>带权并查集</h2>
+        <codeblock>
+            <script type="text/template">
+                bool Merge(int x, int y, int d) {
+                    int fx = F(x), fy = F(y);
+                    if (fx != fy) {
+                        fa[fx] = fy;
+                        dis[fx] = d + dis[y] - dis[x];
+                        return true;
+                    } else return dis[x] == dis[y] + d;
+                }
+            </script>
+        </codeblock>
+        <iframe data-animation="./带权并查集合并.js"
+            style="width: 1000px; height: 200px;"></iframe>
+    </section>
+</section>

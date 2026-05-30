@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>跳跃游戏</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P10403"></problem>
+    <section>
+        <h2>跳跃游戏</h2>
+        <p>
+            $$
+            score_{l,r}=\begin{cases}
+            (r-l+1) & gcd(a_l,a_{l+1},...,a_r)=2 且 (r-l+1) 是偶数 \\
+            (r-l+1) & gcd(a_l,a_{l+1},...,a_r)=3 且 (r-l+1) 是奇数 \\
+            0 & 其他情况
+            \end{cases}
+            $$
+        </p>
+        <p>枚举每个区间 $[l,r]$，计算 $score_{l,r}$</p>
+        <p class="fragment">我们只会对 $score_{l,r}\gt 0$ 的那部分感兴趣</p>
+        <p class="fragment">不妨固定 $l$...</p>
+        <iframe data-animation="./固定.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">只要我们能快速计算一个区间的 $gcd$，就能二分找到绿色区间的左右端点</p>
+    </section>
+    <section>
+        <h2>跳跃游戏</h2>
+        <p>而找一个区间的 $gcd$ 同样可以借助ST表，设 $F_{i,j}$ 表示以 $i$ 为起点，长度 $2^j$ 的区间的 $gcd$ 是多少...</p>
+        <p class="fragment">
+            $$
+            F_{i,j}=gcd(F_{i,j-1},F_{i+2^{j-1},j-1})
+            $$
+        </p>
+    </section>
+</section>

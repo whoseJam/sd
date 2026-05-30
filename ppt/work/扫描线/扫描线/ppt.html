@@ -1,0 +1,45 @@
+<section>
+    <section>
+        <h1>扫描线</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5490"></problem>
+    <section>
+        <h2>扫描线</h2>
+        <iframe data-animation="./扫描线.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">需要某种序列数据结构支持</p>
+        <ol>
+            <li class="fragment">添加一条线段</li>
+            <li class="fragment">查询有多长的区间被线段覆盖</li>
+        </ol>
+    </section>
+    <section>
+        <h2>扫描线</h2>
+        <ol>
+            <li>添加一条线段</li>
+            <li>查询有多长的区间被线段覆盖</li>
+        </ol>
+        <p class="fragment">由于被线段覆盖一次或者多次，都算是被线段覆盖，直接统计<b>被线段覆盖的区间的长度</b>有点麻烦，我们从反面考虑</p>
+        <p class="fragment">
+            $$
+            被线段覆盖的区间的长度=总长度-不被线段覆盖的长度
+            $$
+        </p>
+        <p class="fragment quote">如果把线段覆盖视作区间加，那么不被线段覆盖的长度，就是值为 $0$ 的区间的长度</p>
+        <p class="fragment">我们维护<b><ruby>区间最小值<rt>min</rt></ruby></b>，以及<b><ruby>区间最小值的数量<rt>cnt</rt></ruby></b>...</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushUp(int x) {
+                    t[x].min = min(t[lc].min, t[rc].min);
+                    t[x].cnt = 0;
+                    if (t[x].min == t[lc].min) t[x].cnt += t[lc].cnt;
+                    if (t[x].min == t[rc].min) t[x].cnt += t[rc].cnt;
+                }
+            </script>
+        </codeblock>
+        <ul>
+            <li class="fragment">如果区间最小值为 $0$，则不被线段覆盖的长度就是区间最小值的数量</li>
+            <li class="fragment">如果区间最小值大于 $0$，则区间全都被线段覆盖</li>
+        </ul>
+    </section>
+</section>

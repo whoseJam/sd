@@ -1,0 +1,7 @@
+树上子树和与差分：
+#947.Max Flow：https://www.luogu.com.cn/problem/P3128
+#948.松鼠的新家：https://www.luogu.com.cn/problem/P3258
+运输计划：https://www.luogu.com.cn/problem/P2680
+
+广义差分：
+天天爱跑步：https://www.luogu.com.cn/problem/P1600

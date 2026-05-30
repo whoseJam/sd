@@ -1,0 +1,95 @@
+<section>
+    <section>
+        <h1>二分</h1>
+        <p>找到一个序列的<b style="color: red;">分界点</b></p>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <p>假设你有一个序列，序列非常有特点</p>
+        <iframe data-animation="./序列性质.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <ul>
+            <li class="fragment">前面一部分满足某个<b style="color: red;">性质 $A$</b></li>
+            <li class="fragment">后面一部分满足某个<b style="color: green;">性质 $B$</b></li>
+        </ul>
+        <p class="fragment">但你并不清楚到底是从哪个序列点开始，序列点的性质发生转变<span class="fragment">，你对找到这个<b style="color: teal;">分界点</b>很感兴趣</span></p>
+        <p class="fragment">你有一个函数 $classify$，这个函数能帮你识别某个序列点是满足<b style="color: red;">性质 $A$ </b>还是<b style="color: green;">性质 $B$ </b>的</p>
+        <p class="fragment quote">你怎么样高效地找到分界点？</p>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <iframe data-animation="./序列性质图片.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                // L 是下界
+                // R 是上界
+                int i = L;
+                for (; i <= R; i++) {
+                    if (classify(i) == "A") continue;
+                    break;
+                }
+                // i - 1 是最后一个 "A"
+                // i 是第一个 "B"
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <iframe data-animation="./二分序列.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (classify(mid) == "A") l = mid + 1;
+                    else r = mid - 1;
+                }
+            </script>
+        </codeblock>
+        <p>由于只要 $l\le r$ 就会不停迭代，那最后退出循环的时候，一定是 $l=r+1$ 这样的情况</p>
+        <ul>
+            <li class="fragment">每次遇到<b style="color: red;">性质 $A$ </b>的序列点后，$l$ 都进行了移动，所以最后 $l$ 一定落在<b style="color: green;">性质 $B$ </b>的序列点上</li>
+            <li class="fragment">每次遇到<b style="color: green;">性质 $B$ </b>的序列点后，$r$ 都进行了移动，所以最后 $r$ 一定落在<b style="color: red;">性质 $A$ </b>的序列点上</li>
+        </ul>
+        <p class="fragment">于是，无论想要取满足性质 $A$ 的最后一个点，还是满足性质 $B$ 的第一个点，都很容易取到</p>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <p>查找一个<b>有序序列</b>中<ruby>第一个不小于<rt>lower_bound</rt></ruby> $x$ 的元素</p>
+        <iframe data-animation="./lower_bound解释.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">那么我们可以这样定义问题</p>
+        <iframe data-animation="./lower_bound实现.js" class="fragment"
+            style="width: 1000px; height: 150px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (a[mid] < x) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // l 是我们想要的
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <p>查找一个<b>有序序列</b>中<ruby>第一个大于<rt>upper_bound</rt></ruby> $x$ 的元素</p>
+        <iframe data-animation="./upper_bound解释.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">那么我们可以这样定义问题</p>
+        <iframe data-animation="./upper_bound实现.js" class="fragment"
+            style="width: 1000px; height: 150px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (a[mid] <= x) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // l 是我们想要的
+            </script>
+        </codeblock>
+    </section>
+</section>

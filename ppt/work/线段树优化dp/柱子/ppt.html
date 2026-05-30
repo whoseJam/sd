@@ -1,0 +1,39 @@
+<section>
+    <section>
+        <h1>柱子</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="474E"></problem>
+    <section>
+        <h2>柱子</h2>
+        <p>设 $f_i$ 表示序列最后一个柱子是第 $i$ 个柱子的最大长度</p>
+        <p class="fragment quote">倒数第二个柱子肯定位于第 $i$ 个柱子之前，并且其高度之差的绝对值必须不低于 $d$</p>
+        <p class="fragment">
+            $$
+            f_i=\mathop{max}\limits_{\begin{aligned}j&\lt i\\|h_j-&h_i|\ge d\end{aligned} }\{f_j+1\}
+            $$
+        </p>
+        <iframe data-animation="./h数组.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+    <section>
+        <h2>柱子</h2>
+        <p>我们用一个 $hf$ 数组来维护dp，其中 $hf[i]$ 表示前面的柱子的高度为 $i$ 的时候，最大的 $f$ 值</p>
+        <codeblock>
+            <script type="text/template">
+                void Solve() {
+                    for (int i = 1; i <= n; i++) {
+                        // 根据 hf 计算 f[i]
+                        for (int lastH = 1; lastH <= maxH; lastH++) {
+                            if (abs(h[i] - lastH) < d) continue;
+                            f[i] = max(f[i], hf[lastH]);
+                        }
+                        // 用 f[i] 更新 hf
+                        hf[h[i]] = max(hf[h[i]], f[i]);
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">随后改为用线段树维护 $hf$，即可以 $O(nlogn)$ 的时间复杂度通过本题</p>
+        <p class="fragment quote">由于本题的 $h$ 最大值是 $10^{15}$，所以可能需要离散化或者动态开点</p>
+    </section>
+</section>

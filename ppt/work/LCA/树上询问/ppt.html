@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>树上询问</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P6374"></problem>
+    <section>
+        <h2>树上询问</h2>
+        <p>一个 $n$ 个点的无根树，多组询问，每组询问给出一个三元组 $(a,b,c)$</p>
+        <iframe data-animation="./LCA.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">有多少个节点 $i$ 可以在当根的情况下，使得 $LCA(a,b)=c$</p>
+    </section>
+    <section>
+        <h2>树上询问</h2>
+        <p>一个显然的结论是，$c$ 必须在 $a,b$ 的简单路径上，才能找到让 $LCA(a,b)=c$ 的树根</p>
+        <iframe data-animation="./分析.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">且合法的树根就是 $c$ 连出去的，不包含 $a$ 和 $b$ 的分叉子树的所有节点</p>
+    </section>
+    <section>
+        <h2>树上询问</h2>
+        <div style="display: flex;">
+            <iframe data-animation="./情况1.js"
+                style="width: 1000px; height: 400px;"></iframe>
+            <iframe data-animation="./情况2.js"
+                style="width: 1000px; height: 400px;"></iframe>
+        </div>
+    </section>
+</section>

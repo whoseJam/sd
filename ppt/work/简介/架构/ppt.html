@@ -1,0 +1,88 @@
+<section>
+    <section>
+        <h1>sd整体结构介绍</h1>
+        <p>whoseJam</p>
+    </section>
+    <section>
+        <iframe data-animation="./架构.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                o.startAnimate();
+                // 一系列属性设置
+                o.endAnimate();
+            </script>
+        </codeblock>
+        <p class="fragment quote">基本上所有动画都会由startAnimate引领，以endAnimate结束</p>
+    </section>
+    <section>
+        <h2>以一个矩形为例</h2>
+        <iframe data-animation="./移动1.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                const svg = sd.svg(); // 获取 svg 画布
+                const rect = new sd.Rect(svg);
+                await sd.pause(); // 使用 sd.pause 来做一次停顿
+                rect.startAnimate().x(100).endAnimate();
+                rect.startAnimate().y(100).endAnimate();
+            </script>
+        </codeblock>
+        <iframe data-animation="./移动2.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                rect.startAnimate().x(100).y(100).endAnimate();
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>延时动画</h2>
+        <p>有时候我们可能希望一段动画被延时调度</p>
+        <iframe data-animation="./移动3.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                const r1 = new sd.Rect(svg);
+                const r2 = new sd.Rect(svg).x(100);
+                await sd.pause();
+                r1.startAnimate().dx(60).endAnimate();
+                r2.after(r1).startAnimate().dx(60).endAnimate();
+            </script>
+        </codeblock>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                r2.after(300).startAnimate().dx(60).endAnimate();
+                // startAnimate 的默认时长是 300ms
+                // 可以在 after 内填写数字表示经过多少毫秒后触发动画
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>动画时长</h2>
+        <iframe data-animation="./移动4.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                // r1, r2, r3, r4, r5 是从上到下五个矩形
+                r1.startAnimate().dx(500).endAnimate();
+                r2.startAnimate(600).dx(500).endAnimate();
+                r3.startAnimate(900).dx(500).endAnimate();
+                r4.startAnimate(1200).dx(500).endAnimate();
+                r5.startAnimate(1500).dx(500).endAnimate();
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>动画 vs 非动画</h2>
+        <iframe data-animation="./移动5.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                // r1, r2 是两个矩形
+                r1.startAnimate(1000).x(500).endAnimate();
+                r2.x(500);
+            </script>
+        </codeblock>
+    </section>
+</section>

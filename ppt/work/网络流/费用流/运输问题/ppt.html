@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>运输问题</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4015"></problem>
+    <section>
+        <h2>运输问题</h2>
+        <p>仓库要发货，第 $i$ 个仓库的发货量为 $A_i$</p>
+        <p class="fragment">零售店从仓库收货，第 $i$ 家零售店的收货量为 $B_i$</p>
+        <p class="fragment">从第 $i$ 个仓库发一个单位的货物，到第 $j$ 个零售店的开销是 $c_{i,j}$</p>
+        <p class="fragment">求转运货物的最小开销和最大开销</p>
+    </section>
+    <section>
+        <h2>运输问题</h2>
+        <p>显然可以如下方式建图</p>
+        <ul>
+            <li class="fragment">虚拟源点 $S$ 向每个仓库 $i$ 连一条容量为 $A_i$，费用为 $0$ 的连边</li>
+            <li class="fragment">所有零售店 $j$ 向虚拟汇点 $T$ 连一条容量为 $B_j$，费用为 $0$ 的连边</li>
+            <li class="fragment">中间所有仓库 $i$ 向所有零售店 $j$ 连容量为 $+\infty$，费用为 $c_{i,j}$ 的连边</li>
+        </ul>
+        <iframe data-animation="./运输问题.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+</section>

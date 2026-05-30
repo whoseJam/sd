@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>回文路径</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3126"></problem>
+    <section>
+        <h2>回文路径</h2>
+        <p>有一个 $N\times N$ 的字符矩阵，你需要从左上角移动到右下角，走出一个回文路径</p>
+        <iframe data-animation="./样例解释.js"
+            data-viewBox="-30.55 -1.7250000000000005 221.10000000000002 270.725"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">求一共有多少种走法</p>
+    </section>
+    <section>
+        <h2>回文路径</h2>
+        <p class="quote">如何保证走出的路径回文呢？<span class="fragment">——从两头开始走，每次都走相同的字符</span></p>
+        <iframe data-animation="./两头走.js"
+            style="width: 1000px; height: 400px;"></iframe>
+    </section>
+    <section>
+        <h2>回文路径</h2>
+        <p>设 $f_{k,x_1,x_2}$ 表示走了 $k$ 步，从 $(1,1)$ 出发的角色来到了第 $x_1$ 行，从 $(n,n)$ 出发的角色来到了 $x_2$ 行</p>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 350px;"></iframe>
+        <p class="fragment math-fragment">
+            $$
+            f_{k,x_1,x_2}=sum\begin{cases}
+            f_{k-1,x_1-1,x_2} \\
+            f_{k-1,x_1-1,x_2+1} \\
+            f_{k-1,x_1,x_2} \\
+            f_{k-1,x_1,x_2+1}
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>涂色</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4170"></problem>
+    <section>
+        <h2>涂色</h2>
+        <p>有一个长度为 $n$ 的木板，最初木板没有任何颜色，你需要给这个木板涂色，使之变成某个目标模样</p>
+        <iframe data-animation="./样例解释.js"
+            data-viewBoxDelta="0 0 0 80"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">你每次可以选择一段连续的区间，把这段区间涂上相同的颜色，求至少要涂多少次才能让木板变成目标模样</p>
+        <p class="fragment quote">手玩一些小样例后容易发现，区间树形式的染色方案具有<b>不劣性</b></p>
+        <p class="fragment">本题的染色成本就是区间树上的节点个数</p>
+    </section>
+    <section>
+        <h2>涂色</h2>
+        <p>那么接下来的问题就转化为了，如何在动态规划的转移过程中去描述这棵区间树</p>
+        <ul>
+            <li class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间染为正确的颜色，至少需要做多少次染色</li>
+            <li class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间的区间树构建出来，这个区间树上至少包含多少个节点</li>
+        </ul>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment math-fragment">
+            $$
+            f_{l,r}=min\begin{cases}
+            min(f_{l+1,r}, f_{l,r-1}) & C_l=C_r \\
+            f_{l,k}+f_{k+1,r}
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">初始化 $f_{i,i}=1$</p>
+    </section>
+</section>

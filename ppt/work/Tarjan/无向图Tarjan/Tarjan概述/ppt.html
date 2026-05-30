@@ -1,0 +1,69 @@
+<section>
+    <section>
+        <h1>Tarjan</h1>
+        <p>帮助处理割点，割边，点双，边双</p>
+    </section>
+    <section>
+        <h2>Tarjan</h2>
+        <iframe data-animation="./边分类.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>Tarjan尝试通过DFS，对无向边定向，把一张无向图划分为一棵树加上若干条额外边</p>
+        <p class="fragment">根据额外边的不同特质，我们有如下分类</p>
+        <ul>
+            <li class="fragment"><b style="color: teal;">树边</b>：正如其名</li>
+            <li class="fragment"><b style="color: red;">返祖边</b>：这种额外边总是从树上的后代指向祖先</li>
+        </ul>
+        <p class="fragment">可以发现只看树边的情况下，所有边都是割边，所有度为 $1$ 的节点都是割点<span class="fragment">，而返祖边的存在可以让某些边变得不是割边，让某些点变得不是割点</span></p>
+    </section>
+    <section>
+        <h2>dfn&low</h2>
+        <iframe data-animation="./dfn&low.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>在遍历整张图时，把遍历到的每个节点依次记录下来，形成一个序列，并记点 $u$ 在序列中的位置为 $dfn(u)$<span class="fragment">，由于<b style="color: red;">返祖边</b>的存在，导致某些节点可以逆流而上，来到自己的祖先处，形成一个个环</span><span class="fragment">，为了描述这样的结构，我们对点 $u$ 记录 $low(u)$，表示从 $u$ 能回溯到的<b>最顶端的祖先</b>的 $dfn$ 是多少</span></p>
+        <p class="fragment quote">特别地，一个节点总能访问到它自己，所以 $low(u)\le dfn(u)$</p>
+    </section>
+    <section>
+        <h2>dfn&low</h2>
+        <div style="display: flex;">
+            <div style="margin-top: -10px; font-size: 20px;">
+                <iframe data-animation="./low_1.js"
+                    style="width: 1000px; height: 150px;"></iframe>
+                $$
+                low(u)=min\{low(u),low(v)\}
+                $$
+            </div>
+            <div style="margin-top: -10px; font-size: 20px;">
+                <iframe data-animation="./low_2.js"
+                    style="width: 1000px; height: 150px;"></iframe>
+                $$
+                low(u)=min\{low(u),dfn(v)\}
+                $$
+            </div>
+        </div>
+        <codeblock style="margin-top: -10px;">
+            <script type="text/template">
+                void Tarjan(int u) {
+                    dfn[u] = low[u] = ++tot; // 把 u 塞入 DFS 序
+                    for (auto& link : G[u]) { // 对于 u 的每条出边
+                        int v = link.to;
+                        int id = link.id;
+                        if (prt[u] == id) continue; // 排除 v 是 u 的父节点的情况
+                        if (!dfn[v]) { // 一定是一条树边
+                            prt[v] = id;
+                            Tarjan(v);
+                            low[u] = min(low[u], low[v]);
+                        } else { // 一定是一条返祖边
+                            low[u] = min(low[u], dfn[v]);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote" style="font-size: 20px;">从 $low$ 的定义来看，第二张图也应该用 $low(v)$ 去更新 $low(u)$，但在找割点的时候会有问题，且可以证明上述写法在所有情况下都没问题，所以对非树边 $(u,v)$ 总是用 $dfn(v)\rightarrow low(u)$ 就行</p>
+    </section>
+    <section>
+        <h2>割点和割边</h2>
+        <p>随后，利用所求得的 $low$ 和 $dfn$ 信息，即可统计出割点、割边、点双和边双了</p>
+        <p class="quote">具体的操作方法见题目</p>
+    </section>
+</section>

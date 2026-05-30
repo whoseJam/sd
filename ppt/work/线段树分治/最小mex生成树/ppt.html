@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>最小mex生成树</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5631"></problem>
+    <section>
+        <h2>最小mex生成树</h2>
+        <p>设一个自然数集合 $S$ 的 $mex$ 为<b>最小的</b><b style="color: red;">没有出现在 $S$ 中的</b>自然数</p>
+        <p class="fragment">求一个图的生成树，使得生成树的边权集合的 $mex$ 尽可能小</p>
+    </section>
+    <section>
+        <h2>最小mex生成树</h2>
+        <p>朴素想法是，从小到大枚举 $mex$，然后把所有边权等于 $mex$ 的边都删了，再检查能否求出一个生成树</p>
+        <iframe data-animation="./暴力.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">检查生成树可以用并查集完成，但是删边...</p>
+    </section>
+    <section>
+        <h2>最小mex生成树</h2>
+        <p>套一个线段树分治即可</p>
+        <iframe data-animation="./线段树分治.js"
+            style="width: 1000px; height: 500px;"></iframe>
+    </section>
+</section>

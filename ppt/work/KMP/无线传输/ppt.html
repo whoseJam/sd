@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>无线传输</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4391"></problem>
+    <section>
+        <h2>无线传输</h2>
+        <iframe data-animation="./无线传输周期串.html"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">如果原串恰好是完整的周期串，那么周期长度应该为 $n-len[n]$</p>
+        <p class="fragment quote">如果不是完整的周期串，这个结论依然成立吗？</p>
+    </section>
+    <section>
+        <h2>无线传输</h2>
+        <iframe data-animation="./无线传输非完整周期串.html"
+            style="width: 10000px; height: 150px;"></iframe>
+        <p>会发现结论依然成立</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                scanf("%d%s", & n, A + 1);
+                Prepare(); // 预处理 len 数组
+                cout << n - len[n];
+            </script>
+        </codeblock>
+    </section>
+</section>

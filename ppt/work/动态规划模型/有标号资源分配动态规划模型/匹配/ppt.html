@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>匹配</h1>
+    </section>
+    <problem data-problemset="atcoder" data-problemid="dp_o"></problem>
+    <section>
+        <h2>匹配</h2>
+        <p>给定一个二分图，二分图两侧各有 $n$ 个点，求二分图有多少个完备匹配</p>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 250px;"></iframe>
+        <p class="fragment">我们可以依次为二分图上方的点分配与之匹配的点，那么下方的点，就变成了<b>某种有标号的资源</b></p>
+        <p class="fragment quote">分配资源到序列上去——有标号资源分配动态规划模型+序列构造动态规划模型</p>
+    </section>
+    <section>
+        <h2>匹配</h2>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 350px;"></iframe>
+        <p class="fragment">设 $f_{i,S}$ 表示为上方的前 $i$ 个点都做完了匹配，已经用掉下方 $S$ 这个集合内的点了，匹配的方案数</p>
+        <p class="fragment">$$f_{i,S}\stackrel{+}{\rightarrow} f_{i+1,S\lor j},a_{i+1,j}=1$$</p>
+    </section>
+</section>

@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>计算组合数</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000006"></problem>
+    <section>
+        <h2>计算组合数</h2>
+        <p>
+            $$
+            \sum_{i=0}^kC_n^iC_m^{k-i}=C_{n+m}^k
+            $$
+        </p>
+        <p class="fragment">题目中 $n,m,k\le 10^{15}$，但只需要对 $1000003$ 这个质数取模，所以可以用Lucas定理算出 $C_{n+m}^k$</p>
+    </section>
+</section>

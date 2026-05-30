@@ -1,7 +1,7 @@
 import { ReplaceElement } from "./Util";
 
 export default function Problem() {
-    return { 
+    return {
         id: "Problem",
         init: function init(reveal) {
             const problems = document.getElementsByTagName("problem");
@@ -18,15 +18,11 @@ export default function Problem() {
             ReplaceElement(problem, sec);
 
             init(reveal);
-        }
+        },
     };
 }
 
-const URL_KEYS = [
-    "src",
-    "data-src",
-    "data-source"
-];
+const URL_KEYS = ["src", "data-src", "data-source"];
 
 function getURL(element) {
     for (let key of URL_KEYS) {
@@ -35,7 +31,7 @@ function getURL(element) {
     }
     const problemset = element.getAttribute("data-problemset");
     const problemid = element.getAttribute("data-problemid");
-    if (problemid && problemset) return `https://whosejam.site/#/problem/${problemset}/${problemid}`;
+    if (problemid && problemset) return `https://whosejam.site/problem/${problemset}/${problemid}`;
     console.error(`Problem ${element} Seem Do Not Have a Valid URL`);
     return "";
 }

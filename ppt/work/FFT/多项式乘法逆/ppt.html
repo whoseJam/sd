@@ -1,0 +1,59 @@
+<section>
+    <section>
+        <h1>多项式乘法逆</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4238"></problem>
+    <section>
+        <h2>多项式乘法逆</h2>
+        <p>如果两个多项式 $A(x)B(x)=1$，我们就称 $A(x)$ 和 $B(x)$ 互为乘法逆元</p>
+        <p class="fragment">除以一个多项式相当于乘以它的乘法逆元</p>
+        <p class="fragment quote">
+            $1+x$ 和 $1+x+x^2+x^3+...$ 互为乘法逆元<span class="fragment">——可以发现某个长度有限的多项式，其乘法逆元的长度可能无限</span>
+        </p>
+        <p class="fragment">现在给出多项式 $A(x)$，求其乘法逆元</p>
+        <p class="fragment quote">那万一乘法逆元无限长怎么办呢？<span class="fragment">——题目往往只需要你求出乘法逆元的前 $n$ 项即可，也就是 $B(x)\mathop{mod}x^n$</span></p>
+    </section>
+    <section>
+        <h2>多项式乘法逆</h2>
+        <p>首先求出 $A(x)$ 的常数项的逆元 $b$，并令 $B(x)$ 的初始值为 $b$</p>
+        <p class="fragment">假设已经求得 $A(x)B(x)=1(\mathop{mod}x^n)$ 的 $B(x)$，则：</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            A(x)B(x)-1&\equiv 0 (\mathop{mod} x^n) \\
+            (A(x)B(x)-1)^2&\equiv 0(\mathop{mod} x^{2n}) \\
+            A(x)(2B(x)-B^2(x)A(x))&\equiv 1(\mathop{mod} x^{2n})
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">我们用 $O(nlogn)$ 的时间计算出 $2B(x)-B^2(x)A(x)$，并将它赋值给 $B(x)$ 进行下一轮迭代，每迭代一次，$B(x)$ 的有效项数就会增加一倍，于是该算法的时间复杂度为：
+            $$
+            T(n)=T(\frac{n}{2})+O(nlogn)=O(nlogn)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>算法模板</h2>
+        <p>
+            $$
+            A(x)(2B(x)-B^2(x)A(x))\equiv 1(\mathop{mod} x^{2n})
+            $$
+        </p>
+        <codeblock>
+            <script type="text/template">
+                void Inverse(ll A[], ll B[], ll len) {
+                    if (len == 1) { B[0] = Fpow(A[0], Mod - 2); return; }
+                    Inverse(A, B, len / 2);
+                    int l = Make(len << 1);
+                    for (int i = 0; i < len; i++) C[i] = A[i];
+                    for (int i = len; i < l; i++) C[i] = 0;
+                    for (int i = len / 2; i < l; i++) B[i] = 0;
+                    NTT(B, l, 1); NTT(C, l, 1);
+                    for (int i = 0; i < l; i++)
+                        B[i] = (2 + Mod - B[i] * C[i] % Mod) % Mod * B[i] % Mod;
+                    NTT(B, l, -1); for (int i = len; i < l; i++) B[i] = 0;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

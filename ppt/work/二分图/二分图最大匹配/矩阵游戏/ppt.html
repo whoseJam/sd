@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>矩阵游戏</h1>
+    </section>
+    <problem data-src="http://43.143.204.105/problem/552"></problem>
+    <section>
+        <h2>矩阵游戏</h2>
+        <p>在一个有黑点有白点的 $n\times n$ 的网格中，你需要判断能否通过以下两种操作：</p>
+        <ol>
+            <li>交换不同两行的所有元素</li>
+            <li>交换不同两列的所有元素</li>
+        </ol>
+        <p>使得网格的主对角线上全都是黑点</p>
+    </section>
+    <section>
+        <h2>矩阵游戏</h2>
+        <p class="quote">在网格多次交换的过程中，什么是不变的？</p>
+        <iframe data-animation="./矩阵游戏中的不变量.html" class="fragment"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">发现如果两个黑点<b>如果原本就在同一列，未来它们也一定在同一列；如果原本就在同一行，未来它们也一定在同一行</b></p>
+    </section>
+    <section>
+        <h2>矩阵游戏</h2>
+        <p class="quote">所以，在有上述不变量的前提下，我们能把问题做一个转换，让问题思考起来更简单吗？</p>
+        <p class="fragment">既然两个同行或者同列的黑点，会永远同行同列，那么我们只需要在每一行，找一个有黑点的列出来，让它们能填满 $n$ 列就行了</p>
+        <iframe data-animation="./矩阵游戏问题转换.html" class="fragment" 
+            style="width: 1000px; height: 400px;"></iframe>
+    </section>
+    <section>
+        <h2>矩阵游戏</h2>
+        <p>我们把每行作为二分图一侧的点，把每列作为二分图另一侧的点</p>
+        <p class="fragment">如果在 $(i,j)$ 这个地方有一个黑点，那么就让 $r_i$ 和 $c_j$ 之间有一条连边</p>
+        <p class="fragment">跑一个最大匹配，如果最大匹配为 $n$，那么答案就是<code>YES</code>，否则答案就是<code>NO</code></p>
+    </section>
+</section>

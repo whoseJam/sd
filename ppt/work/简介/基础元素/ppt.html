@@ -1,0 +1,132 @@
+<section>
+    <section>
+        <h1>基础元素</h1>
+    </section>
+    <section>
+        <h2>基础元素</h2>
+        <iframe data-animation="./自带形状的元素.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock lang="js">
+            <script type="text/template">
+                const rect = new sd.Rect(svg).x(100).y(100);
+                const circle = new sd.Circel(svg).x(200).y(100);
+                const ellipse = new sd.Ellipse(svg).x(300).y(100);
+                const text = new sd.Text(svg, "hello").x(400).y(100);
+                await sd.pause();
+                ellipse.startAnimate().ry(15).rx(25).endAnimate();
+                await sd.pause();
+                rect.startAnimate().y(200).endAnimate();
+                circle.startAnimate().y(200).endAnimate();
+                ellipse.startAnimate().y(200).endAnimate();
+                text.startAnimate().y(200).endAnimate();
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>位置</h2>
+        <p class="quote">方法一览：x，y，cx，cy，mx，my，pos，center，width，height，dx，dy</p>
+        <p>一个元素的大小并不为 0，我们认为元素的左上角坐标为 $(x,y)$，宽度为 $w$，高度为 $h$</p>
+        <ul>
+            <li>$cx/cy$：物体在 $x/y$ 方向上的中点坐标，满足 $cx=x+\frac w 2$</li>
+            <li>$mx/my$：物体在 $x/y$ 方向上最远点坐标，满足 $mx=x+w$</li>
+        </ul>
+        <iframe data-animation="./位置.js"
+            style="width: 1000px; height: 120px;"></iframe>
+        <codeblock lang="js">
+            <script type="text/template">
+                const rect = new sd.Rect(svg).x(100).y(100);
+                await sd.pause();
+                new sd.Circle(svg).r(5).center(rect.cx(), rect.cy());
+                await sd.pause();
+                new sd.Circle(svg).r(5).center(rect.pos("x", "y"));
+                await sd.pause();
+                new sd.Circle(svg).r(5).center(rect.pos("cx", "y"));
+                await sd.pause();
+                new sd.Circle(svg).r(5).center(rect.pos("mx", "y"));
+                await sd.pause();
+                new sd.Circle(svg).r(5).center(rect.mx(), rect.my());
+                await sd.pause();
+                new sd.Circle(svg).r(5).cx(rect.x()).my(rect.my());
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>边框与填充</h2>
+        <p class="quote">方法一览：stroke，strokeWidth，strokeDashArray，strokeDashOffset，fill</p>
+        <p>基本上所有基础svg元素都有<b>边框（stroke）</b>和<b>填充（fill）</b>这两个概念</p>
+        <iframe data-animation="./边框与填充.js"
+            data-viewBoxDelta="0 -10 0 20"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock lang="js">
+            <script type="text/template">
+                const C = sd.color(); // C 是一个颜色模块
+                const rect = new sd.Rect(svg).width(60).height(60);
+                await sd.pause();
+                rect.startAnimate().strokeWidth(3).endAnimate();
+                await sd.pause();
+                rect.startAnimate().fill(C.red).stroke(C.textBlue).endAnimate();
+                await sd.pause();
+                rect.startAnimate().strokeDashArray([5, 5]).endAnimate();
+                await sd.pause();
+                rect.startAnimate().strokeDashOffset(20).endAnimate();
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>透明度</h2>
+        <p class="quote">方法一览：opacity，fillOpacity，strokeOpacity</p>
+        <iframe data-animation="./透明度.js"
+            data-viewBoxDelta="0 -3 0 3"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock lang="js">
+            <script type="text/template">
+                const p1 = V.makeComplex(10, 0);
+                const p2 = V.makeComplex(10, (Math.PI * 2) / 3);
+                const p3 = V.makeComplex(10, ((Math.PI * 2) / 3) * 2);
+                const c1 = new sd.Circle(svg).color(C.red).opacity(0.5).center(p1);
+                const c2 = new sd.Circle(svg).color(C.red).opacity(0.5).center(p2);
+                const c3 = new sd.Circle(svg).color(C.red).opacity(0.5).center(p3);
+                await sd.pause();
+                c1.startAnimate().opacity(1).fillOpacity(0.5).endAnimate();
+                c2.startAnimate().opacity(1).fillOpacity(0.5).endAnimate();
+                c3.startAnimate().opacity(1).fillOpacity(0.5).endAnimate();
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>试一试</h2>
+        <p>文字渐入渐出效果</p>
+        <iframe data-animation="./文字渐入渐出.js"
+            style="width: 1000px; height: 100px;"></iframe>
+        <codeblock class="fragment" lang="js">
+            <script type="text/template">
+                const text = new sd.Text(svg, "hello");
+                text.opacity(0).startAnimate().opacity(1).dx(20).endAnimate();
+                await sd.pause();
+                text.startAnimate().opacity(0).dx(20).endAnimate();
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>试一试</h2>
+        <p>创建矩形效果</p>
+        <iframe data-animation="./创建矩形.js"
+            data-viewBoxDelta="0 -3 0 3"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock lang="js">
+            <script type="text/template">
+                const rect = new sd.Rect(svg)
+                    .strokeDashArray([0, 160])
+                    .stroke(C.BLUE.border)
+                    .fillOpacity(0)
+                    .fill(C.BLUE.main)
+                    .startAnimate()
+                    .strokeDashArray([160, 0])
+                    .endAnimate()       // 第一段动画，把边框画出来
+                    .startAnimate()
+                    .fillOpacity(1)
+                    .endAnimate();      // 第二段动画，完成填充
+            </script>
+        </codeblock>
+    </section>
+</section>

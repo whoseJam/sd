@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>最小路径覆盖</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2764"></problem>
+    <section>
+        <h2>最小路径覆盖</h2>
+        <p>给定一张DAG，请求出最少需要多少条路径去覆盖它，并任意给出一种方案</p>
+    </section>
+    <section>
+        <h2>最小路径覆盖</h2>
+        <p class="quote">如何求方案呢？</p>
+        <div class="fragment quote">
+            <iframe data-animation="../最小路径覆盖概述/最小路径覆盖建图.js"
+                style="width: 800px; height: 400px;"></iframe>
+        </div>
+    </section>
+    <section>
+        <h2>最小路径覆盖</h2>
+        <p>利用二分图匹配得到的 $match$ 数组，我们容易得到一种可行方案：</p>
+        <codeblock>
+            <script type="text/template">
+                int cnt = n - MaxMatch();
+                for (int i = 1; i <= n; i++)
+                    matchedBy[match[i]] = i;
+                for (int i = 1; i <= n; i++) {
+                    if (!matchedBy[i]) {
+                        output(i);
+                        cout << '\n';
+                    }
+                }
+            </script>
+        </codeblock>
+        <p>其中output函数是用来打印一条路径的函数，其实现如下：</p>
+        <codeblock>
+            <script type="text/template">
+                void output(int x) {
+                    if (match[x]) output(match[x]);
+                    cout << x << ' ';
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

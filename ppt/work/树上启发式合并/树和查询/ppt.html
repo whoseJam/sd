@@ -1,0 +1,40 @@
+<section>
+    <section>
+        <h1>树和查询</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="375D"></problem>
+    <section>
+        <h2>树和查询</h2>
+        <p class="quote">如何统计某子树内出现次数超过 $k$ 的颜色数量？</p>
+        <iframe data-animation="./暴力查询.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void AddCol(int c) {
+                    colCount[c]++;
+                    sum[colCount[c]]++;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>树和查询</h2>
+        <p>然后改造为树上启发式合并</p>
+        <iframe data-animation="./树上启发式合并.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                void DSU(int u) {
+                    for (每个轻儿子 v) {
+                        DSU(v);
+                        RemoveSubtree(v);
+                    }
+                    if (son[u]) DSU(son[u], u);
+                    for (每个轻儿子 v) AddSubtree(v);
+                    Add(u);
+                    for (每一个挂在 u 上的询问) 查询出现次数不小于 k 次的颜色数量;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

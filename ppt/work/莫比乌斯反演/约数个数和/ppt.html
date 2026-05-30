@@ -1,0 +1,76 @@
+<section>
+    <section>
+        <h1>约数个数和</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3327"></problem>
+    <section>
+        <h2>约数个数和</h2>
+        <p>设 $d(x)$ 为 $x$ 的约数个数，给定 $n,m$，求
+            $$
+            \sum_{i=1}^n\sum_{j=1}^m d(ij)
+            $$
+        </p>
+        <p class="fragment quote">
+            有一个结论：
+            $$
+            d(ij)=\sum_{x|i}\sum_{y|j}[gcd(x,y)=1]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>约数个数和</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \sum_{i=1}^n\sum_{j=1}^m\sum_{x|i}\sum_{y|j}[gcd(x,y)=1]
+            &=\sum_{i=1}^n\sum_{j=1}^m\sum_{x|i}\sum_{y|j}\sum_{d|x\\d|y}\mu(d) \\
+            &=\sum_{d=1}^{min(n,m)}\mu(d)\sum_{d|x}\sum_{d|y}\sum_{x|i\\1\le i\le n}\sum_{y|j\\1\le j\le m} 1 \\
+            &=\sum_{d=1}^{min(n,m)}\mu(d)\sum_{d|x}\sum_{d|y} \lfloor\frac n x\rfloor \lfloor\frac m y\rfloor \\
+            &=\sum_{d=1}^{min(n,m)}\mu(d)\sum_{d|x}\lfloor\frac n x\rfloor \sum_{d|y}\lfloor\frac m y\rfloor
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>约数个数和</h2>
+        <p>
+            $$
+            \begin{aligned}
+            answer&=\sum_{d=1}^{min(n,m)}\mu(d)\sum_{d|x}\lfloor\frac n x\rfloor \sum_{d|y}\lfloor\frac m y\rfloor \\
+            &=\sum_{d=1}^{min(n,m)}\mu(d)\sum_{i} \lfloor\frac{n}{id}\rfloor \sum_{j}\lfloor\frac{m}{jd}\rfloor \\
+            &=\sum_{d=1}^{min(n,m)}\mu(d) F(\lfloor\frac{n}{d}\rfloor) F(\lfloor\frac{m}{d}\rfloor)
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">其中 $F(n)=\sum_{i}\lfloor\frac n i\rfloor$</p>
+    </section>
+    <section>
+        <h2>约数个数和</h2>
+        <codeblock style="height: 465px;">
+            <script type="text/template">
+                LL Ask(int x) { // 求F函数
+                    LL ans = 0;
+                    for (int l = 1, r; l <= x; l = r + 1) {
+                        r = x / (x / l);
+                        ans += (LL)(r - l + 1) * (LL)(x / l);
+                    }
+                    return ans;
+                }
+                void Sieve(int up) {
+                    mu[1] = 1;
+                    F[1] = Ask(1);
+                    for (int i = 2; i <= up; i++) {
+                        F[i] = Ask(i);
+                        if (!vis[i]) prim[++tot] = i, mu[i] = -1;
+                        for (int j = 1; j <= tot && i * prim[j] <= up; j++) {
+                            vis[i * prim[j]] = 1;
+                            if (i % prim[j] == 0) break;
+                            else mu[i * prim[j]] = -mu[i];
+                        }
+                    }
+                    for (int i = 1; i <= up; i++) sum[i] = sum[i - 1] + mu[i];
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

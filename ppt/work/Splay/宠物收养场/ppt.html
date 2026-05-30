@@ -1,0 +1,91 @@
+<section>
+    <section>
+        <h1>宠物收养场</h1>
+        <p>很多时候，如果你感觉你需要写一个Splay，但是不需要Splay那么强大的功能，你可能可以考虑STL中的set或者map</p>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/1052" data-background-interactive>
+    </section>
+    <section>
+        <h2>宠物收养场</h2>
+        <p>我们有一个宠物收养场</p>
+        <p class="fragment">宠物收养场可能出现<b>待收养的宠物</b>和<b>收养者</b>两类对象</p>
+        <p class="fragment">每个宠物 $i$ 有一个特点值 $a_i$，每个收养者 $j$ 有一个特点值 $b_j$</p>
+        <p class="fragment">如果现在宠物过多，而只有一个收养者，那么这个收养者会选择特点值和自己最接近的宠物收养</p>
+        <p class="fragment">如果现在收养请求过多（收养者过多），而只有一个宠物，那么这个宠物会选择特点值和自己最接近的收养者，被该收养者收养</p>
+        <p class="fragment">现在你需要模拟这个过程</p>
+    </section>
+    <section>
+        <h2>宠物收养场</h2>
+        <p>如果我们用两棵Splay分别装宠物对象和收养者对象</p>
+        <p class="fragment">站在收养者的角度，收养者 $j$ 想要收养特点值和自己最接近的宠物，就在宠物Splay上找一下 $b_j$ 的前驱 $prev$ 和后继 $next$，判断一下 $prev$ 离 $b_j$ 更近还是 $next$ 离 $b_j$ 更近即可</p>
+        <p class="fragment">站在宠物的角度，宠物 $i$ 想要被特点值和自己最接近的收养者收养，就在收养者Splay上找一下 $a_i$ 的前驱 $prev$ 和后继 $next$，判断一下 $prev$ 离 $a_i$ 更近还是 $next$ 离 $a_i$ 更近即可</p>
+        <p class="fragment">由于任何一个时刻一定有宠物过剩或者收养者过剩，任何一个时刻一定有一个Splay为空，去另一个非空的Splay中做上述操作即可</p>
+    </section>
+    <section>
+        <h2>宠物收养所</h2>
+        <p>注意到这个题只需要查前驱和后继就行了，所以我们也可以考虑用set来简化代码，以下是set容器常见的API：</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>API</th>
+                    <th>描述</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>void insert(T x)</code></td>
+                    <td>插入一个值为 $x$ 的元素到set中</td>
+                </tr>
+                <tr>
+                    <td><code>void erase(T x)</code></td>
+                    <td>从set中删除一个值为 $x$ 的元素</td>
+                </tr>
+                <tr>
+                    <td><code>iterator lower_bound(T x)</code></td>
+                    <td>找到set中最小的大于等于 $x$ 的元素对应的迭代器</td>
+                </tr>
+                <tr>
+                    <td><code>void erase(iterator it)</code></td>
+                    <td>删除set中iteractor指向的元素</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>宠物收养场</h2>
+        <p>由于本题实际上只用到了查前驱和后继，所以我们这么来做查询：</p>
+        <pre class="fragment"><code data-trim data-line-numbers class="cpp" style="min-height: 425px;"><script type="text/template">
+            void find(set < ll > & s, ll x) {
+                auto next = s.lower_bound(x);
+                if ( * next == x) {
+                    s.erase(next);
+                    return;
+                }
+                // *next > x
+                // *prev < x
+                auto prev = next;
+                prev--;
+                ll dnext = ( * next) - x;
+                ll dprev = x - ( * prev);
+                if (dprev <= dnext) {
+                    s.erase(prev);
+                    ans = (ans + dprev) % Mod;
+                } else {
+                    s.erase(next);
+                    ans = (ans + dnext) % Mod;
+                }
+            }
+        </script></code></pre>
+    </section>
+    <section>
+        <h2>宠物收养场</h2>
+        <p>当然，我们用Splay查前驱和后继的时候，为了避免特判很多特殊情况，加入了哨兵来处理</p>
+        <p class="fragment">在使用set的时候，同样可以借鉴这个思路（前一页PPT代码的正确性建立在存在哨兵的基础上）：</p>
+        <pre class="fragment"><code data-trim data-line-numbers class="cpp"><script type="text/template">
+            void init(set < ll > & s) {
+                s.insert(-inf);
+                s.insert(+inf);
+            }
+        </script></code></pre>
+    </section>
+</section>

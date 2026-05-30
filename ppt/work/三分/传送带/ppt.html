@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>传送带</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2571"></problem>
+    <section>
+        <h2>传送带</h2>
+        <p>在 $AB$ 上的移动速度为 $P$，在 $CD$ 上的移动速度为 $Q$，在平面上的移动速度为 $R$</p>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">求 $A\rightarrow D$ 的最短时间</p>
+    </section>
+    <section>
+        <h2>传送带</h2>
+        <p>显然本题的最优解应该是先在 $AB$ 传送带上走一截，再走一截平面，再在 $CD$ 传送带上走一截（这三截每一截都有可能长度为 $0$）</p>
+        <p class="fragment">设答案由 $|AE|+|EF|+|FD|$ 构成</p>
+        <ul>
+            <li class="fragment">$E$ 是 $AB$ 上的 $e$ 分位点（$e\in [0,1]$）</li>
+            <li class="fragment">$F$ 是 $CD$ 上的 $f$ 分位点（$f\in [0,1]$）</li>
+        </ul>
+        <iframe data-animation="./二元函数.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">于是我们得到了一个二元函数，并且这个二元函数在固定其中一元的情况下，对另一元是单峰函数</p>
+    </section>
+    <section>
+        <h2>传送带</h2>
+        <p>于是我们可以用两个三分嵌套的方式，去解决这个二元函数</p>
+        <iframe data-animation="./三分嵌套.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">在做第一个三分时，我们可以确定 $e$ 的值，但无法确定 $f$ 的值具体取多少才能让函数值最小</p>
+        <p class="fragment">于是，我们使用第二个三分，找到 $e$ 固定为 $e_0$ 的情况下 $f$ 的最优取值</p>
+    </section>
+</section>

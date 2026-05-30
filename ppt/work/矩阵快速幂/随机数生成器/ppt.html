@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>随机数生成器</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2044"></problem>
+    <section>
+        <h2>随机数生成器</h2>
+        <p>题目给出了这么一个递推式
+            $$
+            X_{n+1}=(aX_n+c)\ mod\ m
+            $$
+            让我们求 $X_n$
+        </p>
+        <p class="fragment quote">满足 $n\le 10^{18}$</p>
+        <p class="fragment">
+            尝试构造
+            $$
+            \begin{pmatrix}?&?\\?&?\end{pmatrix}
+            \begin{pmatrix}X_{n}\\ c\end{pmatrix}
+            =\begin{pmatrix}X_{n+1}\\c\end{pmatrix}
+            $$
+        </p>
+        <iframe data-animation="./矩阵递推.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+    </section>
+    <section>
+        <h2>随机数生成器</h2>
+        <p>
+            $$
+            \begin{pmatrix}a&1\\0&1\end{pmatrix}
+            \begin{pmatrix}X_{n}\\ c\end{pmatrix}
+            =\begin{pmatrix}X_{n+1}\\c\end{pmatrix}
+            $$
+        </p>
+        <p class="fragment">
+            所以
+            $$
+            \begin{pmatrix}a&1\\0&1\end{pmatrix}^n
+            \begin{pmatrix}X_{0}\\ c\end{pmatrix}
+            =\begin{pmatrix}X_{n}\\c\end{pmatrix}
+            $$
+        </p>
+    </section>
+</section>

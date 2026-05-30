@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>正则表达式</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2169"></problem>
+    <section>
+        <h2>正则表达式</h2>
+        <p>有一个网络，某些电脑之间存在单向的网络连接，并且连接的传输速度有快有慢</p>
+        <p>另外，如果存在 $A\rightarrow B$ 且存在 $B\rightarrow A$，则 $A$ 和 $B$ 实际上处于同一个局域网内，可以做本地传输，这种传输的时间为 $0$</p>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">求 $1\rightarrow n$ 的最短路</p>
+        <p class="fragment quote">把每个强连通分量缩成一个点后跑 $B_1\rightarrow B_n$ 的最短路即可，其中 $B_i$ 表示 $i$ 所属的强连通分量</p>
+    </section>
+</section>

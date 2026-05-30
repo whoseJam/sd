@@ -40,7 +40,7 @@ window.ResetAnimationSize = function (id, url) {
 
 window.addEventListener("message", event => {
     const data = event.data;
-    if (data.operator && data.arguments) {
+    if (data.operator && data.arguments && typeof window[data.operator] === "function") {
         window[data.operator].apply(window, data.arguments);
     }
 });
@@ -53,6 +53,7 @@ class IFrameManager {
         this.url = globalArgs.getURL ? globalArgs.getURL(iframe) : getAttribute(iframe, "data-animation");
         this.rate = getAttribute(iframe, "data-rate", 1.01);
         this.args = iframe.onsubmit;
+        this.description = getAttribute(iframe, "data-description");
         this.viewBox = getBox(getAttribute(iframe, "data-viewBox"));
         this.viewBoxDelta = getBox(getAttribute(iframe, "data-viewBoxDelta"));
         this.maxFrame = getAttribute(iframe, "data-maxFrame", Infinity);
@@ -96,6 +97,14 @@ class IFrameManager {
                             },
                             "*"
                         );
+                    if (this.description)
+                        this.iframe.contentWindow.postMessage(
+                            {
+                                operator: "SetDescription",
+                                arguments: [this.description],
+                            },
+                            "*"
+                        );
                     this.iframe.contentWindow.postMessage(
                         {
                             operator: "Message",
@@ -133,10 +142,18 @@ class IFrameManager {
                         "*"
                     );
                     if (this.args)
-                        iframe.contentWindow.postMessage(
+                        this.iframe.contentWindow.postMessage(
                             {
                                 operator: "Message",
                                 arguments: ["IFRAME_ARGS", this.args()],
+                            },
+                            "*"
+                        );
+                    if (this.description)
+                        this.iframe.contentWindow.postMessage(
+                            {
+                                operator: "SetDescription",
+                                arguments: [this.description],
                             },
                             "*"
                         );
@@ -236,13 +253,18 @@ class IFrameManager {
                     "*"
                 );
                 if (this.args)
-                    iframe.contentWindow.postMessage(
+                    this.iframe.contentWindow.postMessage(
                         {
                             operator: "Message",
                             arguments: ["IFRAME_ARGS", this.args()],
                         },
                         "*"
                     );
+                if (this.description)
+                    this.iframe.contentWindow.postMessage({
+                        operator: "SetDescription",
+                        arguments: [this.description],
+                    });
                 this.iframe.contentWindow.postMessage(
                     {
                         operator: "Message",

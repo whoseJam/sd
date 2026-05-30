@@ -1,0 +1,61 @@
+<section>
+    <section>
+        <h1>大纲</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P9386"></problem>
+    <section>
+        <h2>大纲</h2>
+        <p>给定一棵 $n$ 个点的树</p>
+        <p class="fragment">给定树上点权 $\{a_i\}$，如果 $a_u=-1$ 则代表点 $u$ 的点权尚不确定，否则 $a_u$ 为非负整数</p>
+        <p class="fragment">你需要给每一个值不确定的点赋一个非负整数，使得该树满足</p>
+        <ul>
+            <li class="fragment">设 $max_u$ 表示 $u$ 的子节点的最大点权</li>
+            <li class="fragment">如果存在多于一个儿子的点权是 $max_u$，则 $a_u=max_u+1$</li>
+            <li class="fragment">否则 $a_u=max_u$</li>
+        </ul>
+        <p class="fragment">求是否有解</p>
+    </section>
+    <section>
+        <h2>大纲</h2>
+        <p class="quote">显然应该从叶子开始考虑</p>
+        <p class="fragment quote">叶子相比于非叶子节点有什么优势？</p>
+        <p class="fragment">如果一个叶子是待定的，则它的取值是任意的</p>
+        <p class="fragment">当所有叶子都确定后，整棵树也就随之确定了</p>
+        <iframe data-animation="./case.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <ul>
+            <li class="fragment">如果所有儿子均确定，则当前节点一定确定了</li>
+            <li class="fragment">如果存在儿子不确定，则当前节点是没有上限，但有下限的</li>
+            <li class="fragment">从叶子到根的点权单调不降</li>
+        </ul>    
+    </section>
+    <section>
+        <h2>大纲</h2>
+        <p>设 $f_u$ 表示 $u$ 的取值下限是多少，$g_u$ 表示 $u$ 的取值是否确定为下限</p>
+        <p class="fragment">
+            $$
+            limit_u=\mathop{max}\limits_{v\in son(u)}\{f_v\}+[f_v的最大值不止一个]
+            $$
+        </p>
+        <ul>
+            <li class="fragment">如果 $g_v$ 全都处于确定状态<span class="fragment">，则 $g_u$ 必然已确定</span></li>
+            <ul>
+                <li class="fragment">如果 $a_u\ne -1$</li>
+                <ul>
+                    <li class="fragment">如果 $a_u\ne limit_u$，那么已经寄了</li>
+                    <li class="fragment">如果 $a_u=limit_u$，则 $f_u=limit_u$</li>
+                </ul>
+                <li class="fragment">如果 $a_u=-1$，则 $f_u=limit_u$</li>
+            </ul>
+            <li class="fragment">如果 $g_v$ 存在未确定状态</li>
+            <ul>
+                <li class="fragment">如果 $a_u\ne -1$</li>
+                <ul>
+                    <li class="fragment">如果 $a_u\lt limit_u$，那么已经寄了</li>
+                    <li class="fragment">如果 $a_u\ge limit_u$，则 $f_u=a_u$ 且 $g_u$ 处于已确定状态</li>
+                </ul>
+                <li class="fragment">如果 $a_u=-1$，则 $f_u=limit_u$，且 $g_u$ 处于未确定状态</li>
+            </ul>
+        </ul>
+    </section>
+</section>

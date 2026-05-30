@@ -1,0 +1,60 @@
+<section>
+    <section>
+        <h1>炮兵阵地</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2704"></problem>
+    <section>
+        <h2>炮兵阵地</h2>
+        <p>在一个 $N\times M$ 的网格地图上部署炮兵部队</p>
+        <p>这个网格地图有<b style="color: green;">平原</b>和<b style="color: grey;">山地</b>两种地形，只能在<b style="color: green;">平原</b>上部署炮兵，且炮兵能攻击到沿横向左右各两格，沿纵向上下各两格的位置</p>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">求最多能部署多少个炮兵，保证炮兵不能互相攻击</p>
+        <p class="fragment">$M\le 10$</p>
+    </section>
+    <section>
+        <h2>炮兵阵地</h2>
+        <p>比较显然的棋盘构造动态规划模型<span class="fragment">吗？</span></p>
+        <p class="fragment">设 $f_{i,S}$ 表示构造到棋盘的第 $i$ 行，第 $i$ 行的状态为 $S$，最多能放多少个炮兵</p>
+        <iframe data-animation="./相邻转移.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">如果只知道第 $i$ 行的炮兵放置情况，是不足以推导第 $i+1$ 行的哪些炮兵放置情况是合法的（因为炮兵最多能往下攻击两行）<span class="fragment">，<b>我们还需要第 $i-1$ 行的炮兵放置情况</b></span></p>
+    </section>
+    <section>
+        <h2>炮兵阵地</h2>
+        <p>设 $f_{i,S,T}$ 表示构造到棋盘的第 $i$ 行，第 $i$ 行的状态为 $S$，第 $i-1$ 行的状态为 $T$，最多能放多少个炮兵</p>
+        <iframe data-animation="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 250px;"></iframe>
+        <p class="fragment quote">假设第 $i+1$ 行的炮兵放置状态为 $P$...</p>
+        <p class="fragment">
+            $$
+            f_{i,S,T}+count(P)\stackrel{max}{\rightarrow} f_{i+1,P,S},T与S与P能连成合法的三行
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 2; i < n; i++)
+                    for (int T: valid)
+                        for (int S: valid) // 保证一下 T & S == 0
+                            for (int P: valid) // 保证一下 T & P == 0 且 S & P == 0
+                                f[i + 1][P][S] = max(f[i + 1][P][S], f[i][S][T] + count(P));
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>三进制</h2>
+        <p>又或者，我们可以换一个思路，把棋盘上的网格分成三类</p>
+        <ul>
+            <li>炮兵所在的地方<span class="fragment">，设为状态 $2$</span></li>
+            <li>位于炮兵正下方<b>恰好</b>一个单位的地方<span class="fragment">，设为状态 $1$</span></li>
+            <li>位于炮兵正下方<b>超过</b>一个单位的地方<span class="fragment">，设为状态 $0$</span></li>
+        </ul>
+        <iframe data-animation="./三进制状态转移.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">
+            $$
+            f_{i,S}+[T中2的数量]\stackrel{max}{\rightarrow} f_{i+1,T},T与S能连成合法的两行
+            $$
+        </p>
+    </section>
+</section>

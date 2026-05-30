@@ -1,0 +1,37 @@
+<section>
+    <section>
+        <h1>棋盘</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="1545B"></problem>
+    <section>
+        <h2>棋盘</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 100px;"></iframe>
+        <p>给定一个长度为 $n$ 的序列，有一些格子上有 $1$，你有两种操作：</p>
+        <ul>
+            <li class="fragment">像跳跳棋一样，把一个 $1$ 向左跳</li>
+            <li class="fragment">像跳跳棋一样，把一个 $1$ 向右跳</li>
+        </ul>
+        <p class="fragment">假设每种操作都能做无限次，求可以操作出多少种不同的局面</p>
+    </section>
+    <section>
+        <h2>棋盘</h2>
+        <iframe data-animation="./相邻1.js"
+            style="width: 1000px; height: 100px;"></iframe>
+        <iframe data-animation="./独立1.js" class="fragment"
+            style="width: 1000px; height: 100px;"></iframe>
+    </section>
+    <section>
+        <h2>棋盘</h2>
+        <ul>
+            <li>对于一对相邻的 $1$（即 $11$），在棋盘上移动时不可能分开</li>
+            <li>对于棋盘上落单的 $1$，它的移动是被动的</li>
+        </ul>
+        <p class="fragment">所以影响棋盘布局的仅有 $11$ 和 $0$</p>
+        <p class="fragment">设 $11$ 的数量为 $a$，$0$ 的数量为 $b$，则答案即为两者的组合顺序，即：
+            $$
+            C_{a+b}^a
+            $$
+        </p>
+    </section>
+</section>

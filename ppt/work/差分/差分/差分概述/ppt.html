@@ -1,0 +1,141 @@
+<section>
+    <section>
+        <h1>差分</h1>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <p>假设有一个整数序列 $\{a\}=\{a_1,a_2...a_n\}$，对于这个整数序列，我们构造一个与之等长的整数序列 $\{d\}=\{d_1,d_2...d_n\}$，满足
+            $$d_i=a_i-a_{i-1}$$
+        </p>
+        <p>特殊地，我们把 $a_0$ 看作是 $0$，那么 $d_1=a_1-a_0=a_1$</p>
+        <p class="fragment">那么 $\{d\}$ 序列就是 $\{a\}$ 序列的差分序列，当然我们也可以叫 $\{d\}$ 序列为 $\{a\}$ 序列的<b>差分数组</b></p>
+        <iframe data-animation="./差分数组的计算.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <p>上述定义让我们可以用 $\{a\}$ 来表示 $\{d\}$ ，我们来试试用 $\{d\}$ 表示 $\{a\}$</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            a_i&=(a_i-a_{i-1})+(a_{i-1}-a_{i-2})+...+(a_3-a_2)+(a_2-a_1)+a_1 \\
+            &=d_i+d_{i-1}+...+d_3+d_2+d_1=\sum_{k=1}^id_k
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">所以我们可以总结出 $\{a\}$ 和 $\{d\}$ 的关系</p>
+        <ul class="fragment">
+            <li>站在 $\{a\}$ 的角度，$\{d\}$ 是 $\{a\}$ 的差分数组</li>
+            <li>站在 $\{d\}$ 的角度，$\{a\}$ 是 $\{d\}$ 的前缀和数组</li>
+        </ul>
+        <iframe data-animation="./差分与前缀和.js" class="fragment"
+            style="width: 1000px; height: 200px; margin-top: 20px;"></iframe>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <iframe data-animation="./差分对前缀和的影响.js"
+            style="width: 1000px; height: 300px; margin-top: 20px;"></iframe>
+        <p class="fragment">只需要修改 $\{d\}$ 中的一个元素，$\{a\}$ 的一堆元素就会跟着变化<span class="fragment">——这给予了我们快速完成区间修改的能力</span></p>
+        <p class="fragment quote">为了更完备地对差分和前缀和所产生的奇妙联动进行研究，接下来，我们对差分操作和前缀和操作进行更加形式化的定义</p>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <p>我们可以把<b style="color: red;"><ruby>差分<rt>difference</rt></ruby></b>和<b style="color: orange;"><ruby>前缀和<rt>prefix sum</rt></ruby></b>当作两种互逆的操作</p>
+        <iframe data-animation="./差分与前缀和.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <ul>
+            <li class="fragment">
+                <b style="color: red;">差分</b>这种操作，吞进去一个长度为 $n$ 的序列 $\{a\}$，吐出来一个长度为 $n$ 的序列 $\{d\}$，满足 $d_i=a_i-a_{i-1}$，运算时间复杂度为 $O(n)$
+                <p>我们简记为 $\{d\} = D(\{a\})$</p>
+            </li>
+            <li class="fragment">
+                <b style="color: orange;">前缀和</b>这种操作，吞进去一个长度为 $n$ 的序列 $\{d\}$，吐出来一个长度为 $n$ 的序列 $\{a\}$，满足 $a_i=\sum_{k=1}^id_k$，运算的时间复杂度为 $O(n)$
+                <p>我们简记为 $\{a\} = S(\{d\})$</p>
+            </li>
+        </ul>
+        <p class="fragment">差分和前缀和互逆，就是说 $\{a\}=S(D(\{a\}))$</p>
+    </section>
+    <section>
+        <h2>序列加法</h2>
+        <p>在继续讲差分之前，我们先来看看序列加法是什么东西</p>
+        <p class="fragment">我们可以允许两个长度相同的序列进行“加法”操作</p>
+        <p class="fragment">具体来说，如果</p>
+        <ul>
+            <li class="fragment">$\{a\}=\{a_1,a_2,...,a_n\}$</li>
+            <li class="fragment">$\{b\}=\{b_1,b_2,...,b_n\}$</li>
+        </ul>
+        <p class="fragment">则 $\{a\}+\{b\}$ 的结果也是一个长度为 $n$ 的序列，我们不妨叫它 $\{c\}$ 序列，$\{c\}$ 满足
+            $$c_i=a_i+b_i$$
+        </p>
+        <iframe data-animation="./序列加法.js" class="fragment"
+            style="width: 1000px; height: 250px"></iframe>
+    </section>
+    <section>
+        <h2>序列加法</h2>
+        <p>序列加法是有现实意义的，例如，题目要求我们维护一个序列，支持区间加法</p>
+        <p>当我们对 $[l,r]$ 这段区间进行加法操作的时候，就可以看作执行了原始序列和一个增量序列的序列加法</p>
+        <iframe data-animation="./序列加法的现实意义.js"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+    <section>
+        <h2>序列加法和差分</h2>
+        <p>在这里先给出序列加法和序列差分的关系
+            $$
+            D(\{a\}+\{b\})=D(\{a\})+D(\{b\})
+            $$
+        </p>
+        <div class="fragment quote">
+            <h3>证明过程</h3>
+            <p>
+                我们考察答案序列的第 $i$ 项
+                $$
+                \begin{aligned}
+                D(\{a\}+\{b\})_i&=(a_i+b_i)-(a_{i-1}+b_{i-1}) \\
+                &=(a_i-a_{i-1})+(b_i-b_{i-1}) \\
+                &=D(\{a\})_i+D(\{b\})_i
+                \end{aligned}
+                $$
+            </p>
+        </div>
+        <p class="fragment">所以<b style="color: red;">序列差分</b>对<b>序列加法</b>满足<b>分配律</b></p>
+    </section>
+    <section>
+        <h2>序列加法和前缀和</h2>
+        <p>在这里先直接给出序列加法和序列前缀和的关系
+            $$
+            S(\{a\}+\{b\})=S(\{a\})+S(\{b\})
+            $$
+        </p>
+        <div class="fragment quote">
+            <h3>证明过程</h3>
+            <p>
+                我们仍然考察序列的第 $i$ 项
+                $$
+                \begin{aligned}
+                S(\{a\}+\{b\})_i&=\sum_{k=1}^i(a_k+b_k) \\
+                &=\sum_{k=1}^ia_k+\sum_{k=1}^ib_k \\
+                &=S(\{a\})_i+S(\{b\})_i
+                \end{aligned}
+                $$
+            </p>
+        </div>
+        <p class="fragment">所以<b style="color: orange;">序列前缀和</b>对<b>序列加法</b>也满足<b>分配律</b></p>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <p>有的时候题目可能想让我们维护一个长度为 $n$ 的序列，题目会对做 $m$ 次修改，每次修改 $i$ 可以表示为一个增量序列 ${c_i}$，即</p>
+        <p class="fragment">
+            $$
+            \{a\}=\{c_1\}+\{c_2\}+...+\{c_m\}
+            $$
+        </p>
+        <p class="fragment">暴力做序列加法，时间复杂度显然是 $O(nm)$ 的</p>
+        <p class="fragment">如果我们同时对等式左右先取差分，再取前缀和...</p>
+        <iframe data-animation="./变换.js" class="fragment"
+            style="width: 1000px; height: 30px;"></iframe>
+        <p class="fragment" style="margin-top: 45px;">而 $D(\{c_i\})$ 极有可能会变成一个非常稀疏的序列，即这个序列的大部分位置都是 $0$，只有少数几个位置是不为 $0$ 的...</p>
+        <iframe data-animation="./稀疏与稠密.js" class="fragment"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">时间复杂度被优化成 $O(n+m)$</p>
+    </section>
+</section>

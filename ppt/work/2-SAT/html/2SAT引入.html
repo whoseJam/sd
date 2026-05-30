@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>2-SAT</h1>
+        <p>SAT，Satisfiability，适定性</p>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <p>
+            给定 $n$ 个<b>变量</b> $x_1,x_2...x_n$，每个变量有两种取值</b>
+        </p>
+        <p class="fragment">给出若干条件，形如：</p>
+        <p class="fragment" style="text-align: center;"><b>如果变量 $x_i$ 取值为 $A$，那么变量 $x_j$ 必须取值为 $B$</b></p>
+        <p class="fragment">让你判断这些条件是否<b>都能满足</b></p>
+        <div class="fragment quote">
+            <h3>团队</h3>
+            <p>我们有 $n$ 位候选人，需要把他们组成两个团队，每个人可能去团队 $1$ 或者团队 $2$</p>
+            <span class="fragment"><b>——每个变量有两种取值</b></span>
+            <p class="fragment">现在有一些限制，例如候选人 $1$ 如果去了团队 $1$，那么候选人 $2$ 一定要去团队 $2$（但反之不一定）</p>
+            <span class="fragment"><b>——有一些奇奇怪怪的条件</b></span><br>
+            <p class="fragment" style="margin-bottom: 0px;">这就是一个2-SAT问题</p>
+        </div>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <p>
+            我们可以把2-SAT问题转化为一个图论问题
+            <span class="fragment">，然后通过Tarjan求解</span>
+        </p>
+        <p class="fragment">时间复杂度 $O(n+m)$，其中 $n$ 是变量的个数，$m$ 是条件的个数</p>
+        <p class="fragment quote">
+            实际上还有k-SAT问题，不过当 $k\ge 3$ 的时候就没有多项式复杂度解法，只能暴力了，感兴趣的同学可以访问<a href="https://www.cnblogs.com/chesium/p/15982285.html" target="_blank">这个网站</a>
+        </p>
+    </section>
+</section>

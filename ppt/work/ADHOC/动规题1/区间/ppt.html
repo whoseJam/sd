@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>区间</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/CF367E"></problem>
+    <section>
+        <h2>区间</h2>
+        <p>有 $n$ 个区间，你需要为每个区间分配左右端点</p>
+        <p class="fragment">端点属于 $[1,m]$</p>
+        <p class="fragment">你需要保证构造的区间两两互不包含，且至少一个区间的左端点等于 $x$</p>
+        <p class="fragment">求方案数</p>
+    </section>
+    <section>
+        <h2>区间</h2>
+        <p class="quote">怎么保证区间两两互不包含？</p>
+        <p class="fragment">
+            $$
+            \forall [l_i,r_i],[l_j,r_j] 若 l_i\lt l_j 则 r_i\lt r_j
+            $$
+        </p>
+        <p class="fragment quote">能想象出 $n$ 个这样的区间的形态吗？</p>
+        <p class="fragment quote">假设给定了 $n$ 个左端点的取值，$n$ 个右端点的取值，但没有告诉你左右端点的对应关系，你能确定 $n$ 个区间长什么样吗？</p>
+    </section>
+    <section>
+        <h2>区间</h2>
+        <p>在 $n$ 个左端点和 $n$ 个右端点固定的情况下，有且仅有一种满足题意的构造方式，即，将左右端点分别排序后按照序号匹配</p>
+        <iframe data-animation="./问题转换.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">设 $f_{i,j,k}$ 表示考虑前 $i$ 个位置，使用了 $j$ 个左端点和 $k$ 个右端点</p>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            f_{i,j,k} \rightarrow f_{i+1,j+1,k} \\
+            f_{i,j,k} \rightarrow f_{i+1,j+1,k+1} \\
+            f_{i,j,k} \rightarrow f_{i+1,j,k} & i+1\ne x \\
+            f_{i,j,k} \rightarrow f_{i+1,j,k+1} & j\lt k\\
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

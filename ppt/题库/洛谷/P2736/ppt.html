@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>摇滚乐队</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2736"></problem>
+    <section>
+        <h2>摇滚乐队</h2>
+        <iframe data-animation="./样例解释.js"
+            data-viewBoxDelta="0 -20 0 20"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>$N$ 首歌，长短不一，且已经按照发行日期排序</p>
+        <p class="fragment">我们需要发行最多 $M$ 张CD，且一张CD最多容纳 $T$ 分钟的音乐</p>
+        <p class="fragment">一首歌不能分装到两张CD中</p>
+        <p class="fragment">求最多能选多少首歌曲装进CD</p>
+    </section>
+    <section>
+        <h2>摇滚乐队</h2>
+        <iframe data-animation="./样例解释.js"
+            data-viewBoxDelta="0 -20 0 20"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment quote">子序列动态规划模型+普通资源分配动态规划模型</p>
+        <p class="fragment">设 $f_{i,j,k}$ 表示最后一个选中的是第 $i$ 首音乐，使用了 $j$ 张CD，最后那张CD使用了 $k$ 个单位的空间，最多能装多少首歌</p>
+        <p class="fragment">
+            $$
+            f_{i,j,k}=
+            1+\mathop{max}\begin{cases}
+            f_{x,j,k-t_i} & 如果没有换CD \\
+            f_{x,j-1,T} & 如果换了CD
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

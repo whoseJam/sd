@@ -15,9 +15,21 @@ function init(reveal) {
         }
 
         const iframes = currentSlide.querySelectorAll("iframe[data-animation]");
-        for (let i = 0; i < iframes.length; i++) {
-            if (has(iframes[i])) start(iframes[i]);
-            else update(iframes[i]);
+        const urls = [];
+        for (const iframe of iframes) {
+            if (has(iframe)) start(iframe);
+            else update(iframe);
+            urls.push(getURL(iframe));
+        }
+
+        if (window.parent) {
+            window.parent.postMessage(
+                {
+                    operator: "SlideAnimations",
+                    arguments: [urls],
+                },
+                "*"
+            );
         }
     });
 

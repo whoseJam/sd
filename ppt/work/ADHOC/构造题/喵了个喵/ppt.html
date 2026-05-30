@@ -1,0 +1,58 @@
+<section>
+    <section>
+        <h1>喵了个喵</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P8866"></problem>
+    <section>
+        <h2>喵了个喵</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 400px;"></iframe>
+    </section>
+    <section>
+        <h2>喵了个喵</h2>
+        <p>$k\le 2n-2$</p>
+        <iframe data-animation="./subtask1.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment quote">留一个空栈随机应变即可</p>
+    </section>
+    <section>
+        <h2>喵了个喵</h2>
+        <p>$k\le 2n-1$</p>
+        <p>考察极端情况，如果某段区间每种卡片各出现一次，考虑最后那张卡片 $c$ 应该如何处理</p>
+        <div style="display: flex;">
+            <iframe data-animation="./subtask2.js" class="fragment" data-fragment-index="0"
+                data-viewBox="-40 -160 240 220"
+                style="width: 1000px; height: 400px;"></iframe>
+            <iframe data-animation="./subtask3.js" class="fragment" data-fragment-index="2"
+                data-viewBox="-40 -160 240 220"
+                style="width: 1000px; height: 400px;"></iframe>
+        </div>
+        <ul>
+            <li class="fragment" data-fragment-index="0">如果与下一张卡片种类相同的卡在 $i$ 号栈的<b>栈底</b><span class="fragment" data-fragment-index="1">，把 $c$ 放在 $i$ 号栈的栈顶即可</span></li>
+            <li class="fragment" data-fragment-index="2">如果与下一张卡片种类相同的卡在 $i$ 号栈的<b>栈顶</b><span class="fragment" data-fragment-index="3">，把 $c$ 放在空栈中好吗？</span></li>
+        </ul>
+    </section>
+    <section>
+        <h2>喵了个喵</h2>
+        <p>当一张卡 $c$ 加入当前局面时，面临一个空栈和 $n-1$ 个各装两个的栈</p>
+        <ul>
+            <li class="fragment" data-fragment-index="0">如果在下一次使用空堆前出现了另一张 $c$，直接让这两个 $c$ 在空堆抵消</li>
+            <li class="fragment" data-fragment-index="1">否则我们找到下一张需要用到空堆来消除的卡片，记其颜色为 $x$，它必然是栈底，考察其栈顶颜色 $y$</li>
+            <ul>
+                <li class="fragment" data-fragment-index="2">如果 $y$ 在 $(c,x)$ 之间出现了偶数次...</li>
+                <li class="fragment" data-fragment-index="3">如果 $y$ 在 $(c,x)$ 之间出现了奇数次...</li>
+            </ul>
+        </ul>
+        <div style="display: flex;">
+            <iframe data-animation="./subtask4.js" class="fragment" data-fragment-index="0"
+                data-viewBox="-40 -160 240 220"
+                style="width: 1000px; height: 400px;"></iframe>
+            <iframe data-animation="./subtask5.js" class="fragment" data-fragment-index="2"
+                data-viewBox="-40 -160 240 220"    
+                style="width: 1000px; height: 400px;"></iframe>
+            <iframe data-animation="./subtask6.js" class="fragment" data-fragment-index="3"
+                data-viewBox="-40 -160 240 220"    
+                style="width: 1000px; height: 400px;"></iframe>
+        </div>
+    </section>
+</section>

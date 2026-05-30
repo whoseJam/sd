@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>Blocks</h1>
+    </section>
+    <problem data-problemset="poj" data-problemid="3734"></problem>
+    <section>
+        <h2>Blocks</h2>
+        <p>有一排砖，数量为 $n$，有红蓝绿黄 $4$ 种颜色</p>
+        <p class="fragment">染成红色和绿色的砖块的数量必须为偶数个</p>
+        <p class="fragment">求有多少种染色方案</p>
+    </section>
+    <section>
+        <h2>Blocks</h2>
+        <p>我们可以把砖块的位置看作是标号</p>
+        <p class="fragment">黄蓝砖块的EGF为
+            $$
+            A(x)=\sum_{i}\frac{x^i}{i!}=e^x
+            $$
+        </p>
+        <div class="fragment">
+            红绿砖块的EGF为
+            <p class="math-fragment">
+                $$
+                \begin{aligned}
+                B(x)&=\sum_{i,i是2的倍数}\frac{x^i}{i} \\
+                &=\frac{e^x+e^{-x} }{2}
+                \end{aligned}
+                $$
+            </p>
+        </div>
+        <p class="fragment">答案为
+            $$
+            A^2(x)B^2(x)=\frac{e^{4x}+2e^{2x}+1}{4}
+            $$
+        </p>
+        <p class="fragment" style="margin-top: -20px;">答案显然是 $4^{n-1}+2^{n-1}$</p>
+    </section>
+</section>

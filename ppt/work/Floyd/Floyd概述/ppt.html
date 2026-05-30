@@ -1,0 +1,43 @@
+<section>
+    <section>
+        <h1>Floyd</h1>
+        <p>基于暴力动态规划的最短路算法</p>
+    </section>
+    <section>
+        <h2>Floyd</h2>
+        <p>设 $d_{i,j}$ 表示 $i\rightarrow j$ 的最短路长度，初始化为图的邻接矩阵</p>
+        <p class="fragment">我们枚举每一个中转点 $k$，$k$ 从 $1$ 枚举到 $n$</p>
+        <ul>
+            <li class="fragment">如果 <b style="color: purple;">$i\rightarrow j$ 当前的最短路</b>经过点 $k$，那么 $d_{i,j}=d_{i,k}+d_{k,j}$</li>
+            <li class="fragment">如果 <b style="color: purple;">$i\rightarrow j$ 当前的最短路</b>不经过点 $k$，那么 $d_{i,j}$ 不变</li>
+        </ul>
+        <iframe data-animation="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <div class="fragment quote">
+            <h3>什么叫<b>当前的最短路</b>？</h3>
+            <span><b style="color: purple;">$i\rightarrow j$ 当前的最短路</b>需要满足，除了起点和终点外，只允许经过 $1,2,3,...,k$ 这些中转点</span><br>
+            <span class="fragment">此最短路的长度不一定等同于 $i\rightarrow j$ 真正的最短路长度</span>
+        </div>
+    </section>
+    <section>
+        <h2>Floyd</h2>
+        <p>
+            $$
+            d_{i,j}=\mathop{min}\{d_{i,k}+d_{k,j},d_{i,j}\}
+            $$
+        </p>
+        <iframe data-animation="./Floyd实现.html"
+            style="width: 1000px; height: 350px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                int d[N][N], n, m;
+                void Floyd() {
+                    for (int k = 1; k <= n; k++)
+                        for (int i = 1; i <= n; i++)
+                            for (int j = 1; j <= n; j++)
+                                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

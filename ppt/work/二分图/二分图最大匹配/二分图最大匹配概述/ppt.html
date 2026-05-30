@@ -1,0 +1,75 @@
+<section>
+    <section>
+        <h1>二分图与最大匹配</h1>
+        <p>断句：二分图，与，最大匹配</p>
+    </section>
+    <section>
+        <h2>二分图</h2>
+        <p>如果一张图可以被染为两种不同的颜色，并且一条边两端的节点颜色不同，则该图被称为<b style="color: red;">二分图</b></p>
+        <iframe data-animation="./染色.js"
+            style="width: 1000px; height: 280px;"></iframe>
+        <p class="fragment">二分图可以用于描述很多生活中的现象</p>
+        <div class="fragment quote">
+            <h3>座位问题</h3>
+            举个例子，为 $n$ 个乘客分配 $n$ 个座位，每个乘客<b style="color: purple;">有若干自己钟意的座位</b><span class="fragment">，我们如果把乘客和座位分别看成二分图两端的点</span><span class="fragment">，把一个乘客钟意一个座位建模为图中的边</span><span class="fragment">，那么上述问题即可用二分图来描述</span>
+        </div>
+    </section>
+    <section>
+        <h2>二分图</h2>
+        <p>以下是<b>座位问题</b>的一个具体的例子（共四个乘客和四个座位）</p>
+        <iframe data-animation="./匹配与最大匹配.js"
+            style="width: 1000px; height: 250px;"></iframe>
+        <p class="fragment quote">容易注意到上图描述的座位问题中，并非所有乘客都能坐到自己钟意的位置上</p>
+        <p class="fragment">每一种为乘客分配<b>其钟意的座位</b>的方案，被称为二分图的一个<b style="color: red;">匹配</b></p>
+        <p class="fragment quote">在无法满足所有乘客需求的情况下，我们或许希望知道，<b>最多有多少人能坐到自己钟意的位置上</b></p>
+        <p class="fragment">所有匹配中匹配边最多的那些匹配，被称为二分图的<b style="color: red;">最大匹配</b></p>
+    </section>
+    <section>
+        <h2>二分图最大匹配</h2>
+        <p>有一个叫做匈牙利算法的东西，可以帮助我们求出一个二分图的最大匹配</p>
+        <p class="fragment">它通过不断在现存匹配的基础上，找<b style="color: red;">增广路</b>，借助增广路获得一个更大的匹配</p>
+        <p class="fragment">
+            $$
+            大小为0的匹配\stackrel{增广路}{\rightarrow}大小为1的匹配\stackrel{增广路}{\rightarrow}大小为2的匹配\stackrel{增广路}{\rightarrow}...\stackrel{增广路}{\rightarrow} 最大匹配
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>增广路</h2>
+        <p>想象我们已经获取到了一个匹配<span class="fragment">，我们现在希望让这个匹配扩大</span></p>
+        <iframe data-animation="./增广路.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">我们尝试找到一条<b style="color: red;">匹配边</b>和<b>非匹配边</b>交替出现的路径</p>
+        <ul>
+            <li class="fragment">在这条路径的开头是一条<b>非匹配边</b></li>
+            <li class="fragment">在这条路径的结尾也是一条<b>非匹配边</b></li>
+        </ul>
+        <p class="fragment">显然我们可以把这条路径上的<b style="color: purple;">匹配关系反转</b><span class="fragment">，这样既不会影响其他地方的匹配关系，同时还能让匹配数加一</span><span class="fragment">，这样的一条路径就叫做<b style="color: red;">增广路</b></span></p>
+    </section>
+    <section>
+        <h2>二分图的最大匹配</h2>
+        <p>对于二分图最大匹配而言，我们只需要从每一个点开始，都尝试一次找增广路就行了</p>
+        <iframe data-animation="./最大匹配.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">容易发现单次增广的理论时间复杂度上限应该为 $O(n+m)$（每个点和边都搜索过一次）</p>
+        <p class="fragment">找增广路的次数显然应该等于<b>二分图点少的那一侧</b><b style="color: purple;">点的数量</b></p>
+        <p class="fragment">如果我们认为二分图两侧的点分布是均匀的，则总时间复杂度为 $O(n(n+m))$</p>
+        <!-- <codeblock>
+            <script type="text/template">
+                bool findPath(int u) { // 从u这个点开始找增广路，如果能找到则返回true
+                    for (int i = h[u], v; i; i = l[i].Nxt) {
+                        v = l[i].to;
+                        if (!vis[v]) { // v没有被标记过
+                            vis[v] = true;
+                            if (!match[v] || findPath(match[v])) {
+                                match[v] = u; // v没有与别的点匹配，或和v匹配的点可以换人匹配
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock> -->
+    </section>
+</section>

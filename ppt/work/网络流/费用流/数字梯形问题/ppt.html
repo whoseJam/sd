@@ -1,0 +1,60 @@
+<section>
+    <section>
+        <h1>数字梯形问题</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4013"></problem>
+    <section>
+        <h2>数字梯形问题</h2>
+        <p>我们可以把从塔顶往下移动的这 $m$ 个数字看作 $m$ 流，尝试用最大费用最大流去建模这个问题</p>
+    </section>
+    <section>
+        <h2>数字梯形问题</h2>
+        <p><b>从梯形的顶端到底端的 $m$ 条路径互不相交</b></p>
+        <ul>
+            <li class="fragment">不能在边上相交</li>
+            <li class="fragment">不能在点上相交</li>
+        </ul>
+        <p class="fragment">为了实现上述限制，我们可以</p>
+        <ul>
+            <li class="fragment">每条边容量为 $1$，价值为 $0$</li>
+            <li class="fragment">每个点拆点，拆为一个入点，一个出点，入点和出点之间连一条容量为 $1$，价值为点的价值的连边</li>
+        </ul>
+    </section>
+    <section>
+        <h2>数字梯形问题</h2>
+        <iframe data-animation="./数字梯形问题1.js"
+            style="width: 1000px; height: 500px;"></iframe>
+    </section>
+    <section>
+        <h2>数字梯形问题</h2>
+        <p><b>从梯形的顶端到底端的 $m$ 条路径只可以在点上相交</b></p>
+        <ul>
+            <li class="fragment">不能在边上相交</li>
+            <li class="fragment">可以在点上相交</li>
+        </ul>
+        <p class="fragment">为了实现上述限制，我们可以</p>
+        <ul>
+            <li class="fragment">每条边容量为 $1$，价值为 $0$</li>
+            <li class="fragment">每个点拆点，拆为一个入点，一个出点，入点和出点之间连一条容量为 $+\infty$，价值为点的价值的连边</li>
+        </ul>
+    </section>
+    <section>
+        <h2>数字梯形问题</h2>
+        <iframe data-animation="./数字梯形问题2.js"
+            style="width: 1000px; height: 500px;"></iframe>
+    </section>
+    <section>
+        <h2>数字梯形问题</h2>
+        <p><b>从梯形的顶端到底端的 $m$ 条路径可以在边或者点上相交</b></p>
+        <p class="fragment">为了实现上述限制，我们可以</p>
+        <ul>
+            <li class="fragment">每条边容量为 $+\infty$，价值为 $0$</li>
+            <li class="fragment">每个点拆点，拆为一个入点，一个出点，入点和出点之间连一条容量为 $+\infty$，价值为点的价值的连边</li>
+        </ul>
+    </section>
+    <section>
+        <h2>数字梯形问题</h2>
+        <iframe data-animation="./数字梯形问题3.js"
+            style="width: 1000px; height: 500px;"></iframe>
+    </section>
+</section>

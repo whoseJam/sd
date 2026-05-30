@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>棋盘构造动态规划模型</h1>
+    </section>
+    <section>
+        <h2>棋盘构造动态规划模型</h2>
+        <p>我们希望构造一个<b style="color: purple;">长或宽不太大</b>的棋盘，这个棋盘上需要放一些<b>元素</b>，还会有一些<b>限制</b><span class="fragment">，我们可能需要统计合法棋盘的<b>得分最大值/得分最小值/方案数</b></span></p>
+        <div class="fragment quote">
+            <h3>长宽限制</h3>
+            <span>要么长度在 $10$ 这个量级，要么宽度在 $10$ 这个量级</span>
+        </div>
+        <div class="fragment quote">
+            <h3>元素</h3>
+            <span>例如我们向构造一片草地，上面可能就有草和空地两种元素，当然，出现更多种元素也是有可能的</span>
+        </div>
+        <div class="fragment quote">
+            <h3>限制</h3>
+            <span>元素之间可能存在约束关系，例如一行内只能出现一个士兵、两片草地不能相邻...</span>
+        </div>
+    </section>
+    <section>
+        <h2>棋盘构造动态规划模型</h2>
+        <p>由于棋盘在某个维度上并不大，所以我们可以把棋盘构造拆解为<b style="color: red;">序列构造</b>加上<b style="color: red;">状态压缩</b></p>
+        <p class="fragment">例如，我们要构造一片由<b style="color: cadetblue;">海洋</b>和<b style="color: green;">大陆</b>构成的棋盘...</p>
+        <iframe data-animation="./棋盘构造.js" class="fragment"
+            style="width: 1000px; height: 280px;"></iframe>
+        <p class="fragment">通常设 $f_{i,S}$ 表示构造到棋盘的第 $i$ 行，第 $i$ 行的<b>状态</b>为 $S$，棋盘的<b>得分最大值/得分最小值/方案数</b></p>
+        <p class="fragment quote">这里的 $S$ 只有放在二进制视角下去解读，才有意义</p>
+        <p class="fragment quote">如果棋盘中有超过两种元素，$S$ 可能需要放在 $k$ 进制下去做解读</p>
+    </section>
+</section>

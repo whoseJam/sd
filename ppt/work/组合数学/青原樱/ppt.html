@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>青原樱</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5520"></problem>
+    <section>
+        <h2>青原樱</h2>
+        <p>一排 $n$ 个位置可以种树</p>
+        <p class="fragment">总共有 $m$ 支<b>不同的</b>幼苗</p>
+        <p class="fragment">需要保证任意两支幼苗之间至少存在<b>一个不种树的空位置</b></p>
+        <p class="fragment">求方案数</p>
+        <iframe data-animation="./样例解释.js" class="fragment"
+            style="width: 1000px; height: 140px;"></iframe>
+    </section>
+    <section>
+        <h2>青原樱</h2>
+        <iframe data-animation="./计数方案.js"
+            style="width: 1000px; height: 240px;"></iframe>
+        <p>把 $m$ 棵树挪走（每一棵树一定占用了一个坑），则剩下 $n-m$ 个坑（这些坑上是不种树的）</p>
+        <p class="fragment">我们尝试把 $m$ 棵树插入到 $n-m+1$ 个<b>坑之间的间隔</b>上去</p>
+        <p class="fragment">答案即为 $C_{n-m+1}^mA_m^m=(n-2m+2)(n-2m+3)...(n-m+1)$</p>
+    </section>
+</section>

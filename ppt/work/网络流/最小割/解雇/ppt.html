@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>解雇</h1>
+        <p>最大权闭合子图，当然，也是最小割的一个应用</p>
+    </section>
+    <problem data-problemset="poj" data-problemid="2987"></problem>
+    <section>
+        <h2>解雇</h2>
+        <p>雇佣一个员工需要付出一定的工资</p>
+        <p class="fragment">解雇一个员工需要付出一定的赔偿</p>
+        <p class="fragment">题目已经帮我们衡量出了解雇一个员工的净收益（可能是正数，也可能是负数）</p>
+        <p class="fragment">同时，解雇一个员工还需要连带解雇其下属，下属的下属......</p>
+        <p class="fragment">求花费最小的解雇方案</p>
+    </section>
+    <section>
+        <h2>解雇</h2>
+        <p>我们希望解雇的员工使得我们节省的开支最大，并且解雇的员工其所有下属也会被解雇</p>
+        <p class="fragment">那么这实际上是在求<b>最大权闭合子图</b></p>
+    </section>
+    <section>
+        <h2>最大权闭合子图</h2>
+        <p>所谓<b>闭合子图</b>就是给定一个有向图，从中选择一些点组成一个点集 $V$。对于 $V$ 中任意一个点，其后继节点都仍然在 $V$ 中</p>
+        <iframe data-animation="./闭合子图.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment" style="margin-top: -40px;">
+            比如在上图中，就有
+            <ul style="width: 45%; display: inline-block;">
+                <li class="fragment">$\emptyset$</li>
+                <li class="fragment">$\{3\}$</li>
+                <li class="fragment">$\{4\}$</li>
+                <li class="fragment">$\{2,4\}$</li>
+            </ul>
+            <ul style="width: 45%; display: inline-block;">
+                <li class="fragment">$\{3,4\}$</li>
+                <li class="fragment">$\{1,3,4\}$</li>
+                <li class="fragment">$\{2,3,4\}$</li>
+                <li class="fragment">$\{1,2,3,4\}$</li>
+            </ul>
+        </p>
+        <p class="fragment">这么 $8$ 个闭合子图</p>
+        <p class="fragment">容易发现我们每个闭合子图都是一种<b>解雇方案</b>，如果我们让图上每个点的点权等于<b>解雇这个人能节约的费用</b>，那么本题就是在求最大权闭合子图了，而求解最大权闭合子图是可以用最小割做的</p>
+    </section>
+    <section>
+        <h2>最大权闭合子图</h2>
+        <p>在图上每个点的点权可能是正数，也可能是负数<span class="fragment">，不妨假设所有的正数点权最初都是吃到的，而<b>因为想吃正数点权而不得不吃的负数点权</b>和<b>取消吃某个正数点权</b>都可以当作损失处理，只需要求出最小损失即可</span></p>
+        <p class="fragment">容易发现上述两种损失是互斥的关系，考虑把这两种损失进行最小割建模</p>
+        <ol class="fragment">
+            <li>$S$ 向所有收益为正数的点连边，容量为该点收益</li>
+            <li>所有收益为负数的点向 $T$ 连边，容量为该点收益</li>
+            <li>如果两个点 $u$ 和 $v$ 之间有有向边，那么从 $u$ 连一条容量为 $\infty$ 的边指向 $v$</li>
+        </ol>
+        <iframe data-animation="./原图.js" class="fragment"
+            style="width: 1000px; height: 150px;"></iframe>
+        <iframe data-animation="./建图.js" class="fragment"
+            style="width: 1000px; height: 150px;"></iframe>
+    </section>
+</section>

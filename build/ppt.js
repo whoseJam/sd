@@ -57,7 +57,6 @@ function task(source, targetFolder) {
 
     cleanAllFiles(targetFolder);
     cleanAllEmptyDirectories(targetFolder);
-    utils.copyFonts("./dist/fonts", `${targetFolder}/fonts`);
     walk(source, path => {
         const suffix = path.split(".").slice(-1)[0];
         if (!eventListener[suffix] || !eventListener[suffix].onAdd) {
@@ -120,16 +119,6 @@ function launch(selfLaunch = true) {
         process.exit();
     }
     if (global["l"] && !global["sd"]) copyFile("./dist/sd.js", pptOutputPath);
-    if (global["l"] && !global["theme"]) {
-        copyFile("./dist/beige.css", pptOutputPath);
-        copyFile("./dist/dracula.css", pptOutputPath);
-        copyFile("./dist/serif.css", pptOutputPath);
-        copyFile("./dist/serif.css", pptOutputPath);
-        copyFile("./dist/simple.css", pptOutputPath);
-        copyFile("./dist/sky.css", pptOutputPath);
-        copyFile("./dist/solarized.css", pptOutputPath);
-        copyFile("./dist/white.css", pptOutputPath);
-    }
     if (global["l"] && !global["reveal"]) copyFile("./dist/myreveal.js", pptOutputPath);
     return task(source, pptOutputPath);
 }

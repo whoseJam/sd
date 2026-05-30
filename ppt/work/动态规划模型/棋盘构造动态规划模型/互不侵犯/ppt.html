@@ -1,0 +1,56 @@
+<section>
+    <section>
+        <h1>互不侵犯</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1896"></problem>
+    <section>
+        <h2>互不侵犯</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>你需要在 $N\times N$ 的棋盘上放置恰好 $K$ 个国王，使之无法互相攻击，求方案数</p>
+        <p class="fragment">$N\le 9$</p>
+    </section>
+    <section>
+        <h2>互不侵犯</h2>
+        <p>我们需要在棋盘上放置国王，并且国王恰好要放 $K$ 个</p>
+        <p class="fragment quote">这里面涉及到哪些动态规划模型？</p>
+        <p class="fragment">本题显然由<b>棋盘构造动态规划模型</b>和<b>普通资源分配动态规划模型</b>组成</p>
+        <p class="fragment">设 $f_{i,S,k}$ 表示构造到棋盘的第 $i$ 行，第 $i$ 行的状态为 $S$，前 $i$ 行一共放置了 $k$ 个国王的总方案数</p>
+        <iframe data-animation="./筛选状态.js" class="fragment"
+            style="width: 1000px; height: 100px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int All = (1 << n) - 1; // 筛选出一行内合法的状态
+                for (int S = 0; S <= All; S++) {
+                    if (S & (S >> 1)) continue;
+                    valid.push_back(S);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>互不侵犯</h2>
+        <p>考虑两行之间的转移</p>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">
+            $$
+            f_{i,S,k}\stackrel{+}{\rightarrow} f_{i+1,T,k+count(T)}, T与S可以作为相邻两行
+            $$
+        </p>
+        <p class="fragment quote">其中 $count(S)$ 表示统计一个二进制数内 $1$ 的个数</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i < n; i++)
+                    for (int S: valid)
+                        for (int k = 0; k <= K; k++)
+                            for (int T: valid) {
+                                if (T & S) continue;
+                                if (T & (S << 1)) continue;
+                                if (T & (S >> 1)) continue;
+                                f[i + 1][T][k + count(T)] += f[i][S][k];
+                            }
+            </script>
+        </codeblock>
+    </section>
+</section>

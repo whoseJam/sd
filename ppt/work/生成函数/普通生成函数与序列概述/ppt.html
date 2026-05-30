@@ -1,0 +1,349 @@
+<section>
+    <section>
+        <h1>普通生成函数</h1>
+        <p>Ordinary Generating Function，OGF</p>
+    </section>
+    <section>
+        <h2>普通生成函数</h2>
+        <p>对于一个序列 $\{a_0,a_1,a_2,a_3,...\}$，我们希望用<b>一个多项式</b>把他们整体表示出来</p>
+        <p class="fragment">我们可以把序列元素作为系数，依次放入多项式：
+            $$
+            A(x)=a_0+a_1x+a_2x^2+a_3x^3+...
+            $$
+        </p>
+        <p class="fragment quote">
+            <span>$3+8x^2+x^3+\frac{x^5}{7}+100x^6+...$ 对应的序列是什么？</span><br>
+            <span class="fragment">$\{3,0,8,1,0,\frac{1}{7},100,...\}$</span>
+        </p>
+    </section>
+    <section>
+        <h2>一些常见的序列，以及对应的生成函数</h2>
+        <p>我们把 $e^x$ 按照泰勒展开，可以得到：$e^x=1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\frac{x^4}{4!}+...+\frac{x^n}{n!}+...$</p>
+        <p class="fragment">所以 $\{1,1,\frac{1}{2!},\frac{1}{3!},\frac{1}{4!},...\}$ 这个长度无限的序列就能用 $e^x$ 这么一个简洁的形式表示</p>
+        <div class="fragment quote">
+            <span>$\{0,1,\frac{1}{2!},\frac{1}{3!},\frac{1}{4!},...\}$ 这个序列对应的生成函数是什么？</span><br>
+            <span class="fragment">$x+\frac{x^2}{2!}+\frac{x^3}{3!}+\frac{x^4}{4!}+...=e^x-1$</span>
+        </div>
+        <p class="fragment math-fragment" style="margin-top: -10px;">
+            \begin{aligned}
+            S      &=1+x+x^2+x^3+...\\
+            -xS    &=-x-x^2-x^3-x^4-... \\
+            (1-x)S &=1
+            \end{aligned}
+        </p>
+        <p class="fragment" style="margin-top: -10px;">所以 $\{1,1,1,1,...\}$ 这个长度无限的序列就能用 $\frac{1}{1-x}$ 这么一个简洁的形式表示</p>
+        <div class="fragment quote" style="display: flex;">
+            <div style="width: 1000px;">
+                <ol>
+                    <li>$\{1,-1,1,-1,...\}$ 这个序列对应的生成函数是什么？</li>
+                    <li>$\{1,3,9,27,...\}$ 这个序列对应的生成函数是什么？</li>
+                    <li>$\{2,2,2,2,...\}$ 这个序列对应的生成函数是什么？</li>
+                    <li>$\{1,0,1,0,...\}$ 这个序列对应的生成函数是什么？</li>
+                </ol>
+            </div>
+            <div style="width: 400px;">
+                <ol>
+                    <li class="fragment">$\frac{1}{1+x}$</li>
+                    <li class="fragment">$\frac{1}{1-3x}$</li>
+                    <li class="fragment">$\frac{2}{1-x}$</li>
+                    <li class="fragment">$\frac{1}{1-x^2}$</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>奇妙的生成函数</h2>
+        <p>$\{1,0,1,0,1,0,...\}$ 这个序列的生成函数是什么？</p>
+        <p class="fragment">
+            $$
+            1+x^2+x^4+x^6+...=\frac{1}{1-x^2}
+            $$
+        </p>
+        <p class="fragment">$\{0,1,0,1,0,1,...\}$ 这个序列的生成函数是什么？</p>
+        <p class="fragment">
+            $$
+            x+x^3+x^5+x^7+...=\frac{x}{1-x^2}
+            $$
+        </p>
+        <p class="fragment">如果将 $\{1,0,1,0,1,0,...\}$ 和 $\{0,1,0,1,0,1,...\}$ 两个序列相加，得到 $\{1,1,1,1,1,1,...\}$</p>
+        <p class="fragment">在生成函数表示下也有体现：
+            $$
+            \frac{1}{1-x^2}+\frac{x}{1-x^2}=\frac{1}{1-x}
+            $$
+        </p>
+        <p class="fragment quote">这告诉我们生成函数可以用来推导一些恒等式，有些恒等式可能不那么容易看出来，但是放在生成函数视角下就变得比较显然</p>
+    </section>
+    <section>
+        <h2>一些常见的序列，以及对应的生成函数</h2>
+        <p>如果我们对 $\frac{1}{1-x}=1+x+x^2+x^3+x^4...$ 两边同时求导......</p>
+        <p class="fragment">
+            $$
+            \frac{1}{(1-x)^2}=1+2x+3x^2+4x^3+...
+            $$
+        </p>
+        <p class="fragment">所以 $\{1,2,3,4,...\}$ 这个长度无限的序列就能用 $\frac{1}{(1-x)^2}$ 这么一个简洁的形式表示</p>
+        <p class="fragment">再来一次</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \frac{2}{(1-x)^3}&=2+6x+12x^2+20x^3+... \\
+            \frac{1}{(1-x)^3}&=1+3x+6x^2+10x^3+...
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">所以 $\{1,3,6,10,...\}$ 这个长度无限的序列就能用 $\frac{1}{(1-x)^3}$ 这么一个简洁的形式表示</p>
+    </section>
+    <section>
+        <h2>序列差分</h2>
+        <p>假设我已经有一个序列 $\{a_i\}$ 的生成函数 $A(x)$ 了，我想求得该序列的差分序列 $\{a_i-a_{i-1}\}$ 的生成函数 $D(x)$，怎么求呢？</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            A(x)&=a_0+a_1x+a_2x^2+a_3x^3+a_4x^4+... \\
+            xA(x)&=0+a_0x+a_1x^2+a_2x^3+a_3x^4+... \\
+            (1-x)A(x)&=a_0+(a_1-a_0)x+(a_2-a_1)x^2+(a_3-a_2)x^3+(a_4-a_3)x^4+...
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            D(x)=(1-x)A(x)
+            $$
+        </p>
+        <div class="fragment quote" style="display: flex;">
+            <div style="width: 1000px;">
+                <ol>
+                    <li>$\{1,3,5,7,...\}$ 这个序列对应的生成函数是什么？</li>
+                    <li>$\{1,4,9,16,...\}$ 这个序列对应的生成函数是什么？</li>
+                </ol>
+            </div>
+            <div style="width: 400px;">
+                <ol>
+                    <li class="fragment">$\frac{1+x}{(1-x)^2}$</li>
+                    <li class="fragment">$\frac{1+x}{(1-x)^3}$</li>
+                </ol>
+            </div>
+        </div>
+        <h2 class="fragment">序列前缀和</h2>
+        <p class="fragment">发现 $\frac{1}{1-x}$ 好像有对序列求前缀和的操作</p>
+        <p class="fragment">显然差分和前缀和互为逆运算，$(1-x)$ 和 $\frac{1}{1-x}$ 互为逆运算</p>
+    </section>
+
+    <section>
+        <h2>通过线性递推式构造生成函数</h2>
+        <p>
+            $$
+            \begin{cases}
+            f_n=f_{n-1}+f_{n-2} \\
+            f_0=f_1=1
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            F(x)   &=f_0+f_1x+f_2x^2+f_3x^3+... \\
+            xF(x)  &=0+f_0x+f_1x^2+f_2x^3+... \\
+            x^2F(x)&=0+0x+f_0x^2+f_1x^3+...
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            F(x)&=xF(x)+x^2F(x)+f_0 \\
+            (1-x-x^2)F(x)&=f_0 \\
+            F(x)&=\frac{f_0}{1-x-x^2}=\frac{1}{1-x-x^2}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>斐波那契数列</h2>
+        <p>对 $\frac{1}{1-x-x^2}$ 裂项</p>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \frac{1}{1-x-x^2}&=\frac 1{\sqrt 5}\big(\frac 1{x+\frac{1+\sqrt 5}2} + \frac 1 {\frac{\sqrt 5 - 1}2 -x}\big) \\
+            &=\frac 1{\sqrt 5}\big(\frac{\sqrt 5 -1}2 \frac 1{1-\frac{1-\sqrt 5}2x} + \frac{\sqrt 5 +1}2\frac 1 {1-\frac{\sqrt 5 + 1}2 x}\big) \\
+            &=\sum_{i=0}^{\infty}\frac 1{\sqrt 5}\large[(\frac {1+\sqrt 5}2)^{i+1}-(\frac {1-\sqrt 5}2)^{i+1}\large]x^i
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            f_i=\frac 1{\sqrt 5}\large[(\frac {1+\sqrt 5}2)^{i+1}-(\frac {1-\sqrt 5}2)^{i+1}\large]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>线性递推小练习</h2>
+        <p>求 $\{a_i\}$ 的生成函数，满足 $a_i=3a_{i-1}-2a_{i-2}$，且 $a_0=1$，$a_1=3$</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            A(x)      &= a_0 +  a_1x^1 +  a_2x^2 +  a_3x^3 + ... \\
+            3xA(x)    &= 0   + 3a_0x^1 + 3a_1x^2 + 3a_2x^3 + ... \\
+            -2x^2A(x) &= 0   +    0x^1 - 2a_0x^2 - 2a_1x^3 - ... \\
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            A(x)&=3xA(x)-2x^2A(x)+a_0 \\
+            (1-3x+2x^2)A(x)&=a_0 \\
+            A(x)&=\frac{a_0}{(1-3x+2x^2)}=\frac{1}{(1-3x+2x^2)}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>普通生成函数练习</h2>
+        <div style="display: flex;">
+            <div style="width: 1000px;">
+                <ol>
+                    <li>$\{4,4,4,4,4,...\}$</li>
+                    <li>$\{2,4,6,8,10,...\}$</li>
+                    <li>$\{1,5,25,125,...\}$</li>
+                    <li>$\{1,-3,9,-27,81,...\}$</li>
+                    <li>$\{1,0,5,0,25,0,125,0,...\}$</li>
+                    <li>$\{4,5,7,10,14,19,25,...\}$</li>
+                </ol>
+            </div>
+            <div style="width: 1000px;">
+                <ol>
+                    <li class="fragment">$\frac{4}{1-x}$</li>
+                    <li class="fragment">$\frac{2}{(1-x)^2}$</li>
+                    <li class="fragment">$\frac{1}{1-5x}$</li>
+                    <li class="fragment">$\frac{1}{1+3x}$</li>
+                    <li class="fragment">$\frac{1}{1-5x^2}$</li>
+                    <li class="fragment">$\frac{4}{1-x}+\frac{x}{(1-x)^3}$</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>普通生成函数与卡特兰数</h2>
+        <p>
+            $$
+            \begin{cases}
+            h_n=\sum_{i=0}^{n-1}h_{i}h_{n-i-1} \\
+            h_0=h_1=1
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">设其对应的生成函数为 $H(x)$</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            H(x)&=\sum_{i=0}^{\infty}h_ix^i \\
+            H^2(x)&=\sum_{i=0}^{\infty}x_i\sum_{j=0}^ih_jh{i-j} \\
+            &=\sum_{i=0}^{\infty}h_{i+1}x^i
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            H(x)&=1+xH^2(x) \\
+            H(x)&=\frac{1-\sqrt{1-4x} }{2x}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>普通生成函数与卡特兰数</h2>
+        <p>$$H(x)=\frac{1-\sqrt{1-4x} }{2x}$$</p>
+        <p class="fragment math-fragment" style="font-size: 20px;">
+            $$
+            \begin{aligned}
+            (1+x)^a &= 1+\frac{a}{1}x+\frac{a(a-1)}{2!}x^2+...+\frac{a(a-1)...(a-n+1)}{n!}x^n \\
+            \sqrt{1-4x} &=(1-4x)^{\frac{1}{2} }=1+\sum_{n\ge 1}\frac{\frac{1}{2}\frac{-1}{2}\frac{-3}{2}...\frac{-(2n-3)}{2} }{n!}(-4x)^n \\
+            &=1+\sum_{n\ge 1}\frac{(-1)^{n-1} }{2^n} \frac{1\cdot 3...(2n-3)}{n!}(-4x)^n  \\
+            &=1+\sum_{n\ge 1}\frac{(-1)^{n-1} }{2^n} \frac{2^{n-1}(n-1)!}{2^{n-1}(n-1)!} \frac{1\cdot 3...(2n-3)}{n!}(-4x)^n \\
+            &=1-\sum_{n\ge 1}\frac{(2n-2)!}{n!(n-1)!}2x^n \\
+            H(x)&=\frac{1}{2x}\sum_{n\ge 1}\frac{(2n-2)!}{n!(n-1)!}2x^n \\
+            &=\sum_{n\ge 0}\frac{(2n)!}{(n+1)!n!}x^n=\sum_{n\ge 0}\frac{C_{2n}^n}{n+1}x^n
+            \end{aligned}
+            $$
+        </p>
+    </section>
+
+    <!-- <section>
+        <h2>size函数</h2>
+        <p>在组合计数时，我们往往需要求满足某个条件的组合对象的数量</p>
+        <p class="fragment">我们常常用集合 $A$ 来表示满足要求的所有组合对象</p>
+        <p class="fragment">我们对 $A$ 中所有对象定义一个 $size$ 函数，$size$ 函数的含义可以自由发挥的<span class="fragment">，不妨假设 $a$ 是一个我们要求的组合对象，$a\in A$</span></p>
+        <ul>
+            <li class="fragment">如果 $a$ 是一棵树，$size(a)$ 可能表示 $a$ 的节点数量</li>
+            <li class="fragment">如果 $a$ 是一个序列，$size(a)$ 可能表示 $a$ 的长度</li>
+        </ul>
+        <p class="fragment">我们的任务往往是求出 $size(a)=n$ 的满足条件的 $a$ 的数量</p>
+    </section>
+    <section>
+        <h2>组合对象的生成函数</h2>
+        <p>记 $size$ 为 $i$ 的对象数量有 $A_i$ 个，我们定义组合对象的生成函数（OGF）为</p>
+        <p class="fragment">
+            $$
+            A(x)=\sum_i A_ix^i
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            A(x)=\sum_{a\in A}x^{size(a)}
+            $$
+        </p>
+        <p class="fragment">这里的 $x$ 被称为<b>未定元</b></p>
+        <p class="fragment">我们用 $[x^n]A(x)$ 来表示 $A(x)$ 中 $x^n$ 的系数</p>
+        <p class="fragment">这样的 $\{A_i\}$ 序列称为组合对象的<b>计数序列</b></p>
+    </section>
+    <section>
+        <h2>组合形式和atom</h2>
+        <p>我们可以这样理解生成函数</p>
+        <p>枚举没有给对象，把里面对 $size$ 没有贡献的部分删掉，最后只剩下若干个点，这样的点又变成未定元 $z$，乘起来，就是生成函数</p>
+        <p class="fragment">这样的一个点，我们把它叫做 $atom$</p>
+        <picture data-source="./未定元.png" style="height: 300px;"></picture>
+    </section>
+    <section>
+        <h2>加法原理</h2>
+        <p>有两个集合 $A$ 和 $B$，$A\cap B = \emptyset$<span class="fragment">，我们想统计 $C=A\cup B$</span></p>
+        <p class="fragment">根据加法原理，应该有：
+            $$
+            C_i=A_i+B_i
+            $$
+        </p>
+        <p class="fragment">那么集合 $C$ 的生成函数为：
+            $$
+            C(x)=A(x)+B(x)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>乘法原理</h2>
+        <p>定义两个集合的笛卡尔积为：
+            $$
+            A\cdot B=\{(a,b)|a\in A,b\in B\}
+            $$
+        </p>
+        <ul>
+            <li class="fragment">笛卡尔积相当于把两个集合内的元素做了一次<b>有序拼接</b></li>
+        </ul>
+        <p class="fragment">如果 $size((a,b))=size(a)+size(b)$</p>
+        <p class="fragment">那么 $C=A\cdot B$ 的生成函数 $C(x)$ 为：
+            $$
+            C(x)=A(x)B(x)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>例题</h2>
+        <ul>
+            <li>空对象为 $size$ 为 $0$ 的对象，求其生成函数</li>
+            <li class="fragment">求一个 $atom$ 的生成函数</li>
+            <li class="fragment">求用 $26$ 个字母生成单词的生成函数，$size$ 为单词长度</li>
+            <li class="fragment">已知 $A$ 集合，生成 $\{(a,a)|a\in A\}$</li>
+        </ul>
+    </section> -->
+</section>

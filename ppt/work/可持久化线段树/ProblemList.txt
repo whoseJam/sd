@@ -1,0 +1,7 @@
+#1071.可持久化线段树1：https://www.luogu.com.cn/problem/P3919
+#1072.可持久化线段树2：https://www.luogu.com.cn/problem/P3834
+#1074.天天爱射击：https://www.luogu.com.cn/problem/P7424
+#382.Count on a Tree：https://www.luogu.com.cn/problem/P2633
+
+课后作业：
+#1073.高级打字机：https://www.luogu.com.cn/problem/P1383

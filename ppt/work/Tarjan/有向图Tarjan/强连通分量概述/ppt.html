@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>有向图的连通性问题</h1>
+    </section>
+    <section>
+        <h2>强连通</h2>
+        <p>在一个有向图中<b style="color: purple;">任意两点</b>之间可以相互到达，则该有向图是<b style="color: red;">强连通</b>的</p>
+        <iframe data-animation="./强连通图.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <div class="fragment">
+            <p>一个<b style="color: purple;">极大的</b><b style="color: red;">强连通子图</b>，叫做一个<b style="color: orange;">强连通分量</b></p>
+            <iframe data-animation="./强连通分量.js"
+                style="width: 1000px; height: 200px;"></iframe>
+        </div>
+    </section>
+    <section>
+        <h2>寻找强连通分量</h2>
+        <iframe data-animation="./缩点.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p>如果我们把某个有向图的所有<b style="color: purple;">强连通分量</b>都提取出来...</p>
+        <ul>
+            <li class="fragment">对于一个强连通分量内的任意两点，它们一定可以相互到达</li>
+            <li class="fragment">对于不同强连通分量之间的点，它们要么存在单向通路，要么不存在通路</li>
+        </ul>
+        <p class="fragment">如果把一个强连通分量缩成一个更大的点，忽略强连通分量内的边，保留强连通分量间的边...<span class="fragment">得到的新图一定是一个<b>有向无环图</b></span></p>
+    </section>
+</section>

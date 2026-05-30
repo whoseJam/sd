@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>拼木棒</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3799"></problem>
+    <section>
+        <h2>拼木棒</h2>
+        <p>四根木棒拼出一个正三角形，则一定是 $a+a+b+c$ 且 $a=b+c$ 的形式</p>
+        <p class="fragment">统计每一种长度的木棒数量，设长度为 $i$ 的木棒有 $f_i$ 根...</p>
+        <p class="fragment">枚举 $b,c$，当 $b,c$ 确定后 $a$ 也随之确定了...</p>
+        <p class="fragment">
+            $$
+            \sum_{b}\sum_{c}f_bf_cC_{f_{b+c} }^2
+            $$
+        </p>
+        <p class="fragment">时间复杂度 $O(|a|^2)$，由于 $|a|\le 5000$，跑过绰绰有余</p>
+    </section>
+</section>

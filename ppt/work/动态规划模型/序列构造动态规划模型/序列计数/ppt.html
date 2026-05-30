@@ -1,0 +1,81 @@
+<section>
+    <section>
+        <h1>序列计数</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000010"></problem>
+    <section>
+        <h2>序列计数</h2>
+        <p>你需要构造一个序列，这个序列的元素之和是 $p$ 的倍数</p>
+        <iframe data-animation="./状态设置.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">设 $f_{i,j}$ 表示构造到序列的第 $i$ 位，前 $i$ 个元素之和对 $p$ 取模的结果为 $j$，的方案数</p>
+        <p class="fragment">
+            $$
+            f_{i,j}\underset{1\le k\le m}{\stackrel{+}{\rightarrow} } f_{i+1,(j+k)\% p}
+            $$
+        </p>
+        <p class="fragment">容易发现所有同余的 $k$ 可以一起转移，设 $S_r$ 表示 $[1,m]$ 中模 $p$ 为 $r$ 的数字个数，那么转移可以写成</p>
+        
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>
+            $$
+            f_{i,j}\underset{1\le k\le m}{\stackrel{+}{\rightarrow} } f_{i+1,(j+k)\% p}
+            $$
+        </p>
+        <div>
+            <p style="text-align: center; font-size: 20px; margin-bottom: -30px;">以 $p=5$ 为例</p>
+            <iframe data-animation="./同步转移.js" class="fragment"
+                style="width: 1000px; height: 200px;"></iframe>
+        </div>
+        <p class="fragment">容易发现所有同余的 $k$ 可以一起转移，设 $S_r$ 表示 $[1,m]$ 中模 $p$ 为 $r$ 的数字个数，那么转移可以写成</p>
+        <p class="fragment">
+            $$
+            S_rf_{i,j}\underset{0\le r\le p-1}{\stackrel{+}{\rightarrow} } f_{i+1,(j+r)\% p}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>
+            $$
+            S_rf_{i,j}\underset{0\le r\le p-1}{\stackrel{+}{\rightarrow} } f_{i+1,(j+r)\% p}
+            $$
+        </p>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 500px;" class="fragment">
+                <p style="text-align: center; font-size: 20px; margin-bottom: 0px;">以 $p=6$ 为例</p>
+                <iframe data-animation="./转移分析.js"
+                    style="width: 1000px; height: 400px;"></iframe>
+            </div>
+            <div style="width: 500px;">
+                <p>直接转移的时间复杂度显然为 $O(np^2)$，由于本题 $n\le 10^9,p\le 100$，所以跑不了</p>
+                <p class="fragment">由于从 $f_{i,?}$ 只能转移到 $f_{i+1,?}$，并且每次转移的权重是相同的，所以可以用转移矩阵来表示一次转移，用矩阵快速幂加速这 $n$ 次转移<span class="fragment">，时间复杂度 $O(p^3logn)$</span></p>
+                <p class="fragment" style="font-size: 20px;">
+                    $$
+                    \begin{pmatrix}
+                    S_0 & S_{p-1} & \cdots & S_1 \\
+                    S_1 & S_0 & \cdots & S_2 \\
+                    \vdots & \vdots & \ddots & \vdots \\
+                    S_{p-1} & S_{p-2} & \cdots & S_0
+                    \end{pmatrix}
+                    \begin{pmatrix}
+                    f_{i,0} \\
+                    f_{i,1} \\
+                    \vdots \\
+                    f_{i,p-1}
+                    \end{pmatrix}
+                    =
+                    \begin{pmatrix}
+                    f_{i+1,0} \\
+                    f_{i+1,1} \\
+                    \vdots \\
+                    f_{i+1,p-1}
+                    \end{pmatrix}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+</section>

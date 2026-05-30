@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>消息扩散</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2002"></problem>
+    <section>
+        <h2>消息扩散</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>我们把消息的传递关系当作有向边，那么原题就可以建模成一个有向图，我在这个有向图中投放消息，希望尽可能少地投放消息，并且消息还能传遍整张图</p>
+    </section>
+    <section>
+        <h2>消息扩散</h2>
+        <iframe data-animation="../强连通分量概述/缩点.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>显然，一个强连通分量里面的人都是可以互相传递消息的，所以我们完全可以把一个强连通分量融合成一个点</p>
+        <p class="fragment">现在，我们得到了一张DAG，我们希望在这张DAG中投放尽可能少的消息，同时让消息传遍整个DAG</p>
+        <p class="fragment">往入度为 $0$ 的点上投放就行了</p>
+    </section>
+</section>

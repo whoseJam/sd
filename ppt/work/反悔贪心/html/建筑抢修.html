@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>建筑抢修</h1>
+    </section>
+    <problem data-src="https://www.luogu.com.cn/problem/P4053"></problem>
+    <section>
+        <h2>建筑抢修</h2>
+        <p>把所有任务按照<b>截止时间</b>从小到大排序</p>
+        <p class="fragment">依次枚举每个工作</p>
+        <ul>
+            <li class="fragment">如果当前工作有时间做，就无脑做</li>
+            <li class="fragment">如果当前工作没时间做</li>
+            <ul>
+                <li class="fragment">如果<b>之前决定要做的某个工作</b>的工作时间比当前工作的工作时间长，<b>反悔</b>之前的工作，转而做当前这个工作</li>
+                <li class="fragment">如果<b>之前决定要做的所有工作</b>的工作时间比当前工作的工作时间短，就放掉当前这个工作</li>
+            </ul>
+        </ul>
+    </section>
+</section>

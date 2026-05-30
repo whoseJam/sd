@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>奶牛排队</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2915"></problem>
+    <section>
+        <h2>奶牛排队</h2>
+        <p>有 $n$ 头奶牛，第 $i$ 头奶牛的编号为 $s_i$</p>
+        <iframe data-animation="./样例解释.js"
+            data-viewBoxDelta="0 0 0 80"
+            style="width: 1000px; height: 250px;"></iframe>
+        <p class="fragment">你需要把这 $n$ 头奶牛排成一排，使得相邻两头奶牛的编号之差的绝对值均超过 $K$，即
+            $$
+            \forall i \in [1,n-1],|s_i-s_{i+1}|\gt K
+            $$
+        </p>
+        <p class="fragment">求有多少种排队方案</p>
+        <p class="fragment">不妨把奶牛看作是一种<b>有标号资源</b>，我们需要把这些资源排到一个序列上去</p>
+        <p class="fragment quote">分配资源到序列上去——有标号资源分配动态规划模型+序列构造动态规划模型</p>
+    </section>
+    <section>
+        <h2>奶牛排队</h2>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">设 $f_{i,S}$ 表示排过了集合 $S$ 中的奶牛，队列最末尾的是奶牛 $i$，排队方案数</p>
+        <p class="fragment">
+            $$
+            f_{i,S}\stackrel{+}{\rightarrow} f_{j,S\lor j},j\notin S且|s_i-s_j|\gt K
+            $$
+        </p>
+    </section>
+</section>

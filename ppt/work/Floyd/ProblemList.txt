@@ -1,0 +1,8 @@
+#1036.Floyd：https://www.luogu.com.cn/problem/B3647
+##79.Cow Hurdle：https://www.luogu.com.cn/problem/P2888
+#889.寻宝之路：https://www.luogu.com.cn/problem/P2910
+#891.产生数：https://www.luogu.com.cn/problem/P1037
+
+课下练习：
+#78.灾后重建：https://www.luogu.com.cn/problem/P1119
+#890.牛的旅行：https://www.luogu.com.cn/problem/P1522

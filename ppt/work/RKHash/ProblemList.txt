@@ -1,0 +1,4 @@
+#919.字符串哈希：https://www.luogu.com.cn/problem/P3370
+#1141.奶牛回音：https://www.luogu.com.cn/problem/P2957
+#1142.单词背诵：https://www.luogu.com.cn/problem/P1381
+#920.牛的基因组学：https://www.luogu.com.cn/problem/P3667

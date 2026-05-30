@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>树上数数</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2633"></problem>
+    <section>
+        <h2>树上数数</h2>
+        <p>这道题需要提取出树上一条路径中的第 $k$ 大</p>
+        <p class="fragment">还是按照在权值线段树二分的思路去找第 $k$ 大，那么我们需要提取出与一条路径对应的权值线段树</p>
+        <p class="fragment">我们还是将权值线段树可持久化，设 $S_u = S_f + \{insert(a_u)\}$</p>
+        <p class="fragment">那么：
+            $$
+            u\rightarrow v的权值线段树=S_u+S_v-S_{lca(u,v)}-S_{fa(lca(u,v))}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>树上数数</h2>
+        <iframe data-animation="./树上数数.js"
+            style="width: 1000px; height: 500px;">
+        </iframe>
+    </section>
+</section>

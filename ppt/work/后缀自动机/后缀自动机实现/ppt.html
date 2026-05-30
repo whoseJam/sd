@@ -1,0 +1,110 @@
+<section>
+    <section>
+        <h1>后缀自动机的实现</h1>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <p>我们可以把一个后缀自动机理解为一个字符串的<b style="color: purple;">辅助信息</b>，把一个后缀自动机和一个字符串对应起来</p>
+        <p class="fragment">每次在字符串末尾新增一个字符，就对得到的后缀自动机进行小范围重构，直到整个字符串都构建完毕为止</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void build(string s) {
+                    for (int i = 0; i < s.length(); i++) {
+                        insert(s[i]); // 把 s[i] 字符按顺序塞给后缀自动机的插入函数
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>后缀自动机</h2>
+        <p>在构建后缀自动机时，我们会存一个 $len$ 信息，其中 $len(u)$ 代表 <b style="color: purple;">$u$ 节点表示的所有字符串中最长字符串的长度</b></p>
+        <iframe data-animation="./len.js"
+            style="width: 1000px; height: 400px;"></iframe>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <iframe data-animation="./path1.js"
+            style="width: 1000px; height: 350px;"></iframe>
+        <p>记 $last$ 为上一次插入的最后一个节点<span class="fragment">，新建一个节点，用以表示 $endpos$ 为加上这个字符后字符串的尾部的<b>那些字符串</b></span><span class="fragment">，将 $last\rightarrow 1$ 这条树链上的节点都添加 $\stackrel{c}{\rightarrow} u$ 的转移</span></p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void insert(int c) {
+                    int p = last, u = ++tot; len[u] = len[p] + 1;
+                    for (; p && !ch[p][c]; p = fa[p]) ch[p][c] = u;
+                    if (!p) fa[u] = 1;
+                    // ......
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <p class="quote">但如果树链上某个节点已经存在 $\stackrel{c}{\rightarrow}$ 转移了呢？</p>
+        <iframe data-animation="./path2.js"
+            style="width: 1000px; height: 350px;"></iframe>
+        <p class="fragment" style="margin-top: 0px;">设 $p$ 表示树链上第一个出现冲突的节点，$q$ 表示 $p$ 已存在的 $\stackrel{c}{\rightarrow}$ 转移对应的节点</p>
+        <div style="display: flex; align-items: center; margin-top: -20px;">
+            <iframe data-animation="讨论.js" class="fragment"
+                style="width: 60%; height: 100%;"></iframe>
+            <codeblock class="fragment">
+                <script type="text/template">
+                    // ......
+                    int q = ch[p][c];
+                    if (len[p] + 1 == len[q]) { // q 一定完全是 u 的后缀 
+                        fa[u] = q;
+                    }
+                    // ......
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <div style="display: flex; align-items: center;" class="quote">
+            <div>
+                最后一种情况是 $q$ 对应的字符串不完全是 $u$ 对应的字符串的后缀<br>
+                在这种情况下，我们需要新建一个辅助节点
+            </div>
+            <iframe data-animation="./复杂讨论.js"
+                style="width: 60%; height: 120px;"></iframe>
+        </div>
+        <iframe data-animation="./path3.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                // ......
+                int uu = ++tot; len[uu] = len[p] + 1;
+                复制 q 的转移给 uu
+                将 uu 作为连接 p, q, u 的中介
+                for (; p && ch[p][c] == q) ch[p][c] = uu;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <codeblock>
+            <script type="text/template">
+                int ch[N][C], fa[N], len[N];
+                int rt = 1, lst = 1, tot = 0;
+                void insert(int c) {
+                    int p = lst, u = ++tot; lst = u;
+                    for (; p && !ch[p][c]; p = fa[p]) ch[p][c] = u;
+                    if (!p) { 
+                        fa[u] = rt;
+                        return;
+                    }
+                    int q = ch[p][c];
+                    if (len[p] + 1 == len[q]) { 
+                        fa[u] = q;
+                        return;
+                    }
+                    int uu = ++tot; len[uu] = len[p] + 1;
+                    memcpy(ch[uu], ch[q], sizeof(ch[q]));
+                    fa[uu] = fa[q]; fa[q] = fa[u] = uu;
+                    for (; p && ch[p][c] == q; p = fa[p]) ch[p][c] = uu;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

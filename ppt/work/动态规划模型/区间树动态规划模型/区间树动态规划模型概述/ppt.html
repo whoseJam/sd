@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>区间树动态规划模型</h1>
+    </section>
+    <section>
+        <h2>区间树动态规划模型</h2>
+        <p>如果问题可以被解构为<b style="color: purple;">一系列</b><b style="color: red;">嵌套的区间</b>，则我们认为问题的结构可以被描述为一棵<b style="color: red;">区间树</b></p>
+        <div class="fragment quote">
+            <h3>一系列嵌套的区间</h3>
+            <span>任意两个区间，要么<b>完全不相交</b>，要么<b>完全包含</b><span class="fragment">，我们认为如果一个区间<b style="color: purple;">直接完全包含</b>另一个区间，则它们之间形成<b style="color: purple;">父子关系</b></span></span>
+        </div>
+        <iframe data-animation="./区间树.js" class="fragment"
+            style="width: 1000px; height: 200px; margin-top: 20px;"></iframe>
+        <ul>
+            <li class="fragment">有时候这棵树一定是一棵二叉树</li>
+            <li class="fragment">有时候这棵树可能是一棵多叉树</li>
+            <li class="fragment">有时候这棵树上每个节点的子节点共同充满了整个区间</li>
+            <li class="fragment">有时候这棵树上每个节点的子节点并没有充满整个区间</li>
+        </ul>
+    </section>
+    <section>
+        <h2>区间树动态规划模型</h2>
+        <p>对于任意一个区间树，我们可能需要统计树的<b style="color: purple;">得分最大值/得分最小值/方案数</b></p>
+        <iframe data-animation="./状态设置.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">通常，我们设 $f_{l,r,?}$ 表示区间树的树根，所对应的区间是 $[l,r]$，子树已经构造完成了，能获得的<b style="color: purple;">得分最大值/得分最小值/方案数</b></p>
+    </section>
+</section>

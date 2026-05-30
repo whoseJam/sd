@@ -1,0 +1,5 @@
+#387.普通平衡树：https://www.luogu.com.cn/problem/P3369
+#388.文艺平衡树：https://www.luogu.com.cn/problem/P3391
+#1052.宠物收养场：https://www.luogu.com.cn/problem/P2286
+#1053.书架：https://www.luogu.com.cn/problem/P2596
+#513.火星人：https://www.luogu.com.cn/problem/P4036

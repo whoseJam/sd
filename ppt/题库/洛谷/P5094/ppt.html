@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>奶牛狂欢节</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5094"></problem>
+    <section>
+        <h2>奶牛狂欢节</h2>
+        <p>计算
+            $$
+            \sum_{i,j}max(v_i,v_j)|x_i-x_j|
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>奶牛狂欢节</h2>
+        <p class="quote">我们可以把数据点按照 $v_i$ 排序，$max$ 函数就不攻自破了...</p>
+        <p style="margin-top: -20px;">
+            $$
+            \sum_{i=1}^n\sum_{j=1}^{i-1}v_i|x_i-x_j|
+            $$
+        </p>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment quote">对两种不同的距离开两个不同的序列数据结构进行统计</p>
+        <div style="display: flex; margin-top: -20px; font-size: 20px;">
+            <div style="width: 1000px;" class="fragment">
+                $$
+                \sum_j(x_j-x_i)=\sum_jx_j-kx_i
+                $$
+            </div>
+            <div style="width: 1000px;" class="fragment">
+                $$
+                \sum_j(x_i-x_j)=kx_i-\sum_jx_j
+                $$
+            </div>
+        </div>
+    </section>
+</section>

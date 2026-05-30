@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>ALO</h1>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/1084" data-background-interactive>
+    </section>
+    <section>
+        <h2>ALO</h2>
+        <p>有一个长度为 $n$ 的数字序列，定义其一个连续子序列 $[l,r]$ 的价值为：
+            $$
+            \mathop{max}_{i=l}^r\{子序列次大值\otimes a_i\}
+            $$
+        </p>
+        <p>求所有 $O(n^2)$ 个子序列中，价值最大的子序列的价值是多少</p>
+    </section>
+    <section>
+        <h2>ALO</h2>
+        <p>我们枚举序列中的每个元素当作子序列次大值，考虑 $a_i$ 能成为哪些子序列的次大值</p>
+        <ul class="fragment">
+            <li>设在 $a_i$ 左边的第一个比 $a_i$ 大的数字是 $a_{l_1}$，第二个比 $a_i$ 大的数字是 $a_{l_2}$</li>
+            <li>设在 $a_i$ 右边的第一个比 $a_i$ 大的数字是 $a_{r_1}$，第二个比 $a_i$ 大的数字是 $a_{r_2}$</li>
+        </ul>
+        <p class="fragment">那么，以下两类子区间的次大值一定都是 $a_i$：</p>
+        <div>
+            <div class="fragment left">
+                $$
+                \left\{
+                \begin{aligned}
+                l&\in [l_2+1,l_1] \\
+                r&\in [i,r_1-1]
+                \end{aligned}
+                \right.
+                $$
+            </div>
+            <div class="fragment right">
+                $$
+                \left\{
+                \begin{aligned}
+                l&\in [l_1+1,i] \\
+                r&\in [r_1,r_2-1]
+                \end{aligned}
+                \right.
+                $$
+            </div>
+        </div>
+        <p class="fragment">由于我们求的是子区间最大价值，如果两个区间的次大值相同，其中一个还完全覆盖另一个区间的话，范围更小的那一个区间的价值是肯定没有范围更大的那一个区间大的</p>
+        <p class="fragment">所以对 $a_i$ 是子区间次大值的情况，我们只需要讨论 $[l_2+1,r_1-1]$ 和 $[l_1+1,r_2-1]$ 这两个子区间的价值即可</p>
+    </section>
+    <section>
+        <h2>ALO</h2>
+        <p>现在的问题变成了，给定一个常数 $a_i$，让你求出一段区间 $j\in [l,r]$ 中，哪个元素 $a_j$ 可以使得 $a_i\otimes a_j$ 最大</p>
+        <p class="fragment">可持久化01Trie上场</p>
+    </section>
+</section>

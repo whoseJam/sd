@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>受欢迎的牛</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2341"></problem>
+    <section>
+        <h2>受欢迎的牛</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>我们可以把喜欢关系当作有向边，求有哪些点可以被所有点到达</p>
+    </section>
+    <section>
+        <h2>受欢迎的牛</h2>
+        <iframe data-animation="../强连通分量概述/缩点.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>一个强连通分量里面的奶牛相互喜欢，把它们缩成一个点，简化图的结构</p>
+        <p class="fragment">现在相当于给你一个DAG，求DAG中哪些点是可以被所有点到达的</p>
+        <p class="fragment">容易知道，这样的点要么只有一个，要么不存在</p>
+        <p class="fragment">并且如果存在的话，这个点的出度肯定是 $0$，所以我们找到所有出度为 $0$ 的强连通分量，看看这样的强连通分量有多少个</p>
+        <ul>
+            <li class="fragment">如果恰好有一个，那么答案就是这个强连通分量的大小</li>
+            <li class="fragment">如果有超过一个，那么答案为 $0$</li>
+        </ul>
+    </section>
+</section>

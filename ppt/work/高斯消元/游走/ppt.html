@@ -1,0 +1,65 @@
+<section>
+    <section>
+        <h1>游走</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3232"></problem>
+    <section>
+        <h2>游走</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            E(得分) &=E(\sum_{i=1}^m[第i条边被经过的次数]\times [第i条边的编号]) \\
+            &=\sum_{i=1}^mE(第i条边被经过的次数)\times E(第i条边的编号) \\
+            &=\sum_{i=1}^mE(第i条边被经过的次数)\times [第i条边的编号]
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">只要我们能把每条边的期望经过次数求出来，我们就能够贪心地为这些边分配权值，使得 $E(得分)$ 最大了</p>
+    </section>
+    <section>
+        <h2>游走</h2>
+        <p>对于第 $i$ 条边经过的期望，我们能对其进一步做转换</p>
+        <p>记第 $i$ 条边连接了 $u$ 点和 $v$ 点</p>
+        <iframe data-animation="./边的期望.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <table>
+            <thead>
+                <tr>
+                    <th>事件</th>
+                    <th>概率</th>
+                    <th>价值（发生次数）</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$u\rightarrow v$</td>
+                    <td>$P(走到u的概率)\frac{1}{d_u}$</td>
+                    <td>$1$</td>
+                </tr>
+                <tr>
+                    <td>$v\rightarrow u$</td>
+                    <td>$P(走到v的概率)\frac{1}{d_v}$</td>
+                    <td>$1$</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fragment">
+            $$
+            E(e_i)=P(走到u的概率)\frac{1}{d_u}+P(走到v的概率)\frac{1}{d_v}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>游走</h2>
+        <p>所以我们可以尝试把走到每个节点的概率算出来<span class="fragment">（从这一步开始就和驱逐小猪没什么区别了）</span></p>
+        <p class="fragment">设 $P_i$ 表示经过点 $i$ 的概率</p>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            P_1=1 \\
+            P_i=\sum_{(i,j)\in E}\frac{P_j}{d_j}
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,55 @@
+<section>
+    <section>
+        <h1>RKHash</h1>
+        <p>对字符串定义的哈希函数</p>
+    </section>
+    <section>
+        <h2>RKHash</h2>
+        <p>RKHash限定了输入必须是字符串，通常用来比较字符串是否相等</p>
+    </section>
+    <section>
+        <h2>RKHash</h2>
+        <p>我们先自己尝试DIY一个字符串哈希函数</p>
+        <p class="fragment">一个最朴素的想法是，把字符串的所有字符的ASCII值直接相加，得到一个Hash值</p>
+        <p class="fragment quote">
+            $$
+            \begin{aligned}
+            Hash(ab)=97+98=195 \\
+            Hash(bc)=98+99=197
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">不过由于我们只保留了字符串的<b>构成信息</b>，损失了字符的<b>位置信息</b>，所以会存在大量冲突</p>
+        <p class="fragment quote">
+            $$
+            Hash(ab)=Hash(ba)
+            $$
+        </p>
+    </section>
+
+    <section>
+        <h2>RKHash</h2>
+        <p>RKHash在编码一个字符串时，既考虑了字符串的<b>构成信息</b>，又考虑了字符的<b>位置信息</b></p>
+        <codeblock>
+            <script type="text/template">
+                typedef unsigned long long ull;
+                const ull BASE = 13131; // 随便一个大质数
+                ull Hash(string s) {
+                    ull ans = 0;
+                    for (int i = 0; i < s.length(); i++)
+                        ans = ans * BASE + s[i];
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">其本质是把字符串看作了一个 $B$ 进制的数字，并在计算Hash值时让结果（类型为<code>unsigned long long</code>）自然溢出</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            ans&=B^{n-1}s[1]+B^{n-2}s[2]+...+B^0s[n] \\
+            &=\sum_{i=1}^{n}B^{n-i}s[i]
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

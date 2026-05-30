@@ -1,0 +1,96 @@
+<section>
+    <section>
+        <h1>运算符重载</h1>
+        <p>针对于C++这门语言</p>
+    </section>
+    <section>
+        <h2>矩阵乘法</h2>
+        <p>假设我实现了一个矩阵类</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                struct Matrix {
+                    int cols;
+                    int rows;
+                    矩阵元素数据;
+                };
+            </script>
+        </codeblock>
+        <p class="fragment">让它支持矩阵乘法</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                Matrix Mul(const Matrix& a, const Matrix& b) {
+                    实现 N^3 的矩阵乘法，将答案存储到 Matrix c 中;
+                    return c;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">希望计算 $a$ 和 $b$ 两个矩阵的矩阵乘法</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int main() {
+                    Matrix a = 读入矩阵;
+                    Matrix b = 读入矩阵;
+                    Matrix c = Mul(a, b);
+                    return 0;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">一切看上去非常美好......</p>
+    </section>
+    <section>
+        <h2>多个矩阵相乘</h2>
+        <p>现在要把 $a,b,c,d,e$ 五个矩阵乘起来</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                Matrix ans = Mul(Mul(Mul(Mul(a, b), c), d), e);
+            </script>
+        </codeblock>
+        <p class="fragment">现在临时多了一个矩阵，还得乘上 $f$ 矩阵</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                Matrix ans = Mul(Mul(Mul(Mul(Mul(a, b), c), d), e), f);
+            </script>
+        </codeblock>
+        <p class="fragment">一种更友好的写法是这样的</p>
+        <div class="fragment" style="display: flex; justify-content: space-around;">
+            <codeblock style="width: 400px;">
+                <script type="text/template">
+                    Matrix ans = a;
+                    ans = Mul(ans, b);
+                    ans = Mul(ans, c);
+                    ans = Mul(ans, d);
+                    ans = Mul(ans, e);
+                </script>
+            </codeblock>
+            <codeblock style="width: 400px;">
+                <script type="text/template">
+                    Matrix ans = a;
+                    ans = Mul(ans, b);
+                    ans = Mul(ans, c);
+                    ans = Mul(ans, d);
+                    ans = Mul(ans, e);
+                    ans = Mul(ans, f);
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>运算符重载</h2>
+        <p>刚才用函数，调用起来很麻烦的原因在于，存在多重调用</p>
+        <p class="fragment">我们可以为矩阵重定义乘号运算</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                Matrix operator *(const Matrix& a, const Matrix& b) {
+                    Matrix c = a 和 b 的乘积;
+                    return c;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">现在再来进行 $a,b,c,d,e,f$ 这六个矩阵的乘法运算</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                Matrix ans = a * b * c * d * e * f;
+            </script>
+        </codeblock>
+    </section>
+</section>

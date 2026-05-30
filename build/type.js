@@ -1,7 +1,7 @@
-const fs = require("fs");
 const ts = require("gulp-typescript");
 const gulp = require("gulp");
 const path = require("path");
+const utils = require("./utils");
 const parser = require("./parser");
 
 function create() {
@@ -9,24 +9,9 @@ function create() {
     return project;
 }
 
-function validateJSFile(sourceFilePath) {
-    if (!fs.existsSync(sourceFilePath)) {
-        console.log(colors("red", `[Error] File ${sourceFilePath} not found. Please check if the input path is correct.`));
-        process.exit();
-    }
-    if (!sourceFilePath.toLowerCase().endsWith(".js")) {
-        console.log(colors("red", `[Error] Invalid file type. The file must be a JavaScript (.js) file.`));
-        process.exit();
-    }
-    try {
-        fs.accessSync(sourceFilePath, fs.constants.R_OK);
-    } catch (err) {
-        console.log(colors("red", `[Error] Cannot read the file. Check file permissions.`));
-        process.exit();
-    }
-}
-
 function task(source) {
+    source = source.replaceAll("\\", "/");
+    utils.validateJSFile(source);
     const project = create();
     return gulp.src(source).pipe(
         project({

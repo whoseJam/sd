@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>幸运数字</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2567"></problem>
+    <section>
+        <h2>幸运数字</h2>
+        <p>搜索出 $[1,B]$ 以内的所有幸运数字，最多大概在 $1000$ 这个量级</p>
+        <p class="fragment">假设共有 $t$ 个幸运数字，我们希望知道近似幸运数字的数量</p>
+        <p class="fragment">一个幸运数字的倍数肯定全都是近似幸运数字，都需要被统计到</p>
+        <p class="fragment">但一个近似幸运数字可能是多个幸运数字的倍数</p>
+        <iframe data-animation="../维恩图/三元维恩图.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">我们可以看作一个数字有 $t$ 种可能拥有的属性，如果一个数字是第 $i$ 个幸运数字的倍数，那么我们就认为这个数字拥有属性 $P_i$<span class="fragment">，最后近似幸运数字的数量，就是<b>至少拥有一个属性</b>的数字数量</span></p>
+    </section>
+    <section>
+        <h2>幸运数字</h2>
+        <p style="font-size: 20px;">
+            $$
+            \begin{aligned}
+            answer=&选1个幸运数字，其倍数个数- \\
+            &选2个幸运数字，其LCM的倍数个数+ \\
+            &选3个幸运数字，其LCM的倍数个数- \\
+            &\cdots
+            \end{aligned}
+            $$
+        </p>
+        <ul>
+            <li class="fragment">如果有两个幸运数字 $a$ 和 $b$，$b$ 是 $a$ 的倍数<span class="fragment">，那么 $b$ 能统计到的近似幸运数字 $a$ 也一定能统计到</span><span class="fragment">，此时 $b$ 就是不必要的，可以提前剔除</span></li>
+            <li class="fragment">
+                <codeblock>
+                    <script type="text/template">
+                        void Sieve() {
+                            for (int i = 1; i <= tot; i++) {
+                                if (!mark[i]) lucky[++n] = a[i];
+                                for (int j = i + 1; j <= tot; j++)
+                                    if (lucky[j] % lucky[i] == 0) mark[j] = 1;
+                            }
+                        }
+                    </script>
+                </codeblock>
+            </li>
+            <li class="fragment">我们用搜索从 $t$ 个幸运数字里面挑出若干个来，求其 $LCM$，如果在选的过程中 $LCM$ 已经比 $B$ 更大了，就没有必要继续往下搜索了</li>
+            <li class="fragment">
+                <codeblock>
+                    <script type="text/template">
+                        // 选到第 x 个幸运数字，选出的 cnt 个幸运数字的最小公倍数为 lcm
+                        void Dfs(int x, int cnt, int lcm) {
+                            if (lcm > B) return;
+                            // ......
+                        }
+                    </script>
+                </codeblock>
+            </li>
+        </ul>
+    </section>
+</section>

@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>奶牛跳栏</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2888"></problem>
+    <section>
+        <h2>奶牛跳栏</h2>
+        <p>给定一个 $n$ 个点 $m$ 条单向边的图</p>
+        <p class="fragment">第 $i$ 条边连接 $s_i$ 和 $e_i$ 两个点，同时在这条边上有一个高 $h_i$ 的障碍</p>
+        <p class="fragment">定义一条路径的得分为这条路径上的<b style="color: red;">最高障碍高度</b></p>
+        <p class="fragment">求图中任意两点之间的<b style="color: purple;">所有路径</b>中，得分最小的路径的得分是多少</p>
+    </section>
+    <section>
+        <h2>奶牛跳栏</h2>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 120px;"></iframe>
+        <p>普通的最短路Floyd中，$i\rightarrow k\rightarrow j$ 的路径长度可以被表示为
+            <span style="font-size: 20px;">$$(i\rightarrow k 的最短路) + (k\rightarrow j 的最短路)$$</span>
+        </p>
+        <p class="fragment quote">定义一条路径的得分为这条路径上的<b style="color: red;">最高障碍高度</b></p>
+        <p class="fragment">本题中想要最小化最高障碍的高度，如果继续套用Floyd，那么 $i\rightarrow k\rightarrow j$ 的得分可以被表示为
+            <span style="font-size: 20px; margin-top: -20px;">$$max((i\rightarrow k 的得分),(k\rightarrow j 的得分))$$</span>
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Floyd() {
+                    for (int k = 1; k <= n; k++)
+                        for (int i = 1; i <= n; i++)
+                            for (int j = 1; j <= n; j++) {
+                                G[i][j] = min(G[i][j], max(G[i][k], G[k][j]));
+                            }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,78 @@
+<section>
+    <section>
+        <h1>线段统计</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000024"></problem>
+    <section>
+        <h2>线段统计</h2>
+        <p>在一条数轴上进行一系列操作，每次操作有三种类型</p>
+        <ul>
+            <li><code>1 a b</code>：表示将线段 $[a,b]$ 涂上颜色</li>
+            <li><code>2 a b</code>：表示将线段 $[a,b]$ 上的颜色擦去</li>
+            <li><code>3 a b</code>：询问区间 $[a,b]$ 上有多少条<b>单位线段</b> $[k,k+1]$ 被涂上了颜色</li>
+        </ul>
+    </section>
+    <section>
+        <h2>线段统计</h2>
+        <p>本题要求维护<b>每条单位线段的涂色情况</b></p>
+    </section>
+    <section>
+        <h2>线段统计</h2>
+        <ul>
+            <li><code>3 a b</code>：询问区间 $[a,b]$ 上有多少条<b>单位线段</b> $[k,k+1]$ 被涂上了颜色</li>
+        </ul>
+        <p>对一条线段，我们需要维护在其内部有多少条单位线段是<b>有颜色</b>的</p>
+        <iframe data-animation="./线段合并.js" class="fragment"
+            style="width: 1000px; height: 200px; margin-top: 20px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushUp(int x) {
+                    t[x].cnt = t[lc].cnt + t[rc].cnt;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>线段统计</h2>
+        <p>为了支持区间擦除/区间涂色，我们需要添加某种懒标记</p>
+        <p class="fragment">定义懒标记 $col$</p>
+        <ul>
+            <li class="fragment">如果子区间不需要做任何操作，则 $col=0$</li>
+            <li class="fragment">如果子区间需要涂色，则 $col=1$</li>
+            <li class="fragment">如果子区间需要擦除，则 $col=2$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>线段统计</h2>
+        <p>考虑当一条线段被打上 $col=1$ 的标记会发生什么</p>
+        <p class="quote">该区间需要被全部染色</p>
+        <iframe data-animation="./懒标记1.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushCol(int c) {
+                    if (c == 1) {
+                        t[x].cnt = t[x].r - t[x].l + 1;
+                        t[x].col = c;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>线段统计</h2>
+        <p>考虑当一条线段被打上 $col=2$ 的标记会发生什么</p>
+        <iframe data-animation="./懒标记2.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushCol(int c) {
+                    if (c == 2) {
+                        t[x].cnt = 0;
+                        t[x].col = c;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

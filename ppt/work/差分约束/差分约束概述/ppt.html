@@ -1,0 +1,96 @@
+<section>
+    <section>
+        <h1>差分约束</h1>
+        <p>基于SPFA的一个应用 <del><b>Dijkstra惨败</b></del></p>
+    </section>
+    <section>
+        <h2>差分约束</h2>
+        <p>给你 $n$ 个变量 $X=\{x_1,x_2...x_n\}$，这 $n$ 个变量都是整数，并且给出 $m$ 个不等式，每个不等式形如：</p>
+        <p>
+            $$
+            x_{i}\le x_{j} + k
+            $$
+        </p>
+        <p class="fragment">请你判断是否存在一组解，或者让你构造出任意一组解</p>
+    </section>
+    <section>
+        <h2>差分约束</h2>
+        <p>我们发挥想象和联想，发现 $x_i\le x_j+k$ 和最短路的松弛公式 $dis_v\le dis_u+w(u,v)$ 非常相似</p>
+        <iframe data-animation="./最短路不等式.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+            <p class="fragment">我们把这 $n$ 个变量看作点，第 $i$ 个变量的取值 $x_i$ 就是第 $i$ 个点的最短路径长度 $dis_i$</p>
+            <p class="fragment">对于一个不等式 $x_j\le x_i+k$，连一条从 $i$ 指向 $j$ 的连边，边权为 $k$</p>
+            <p class="fragment">我们所有不等式转化后得到的图 $G$ 跑一个最短路，如果<b>最短路存在</b>，根据最短路的性质，一定有 $dis_j\le dis_i + k$，就得到原题的一组解了</p>
+    </section>
+    <section>
+        <h2>差分约束</h2>
+        <p>
+            $$
+            \left\{
+            \begin{aligned}
+            x_3 &\le x_1+1 \\
+            x_2 &\le x_1+2 \\
+            x_3 &\le x_2+3 \\
+            x_4 &\le x_2-1 \\
+            x_4 &\le x_3+2
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <iframe data-animation="./差分约束例子.js"
+            style="width: 1000px; height: 400px;"></iframe>
+    </section>
+    
+    <section>
+        <h2>差分约束</h2>
+        <p>那如果<b>最短路不存在</b>呢？</p>
+        <p class="fragment">什么情况下最短路不存在？</p>
+        <p class="fragment">原图中存在负环</p>
+    </section>
+    <section>
+        <h2>差分约束</h2>
+        <iframe data-animation="./负环例子.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">
+            $$
+            \left\{
+            \begin{aligned}
+            x_2\le x_1+2 \\
+            x_3\le x_2-3 \\
+            x_4\le x_3-1 \\
+            x_1\le x_4+1
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            x_1+x_2+x_3+x_4\le x_1+x_2+x_3+x_4-1
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>差分约束</h2>
+        <p>还有一个显而易见的结论，假设 $\{x_1,x_2...x_k\}$ 为差分约束的一组解，那么 $\{x_1+w,x_2+w...x_k+w\}$ 也一定为差分约束的一组解</p>
+        <p class="fragment">这告诉我们差分约束其实有无数组解，我们用SPFA跑出来的 $dis$ 数组只是其中一组解而已</p>
+        <p class="fragment">我们可以通过给 $dis$ 数组整体加上一个数字，来构造出新的解</p>
+    </section>
+    <section>
+        <h2>差分约束</h2>
+        <p>
+            $$
+            \left\{
+            \begin{aligned}
+            x_3 &\le x_1+1 \\
+            x_2 &\le x_1+2 \\
+            x_3 &\le x_2+3 \\
+            x_4 &\le x_2-1 \\
+            x_4 &\le x_3+2
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <iframe data-animation="./无数组解例子.js"
+            style="width: 1000px; height: 400px;"></iframe>
+    </section>
+</section>

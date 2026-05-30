@@ -1,0 +1,64 @@
+<section>
+    <section>
+        <h1>排查</h1>
+    </section>
+    <section>
+        <h2>排查</h2>
+        <p>假设存在一个 RE 错误，但不确定是代码哪一块导致的 RE</p>
+        <codeblock>
+            <script type="text/template">
+                int main() {
+                    步骤1();
+                    步骤2();
+                    步骤3();
+                    return 0;
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int main() {
+                    步骤1();
+                    步骤2(); return 0;
+                    步骤3();
+                    return 0;
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int main() {
+                    步骤1(); return 0;
+                    步骤2();
+                    步骤3();
+                    return 0;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>排查</h2>
+        <p>假设代码中存在这么一个写法：</p>
+        <codeblock>
+            <script type="text/template">
+                // 预期 l < r
+                void Solve(int l, int r) {
+                    ......
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">你怀疑出现了 $l=r$ 的情况，但不确定，那么你就可以......</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Solve(int l, int r) {
+                    if (l == r) while(1);
+                    ......
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>排查</h2>
+        <p>捏造样例</p>
+    </section>
+</section>

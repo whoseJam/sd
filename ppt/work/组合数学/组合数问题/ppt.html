@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>组合数问题</h1>
+        <p>算一算组合数</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2822"></problem>
+    <section>
+        <h2>组合数问题</h2>
+        <iframe data-animation="./组合数问题.js"
+            data-maxFrame="1"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>求杨辉三角的一个矩形范围内有多少个组合数被 $k$ 整除</p>
+        <p class="fragment" style="text-align: center;">被 $k$ 整除 $\Leftrightarrow$ 取余 $k$ 结果为 $0$</p>
+        <p class="fragment">把杨辉三角前 $n$ 行递推出来，然后把取余 $k$ 为 $0$ 的挑出来，做一个二维前缀和即可</p>
+    </section>
+</section>

@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>爱的供养</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2266"></problem>
+    <section>
+        <h2>爱的供养</h2>
+        <p>对于 $30\%$ 的数据，$n,m\le 50$</p>
+        <p class="fragment">枚举每一个埋藏钥匙的点，从该点往四周扩散高度差最小的 $T$ 个点</p>
+        <iframe data-animation="./爱的供养暴力.js"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+    <section>
+        <h2>爱的供养</h2>
+        <codeblock style="height: 485px;">
+            <script type="text/template">
+                struct node {
+                    int x, y, dis;
+                }
+                void findDist(int x, int y) { // 本质上是在跑半个Prim
+                    int ans = 0;
+                    queue < node > q;
+                    q.push((node) { x, y, 0 });
+                    for (int i = 1; i <= T; i++) {
+                        node u = q.top(); q.pop();
+                        if (vis[u.x][u.y]) continue;
+                        vis[u.x][u.y] = true;
+                        ans = max(ans, u.dis);
+                        for (int i = 0; i < 4; i++) {
+                            node v = (node) {
+                                u.x + dx[i], u.y + dy[i], 
+                                abs(h[u.x][u.y] - h[v.x][v.y])
+                            };
+                            if (v.x <= 0 || v.x > n || v.y <= 0 || v.y > m) continue;
+                            q.push(v);
+                        }
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">时间复杂度 $O(nmT|钥匙数量|)$</p>
+    </section>
+    <section>
+        <h2>爱的供养</h2>
+        <iframe data-animation="./爱的供养.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">使用Kruskal算法，在每次合并两个连通块 $S_1$ 和 $S_2$ 时，如果</p>
+        <ul>
+            <li class="fragment">$S_1$ 的大小小于 $T$，$S_1+S_2$ 的大小大于等于 $T$，则答案加上 $S_1$ 内的钥匙数量乘以当前高度差</li>
+            <li class="fragment">$S_2$ 的大小小于 $T$，$S_1+S_2$ 的大小大于等于 $T$，则答案加上 $S_2$ 内的钥匙数量乘以当前高度差</li>
+        </ul>
+    </section>
+</section>

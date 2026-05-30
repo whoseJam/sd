@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>子串分值</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P8715"></problem>
+    <section>
+        <h2>子串分值</h2>
+        <p>一个考和式变换的题目</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{1\le i\le j\le n}f(S[i...j]) \\
+            &=\sum_{i\le k\le j}\sum_{1\le k\le n}[S[k]在S[i...j]中只出现了一次] \\
+            &=\sum_{1\le k\le n}\sum_{i\le k\le j}[S[k]在S[i...j]中只出现了一次] \\
+            &=\sum_{1\le k\le n}[S[k]在多少个包含它的区间内只出现了一次]
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>子串分值</h2>
+        <p>
+            $$
+            answer=\sum_{1\le k\le n}[S[k]在多少个包含它的区间内只出现了一次]
+            $$
+        </p>
+        <iframe data-animation="./预处理.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">分别预处理出 $S[k]$ 左边第一个与其相同的字符的位置 $L_k$，右边第一个与其相同的字符的位置 $R_k$</p>
+        <p class="fragment">
+            $$
+            answer=\sum_{1\le k\le n}(k-L_k)(R_k-k)
+            $$
+        </p>
+    </section>
+</section>

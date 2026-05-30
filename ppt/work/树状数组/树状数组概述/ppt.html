@@ -1,0 +1,139 @@
+<section>
+    <section>
+        <h1>树状数组</h1>
+    </section>
+    <section>
+        <h2>动态连续和查询问题</h2>
+        <p>给定一个 $n$ 个元素的数组 $\{A_i\}$，你的任务是设计一种数据结构，支持以下两种操作：</p>
+        <ol>
+            <li><code>Add(x, d)</code>：让 $A_x$ 的数值增加 $d$</li>
+            <li><code>Query(l, r)</code>：求 $A_l+A_{l+1}+...+A_r$ 的值</li>
+        </ol>
+        <p class="fragment">假设总共有 $m$ 次操作，如何才能让 <code>Add</code> 和 <code>Query</code> 都快速地完成呢？</p>
+    </section>
+    <section>
+        <h2>分析</h2>
+        <iframe data-animation="./直接数组模拟.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>如果直接用数组模拟，那么 <code>Add</code> 可以 $O(1)$ 完成，<code>Query</code> 是 $O(n)$ 的，总复杂度为 $O(nm)$</p>
+    </section>
+    <section>
+        <h2>分析</h2>
+        <iframe data-animation="./前缀和模拟.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p>如果另外维护一个前缀和数组 $\{S\}$ 来存储 $A_1$ 到 $A_n$ 的和，那么 <code>Query</code> 可以 $O(1)$ 完成，<code>Add</code> 是 $O(n)$ 的，总时间复杂度还是 $O(nm)$</p>
+    </section>
+    <section>
+        <h2>分析</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>时间复杂度</th>
+                    <th>直接数组模拟</th>
+                    <th>维护前缀和</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>Query</code> 时间复杂度</td>
+                    <td>$O(n)$</td>
+                    <td>$O(1)$</td>
+                </tr>
+                <tr>
+                    <td><code>Add</code> 时间复杂度</td>
+                    <td>$O(1)$</td>
+                    <td>$O(n)$</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>一个自然的思路就是，我们能否结合上面两者的优点，<b>维护部分前缀和</b>，在修改和查询之间保持某种微妙的平衡</p>
+    </section>
+    <section>
+        <h2>二进制拆分</h2>
+        <p>我们尝试对每一种长度的前缀和做二进制拆分......</p>
+        <iframe data-animation="./二进制拆分8.js"
+            data-viewBoxDelta="-20 0 40 0"
+            style="width: 1000px; height: 400px;"></iframe>
+        <ul>
+            <li class="fragment">对于 <code>Query</code> 类操作来说，任意一个前缀和一定能被 $O(logn)$ 算出</li>
+            <li class="fragment">对于 <code>Add</code> 类操作来说，任意一个位置最多被 $O(logn)$ 个区间覆盖</li>
+        </ul>
+        <p class="fragment quote">可以发现我有意把<b>有效区间</b>排列为树形结构，而有效区间又恰好有 $n$ 个，是一个数组能放下的东西<span class="fragment">，这玩意就是树状数组</span></p>
+    </section>
+    <section>
+        <h2>二进制拆分</h2>
+        <iframe data-animation="./二进制拆分12.js"
+            data-viewBoxDelta="-20 0 40 0"
+            style="width: 1000px; height: 500px;"></iframe>
+        <p class="quote">这是一份长度为 $12$ 的序列的树状数组的情况</p>
+    </section>
+    <section>
+        <h2>lowbit</h2>
+        <p>对于正整数 $x$，我们定义 $lowbit(x)$ 为 $x$ 的二进制表达式中<b style="color: red;">最右边的 $1$</b>对应的值</p>
+        <div class="fragment quote">
+            <ul>
+                <li>$24=(11000)_2$，则 $lowbit(24)=(1000)_2=8$</li>
+                <li>$18=(10010)_2$，则 $lowbit(18)=(10)_2=2$</li>
+            </ul>
+        </div>
+        <p class="fragment">在程序中，我们可以这么来计算 $lowbit(x)$</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int lowbit(int x) {
+                    return x & (-x);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>lowbit</h2>
+        <codeblock>
+            <script type="text/template">
+                int lowbit(int x) {
+                    return x & (-x);
+                }
+            </script>
+        </codeblock>
+        <iframe data-animation="./lowbit.js"
+            style="width: 1000px; height: 500px;"></iframe>
+    </section>
+    <section>
+        <h2>lowbit的意义</h2>
+        <iframe data-animation="./lowbit的意义.js"
+            data-viewBoxDelta="0 0 0 80"
+            style="width: 1000px; height: 500px;"></iframe>
+        <p style="margin-top: -20px;">$lowbit(x)$ 就对应了 $x$ 的二进制拆分中最后一段区间的长度</p>
+    </section>
+    <section>
+        <h2>求和</h2>
+        <iframe data-animation="./求和.js"
+            data-viewBoxDelta="0 0 0 80"
+            style="width: 1000px; height: 400px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                int Sum(int x) {
+                    int ans = 0;
+                    for (int i = x; i > 0; i -= lowbit(i)) {
+                        ans += sum[i];
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>修改</h2>
+        <iframe data-animation="./修改.js"
+            data-viewBoxDelta="0 0 0 80"
+            style="width: 1000px; height: 400px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                void Add(int x, int d) {
+                    for (int i = x; i <= n; i += lowbit(i)) {
+                        sum[i] += d;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

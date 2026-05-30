@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>线段树优化dp</h1>
+        <p>这里提到用<b>线段树</b>来优化，但其实不仅有线段树，任何可以快速维护序列的数据结构都能产生类似的效果</p>
+    </section>
+    <section>
+        <h2>线段树优化dp</h2>
+        <p>通常发生在序列上</p>
+        <iframe data-animation="./形式.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                想要计算 f[i]
+                for (int j = l; j <= r; j++) {
+                    计算 f[j] -> f[i] 的贡献
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                想要计算 f[i]
+                用线段树计算 [l, r] 这个区间内的 f[j] -> f[i] 的贡献
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,119 @@
+<section>
+    <section>
+        <h1>序列计数</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3702"></problem>
+    <section>
+        <h2>序列计数</h2>
+        <ul>
+            <li>构造一个长度为 $n$ 的序列</li>
+            <li class="fragment">序列中的数字的范围是 $[1,m]$，$m\le 2\times 10^7$</li>
+            <li class="fragment">序列之和是 $p$ 的倍数，$p\le 100$</li>
+            <li class="fragment" style="color: red;">序列中至少有一个质数</li>
+        </ul>
+        <p class="fragment">第四个条件仔细想想是最麻烦的，我们下文提到的序列默认满足了前三个条件</p>
+        <p class="fragment">
+            $$
+            序列中至少有一个是质数=序列中的数字随便填-序列中全部都是合数
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <ul>
+            <li>构造一个长度为 $n$ 的序列</li>
+            <li>序列中的数字的范围是 $[1,m]$，$m\le 2\times 10^7$</li>
+            <li>序列之和是 $p$ 的倍数，$p\le 100$</li>
+            <li style="color: purple;">序列中的数字随便填</li>
+        </ul>
+        <p class="fragment">设 $f_{i,j}$ 表示序列构造到了第 $i$ 位，且这 $i$ 个数字之和模 $p$ 为 $j$，的方案数</p>
+        <iframe data-animation="./状态设置.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">
+            $$
+            f_{i,j}\times F_k \stackrel{+}{\rightarrow} f_{i+1,(j+k)\%p}
+            $$
+        </p>
+        <p class="fragment quote">其中 $F_k$ 表示 $[1,m]$ 中模 $p$ 等于 $k$ 的数字个数</p>
+        <p class="fragment">这部分序列的总方案数就是 $f_{n,0}$</p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>这是一个线性递推式，容易构造出其转移矩阵：</p>
+        <p>
+            $$
+            \begin{pmatrix}
+            F_0 & F_{p-1} & \cdots & F_1 \\
+            F_1 & F_0 & \cdots & F_2 \\
+            \vdots & \vdots & \ddots & \vdots \\
+            F_{p-1} & F_{p-2} & \cdots & F_0
+            \end{pmatrix}
+            \begin{pmatrix}
+            f_{i,0} \\
+            f_{i,1} \\
+            \vdots \\
+            f_{i,p-1}
+            \end{pmatrix}
+            =
+            \begin{pmatrix}
+            f_{i+1,0} \\
+            f_{i+1,1} \\
+            \vdots \\
+            f_{i+1,p-1}
+            \end{pmatrix}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <ul>
+            <li>构造一个长度为 $n$ 的序列</li>
+            <li>序列中的数字的范围是 $[1,m]$，$m\le 2\times 10^7$</li>
+            <li>序列之和是 $p$ 的倍数，$p\le 100$</li>
+            <li style="color: purple;">序列中的数字只能是合数</li>
+        </ul>
+        <p class="fragment">设 $g_{i,j}$ 表示序列构造到了第 $i$ 位，且这 $i$ 个数字之和模 $p$ 为 $j$，的方案数</p>
+        <iframe data-animation="./状态设置.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">
+            $$
+            g_{i,j}\times G_k \stackrel{+}{\rightarrow} g_{i+1,(j+k)\%p}
+            $$
+        </p>
+        <p class="fragment quote">其中 $G_k$ 表示 $[1,m]$ 中模 $p$ 等于 $k$ 的合数个数</p>
+        <p class="fragment">这部分序列的总方案数就是 $g_{n,0}$</p>
+    </section>
+    <section>
+        <h2>序列统计</h2>
+        <p>这是一个线性递推式，容易构造出其转移矩阵：</p>
+        <p>
+            $$
+            \begin{pmatrix}
+            G_0 & G_{p-1} & \cdots & G_1 \\
+            G_1 & G_0 & \cdots & G_2 \\
+            \vdots & \vdots & \ddots & \vdots \\
+            G_{p-1} & G_{p-2} & \cdots & G_0
+            \end{pmatrix}
+            \begin{pmatrix}
+            g_{i,0} \\
+            g_{i,1} \\
+            \vdots \\
+            g_{i,p-1}
+            \end{pmatrix}
+            =
+            \begin{pmatrix}
+            g_{i+1,0} \\
+            g_{i+1,1} \\
+            \vdots \\
+            g_{i+1,p-1}
+            \end{pmatrix}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>我们要用线性筛筛出 $[1,m]$ 的所有合数，并且把 $\{F_i\}$，$\{G_i\}$ 这两个统计数组提前处理好，这部分时间复杂度是 $O(m)$ 的</p>
+        <p class="fragment">紧接着，我们要做两次矩阵快速幂算出 $f_{n,0}$ 和 $g_{n,0}$，这部分时间复杂度是 $O(p^3logn)$ 的</p>
+        <p class="fragment">总时间复杂度为 $O(m+p^3logn)$</p>
+    </section>
+</section>

@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>避难所</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P7777"></problem>
+    <section>
+        <h2>避难所</h2>
+        <p>有 $n$ 堆石子，编号 $1$ 到 $n$，两种取法</p>
+        <ul>
+            <li class="fragment">单独取第 $i$ 堆，代价 $i\times p$</li>
+            <li class="fragment">同时取第 $i$ 和第 $j$ 堆，代价 $|i-j| \times q$</li>
+        </ul>
+        <p class="fragment">你需要最小化取完所有石子的总代价</p>
+    </section>
+    <section>
+        <h2>避难所</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="quote">两种操作方式之间有什么关系？</p>
+        <p class="fragment quote">何时该使用哪种操作？</p>
+        <ul>
+            <li class="fragment">双取操作时，<b style="color: red;">相邻配对</b>是最优的</li>
+            <li class="fragment">前面的石子用单取</li>
+            <li class="fragment">后面的石子用双取</li>
+        </ul>
+    </section>
+    <section>
+        <h2>避难所</h2>
+        <p class="quote">不妨比较一下两种操作，取相邻两堆石子的代价</p>
+        <ul>
+            <li class="fragment">单取两堆的代价为 $(i+(i+1))\times p=(2i+1)p$</li>
+            <li class="fragment">双取两堆的代价为 $q$</li>
+        </ul>
+        <p class="fragment">当 $(2i+1)p\ge q$ 时，双取更优</p>
+    </section>
+</section>

@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>天天爱射击</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P7424"></problem>
+    <section>
+        <h2>天天爱射击</h2>
+        <p>从位置 $x$ 射出的子弹，能击中所有满足 $L_i\le x\le R_i$ 的木板 $i$</p>
+        <p>如果一个木板 $i$ 被击中了 $S_i$ 次，那么这个木板就裂开了</p>
+        <p class="fragment">按顺序给出子弹射击的位置，求每个木板什么时候裂开</p>
+    </section>
+    <section>
+        <h2>天天爱射击</h2>
+        <p>我们站在木板 $(L,R,S)$ 的角度思考问题</p>
+        <p class="fragment">所有满足 $L\le x_i\le R$ 的子弹 $i$ 都<b>可以击中</b>木板</p>
+        <p class="fragment quote">不过木板可能还等不及所有满足条件的子弹击中它，就裂开了</p>
+        <p class="fragment">木板第 $S$ 次被击中会裂开</p>
+        <p class="fragment quote">所以木板裂开的时间，等同于出发时间第 $S$ 小的落在这个范围内的子弹的出发时间</p>
+        <p class="fragment quote">
+            假设有出发时间 $t=3,5,8,10$ 的子弹都能击中当前木板，当前木板第 $3$ 次击中会裂开，那么裂开的时刻就是 $8$
+        </p>
+    </section>
+    <section>
+        <h2>天天爱射击</h2>
+        <p>对于木板 $(L,R,S)$，查询落在 $[L,R]$ 的子弹出发时间第 $S$ 小</p>
+        <iframe data-animation="./天天爱射击.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+    </section>
+</section>

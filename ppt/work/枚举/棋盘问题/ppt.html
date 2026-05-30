@@ -1,0 +1,70 @@
+<section>
+    <section>
+        <h1>棋盘问题</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2241"></problem>
+    <section>
+        <h2>棋盘问题</h2>
+        <iframe data-animation="./棋盘问题.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">显然我们可以通过枚举正方形/长方形的左上角和右下角来计算它们的个数</p>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p>以正方形为例</p>
+        <div style="display: flex; align-items: center;">
+            <iframe data-animation="./枚举正方形.js"
+                style="width: 1000px; height: 300px;"></iframe>
+            <p class="math-fragment">
+                $$
+                \begin{aligned}
+                sqr&=\sum_{i=1}^n\sum_{j=1}^m\sum_{d=1}^{min(n-i+1,m-j+1)}1 \\
+                &=\sum_{d=1}^{min(n,m)}\sum_{i=1}^{n-d+1}\sum_{j=1}^{m-d+1}1 \\
+                &=\sum_{d=1}^{min(n,m)}\sum_{i=1}^{n-d+1}(m-d+1) \\
+                &=\sum_{d=1}^{min(n,m)}(n-d+1)(m-d+1)
+                \end{aligned}
+                $$
+            </p>
+        </div>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p>换元，设 $t=d-1$，由于 $1\le d\le min(n,m)$，所以 $0\le t\le min(n,m)-1$</p>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            sqr&=\sum_{d=1}^{min(n,m)}(n-d+1)(m-d+1) \\
+            &=\sum_{t=0}^K(n-t)(m-t) \\
+            &=\sum_{t=0}^K[nm-(n+m)t+t^2] \\
+            &=(K+1)nm-(n+m)S_1(0,K)+S_2(0,K)
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">
+            其中，$S_1(l,r)=\sum_{i=l}^r i$，$S_2(l,r)=\sum_{i=l}^r i^2$
+        </p>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p>那么长方形的数量自然是所有矩形的数量减去正方形的数量</p>
+        <p class="fragment">
+            $$
+            rct=\sum_{i=1}^n\sum_{j=1}^m\sum_{x=i}^n\sum_{y=j}^m 1 - sqr
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \sum_{i=1}^n\sum_{j=1}^m\sum_{x=i}^n\sum_{y=j}^m 1 
+            &=\sum_{i=1}^n\sum_{j=1}^m\sum_{x=i}^n (m-j+1) \\
+            &=\sum_{i=1}^n\sum_{j=1}^m(n-i+1)(m-j+1) \\
+            &=\sum_{i=1}^n(n-i+1)\sum_{j=1}^m(m-j+1) \\
+            &=S_1(1,n)\times S_1(1,m)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

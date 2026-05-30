@@ -1,0 +1,112 @@
+<section>
+    <section>
+        <h1>遗失的赋值</h1>
+        <p>T2</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P11362"></problem>
+    <section>
+        <h2>遗失的赋值</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p>有 $n$ 个变量，每个变量的取值是未知的</p>
+        <p class="fragment">在 $n$ 个变量之间有 $n-1$ 条约束关系，第 $i$ 条约束关系形如：</p>
+        <p class="fragment" style="text-align: center;">
+            若 $x_i=a_i$，则 $x_{i+1}=b_i$（$a_i,b_i\in [1,v]$）
+        </p>
+        <p class="fragment">
+            除此之外，我们已知了 $m$ 条一元限制，其中第 $j$ 条限制为 $x_{c_j}=d_j$
+        </p>
+        <p class="fragment">小F记住了所有的 $c_j$ 和 $d_j$ 的值，但遗忘了所有的 $a_i$ 和 $b_i$ 的值<span class="fragment">，请你统计有多少种 $a_i$ 和 $b_i$ 的取值组合，可以保证存在一种合法的给每个变量 $x_i$ 赋值的方案</span></p> 
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>对于 $25\%$ 的数据，$n,m\le 12$，$v\le 2$</p>
+        <iframe data-animation="./暴力搜索.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">我们总共有至多 $11$ 对 $(a_i,b_i)$ 的取值需要确定，且每个待定量的取值范围是 $[1,2]$ 的</p>
+        <p class="fragment">暴力搜索加上剪枝，能通过这部分得分</p>
+        <p class="fragment">时间复杂度 $O(v^n)$</p>
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>对于另外 $20\%$ 的数据，$m=1$</p>
+        <iframe data-animation="./m=1.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">我们不妨把唯一能确定的变量叫做<b>唯一确定变量</b>，记 $x_k$ 为唯一确定变量</p>
+        <ul>
+            <li class="fragment">对于 $x_k$ 之后的二元限制来说，它们随便取什么都行，$x_{k+1},x_{k+2},...,x_{n}$ 一定可以配合这些二元限制取出合法的取值来</li>
+            <li class="fragment">对于 $x_k$ 之前的二元限制来说，$x_{k-1},x_{k-2},...,x_1$ 也都一定可以配合这些二元限制，让 $x_k$ 上的一元限制不被打破</li>
+        </ul>
+        <p class="fragment">总方案数即为 $v^{2(n-1)}$</p>
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>对于另外 $15\%$ 的数据，保证 $m=n$，且对于任意的 $j\in [1,m]$，都有 $c_j=j$</p>
+        <iframe data-animation="./A.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <ul>
+            <li class="fragment">如果变量 $x_i$ 能触发第 $i$ 条二元限制</li>
+            <ul>
+                <li class="fragment">$a_i$ 必须等于 $x_i$ 且 $b_i$ 必须等于 $x_{i+1}$</li>
+            </ul>
+            <li class="fragment">如果变量 $x_i$ 不能触发第 $i$ 条二元限制</li>
+            <ul>
+                <li class="fragment">$a_i$ 必须不等于 $x_i$ 且 $b_i$ 可以随便取 $[1,v]$ 任意数字</li>
+            </ul>
+        </ul>
+        <p class="fragment">
+            $$
+            \prod_{i=1}^{n-1} \big(1+v(v-1)\big)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>考虑如何做 $100\%$ 的数据</p>
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>结论一：如果出现了无论怎么给 $x$ 赋值都无法让所有限制都得到满足的情况，则<b>无法满足</b>一定是在能确定取值的变量上发生的</p>
+        <iframe data-animation="结论.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">结论二：假设 $x_k$ 是一个取值确定的变量，若 $x_k$ 的取值是无法满足的，则一定是由<b>在它前面第一个确定变量</b>触发一系列<b>限制连锁反应</b>而导致的</p>
+        <p class="fragment">那么我们就可以把整个序列根据<b>确定变量</b>拆成一段段<b>限制链</b>，对每一个限制链独立考虑，最后再根据乘法原理把每一条限制链的方案数累乘到一起</p>
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>假设前一个确定变量位置为 $i$，下一个确定变量位置为 $j$，考虑如何计算 $i\rightarrow j$ 这条限制链合法的取值方案数</p>
+        <iframe data-animation="./中间方案数.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">$$合法方案数=总方案数-x_i导致x_j取值不合法的方案数$$</p>
+        <ul>
+            <li class="fragment">总方案数：$v^{2(j-i)}$</li>
+            <li class="fragment">不合法的方案数：$v^{(j-i-1)}(v-1)$</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int Count1(int len) {
+                    return Fpow(v, 2 * len) - Fpow(v, len - 1) * (v - 1);
+                }
+                for (int i = 1; i < positions.size(); i++) {
+                    ans = ans * Count1(positions[i] - positions[i - 1]);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>遗失的赋值</h2>
+        <p>需要特判一下最左侧和最右侧的情况，以最左侧为例</p>
+        <iframe data-animation="./两边方案数.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p>假设最左侧的确定变量是 $x_i$，由于前 $i-1$ 条限制没有任何办法让 $x_i$ 变得不合法，所以这一段限制链的方案数应该就是 $v^{2(i-1)}$</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int Count2(int len) {
+                    return Fpow(v, 2 * len);
+                }
+                ans = ans * Count2(positions[0] - 1);
+                ans = ans * Count2(n - positions[positions.size() - 1]);
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,75 @@
+<section>
+    <section>
+        <h1>可持久化并查集</h1>
+        <p>基于可持久化数组，可持久化数组又基于可持久化线段树</p>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/385" data-background-interactive>
+    </section>
+    <section>
+        <h2>可持久化并查集</h2>
+        <p>我们区分两个版本的并查集的凭证是 $fa$ 数组</p>
+        <p class="fragment">所以我们考虑对 $fa$ 数组进行持久化
+            <ul>
+                <li class="fragment">在并查集找根过程中，不断在可持久化 $fa$ 数组上做查询</li>
+                <li class="fragment">做并查集的合并时，就是在可持久化 $fa$ 数组上做单点修改</li>
+                <li class="fragment">做并查集的版本回退时，直接在可持久化 $fa$ 数组上做回退即可</li>
+            </ul>
+        </p>
+    </section>
+    <section>
+        <h2>可持久化并查集</h2>
+        <p>但是仅仅这样是不够的，我们考虑原本的并查集的找根函数：</p>
+        <pre><code data-trim data-line-numbers class="cpp"><script type="text/template">
+            int getFa(int x) {
+                if (fa[x] == x) return x;
+                return fa[x] = getFa(fa[x]);
+            }
+        </script></code></pre>
+        <p class="fragment">我们在这里使用了路径压缩优化，让 <code>int getFa(int x)</code> 单次查询的时间复杂度是均摊 $O(logn)$ 的</p>
+        <p class="fragment">但是<b>均摊复杂度并不适合可持久化数据结构</b>，例如以下操作序列：</p>
+        <table class="fragment">
+            <tbody>
+                <tr>
+                    <td>版本</td>
+                    <td>$1$</td>
+                    <td>$2$</td>
+                    <td>$3$</td>
+                    <td>$4$</td>
+                    <td>$5$</td>
+                </tr>
+                <tr>
+                    <td>操作</td>
+                    <td><code>getFa(4)</code></td>
+                    <td><code>getFa(2)</code></td>
+                    <td><code>getFa(2)</code></td>
+                    <td><code>getFa(2)</code></td>
+                    <td><code>getFa(3)</code></td>
+                </tr>
+                <tr>
+                    <td>耗时</td>
+                    <td>$3$</td>
+                    <td>$1000$</td>
+                    <td>$2$</td>
+                    <td>$2$</td>
+                    <td>$1$</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fragment">注意到在第 $2$ 个版本中的 <code>getFa(2)</code> 是一个相对耗时的操作，那么我们就能构造一组大量基于版本 $2$ 的 <code>getFa(2)</code> 的数据，让均摊复杂度崩溃</p>
+    </section>
+    <section>
+        <h2>可持久化并查集</h2>
+        <p>所以我们需要一种合并方法，使得我们的找根函数 <code>int getFa(int x)</code> 的时间复杂度是严格 $O(logn)$ 的</p>
+        <p class="fragment">我们可以使用按秩合并，它就有严格 $O(logn)$ 的时间复杂度，按秩合并最常见的实现手段是通过计算<b>“并查集的深度”</b>来实现的</p>
+        <p class="fragment">我们在处理并查集时，不仅要记录某个点 $x$ 的父节点 $fa_x$，如果 $x$ 是一个并查集的根，我们还需要记录以 $x$ 为根的树的最大深度</p>
+        <ul class="fragment">
+            <li>初始情况下，每个点 $x$ 的 $dep_x$ 被初始化为 $1$</li>
+            <li>对于一次合并操作，假设需要合并 $u$ 和 $v$ 这两个元素，其对应的并查集的根分别为 $f_u$ 和 $f_v$（假定 $dep_{f_u}\ge dep_{f_v}$）
+                <ul>
+                    <li>我们把深度小的子树合并到深度大的子树的下方，即 $f_v$ 合并到 $f_u$ 的下面</li>
+                    <li>同时 $dep_{f_u}=max(dep_{f_u},dep_{f_v}+1)$</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+</section>

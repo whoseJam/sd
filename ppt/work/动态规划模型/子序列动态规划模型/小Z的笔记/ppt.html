@@ -1,0 +1,56 @@
+<section>
+    <section>
+        <h1>小Z的笔记</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2187"></problem>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p>给出一个<b>禁用字典</b>，字典中的单词都是长度恰好为 $2$ 的字符串</p>
+        <p class="fragment">给出一个字符串序列</p>
+        <p class="fragment">你需要从字符串序列中删掉一些字符，使之不包含任何一个出现在<b>禁用字典</b>中的单词</p>
+        <p class="fragment">求至少需要删掉多少个字符</p>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p class="quote">为什么这个题是一个子序列动态规划模型？</p>
+        <iframe data-animation="./子序列模型.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">由于禁用字典内的单词长度恰好为 $2$，所以我们只需要保证子序列相邻两项不构成<b>禁用单词</b>即可</p>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p>设 $f(i)$ 表示子序列末尾字符为 $a_i$，至少需要擦掉多少个，才能使得整个子序列合法<span class="fragment">（不出现禁用单词）</span></p>
+        <iframe data-animation="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">
+            $$
+            f(i)=\mathop{min}\limits_{\begin{aligned}j&\lt i\\ a_ja_i&合法\end{aligned} }\{f(j)+i-j-1\}
+            $$
+        </p>
+        <p class="fragment quote">如何优化呢？</p>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p style="margin-top: -10px;">
+            $$
+            f(i)=\mathop{min}\limits_{\begin{aligned}j&\lt i\\ a_ja_i&合法\end{aligned} }\{f(j)+i-j-1\}
+            $$
+        </p>
+        <p class="fragment" style="margin-top: -20px;">考虑优化上述动态规划<span class="fragment">，考虑减少<b>状态转移的数量</b></span></p>
+        <div class="fragment">
+            <iframe data-animation="./减少状态转移数量.js"
+                style="width: 1000px; height: 200px;"></iframe>
+            <p style="text-align: center; font-size: 20px; margin-top: -10px;">例如bc被禁用了</p>
+        </div>
+        <p class="fragment">我们可以预处理出当前字符为 $a_i$ 时，上一个字符可能是什么，这里最多只有 $26$ 种情况<span class="fragment">；当前面有多个更新点，它们的字符相同时，我们只关心其中 $f(j)-j$ 最小的 $j$</span><span class="fragment">，用桶维护一下即可</span></p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 'a'; j <= 'z'; j++)
+                        if (a[i] 上一个字符可以为 j) f[i] = min(f[i], mf[j] + i - 1);
+                    把 f[i] - i 插入到第 a[i] 个桶中; // 也就是 mf[a[i]] 中
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

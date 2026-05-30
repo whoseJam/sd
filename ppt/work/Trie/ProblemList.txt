@@ -1,0 +1,10 @@
+Trie：
+#830.单词查找树：http://43.143.204.105/problem/830
+#921.Phone List：https://www.luogu.com.cn/problem/UVA11362
+#940.Babelfish：http://poj.org/problem?id=2503
+自动补全：https://oj.aicoders.cn/problem/2263
+
+01Trie：
+#943.The XOR Largest Pair：https://loj.ac/p/10050
+#944.Vasiliy's Multiset：https://www.luogu.com.cn/problem/CF706D
+#829.最长异或路径：https://www.luogu.com.cn/problem/P4551

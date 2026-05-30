@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>亲戚</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1551"></problem>
+    <section>
+        <h2>亲戚</h2>
+        <p>只需要在朴素并查集的基础上，对每一个集合，同时维护出<b style="color: red;">集合大小</b>即可</p>
+        <p class="fragment">在合并两个并查集的时候，同时注意更新<b style="color: purple;">合并后的集合</b>的大小</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Merge(int x, int y) {
+                    int fx = F(x), fy = F(y);
+                    if (fx != fy) {
+                        fa[fx] = fy;
+                        siz[fy] += siz[fx];
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

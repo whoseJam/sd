@@ -1,0 +1,60 @@
+<section>
+    <section>
+        <h1>项链</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P10185"></problem>
+    <section>
+        <h2>项链</h2>
+        <p>设 $C$ 是一条项链，$f(C)$ 表示此项链的美丽度</p>
+        <p class="fragment">
+            $$
+            f(C)=\sum_{枚举每种珠子i}(v_i)^{cnt_i}
+            $$
+        </p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{枚举每条项链C}f(C) \\
+            &=\sum_{枚举每条项链C}\sum_{枚举每种珠子i}(v_i)^{cnt_i}\\
+            &=\sum_{枚举每种珠子i\\cnt_i}(v_i)^{cnt_i}\sum_{枚举每条项链C}[C中恰好有cnt_i个珠子i] \\
+            &=\sum_{枚举每种珠子i}(v_i)^{cnt_i}[有多少条项链恰好有cnt_i个珠子i]
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>项链</h2>
+        <p>设 $S=\sum_{i=1}^na_i$</p>
+        <p>考虑有多少条项链恰好含有 $x$ 个第 $i$ 类珠子</p>
+        <div style="display: flex;">
+            <iframe data-animation="./串项链.js"
+                style="width: 1000px; height: 300px;"></iframe>
+            <div>
+                <p class="fragment">剩下 $S-a_i$ 颗每颗可选可不选，第 $i$ 类珠子总共有 $a_i$ 颗，得从中选出 $x$ 颗来，那么总方案数就应该是 $2^{S-a_i}C_{a_i}^x$</p>
+                <p class="fragment quote">所以 $x$ 个第 $i$ 类珠子对答案的贡献就应该为 $2^{S-a_i}C_{a_i}^xv_i^x$</p>
+                <p class="fragment">当然，我们在计算总价值，所以 $i$ 和 $x$ 都需要枚举：</p>
+                <p class="fragment">
+                    $$
+                    \sum_{i=1}^n\sum_{x=1}^{a_i}2^{S-a_i}C_{a_i}^xv_i^x
+                    $$
+                </p>
+                <p class="fragment">时间复杂度 $O(na)$</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>项链</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{i=1}^n\sum_{x=1}^{a_i}2^{S-a_i}C_{a_i}^xv_i^x \\
+            &=\sum_{i=1}^n2^{S-a_i}\sum_{x=1}^{a_i}C_{a_i}^xv_i^x \\
+            &=\sum_{i=1}^n2^{S-a_i}\sum_{x=1}^{a_i}C_{a_i}^xv_i^x1^{a_i-x} \\
+            &=\sum_{i=1}^n2^{S-a_i}\big((\sum_{x=0}^{a_i}C_{a_i}^xv_i^x1^{a_i-x}) - 1\big) \\
+            &=\sum_{i=1}^n2^{S-a_i}\big((v_i+1)^{a_i}-1\big)
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment" data-fragment-index="0">时间复杂度 $O(nlogS)$</p>
+    </section>
+</section>

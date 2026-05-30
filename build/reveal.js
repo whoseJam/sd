@@ -1,8 +1,9 @@
 const gulp = require("gulp");
+const utils = require("./utils");
 const webpack = require("webpack-stream");
 
 /**
- * Compile sd.js to the target folder.
+ * Compile myreveal.js to the target folder.
  * @param {string} targetFolder The folder to hold the output.
  * @returns {NodeJS.ReadWriteStream}
  */

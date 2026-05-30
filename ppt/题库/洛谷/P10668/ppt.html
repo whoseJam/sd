@@ -1,0 +1,53 @@
+<section>
+    <section>
+        <h1>列队春游</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P10668"></problem>
+    <section>
+        <h2>列队春游</h2>
+        <p>随机打乱一个序列 $\{h\}$，定义 $pre_i$ 是 $i$ 前面第一个不小于 $h_i$ 的元素的位置</p>
+        <p class="fragment">设 $X=\sum_{i=1}^n(i-pre_i)$，求 $E(X)$</p>
+        <p class="fragment math-fragment">不难想到期望的线性性
+            $$
+            \begin{aligned}
+            E(X)&=E(\sum_{i=1}^n(i-pre_i)) \\
+            &=\sum_{i=1}^nE(i-pre_i) \\
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">考虑如何计算 $E(i-pre_i)$</p>
+    </section>
+    <section>
+        <h2>列队春游</h2>
+        <p>考虑如何计算 $E(i-pre_i)$<span class="fragment">，不妨钦定 $pre_i=p$，$h_i=h$...</span></p>
+        <iframe data-animation="./一般情况.js"
+            style="width: 1000px; height: 130px;"></iframe>
+        <iframe data-animation="./特殊情况.js"
+            style="width: 1000px; height: 130px;"></iframe>
+        <p class="fragment">设原序列中比 $h$ 小的有 $S_h$ 个...</p>
+        <p class="fragment math-fragment">不难发现在钦定了 $pre_i,h_i$ 后，合法的方案数为
+            $$
+            \begin{cases}
+            A_{S_h}^{i-p-1}C_{n-1-S_h}^1A_{n-(i-p+1)}^{n-(i-p+1)} & p\gt 0 \\
+            A_{S_h}^{i-1}A_{n-i}^{n-i} & p=0
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">而总方案数为 $A_n^n$，概率为合法方案数除以总方案数...</p>
+    </section>
+    <section>
+        <h2>列队春游</h2>
+        <p>
+            所以
+            $$
+            E(i-pre_i)=\sum_{p}\sum_{h} \frac{
+                \begin{cases}
+                A_{S_h}^{i-p-1}C_{n-1-S_h}^1A_{n-(i-p+1)}^{n-(i-p+1)} & p\gt 0 \\
+                A_{S_h}^{i-1}A_{n-i}^{n-i} & p=0
+                \end{cases}
+            }{A_n^n} (i-p)
+            $$
+        </p>
+        <p class="fragment">计算一个 $E(i-pre_i)$ 的时间复杂度为 $O(n^2)$，总时间复杂度 $O(n^3)$</p>
+    </section>
+</section>

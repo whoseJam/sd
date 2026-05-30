@@ -1,0 +1,48 @@
+<section>
+    <section>
+        <h1>可持久化线段树1</h1>
+        <p>用可持久化线段树来模拟可持久化数组</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3919"></problem>
+    <section>
+        <h2>可持久化线段树1</h2>
+        <p>需要维护一个可持久化数组，支持：</p>
+        <ul>
+            <li><b>基于某个版本的数组</b>，做单点修改</li>
+            <li><b>基于某个版本的数组</b>，做单点查询</li>
+        </ul>
+        <p class="fragment">可以用<b>可持久化线段树</b>来模拟<b>可持久化数组</b></p>
+    </section>
+    <section>
+        <h2>可持久化线段树</h2>
+        <iframe data-animation="./可持久化线段树1.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p style="text-align: center;">
+            序列变化：
+            <span>$\{3,2,4,1\}$</span>
+            <span class="fragment">$\rightarrow \{1,2,4,1\}$</span>
+            <span class="fragment">$\rightarrow \{1,3,4,1\}$</span>
+            <span class="fragment">$\rightarrow \{1,3,2,1\}$</span>
+            <span class="fragment">$\rightarrow \{1,3,2,3\}$</span>
+        </p>
+    </section>
+    <section>
+        <h2>可持久化线段树1</h2>
+        <codeblock>
+            <script type="text/template">
+                // x 当前需要插入的节点
+                // lastx 历史版本参考点
+                // l, r 区间左右端点
+                // p 插入位置
+                // v 插入值
+                void insert(int & x, int lastx, int l, int r, int p, int v) {
+                    t[x = ++tot] = t[lastx];    // 复用历史版本信息
+                    if (l == r) { t[x].v = v; return; }
+                    int mid = (l + r) >> 1;
+                    if (p <= mid) insert(t[x].lc, t[lastx].lc, l, mid, p, v); // 重构左子树
+                    else insert(t[x].rc, t[lastx].rc, mid + 1, r, p, v);      // 重构右子树
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

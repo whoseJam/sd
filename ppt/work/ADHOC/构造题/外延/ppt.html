@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>外延</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P11132"></problem>
+    <section>
+        <h2>外延</h2>
+        <p>构造一个长度为 $n$ 的排列，使得排列中所有的<b style="color: red;">长度为 $m$ 的区间最大值</b>的最大公因数最大</p>
+        <p class="fragment">容易知道长度为 $m$ 的区间总共有 $n-m+1$ 个</p>
+    </section>
+    <section>
+        <h2>外延</h2>
+        <p class="quote">公因数最大？</p>
+        <p class="fragment quote">这 $n-m+1$ 个区间，有没有谁的取值是确定了的？</p>
+        <p class="fragment">一定会有若干个区间的取值为 $n$</p>
+        <p class="fragment quote">找最大的 $gcd(n,...)$，它的取值可能是什么呢？</p>
+        <p class="fragment">$n$ 的因子</p>
+        <p class="fragment quote">不妨假定最后的答案是 $d$，其中 $d$ 是 $n$ 的因子，那么可以如何构造序列呢？</p>
+        <iframe data-animation="./构造序列.js" class="fragment"
+            style="width: 1000px; height: 100px;"></iframe>
+    </section>
+</section>

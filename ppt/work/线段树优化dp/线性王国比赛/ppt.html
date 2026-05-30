@@ -1,0 +1,46 @@
+<section>
+    <section>
+        <h1>线性王国比赛</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="115E"></problem>
+    <section>
+        <h2>线性王国比赛</h2>
+        <p>设 $f_{l,r}$ 表示最后一个被修复的区间是 $[l,r]$ 这个区间，能获得的最大收益</p>
+        <p>
+            $$
+            f_{l,r}=f_{l,r-1}-a_r+[出现在[l,r]，不出现在[l,r-1]的所有比赛区间产生的收益]
+            $$
+        </p>
+        <p class="fragment">
+            考虑一下边界情况
+            $$
+            f_{i+1,i}=max\{f_{i,i-1},\mathop{max}\limits_{l\le i}\{f_{l,i}\}\}
+            $$
+        </p>
+        <p class="fragment">这里的 $f_{i+1,i}$ 表示第 $i+1$ 条路是不修复的，那么：
+            <ul>
+                <li class="fragment">如果第 $i$ 条路要修复，则取 $\mathop{max}\limits_{l\le i}\{f_{l,i}\}$</li>
+                <li class="fragment">如果第 $i$ 条路也不修复，则取 $f_{i,i-1}$</li>
+            </ul>    
+        </p>
+    </section>
+    <section>
+        <h2>线性王国比赛</h2>
+        <p>
+            $$
+            \begin{cases}
+            f_{l,r}=f_{l,r-1}-a_r+[出现在[l,r]，不出现在[l,r-1]的所有比赛区间产生的收益] \\
+            f_{i+1,i}=max\{f_{i,i-1},\mathop{max}\limits_{l\le i}\{f_{l,i}\}\}
+            \end{cases}
+            $$
+        </p>
+        <iframe data-animation="./维护左区间.js" class="fragment"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment">每次考虑第 $r$ 条路的修复情况的时候（指针从 $r-1$ 移到了 $r$）：</p>
+        <ul>
+            <li class="fragment">先把 $[1,r]$ 这个区间内的 $f$ 值减去 $a_r$</li>
+            <li class="fragment">对右端点位于 $r$ 上的比赛区间 $[L_i,R_i](R_i=r)$，让 $[1,L_i]$ 的 $f$ 值加上第 $i$ 场比赛的收益</li>
+            <li class="fragment">更新全局答案，随后用全局答案更新 $r+1$ 这个位置的 $f$ 值</li>
+        </ul>
+    </section>
+</section>

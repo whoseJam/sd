@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>签到题</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P9147"></problem>
+    <section>
+        <h2>签到题</h2>
+        <p>给定一个长度为 $n$ 的序列，你可以最多修改序列中任意一个元素的值</p>
+        <p class="fragment">最大化<b style="color: purple;">最长连续上升序列</b>的长度</p>
+    </section>
+    <section>
+        <h2>签到题</h2>
+        <p>考察假设改了 $a_i$ 的值...</p>
+        <iframe data-animation="./修改.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p>设 $f_i$ 表示以 $i$ 结尾的最长连续上升序列的长度，$g_i$ 表示以 $i$ 开头的最长连续上升序列的长度</p>
+        <ul>
+            <li class="fragment">如果 $a_{i-1}+1\le a_{i+1}-1$，则改 $a_i$ 所能产生的最长连续上升序列的长度为 $f_{i-1}+g_{i+1}$</li>
+            <li class="fragment">如果 $a_{i-1}+1\gt a_{i+1}-1$，则改 $a_i$ 所能产生的最长连续上升序列的长度为 $max(f_{i-1},g_{i+1})+1$</li>
+        </ul>
+    </section>
+</section>

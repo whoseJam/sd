@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>装备购买</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3265"></problem>
+    <section>
+        <h2>装备购买</h2>
+        <p>有 $n$ 件装备，每件装备有 $m$ 个属性，可以用一个向量 $\vec{z_i}=(a_1,a_2,...,a_m)$ 来表示</p>
+        <p class="fragment">第 $i$ 件装备的价格为 $c_i$</p>
+        <p class="fragment">现在我们需要购买一些装备</p>
+        <p class="fragment">我们希望花尽量少的钱来购买装备</p>
+        <p class="fragment">如果一件装备的属性能用购买的其他装备<b>线性组合</b>出来，那么该装备就没有购买的必要</p>
+        <p class="fragment">求在<b>购买装备</b>加上<b>对应等效装备</b>数量最多的情况下，最少需要花多少钱</p>
+    </section>
+    <section>
+        <h2>装备购买</h2>
+        <p>有 $n$ 个 $m$ 维的向量，每个向量有自己的价格</p>
+        <p class="fragment">从这 $n$ 个向量中找出一组基向量，使得总价格尽可能小</p>
+    </section>
+    <section>
+        <h2>装备购买</h2>
+        <p>由于线性基在插入时，先加入的向量更容易进入线性基，后加入的向量更难进入线性基</p>
+        <p>所以按照价格从小到大的顺序把装备往线性基里塞即可</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                对装备 vectors 按照价格从小到大排序;
+                for (vector of vectors) {
+                    if (insert(vector)) answer += cost(vector);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">根据基向量的性质，可以通过微调证明这样做是正确的</p>
+    </section>
+</section>

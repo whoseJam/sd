@@ -1,0 +1,80 @@
+<section>
+    <section>
+        <h1>偏序问题</h1>
+        <p>一类问题描述</p>
+    </section>
+    <section>
+        <h2>偏序问题</h2>
+        <p>假设给你 $n$ 个数据点，每个数据点有若干属性，我们可以根据数据点的各个属性大小来定义数据点的大小关系（这里暂时默认这些属性都是<b>数值属性</b>）</p>
+        <div class="fragment quote">
+            例如每个数据点有三个属性 $\{a,b,c\}$，现在给出两个数据点 $d_1$ 和 $d_2$，如果有：
+            <p class="fragment">
+                $$
+                \left\{
+                \begin{aligned}
+                a(d_1) \lt a(d_2) \\
+                b(d_1) \gt b(d_2) \\
+                c(d_1) \lt c(d_2) \\
+                \end{aligned}
+                \right.
+                $$
+            </p>
+            <span class="fragment">那么我们认为 $d_1$ 这个数据点比 $d_2$ 这个数据点更大</span>
+        </div>
+        <p class="fragment quote">约定<b style="color: red;">比较</b>只能发生在<b style="color: red;">同类属性</b>之间</p>
+        <p class="fragment">假设两个数据点存在大小关系，则小的那个数据点会对大的那个数据点有贡献，欲统计所有贡献</p>
+        <p class="fragment">我们把上述问题形式归类到偏序问题上，根据数据点的属性数量不同，又可以把它们划分为<b>一维偏序问题</b>，<b>二维偏序问题</b>，<b>三维偏序问题</b>或者 <b>$k$ 维偏序问题</b></p>
+    </section>
+    <section>
+        <h2>一维偏序问题</h2>
+        <p>一维偏序问题可以认为是定义在数轴空间上的——因为所有数据点都只有一个属性</p>
+        <iframe data-animation="./一维偏序.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <ul>
+            <li class="fragment">题目既可以定义<b style="color: purple;">属性值越大的数据点越小</b></li>
+            <li class="fragment">又可以定义<b style="color: brown;">属性值越小的数据点越小</b></li>
+        </ul>
+        <p class="fragment">例如我们定义属性值越小的数据点越小，然后统计所有小数据点对大数据点的贡献...</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) // O(n)
+                    for (int j = 1; j <= n; j++) // O(n)
+                        if (a[i] < a[j]) f[j] += [i 对 j 的贡献];
+            </script>
+        </codeblock>
+        <p class="fragment quote">把低维偏序关系画在图上，因为这样看起来很直观</p>
+    </section>
+    <section>
+        <h2>二维偏序关系</h2>
+        <p>二维偏序关系可以认为是定义在平面空间上的——因为所有数据点都有两个属性，分别对应 $x$ 轴和 $y$ 轴</p>
+        <iframe data-animation="./二维偏序.js"
+            style="width: 1000px; height: 275px;"></iframe>
+        <ul>
+            <li class="fragment">既可以定义<b style="color: purple;">越靠左下的数据点越小</b><span class="fragment">——$d_1\lt d_2$ 当 $x(d_1)\lt x(d_2)\land y(d_1)\lt y(d_2)$</span></li>
+            <li class="fragment">又可以定义<b style="color: brown;">越靠左上的数据点越小</b><span class="fragment">——$d_1\lt d_2$ 当 $x(d_1)\lt x(d_2)\land y(d_1)\gt y(d_2)$</span></li>
+            <li class="fragment">还可以定义...</li>
+        </ul>
+        <p class="fragment">例如我们定义越靠左下角的数据点越小，然后统计所有小数据点对大数据点的贡献...</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) // O(n)
+                    for (int j = 1; j <= n; j++) // O(n)
+                        if (x[i] < x[j] && y[i] < y[j]) f[j] += [i 对 j 的贡献];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>$k$ 维偏序问题</h2>
+        <p>对于 $k$ 维偏序问题的贡献统计也是同理</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) // O(n)
+                    for (int j = 1; j <= n; j++) // O(n)
+                        if (i 和 j 在这 k 个维度上满足 i 比 j 小) // O(k) 
+                            f[j] += [i 对 j 的贡献];
+            </script>
+        </codeblock>
+        <p class="fragment">上述暴力做法的时间复杂度是 $O(n^2k)$ 的</p>
+        <p class="fragment">CDQ 分治能优化</p>
+    </section>
+</section>

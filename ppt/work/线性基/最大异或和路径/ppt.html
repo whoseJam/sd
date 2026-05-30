@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>最大异或和路径</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P4151"></problem>
+    <section>
+        <h2>最大异或和路径</h2>
+        <p>结论题</p>
+    </section>
+    <section>
+        <h2>最大异或和路径</h2>
+        <p>任意一条从 $1$ 到 $n$ 的路径的异或和，一定可以被一条从 $1$ 到 $n$ 的路径异或和，再加上若干个环异或和，线性组合得到</p>
+        <iframe data-animation="./线性组合1.js" class="fragment"
+            style="width: 1000px; height: 179px;"></iframe>
+        <p class="fragment">任意一条从 $1$ 到 $n$ 的路径的异或和，一定可以被<b style="color: red;">任意</b>一条从 $1$ 到 $n$ 的路径异或和，再加上若干个环异或和，线性组合得到</p>
+        <iframe data-animation="./线性组合2.js" class="fragment"
+            style="width: 1000px; height: 221px;"></iframe>
+    </section>
+    <section>
+        <h2>最大异或和路径</h2>
+        <p>找到任意一条从 $1$ 到 $n$ 的路径异或和，以及所有的环异或和，把它们塞进线性基，求线性组合最大值即可</p>
+        <codeblock>
+            <script type="text/template">
+                // sum[u] 表示从 1 到 u 的某条路径的异或和
+                void Dfs(int u, int s) {
+                    sum[u] = s;
+                    vis[u] = true;
+                    for (u 的所有邻接点 v) {
+                        if (!vis[v]) Dfs(v, s ^ w(u, v));
+                        else insert(sum[u] ^ sum[v] ^ w(u, v)); // 找到一个环
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

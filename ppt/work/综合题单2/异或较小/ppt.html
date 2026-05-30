@@ -1,0 +1,103 @@
+<section>
+    <section>
+        <h1>异或较小</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/CF1616H"></problem>
+    <section>
+        <h2>异或较小</h2>
+        <p>给一个整数数组 $a_1, a_2, \ldots, a_n$ 和一个整数 $x$</p>
+        <p class="fragment">一个数组的子集是合法的，当且仅当该子集任意数对的异或结果不超过 $x$</p>
+        <p class="fragment">求合法的子集数量</p>
+    </section>
+    <section>
+        <h2>异或较小</h2>
+        <p>这里讨论的是<b style="color: red;">数对</b>之间的异或关系</p>
+        <p class="fragment quote">什么样的数据结构适合分析数对之间的异或关系？</p>
+        <p class="fragment">把问题放在trie树上考虑</p>
+    </section>
+    <section>
+        <h2>异或较小</h2>
+        <p class="quote">trie树上怎么选数？</p>
+        <iframe data-animation="./01trie.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <ul>
+            <li class="fragment">如果 $x$ 的某一位为 $0$，那么肯定就不能跨子树选，一个子树内的数字只能内部组合</li>
+            <li class="fragment">如果 $x$ 的某一位为 $1$，那么就可以跨子树选，但又不能跨子树乱选...</li>
+        </ul>
+        <p class="fragment">如果设 $f_u$ 表示在 $u$ 的子树内选数的方案数...</p>
+        <ul>
+            <li class="fragment">当 $x$ 的某一位为 $0$ 时，$f_u=f_{l(u)}+f_{r(u)}$</li>
+            <li class="fragment">当 $x$ 的某一位为 $1$ 时，我们无法对 $f_{l(u)}$ 和 $f_{r(u)}$ 内部的方案进行区分，也就没有办法把它们组合起来</li>
+        </ul>
+    </section>
+    <section>
+        <h2>异或较小</h2>
+        <iframe data-animation="./转移图1.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p>可以使用搜索，找出任意一对合法的组合</p>
+        <ul>
+            <li class="fragment">遇到 $0$，就让两个指针走同一方向</li>
+            <li class="fragment">遇到 $1$，就让两个指针走相反方向</li>
+            <li class="fragment">去重</li>
+        </ul>
+        <p class="fragment quote" style="margin-top: 0px;">我们能借助这个搜索结构统计方案吗？</p>
+    </section>
+    <section>
+        <h2>异或较小</h2>
+        <p>设 $f_{x,y}$ 表示在 $x$ 和 $y$ 的子树内选数方案数，要求选出的数字的低二进制位是不超过 $k$ 对应的二进制位的</p>
+        <div style="display: flex;">
+            <iframe data-animation="./状态转移1.js"
+                style="width: 287px; height: 300px;"></iframe>
+            <iframe data-animation="./状态转移2.js"
+                style="width: 600px; height: 300px; margin-left: 40px;"></iframe>
+        </div>
+        <p>如果 $x$ 和 $y$ 对应层的二进制位上是 $0$...</p>
+        <div style="display: flex;">
+            <div class="fragment" style="width: 500px;">如果 $x=y$
+                <span class="fragment">
+                    $$
+                    f_{x,y}=f_{lc(x),lc(x)}+f_{rc(x),rc(x)}-1
+                    $$
+                </span>
+            </div>
+            <div class="fragment" style="width: 500px; margin-left: 40px;">如果 $x\ne y$<span class="fragment">，意味着树的上方肯定经历过 $1$</span>
+                <span class="fragment" style="font-size: 15px;">
+                    $$
+                    \begin{aligned}
+                    f_{x,y}&=(2^{sz(lc(x))}-1)(2^{sz(rc(x))}-1) \\
+                    &+(2^{sz(lc(y))}-1)(2^{sz(rc(y))}-1)\\
+                    &+f_{lc(x),lc(y)}+f_{rc(x),rc(y)}-1
+                    \end{aligned}
+                    $$
+                </span>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>异或较小</h2>
+        <p>设 $f_{x,y}$ 表示在 $x$ 和 $y$ 的子树内选数方案数，要求选出的数字的低二进制位是不超过 $k$ 对应的二进制位的</p>
+        <div style="display: flex;">
+            <iframe data-animation="./状态转移1.js"
+                style="width: 287px; height: 300px;"></iframe>
+            <iframe data-animation="./状态转移2.js"
+                style="width: 600px; height: 300px; margin-left: 40px;"></iframe>
+        </div>
+        <p>如果 $x$ 和 $y$ 对应层的二进制位上是 $1$...</p>
+        <div style="display: flex;">
+            <div class="fragment" style="width: 500px;">如果 $x=y$
+                <span class="fragment">
+                    $$
+                    f_{x,y}=f_{lc(x),rc(x)}
+                    $$
+                </span>
+            </div>
+            <div class="fragment" style="width: 500px; margin-left: 40px;">如果 $x\ne y$
+                <span class="fragment">
+                    $$
+                    f_{x,y}=f_{lc(x),rc(y)}f_{rc(x),lc(y)}
+                    $$
+                </span>
+            </div>
+        </div>
+    </section>
+</section>

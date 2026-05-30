@@ -1,0 +1,74 @@
+<section>
+    <section>
+        <h1>上升子序列</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3970"></problem>
+    <section>
+        <h2>上升子序列</h2>
+        <p>在不考虑去重的情况下，容易得到以下状态与转移，设 $f_i$ 表示以 $a_i$ 为结尾的上升子序列的数量，则
+            $$
+            f_i=1+\sum_{\begin{aligned}j&\lt i \\ a_j&\lt a_i\end{aligned} }f_j
+            $$
+        </p>
+        <div class="fragment">
+            <p style="font-size: 20px; text-align: center; margin-bottom: -30px;">以 $\{1,2\}$ 为例，它会在序列中被统计到多次</p>
+            <iframe data-animation="./上升子序列.js"
+                style="width: 1000px; height: 200px;"></iframe>
+        </div>
+        <p class="fragment">不难想到可以人为约定，每种上升序列所使用的元素，都尽可能往后移动</p>
+    </section>
+    <section>
+        <h2>上升子序列</h2>
+        <iframe data-animation="./转移裁剪.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">设 $has(l,r,x)$ 表示判断区间 $[l,r]$ 中是否存在值为 $x$ 的元素，则
+            <span style="font-size: 20px;">
+                $$
+                f_i=1+\sum_{\begin{aligned}j&\lt i \\ a_j&\lt a_i\\ !has(j+&1,i-1,a_j)\end{aligned} }f_j
+                $$
+            </span>
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    f[i] = 1;
+                    set< int > S;
+                    for (int j = i - 1; j >= 1; j--) {
+                        if (S 中存在 a[j] || a[j] >= a[i]) continue;
+                        S.insert(a[j]);
+                        f[i] += f[j];
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>上升子序列</h2>
+        <iframe data-animation="./转移裁剪.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p>最后，用序列数据结构完成对代码的优化改造即可</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    set< int > S;
+                    for (int j = i - 1; j >= 1; j--) {
+                        if (S 中存在 a[j] || a[j] >= a[i]) continue;
+                        S.insert(a[j]);
+                        f[i] += f[j];
+                    }
+                    f[i]++;
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    f[i] = querySum(1, a[i] - 1) + 1;
+                    insert(a[i], f[i]);
+                    设 j 为最近的满足 j < i 且 a[j] = a[i] 的位置;
+                    if (j 存在) insert(a[i], -f[j]);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

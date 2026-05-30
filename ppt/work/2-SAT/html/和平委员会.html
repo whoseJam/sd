@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>和平委员会</h1>
+        <p>例题一道</p>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/1035" data-background-interactive>
+    </section>
+    <section>
+        <h2>和平委员会</h2>
+        <p>容易看出来，本题需要做决定的 $n$ 个变量，就是第 $i$ 个党派到底是派<b>哪个代表</b>参加委员会</p>
+        <p class="fragment">题目给的两个候选人（假设两个候选人分别为 $a$ 和 $b$）彼此厌恶，则可以认为：</p>
+        <p class="fragment" style="text-align: center;"><b>要么 $a$ 不来参加委员会，要么 $b$ 不来参加委员会</b></p>
+    </section>
+    <section>
+        <h2>和平委员会</h2>
+        <p>设 $another(x)$ 表示和 $x$ 这个人所属同一个党派的另一个人的编号，假设 $a$ 和 $b$ 有敌意的话：</p>
+        <ul>
+            <li class="fragment">$a\rightarrow another(b)$<span class="fragment">：代表<b>如果</b> $a$ 参会，则<b>一定</b>是 $b$ 所属党派的另一个人来参会</span></li>
+            <li class="fragment">$b\rightarrow another(a)$<span class="fragment">：代表<b>如果</b> $b$ 参会，则<b>一定</b>是 $a$ 所属党派的另一个人来参会</span></li>
+        </ul>
+    </section>
+    <section>
+        <h2>和平委员会</h2>
+        <iframe data-animation="./animation/和平委员会.html" style="min-width: 1000px; min-height: 400px; max-height: 400px;"></iframe>
+    </section>
+</section>

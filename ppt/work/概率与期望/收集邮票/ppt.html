@@ -1,0 +1,47 @@
+<section>
+    <section>
+        <h1>收集邮票</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P4550"></problem>
+    <section>
+        <h2>收集邮票</h2>
+        <p>有 $n$ 种不同的邮票，每一次购买邮票的种类是等概率随机的，且第 $k$ 次购买需要花 $k$ 元，求期望需要多少钱集齐所有种类的邮票</p>
+        <iframe data-animation="./状态图.js"
+            style="width: 1000px; height: 150px;"></iframe>
+        <p class="fragment">设 $f_k$ 表示已经抽到 $k$ 种邮票，期望还需要花多少钱抽完，$g_k$ 表示已经抽到 $k$ 种邮票，期望还需要抽多少次</p>
+        <div style="display: flex; align-items: center;">
+            <iframe data-animation="./状态转移.js" class="fragment"
+                style="width: 400px; height: 150px;"></iframe>
+            <table class="fragment">
+                <tbody>
+                    <tr>
+                        <th>事件</th>
+                        <th>概率</th>
+                        <th>次数</th>
+                        <th>钱数</th>
+                    </tr>
+                    <tr>
+                        <td>新邮票</td>
+                        <td>$\frac{n-k}{n}$</td>
+                        <td>$g_{k+1}+1$</td>
+                        <td>$f_{k+1}+g_{k+1}+1$</td>
+                    </tr>
+                    <tr>
+                        <td>已有邮票</td>
+                        <td>$\frac{k}{n}$</td>
+                        <td>$g_k+1$</td>
+                        <td>$f_k+g_k+1$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            g_k=\frac{n-k}{n}(g_{k+1}+1)+\frac{k}{n}(g_k+1) \\
+            f_k=\frac{n-k}{n}(f_{k+1}+g_{k+1}+1)+\frac{k}{n}(f_k+g_k+1)
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

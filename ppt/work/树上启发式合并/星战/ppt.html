@@ -1,0 +1,43 @@
+<section>
+    <section>
+        <h1>星战</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="600E"></problem>
+    <section>
+        <h2>星战</h2>
+        <p class="quote">如何暴力统计某子树内的<b>主要颜色编号和</b>？</p>
+        <iframe data-animation="./暴力统计.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void AddCol(ll c) {
+                    colCount[c]++;
+                    if (mxCol < colCount[c]) {
+                        mxCol = colCount[c];
+                        smCol = c;
+                    } else if (mxCol == colCount[c]) smCol += c;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>星战</h2>
+        <p>然后改造为树上启发式合并</p>
+        <iframe data-animation="./树上启发式合并.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock>
+            <script type="text/template">
+                void DSU(int u) {
+                    for (每个轻儿子 v) {
+                        DSU(v);
+                        RemoveSubtree(v); // 记得清空 mxCol 和 smCol
+                    }
+                    if (son[u]) DSU(son[u], u);
+                    for (每个轻儿子 v) AddSubtree(v);
+                    Add(u);
+                    Ans[u] = 当前颜色种类;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

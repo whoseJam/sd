@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>小Z的袜子</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1494"></problem>
+    <section>
+        <h2>小Z的袜子</h2>
+        <p>设 $c_i$ 表示查询区间内第 $i$ 类袜子的出现次数</p>
+        <iframe data-animation="./概率.js"
+            style="width: 1000px; height: 250px;"></iframe>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 1000px;">
+                <p>挑中两只同色袜子的概率为
+                    $$
+                    \frac{ \sum_i{C_{c_i}^2} }{ C_{R-L+1}^2 }
+                    $$
+                </p>
+                <p class="fragment">用莫队维护 $\sum_iC_{c_i}^2$ 即可</p>
+            </div>
+            <codeblock class="fragment">
+                <script type="text/template">
+                    void Add(int x, int d) {
+                        ans -= c[x] * (c[x] - 1) / 2;
+                        c[x] += d;
+                        ans += c[x] * (c[x] - 1) / 2;
+                    }
+                </script>
+            </codeblock>
+        </div>
+    </section>
+</section>

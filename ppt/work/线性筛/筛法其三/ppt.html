@@ -1,0 +1,61 @@
+<section>
+    <section>
+        <h1>筛法其三</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000016"></problem>
+    <section>
+        <h2>筛法其三</h2>
+        <p>定义质因子种类数函数 $f(x)=x不同的质因子的个数$，让你把 $[1,n]$ 的 $f$ 函数的值求出来</p>
+    </section>
+    <section>
+        <h2>筛法其三</h2>
+        <p>当 $p$ 是质数时，显然 $f(p)=1$</p>
+        <codeblock>
+            <script type="text/template">
+                如果 i 是质数
+                prim[++tot] = i;
+                f[i] = 1;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>筛法其三</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中不包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+            $$x=p_1p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$f(i)=f(p_2^{a_2}p_3^{a_3}...p_n^{a_n})=n-1$$
+        </p>
+        <p class="fragment">
+            $$f(x)=f(p_1p_2^{a_2}p_3^{a_3}...p_n^{a_n})=n$$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] != 0 时
+                f[x] = f[i] + 1;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>筛法其三</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_1^{a_1}p_2^{a_2}...p_n^{a_n}$$
+            $$x=p_1^{a_1+1}p_2^{a_2}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$f(i)=f(p_1^{a_1}p_2^{a_2}...p_n^{a_n})=n$$
+        </p>
+        <p class="fragment">
+            $$f(x)=f(p_1^{a_1+1}p_2^{a_2}...p_n^{a_n})=n$$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] == 0 时
+                f[x] = f[i];
+            </script>
+        </codeblock>
+    </section>
+</section>

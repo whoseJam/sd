@@ -1,0 +1,174 @@
+<section>
+    <section>
+        <h1>组合数</h1>
+        <p>$C_n^m$</p>
+    </section>
+    <section>
+        <h2>组合数</h2>
+        <p>从 $n$ 个不同的元素中取出 $m$ 个组成一个集合（不考虑顺序），产生的不同集合数量为
+            $$
+            C_n^m=\frac{n!}{m!(n-m)!}=\frac{A_n^m}{m!}
+            $$
+        </p>
+        <p class="fragment">$A_n^m=C_n^m\times m!$ 可以从组合意义上去理解，从 $n$ 个元素中选出 $m$ 个元素搞排列，等价于先从 $n$ 个元素中选出 $m$ 个元素出来组成一个集合，再把这个集合中的元素拿出来做排列</p>
+        <p class="fragment quote">换一个视角，我如果希望把一群有顺序的元素的顺序性去掉，假设这群元素共 $m$ 个，则可以通过除以一个 $m!$ 来去掉它们的顺序性</p>
+    </section>
+    <section>
+        <h2>组合数的计算</h2>
+        <p>最简单的，我们每次算组合数时，就硬算</p>
+        <codeblock>
+            <script type="text/template">
+                int C(int n, int m) {
+                    int ans = 1;
+                    for (int i = 1; i <= n; i++) ans *= i;
+                    for (int i = 1; i <= m; i++) ans /= i;
+                    for (int i = 1; i <= n - m; i++) ans /= i;
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">只适用于 $n$ 和 $m$ 较小的情况</p>
+    </section>
+    <section>
+        <h2>组合数的递推</h2>
+        <p>
+            $$
+            C_n^m=C_{n-1}^{m-1}+C_{n-1}^m
+            $$
+        </p>
+        <p class="fragment">从 $n$ 个元素中选 $m$ 个出来，我们讨论<b>第 $n$ 个元素到底是选还是不选</b></p>
+        <ul>
+            <li class="fragment">如果第 $n$ 个元素要选，那么之前我们得从 $n-1$ 个元素中选 $m-1$ 个出来，对应方案数即 $C_{n-1}^{m-1}$</li>
+            <li class="fragment">如果第 $n$ 个元素不选，那么之前我们得从 $n-1$ 个元素中选 $m$ 个出来，对应方案数即 $C_{n-1}^m$</li>
+            <li class="fragment">根据加法原理，$C_n^m=C_{n-1}^{m-1}+C_{n-1}^m$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>组合数的递推</h2>
+        <p>当 $n$ 和 $m$ 来到 $10^3$ 这个量级，想要计算 $C_n^m$，那必然会涉及到取模<del class="fragment">（或者高精度，高精度就是纯恶心人的，这里不讨论）</del></p>
+        <iframe data-animation="./组合数的递推.html" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Prepare(int lim = 1000) {
+                    C[0][0] = 1;
+                    for (int i = 1; i <= lim; i++) {
+                        C[i][0] = C[i][i] = 1;
+                        for (int j = 1; j < i; j++) {
+                            C[i][j] = (C[i - 1][j - 1] + C[i - 1][j]) % Mod;
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>组合数的计算</h2>
+        <p>当 $n$ 和 $m$ 继续扩大，来到 $10^6$ 这个量级，如果题目保证了模数是大质数，也能做</p>
+        <p class="fragment">我们考虑求出 $[1,n]$ 范围内每个数字的逆元</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int fac[N];  // 存储阶乘
+                int inv[N];  // 存储逆元
+                int finv[N]; // 存储阶乘逆元
+                void Prepare(int lim = 1000000) {
+                    fac[0] = fac[1] = finv[0] = finv[1] = inv[1] = 1;
+                    for (int i = 2; i <= lim; i++) {
+                        inv[i] = (Mod - Mod / i) * inv[Mod % i] % Mod; // 线性递推逆元
+                        fac[i] = fac[i - 1] * i % Mod;
+                        finv[i] = finv[i - 1] * inv[i] % Mod;
+                    }
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int C(int n, int m) {
+                    return fac[n] * finv[m] % Mod * finv[n - m] % Mod;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">关于如何线性递推逆元，请参考<a href="https://oi-wiki.org/math/number-theory/inverse/#%E7%BA%BF%E6%80%A7%E6%B1%82%E9%80%86%E5%85%83" target="_blank">这里</a></p>
+    </section>
+    <section>
+        <h2>组合数的计算</h2>
+        <p>但当 $n$ 和 $m$ 变得极大时，如果模数是一个 $10^6$ 量级或者更小的质数，又有Lucas定理来帮助我们求组合数</p>
+        <del class="fragment">等我们讲到Lucas定理的时候再说</del>
+    </section>
+    <section>
+        <h2>组合数的计算</h2>
+        <p>想要计算 $C_n^m$ 对 $998244353$ 取模的结果，满足 $n\le 10^9$，$m\le 10^6$，能算吗？</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            C_n^m&=\frac{n!}{m!(n-m)!} \\
+            &=\frac{(n-m+1)(n-m+2)...(n-1)n}{m!}
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int C(int n, int m) {
+                    int ans = 1;
+                    for (int i = n - m + 1; i <= n; i++) ans = ans * i % Mod;
+                    return ans * finv[m] % Mod;
+                }
+            </script>
+        </codeblock>
+    </section>
+
+    <section>
+        <h2>组合数杂项</h2>
+        <p>
+            $$
+            \sum_{i=0}^nC_n^i=2^n
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>组合数杂项</h2>
+        <p>
+            $$
+            C_n^m=C_n^{n-m}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>组合数杂项</h2>
+        <div style="display: flex;">
+            <iframe data-animation="./组合数求和.js"
+                style="width: 1000px; height: 500px;"></iframe>
+            <div>
+                <p>
+                    $$
+                    \sum_{i=0}^n C_{x+i}^{y+i}=?
+                    $$
+                </p>
+                <p class="fragment">
+                    $$
+                    \sum_{i=0}^nC_{x+i}^{y+i}=C_{x+n+1}^{y+n}-C_{x}^{y-1}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>组合数杂项</h2>
+        <div style="display: flex;">
+            <iframe data-animation="./组合数求和.js"
+                style="width: 1000px; height: 500px;"></iframe>
+            <div>
+                <p>
+                    $$
+                    \sum_{i=0}^n C_{x+i}^{y}=?
+                    $$
+                </p>
+                <p class="fragment">
+                    $$
+                    \sum_{i=0}^nC_{x+i}^{y}=C_{x+n+1}^{y+1}-C_{x}^{y+1}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+</section>

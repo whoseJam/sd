@@ -1,0 +1,43 @@
+<section>
+    <section>
+        <h1>函数传参</h1>
+        <p>引用，指针，数组与常量</p>
+    </section>
+    <section>
+        <h2>函数传参</h2>
+        <codeblock>
+            <script type="text/template">
+                struct Node {
+                    int x, y;
+                };
+                bool cmp1(Node a, Node b) {
+                    if (a.x != b.x) return a.x < b.x;
+                    return a.y < b.y;
+                }
+            </script>
+        </codeblock>
+        <codeblock>
+            <script type="text/template">
+                struct Node {
+                    int x, y;
+                };
+                bool cmp2(const Node& a, const Node& b) {
+                    if (a.x != b.x) return a.x < b.x;
+                    return a.y < b.y;
+                }
+            </script>
+        </codeblock>
+        <codeblock>
+            <script type="text/template">
+                struct Node {
+                    int x, y;
+                };
+                bool cmp3(const Node a, const Node b) {
+                    if (a.x != b.x) return a.x < b.x;
+                    return a.y < b.y;
+                }
+            </script>
+        </codeblock>
+        <p>这三个比较器有什么不同？</p>
+    </section>
+</section>

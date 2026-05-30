@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>新的开始</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/U274081"></problem>
+    <section>
+        <h2>新的开始</h2>
+        <p>建立电网使得 $n$ 个矿井都被供电，一个矿井可以被直连其上的电网供电，也可以通过别的矿井连过来的电线供电</p>
+        <p class="fragment">在第 $i$ 个矿井上建立电网的代价是 $v_i$</p>
+        <p class="fragment">在第 $i$ 个矿井和第 $j$ 个矿井之间建立电线的代价是 $p_{i,j}$</p>
+        <p class="fragment">最小化总代价</p>
+    </section>
+    <section>
+        <h2>新的开始</h2>
+        <ul>
+            <li>在第 $i$ 个矿井上建立电网的代价是 $v_i$</li>
+            <li>在第 $i$ 个矿井和第 $j$ 个矿井之间建立电线的代价是 $p_{i,j}$</li>
+        </ul>
+        <iframe data-animation="./建图.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">建立一个超级源点 $s$，让 $s$ 向每个矿井连边，边权为 $v_i$，得到一张新图 $G'$</p>
+        <p class="fragment">所有矿井都被供电 $\Longleftrightarrow$ 新图 $G'$ 所有点连通</p>
+        <p class="fragment">为了使得建立电网的开销最小，只需要求出 $G'$ 的最小生成树，用最小生成树的边连通 $G'$ 即可</p>
+    </section>
+</section>

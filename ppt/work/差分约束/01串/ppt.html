@@ -1,0 +1,49 @@
+<section>
+    <section>
+        <h1>01串</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5751"></problem>
+    <section>
+        <h2>01串</h2>
+        <p>这个题目描述中简直到处都是不等关系，如何把原问题转化成一个差分约束问题呢？</p>
+    </section>
+    <section>
+        <h2>01串</h2>
+        <p>设满足条件的二进制串为 $S[1...n]$</p>
+        <p class="fragment">设 $X_i$ 表示 $S$ 的前 $i$ 个字符中 $1$ 的个数，则我们可以列出如下不等式：</p>
+        <ul>
+            <li class="fragment">$X_0=0$</li>
+            <li class="fragment">$X_i-X_{i-1}\le 1$</li>
+            <li class="fragment">$X_i-X_{i-1}\ge 0$</li>
+        </ul>
+        <p class="fragment">条件1希望对于任意一个长度为 $L_0$ 的区间，$A_0\le 0的个数\le B_0$，我们可以转化为：对于任意一个长度为 $L_0$ 的区间，$L_0-B_0\le 1的个数\le L_0-A_0$，则有：</p>
+        <ul>
+            <li class="fragment">$X_{i+L_0-1}-X_{i-1}\ge L_0-B_0$</li>
+            <li class="fragment">$X_{i+L_0-1}-X_{i-1}\le L_0-A_0$</li>
+        </ul>
+        <p class="fragment">条件2希望对于任意一个长度为 $L_1$ 的区间，$A_1\le 1的个数\le B_1$，则有：</p>
+        <ul>
+            <li class="fragment">$X_{i+L_1-1}-X_{i-1}\ge A_1$</li>
+            <li class="fragment">$X_{i+L_1-1}-X_{i-1}\le B_1$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>01串</h2>
+        <p>似乎就......结束了</p>
+        <ul class="fragment">
+            <li>$X_0=0$</li>
+            <li>$X_i-X_{i-1}\le 1$</li>
+            <li>$X_i-X_{i-1}\ge 0$</li>
+            <li>$X_{i+L_0-1}-X_{i-1}\ge L_0-B_0$</li>
+            <li>$X_{i+L_0-1}-X_{i-1}\le L_0-A_0$</li>
+            <li>$X_{i+L_1-1}-X_{i-1}\ge A_1$</li>
+            <li>$X_{i+L_1-1}-X_{i-1}\le B_1$</li>
+        </ul>
+        <p class="fragment">由于题目要求 $1$ 的数量尽可能多</p>
+        <p class="fragment">那么 $x_i$ 就应该尽可能大</p>
+        <p class="fragment">那么就应该跑最短路</p>
+        <p class="fragment quote">
+            有兴趣的同学可以试试加超级源点跑一下，看看会不会出错（大概是会的）
+        </p>
+    </section>
+</section>

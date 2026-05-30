@@ -1,0 +1,106 @@
+<section>
+    <section>
+        <h1>懒标记</h1>
+        <p>很懒的标记</p>
+    </section>
+    <section>
+        <h2>线段树区间修改面临的困境</h2>
+        <p>假设我们在之前的问题的基础上，想要支持这么一个操作</p>
+        <ul>
+            <li><code>Add(l, r, d)</code>：把 $[l,r]$ 这个区间内的元素整体加上 $d$（$d$ 可正可负）</li>
+        </ul>
+        <iframe data-animation="./线段树区间修改面临的困境.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">最坏情况下，有 $2n$ 个线段的特征都被改变了</p>
+        <p class="fragment">我们可以引入<b>懒标记</b>来解决这个问题</p>
+    </section>
+    <section>
+        <h2>标记</h2>
+        <p>在计算机科学中，标记通常用来抽取信息</p>
+        <p class="fragment quote">在游戏中，我们可以给角色添加一个died标记，当标记存在时，就认为角色已死亡</p>
+        <p class="fragment quote">在删除大文件时，我们可能不会真的去把对应磁盘区域清空，而是把区域打上一个empty标记，表示这个区域可以随意使用<span class="fragment">，之后有应用想要写入磁盘的话，就能直接覆写这片empty的区域</span></p>
+    </section>
+    <section>
+        <h2>懒标记</h2>
+        <p>懒标记，顾名思义，是一种很懒的标记</p>
+        <p class="fragment">它表示你本应该做一些事情，但是还没来得及做，先标记一下，等未来不得不做的时候再做</p>
+    </section>
+    <section>
+        <h2>懒标记</h2>
+        <iframe data-animation="./线段树懒标记.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <ul>
+            <li class="fragment">在区间修改时，只修改区间最上层的线段特征，只对它们的祖先做更新，它们的后代的<b>延迟更新</b></li>
+            <li class="fragment">在不需要访问后代节点时，后代节点错误的特征并不会对答案造成影响</li>
+            <li class="fragment">在未来不得不访问后代节点时，由于懒标记的存在，可以<b>下放懒标记的信息</b>，根据懒标记的信息去更新后代</li>
+        </ul>
+    </section>
+    <section>
+        <h2>懒标记</h2>
+        <p>在线段树节点上定义懒标记</p>
+        <codeblock>
+            <script type="text/template">
+                struct seg {
+                    int l, r, add, mn;
+                };
+            </script>
+        </codeblock>
+        <p class="fragment">在这里定义的是 $add$ 标记，代表对一个区间增加一个变化量</p>
+        <ul>
+            <li class="fragment">如果 $add$ 标记为 $0$，则说明懒标记不存在</li>
+            <li class="fragment">如果 $add$ 标记不为 $0$，则说明后代节点需要增加 $add$，但还没来得及做这个操作</li>
+        </ul>
+    </section>
+    <section>
+        <h2>懒标记</h2>
+        <p>对一个线段树节点推送 $add$ 标记</p>
+        <iframe data-animation="./add标记分析.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushAdd(int x,int d){
+                    t[x].add += d;
+                    t[x].mn += d;
+                }                
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushDown(int x) {
+                    if (t[x].add != 0) {
+                        pushAdd(lc, t[x].add);
+                        pushAdd(rc, t[x].add);
+                        t[x].add = 0;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>懒标记</h2>
+        <p>区间加，就是定位到对应区间，然后给它加上懒标记而已</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void add(int x, int ql, int qr, int d) {
+                    if (t[x].l > qr || t[x].r < ql) return;
+                    if (ql <= t[x].l && t[x].r <= qr) { pushAdd(x, d); return; }
+                    pushDown(x);
+                    add(lc, ql, qr, d);
+                    add(rc, ql, qr, d);
+                    pushUp(x);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">区间查询最小值，记得在递归的时候把标记下放</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int queryMin(int x, int ql, int qr) {
+                    if (t[x].l > qr || t[x].r < ql) return inf;
+                    if (ql <= t[x].l && t[x].r <= qr) return t[x].mn;
+                    pushDown(x);
+                    return min(queryMin(lc, ql, qr), queryMin(rc, ql, qr));
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

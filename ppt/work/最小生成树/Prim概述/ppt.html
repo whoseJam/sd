@@ -1,0 +1,40 @@
+<section>
+    <section>
+        <h1>Prim</h1>
+        <p>适合稠密图的最小生成树算法</p>
+    </section>
+    <section>
+        <h2>Prim</h2>
+        <p>Prim的实现有点类似Dijkstra</p>
+        <iframe data-animation="./Prim原理.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <ol>
+            <li class="fragment">首先从图 $G$ 中随便选一个点 $s$ 当作起点，从这个起点出发构造生成树 $T$，$T$ 是逐渐逐渐变大的</li>
+            <li class="fragment">选出不在 $T$ 中的、<b style="color: red;">到 $T$ 的直连边最小</b>的点</li>
+            <li class="fragment">重复(2)，直到找到最小生成树</li>
+        </ol>
+    </section>
+    <section>
+        <h2>Prim</h2>
+        <iframe data-animation="./Prim实现.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <codeblock style="margin-top: 0px;">
+            <script type="text/template">
+                void Prim(int s) {
+                    for (int i = 1; i <= n; i++) dis[i] = inf;
+                    dis[s] = 0;
+                    dis[0] = inf; // why?
+                    for (int i = 1; i <= n; i++) {
+                        int u = 0;
+                        for (int v = 1; v <= n; v++)
+                            if (!vis[v] && dis[u] > dis[v]) u = v;
+                        mxl = max(mxl, dis[u]);
+                        vis[u] = 1;
+                        for (int v = 1; v <= n; v++)
+                            if (!vis[v]) dis[v] = min(dis[v], getDist(u, v));
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

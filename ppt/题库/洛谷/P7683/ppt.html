@@ -1,0 +1,14 @@
+<section>
+    <section>
+        <h1>巫师</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P7683"></problem>
+    <section>
+        <h2>巫师</h2>
+        <p>对于 $50\%$ 的数据，模拟是简单的，我们主要考虑 $k$ 很大的时候应该怎么办</p>
+        <iframe data-animation="./循环.js"
+            style="width: 1000px; height: 300px"></iframe>
+        <p class="fragment">这里面肯定存在某种循环，例如我某次周五走到了 $(x,y)$ 上，后来又一次周五来到了 $(x,y)$ 上，那就循环起来了</p>
+        <p class="fragment">我们设定行走空间为 $N\times N\times 7$ 的一个空间，每行走到一个样本 $(x,y,d)$，就把这个样本记录一下，出现样本重合的时候就循环了，获取循环长度，直接计算结果</p>
+    </section>
+</section>

@@ -106,7 +106,7 @@ class ThemeManager {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
-        link.href = DOMAIN + "/" + themeName + ".css";
+        link.href = `https://whosejam.site/public/themes/${themeName}.css`;
         link.dataset.theme = themeName;
         document.head.appendChild(link);
         const selector = document.querySelector("#theme-selector select");

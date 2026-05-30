@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>DNA修复</h1>
+    </section>
+    <problem data-problemset="poj" data-problemid="3691"></problem>
+    <section>
+        <h2>DNA修复</h2>
+        <p>你有一个主串和一个字典，你希望修改主串，使之不包含任何字典内出现过的单词</p>
+        <p class="fragment">求至少修改几个字符</p>
+        <p class="fragment quote">把字典建立成trie图后，在主串中修改一个字符意味着什么？</p>
+        <p class="fragment">正常情况下，把主串放进trie图上行走，走出来的路径是固定的，但修改字符意味着我们可以随时在trie图当前匹配节点上沿着任意方向前进<span class="fragment">——只是这是有代价的，我们希望付出的代价尽量小</span></p>
+        <p class="fragment">设 $f_{i,u}$ 表示走了 $i$ 个单位的距离，到了trie图上的点 $u$，并且从未经过任意一个终止点，需要执行至少多少次修改</p>
+        <div class="fragment">
+            $$
+            f_{i,u}+[s_{i+1}\ne c_{u,v}]\stackrel{min}{\rightarrow} f_{i+1,v}
+            $$
+            <iframe data-animation="./状态转移.js"
+                style="width: 1000px; height: 150px;"></iframe>
+        </div>
+    </section>
+</section>

@@ -1,0 +1,15 @@
+树的遍历与基础信息统计：
+#862.树的统计：http://43.143.204.105/problem/862
+#863.找树根和孩子：http://43.143.204.105/problem/863
+#864.树的深度和宽度：http://43.143.204.105/problem/864
+#865.计算权和最大的子树：http://43.143.204.105/problem/865
+
+二叉查找树：
+#886.二叉查找树：http://43.143.204.105/problem/886
+
+树的递归构建：
+FBI树：https://oj.aicoders.cn/problem/1635
+构建二叉树：https://oj.aicoders.cn/problem/1630
+
+表达式树：
+#881.*表达式的转换：https://www.luogu.com.cn/problem/P1175

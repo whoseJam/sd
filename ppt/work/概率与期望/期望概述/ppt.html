@@ -1,0 +1,127 @@
+<section>
+    <section>
+        <h1>期望</h1>
+    </section>
+    <section>
+        <h2>随机变量</h2>
+        <p>一个取值随机的变量，例如</p>
+        <ul>
+            <li class="fragment">设 $X$ 表示投一次骰子的结果，那么 $X$ 是一个随机变量，该随机变量有 $\{1,2,3,4,5,6\}$ 这 $6$ 种取值</li>
+            <li class="fragment">设 $Y$ 表示投 $10$ 次骰子，它们的点数之和，那么 $Y$ 也是一个随机变量</li>
+            <li class="fragment">设 $Z$ 表示一个随机生成的长度为 $5$ 的排列中的逆序对数，那么 $Z$ 也是一个随机变量</li>
+        </ul>
+    </section>
+    <section>
+        <h2>随机变量</h2>
+        <p>为了更好地刻画一个随机变量 $X$，我们可以用列表的方法去写出这个随机变量的取值，以及该取值的可能性</p>
+        <table class="fragment">
+            <thead>
+                <tr>
+                    <th>$X$</th>
+                    <th>$1$</th>
+                    <th>$2$</th>
+                    <th>$3$</th>
+                    <th>$4$</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$P(X=i)$</td>
+                    <td>$20\%$</td>
+                    <td>$40\%$</td>
+                    <td>$10\%$</td>
+                    <td>$30\%$</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fragment quote">上表忽略了随机变量的具体含义，只关注于随机变量的数学属性</p>
+        <p class="fragment quote">我们可以把观测一个随机变量，看作一次开箱试验，每一次开箱都有可能开出不同的数值来<span class="fragment">，我们可能会比较关心开箱开了很多很多次后，开出来的数值平均是多少</span></p>
+        <p class="fragment">定义随机变量 $X$ 的期望为
+            $$
+            E(X)=\sum_iP(X=i)i
+            $$
+        </p>
+        <div class="fragment quote">
+            上表中的随机变量的期望即为 $1\times 0.2+2\times 0.4+3\times 0.1+4\times 0.3=2.5$
+        </div>
+    </section>
+    <section>
+        <h2>期望</h2>
+        <b>期望等于概率乘以价值</b>
+        <p>$$E(X)=\sum_iP(X=i)i$$</p>
+        <p>这里的价值可以按照定义取，也可以本身就是一个期望</p>
+        <iframe data-animation="./概率树.js"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+    <section>
+        <h2>期望的线性性</h2>
+        <p>假设有两个不同的随机变量 $X$ 和 $Y$，则有
+            $$
+            E(X+Y)=E(X)+E(Y)
+            $$
+        </p>
+        <p class="fragment quote">这个很好理解，$E(X+Y)$ 就相当于每次开箱其实都是在开两个箱子，那么你的收益自然也是单独开这两个箱子的收益之和（即 $E(X)+E(Y)$）</p>
+        <p class="fragment">注意，我们并不要求这两个随机变量是独立的<span class="fragment">，例如 $X$ 表示投出的第一个骰子的点数，$Y$ 也表示投出的第一个骰子的点数...</span></p>
+        <table class="fragment">
+            <thead>
+                <tr>
+                    <th>$X/Y$</th>
+                    <th>$1$</th>
+                    <th>$2$</th>
+                    <th>$3$</th>
+                    <th>$4$</th>
+                    <th>$5$</th>
+                    <th>$6$</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$P(X/Y=i)$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6%$</td>
+                    <td>$1/6%$</td>
+                    <td>$1/6%$</td>
+                    <td>$1/6%$</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="fragment">
+            <thead>
+                <tr>
+                    <th>$X+Y$</th>
+                    <th>$2$</th>
+                    <th>$4$</th>
+                    <th>$6$</th>
+                    <th>$8$</th>
+                    <th>$10$</th>
+                    <th>$12$</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$P(X+Y=i)$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6$</td>
+                    <td>$1/6$</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>期望的线性性的严格证明</h2>
+        <p>
+            $$
+            \begin{aligned}
+            E(X+Y)&=\sum_iiP(X+Y=i) \\
+            &=\sum_x\sum_y(x+y)P(X=x,Y=y) \\
+            &=\sum_x\sum_yxP(X=x,Y=y)+\sum_x\sum_yyP(X=x,Y=y) \\
+            &=\sum_xxP(X=x)+\sum_yyP(Y=y)=E(X)+E(Y)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

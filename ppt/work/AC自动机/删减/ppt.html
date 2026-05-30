@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>删减</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3121"></problem>
+    <section>
+        <h2>删减</h2>
+        <p>我们把 $n$ 个需要被删除的单词建成一张trie图</p>
+        <p class="quote">下图以 $\{abab,babb\}$ 为例</p>
+        <iframe data-animation="./删除.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment" style="margin-top: -10px;">对于需要删除的序列，我们把这个序列放在trie图上跑，根据trie图的性质，我们只要走到了一个图上的终止点，就意味着找到了一个完整的字符串</p>
+        <p class="fragment">把路过的点记录下来，方便删除字符串后回退</p>
+        <p class="fragment quote">trie图相比于AC自动机来说，非常无脑</p>
+    </section>
+</section>

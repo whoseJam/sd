@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>寻宝之路</h1>
+        <p>Floyd的基本应用</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2910"></problem>
+    <section>
+        <h2>寻宝之路</h2>
+        <p>海上有 $n$ 个岛屿</p>
+        <p class="fragment">你需要先后经过 $A_1,A_2...A_M$ 这些岛屿（你的起点是 $A_1$，终点是 $A_M$）</p>
+        <p class="fragment">从小岛 $i$ 移动到小岛 $j$ 有一个危险系数 $D_{i,j}$</p>
+        <p class="fragment">一条路径的危险度之和，就是<b>这条路径上每条边的危险系数之和</b></p>
+        <p class="fragment">你希望知道先后经过 $A_1,A_2...A_M$ 这些岛屿的<b>最小危险度之和</b>是多少</p>
+    </section>
+    <section>
+        <h2>寻宝之路</h2>
+        <p>容易发现，题目要我们求</p>
+        <p>
+            $$
+            \sum_{i=1}^{m-1}[从 A_i 到 A_{i+1} 的最小危险指数]
+            $$
+        </p>
+        <p class="fragment">而移动之间是相互独立的，我们只需要让每次移动的危险指数最小，总的危险指数自然也会最小</p>
+        <p class="fragment">那用Floyd提前预处理出来任意两点之间的最小危险指数就行了</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int ans = 0;
+                for (int i = 1; i < m; i++)
+                    ans += d[a[i]][a[i + 1]];
+                cout << ans;
+            </script>
+        </codeblock>
+    </section>
+</section>

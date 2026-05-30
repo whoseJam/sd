@@ -1,0 +1,37 @@
+<section>
+    <section>
+        <h1>修剪草坪</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2627"></problem>
+    <section>
+        <h2>修剪草坪</h2>
+        <p>对 $\{E\}$ 做一个前缀和，得到 $\{S\}$</p>
+        <p>设 $g(i)$ 表示安排完前 $i$ 头奶牛，第 $i$ 头奶牛不需要干活的最大效率</p>
+        <p>设 $f(i)$ 表示安排完前 $i$ 头奶牛，第 $i$ 头奶牛需要干活的最大效率</p>
+        <p class="fragment">
+            $$
+            g(i)=max\{f(i-1),g(i-1)\}
+            $$
+        </p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            f(i)&=\mathop{max}\limits_{i-k\le j\lt i}\{g(j)+([j+1,i]范围内的奶牛都干活产生的价值)\} \\
+            &=\mathop{max}\limits_{i-k\le j\lt i}\{g(j)+S(i)-S(j)\} \\
+            &=\mathop{max}\limits_{i-k\le j\lt i}\{g(j)-S(j)\}+S(i)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>修剪草坪</h2>
+        <p>
+            $$
+            f(i)=\mathop{max}\limits_{i-k\le j\lt i}\{g(j)-S(j)\}+S(i)
+            $$
+        </p>
+        <p>这就是找 $i$ <b style="color: purple;">前面长度固定的一小段区间</b>中 $g(j)-S(j)$ 的最大值，直接用单调队列就行了</p>
+        <iframe data-animation="./修剪草坪.js"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+</section>

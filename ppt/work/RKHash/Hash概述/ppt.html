@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>Hash</h1>
+        <p>Hash的一般思路</p>
+    </section>
+    <section>
+        <h2>Hash</h2>
+        <p>现在有 $n$ 个对象，分别为 $o_1,o_2...o_n$，你需要比较<b>任意一对对象</b>是否相同</p>
+        <iframe data-animation="./Hash的作用.js"
+            style="width: 1000px; height: 200px;"></iframe>
+        <p class="fragment quote">对象可以是任何东西，一个数组可以是一个对象，一个数据结构可以是一个对象，一个字符串也可以是一个对象</p>
+        <p class="fragment">如果我们能设计一个函数 $f$<span class="fragment">，使得对于任何一个对象 $o_i$</span><span class="fragment">，都可以经过这个 $f$ 变为一个<b style="color: purple;">唯一的数值 $h_i$</b>......</span></p>
+        <p class="fragment quote">在这里 $f(o)$ 就好像 $o$ 这个对象的身份证一样，我们比较两个对象可能比较费时，但是比较两个身份证号就很快</p>
+        <p class="fragment">
+            $$
+            O(n^2|比较对象的时间|)\rightarrow O(n|计算f的时间|+n^2)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Hash</h2>
+        <p>Hash研究的就是<b>从对象到数值的映射关系 $f$</b>，使得每个对象都可以通过这个 $f$ 算出自己的身份证明</p>
+        <p style="text-align: center;">
+            原始对象 $\stackrel{f}{\rightarrow}$ Hash值
+        </p>
+        <p class="fragment">我们把 $f$ 叫做<b>Hash函数</b>，把身份证明叫做<b>Hash值</b></p>
+        <p class="fragment quote">Hash函数具体内容是自己决定的</p>
+    </section>
+    <section>
+        <h2>Hash冲突</h2>
+        <p>如果任意两个不同的对象都有不同的Hash值，那么这就是一个完美的Hash函数，但一般而言，我们是找不到完美的Hash函数的，那么就会产生Hash冲突</p>
+        <p class="fragment">一个良好的Hash函数应该<b>尽量</b>避免Hash冲突</p>
+        <p class="fragment">但总归无法做到完全避免</p>
+    </section>
+</section>

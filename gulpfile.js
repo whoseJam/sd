@@ -6,7 +6,6 @@ const animationGroup = require("./build/animationGroup");
 const github = load("./build/github");
 const iframe = load("./build/iframe");
 const ppt = require("./build/ppt");
-const rag = load("./build/rag");
 const release = load("./build/release");
 const reveal = require("./build/reveal");
 const revealPlugin = require("./build/revealPlugin");
@@ -90,10 +89,4 @@ gulp.task("serve", done => {
         else console.log("success");
         done();
     });
-});
-
-gulp.task("rag", done => {
-    const ragOutputPath = global["o"] || parser.parseConfig("ragOutputPath");
-    rag(ragOutputPath);
-    done();
 });

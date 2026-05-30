@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>吃奶酪</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1433"></problem>
+    <section>
+        <h2>吃奶酪</h2>
+        <p>把散落在空间中的奶酪分配到一个序列上，定义序列的权值为吃完序列上的奶酪的路径长度，最小化序列权值</p>
+        <iframe data-animation="./样例解释.js"
+            data-viewBoxDelta="0 0 0 60"
+            style="width: 1000px; height: 350px;"></iframe>
+        <p class="fragment">可以把这里的奶酪视作一种有标号的资源，我们希望把这种有标号的资源排成一个序列</p>
+        <p class="fragment quote">不同的奶酪有不同的坐标，需要吃掉所有的奶酪——有标号资源分配动态规划模型</p>
+        <p class="fragment quote">吃奶酪的顺序是一个序列——序列构造动态规划模型</p>
+    </section>
+    <section>
+        <h2>吃奶酪</h2>
+        <iframe data-animation="./状态转移.js"
+            style="width: 1000px; height: 350px;"></iframe>
+        <p class="fragment">设 $f_{i,S}$ 表示已经吃掉了 $S$ 这个集合中的奶酪，且最后一个被吃掉的奶酪是第 $i$ 块奶酪，要走的最短距离</p>
+        <p class="fragment">$$f_{i,S}+dist(i\rightarrow j)\stackrel{min}{\rightarrow} f_{j,S\lor j}$$</p>
+    </section>
+</section>

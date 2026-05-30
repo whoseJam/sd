@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>莫队</h1>
+        <p>优雅一点的暴力</p>
+    </section>
+    <section>
+        <h2>莫队</h2>
+        <p>假设你正在处理长度为 $n$ 的区间上的询问问题</p>
+        <p class="fragment">题目给出了 $n$ 个询问，第 $i$ 个询问希望查询 $[l_i,r_i]$ 这个区间的某个特征，<b style="color: purple;">允许离线</b></p>
+        <p class="fragment">但你思来想去也没想出怎么用线段树之类的数据结构去维护这个特征</p>
+        <p class="fragment">不过你发现，对于 $[l,r]$ 的答案能够 $O(1)$ 拓展到 $[l,r+1],[l,r-1],[l+1,r],[l-1,r]$ 上去</p>
+        <p class="fragment">那么莫队，就能帮助你以 $O(n\sqrt n)$ 的时间复杂度解决这个问题</p>
+    </section>
+    <section>
+        <h2>莫队</h2>
+        <iframe data-animation="./分块.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p style="margin-top: -30px;">假设我们把序列以 $B$ 个单位分为一块，那么总共就能分出 $\frac n B$ 块</p>
+        <p class="fragment">把这 $n$ 个询问拉出来排序，第一关键字为左端点所在块编号排序，第二关键字为右端点，排完序后顺次处理</p>
+        <ul>
+            <li class="fragment">对于 $l$ 指针来说，在一个块内每有一个询问，最多会增加 $B$ 次移动开销<span class="fragment">，总共有 $n$ 次询问，所以最多会产生 $nB$ 次移动开销</span></li>
+            <li class="fragment">对于 $r$ 指针来说，每处理一个块，它是单调右移的，所以最多产生 $B+2B+3B+...+(\frac n B)B\sim \frac{n^2}B$ 次移动开销</li>
+        </ul>
+        <p class="fragment">总时间复杂度为 $O(nB+\frac{n^2}B)$，取 $B=\sqrt n$ 达到最小值，为 $O(n\sqrt n)$</p>
+    </section>
+</section>

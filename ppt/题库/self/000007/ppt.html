@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>复数的领域</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000007"></problem>
+    <section>
+        <h2>复数的领域</h2>
+        <p>通过本题了解复数的定义</p>
+        <p class="fragment">本题中让你手动实现了一个复数类，不过在未来使用复数时，可以直接用C++自带的复数类</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                #include <complex>
+
+                using Complex = complex<double>;
+
+                int main() {
+                    Complex a = 1;
+                    Complex b = -1.5;
+                    Complex c = {1, -1};
+                    // 一个辐角为90°，模长为r的复数
+                    Complex d = {r * cos(PI / 2), r * sin(PI / 2)};
+                    Complex e = a + d;
+                    Complex f = b - e;
+                    Complex g = c * d;
+                    cout << c.real() << '\n'; // 取 c 的实部
+                    cout << c.imag() << '\n'; // 取 c 的虚部
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

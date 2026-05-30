@@ -1,0 +1,127 @@
+<section>
+    <section>
+        <h1>树的动态存储</h1>
+        <p>前向星</p>
+    </section>
+    <section>
+        <h2>需求</h2>
+        <p>注意到在父节点表示法中，我们想要获取某个节点的子节点是一件很麻烦的事情</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 找 u 的子节点
+                for (int v = 1; v <= n; v++) {
+                    if (prt[v] == u) {
+                        // v 是 u 的子节点
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">单次查询某个节点的子节点是 $O(n)$ 的，那么遍历整棵树复杂度就是 $O(n^2)$ 的</p>
+        <p class="fragment">但是整棵树由 $n$ 个节点和 $n-1$ 条边组成，我们应该只需要 $O(n)$ 的复杂度就能完成遍历</p>
+    </section>
+    <section>
+        <h2>保存子节点</h2>
+        <p>那么一个自然的思路，就是把每个节点的<b>邻接点</b>保存下来</p>
+        <iframe data-animation="./普通数组存边.js"
+            style="width: 1000px; height: 300px;"></iframe>
+        <p class="fragment">不过我们很快发现了这样一个问题，由于有些节点可能包含大量连边，而另外一些节点可能只有少数几条边，<b>边的分配不一定均匀</b></p>
+        <ul>
+            <li class="fragment">一个节点最坏可能共有 $n-1$ 条边</li>
+            <li class="fragment">一个节点最好可能只有 $1$ 条边</li>
+        </ul>
+        <p class="fragment">造成了极大的空间浪费</p>
+    </section>
+    <section>
+        <h2>vector</h2>
+        <p>vector是C++提供的一种数据结构，可以把它理解为可变长的数组，基础操作如下</p>
+        <table class="fragment">
+            <thead>
+                <tr>
+                    <th>操作</th>
+                    <th>描述</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>push_back(x)</code></td>
+                    <td>向vector末尾添加一个元素x</td>
+                </tr>
+                <tr>
+                    <td><code>pop_back()</code></td>
+                    <td>弹出vector最末尾的一个元素</td>
+                </tr>
+                <tr>
+                    <td><code>size()</code></td>
+                    <td>获取vector的大小</td>
+                </tr>
+                <tr>
+                    <td><code>vector< type > a</code></td>
+                    <td>定义一个名叫a，内部元素类型为type的空vector</td>
+                </tr>
+            </tbody>
+        </table>
+        <codeblock class="fragment">
+            <script type="text/template">
+                vector< int > a;
+                vector< double > b;
+                vector< string > c;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>vector</h2>
+        <iframe data-animation="./vector语法.js"
+            style="width: 1000px; height: 500px;"></iframe>
+    </section>
+    <section>
+        <h2>vector</h2>
+        <p>我们可以用一个vector数组来存放每个节点的邻接点</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                vector< int > G[N];
+            </script>
+        </codeblock>
+        <p class="fragment">G是一个数组，其中每一个元素都是一个vector，我们试试把所有与x相邻的节点编号都放进G[x]中</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                vector< int > G[N];
+                void Link(int u, int v) {
+                    G[u].push_back(v);
+                    G[v].push_back(u);
+                }
+            </script>
+        </codeblock>
+        <iframe data-animation="./vector连边.js" class="fragment"
+            style="width: 1000px; height: 300px;"></iframe>
+    </section>
+    <section>
+        <h2>vector</h2>
+        <p>在对树进行遍历的时候</p>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 1000px;">
+                <codeblock>
+                    <script type="text/template">
+                        // 对 u 的子树进行遍历
+                        void Dfs(int u, int f) {
+                            for (int i = 0, v; i < G[u].size(); i++) {
+                                v = G[u][i];
+                                if (v != f) Dfs(v, u);
+                            }
+                        }
+                    </script>
+                </codeblock>
+                <codeblock class="fragment">
+                    <script type="text/template">
+                        void Dfs(int u, int f) {
+                            for (int v : G[u]) {
+                                if (v != f) Dfs(v, u);
+                            }
+                        }
+                    </script>
+                </codeblock>
+            </div>
+            <iframe data-animation="./vector遍历.js"
+                style="width: 580px; height: 400px;"></iframe>
+        </div>
+    </section>
+</section>

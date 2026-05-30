@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>树的统计</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/U305458"></problem>
+    <section>
+        <h2>树的统计</h2>
+        <codeblock>
+            <script type="text/template">
+                cin >> n >> k;
+                for (int i = 1, x, y; i <= k; i++) {
+                    cin >> x >> y;
+                    fa[y] = x;
+                }
+                for (int i = 1; i <= n; i++) {
+                    if (fa[i] == 0) ans++;
+                }
+                cout << ans << '\n';
+                for (int i = 1; i <= n; i++) {
+                    if (fa[i] == 0) cout << i << ' ';
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

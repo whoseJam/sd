@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>枚举</h1>
+    </section>
+    <section>
+        <h2>枚举</h2>
+        <iframe data-animation="./数数.js"
+            style="width: 1000px; height: 120px;"></iframe>
+        <p class="quote">数数红球的个数？</p>
+        <p class="fragment">在刚刚模拟数数的过程中，各位<del>（大约应该）</del>做了以下两个步骤</p>
+        <ol>
+            <li class="fragment"><b style="color: purple;">遍历</b>这一排每个球</li>
+            <li class="fragment"><b style="color: teal;">检查</b>它是不是红色</li>
+        </ol>
+        <p class="fragment">我们把每一个球看作一个<b style="color: red;">样本</b>，把所有球构成的集合叫做一个<b style="color: red;">样本空间</b><span class="fragment">，枚举所做的事情就是去遍历样本空间中的所有样本，并对每个样本进行固定的<b style="color: chocolate;">计算过程</b></span></p>
+        <div class="fragment quote">
+            <h3>计算过程</h3>
+            <span>上例中的<b style="color: chocolate;">计算过程</b>就是去检查一个样本是否是红色的，不过还能有别的计算过程...</span><br>
+            <ul>
+                <li class="fragment">每个球有不同的价值，需要计算所有的红色球的价值之和</li>
+                <li class="fragment">每个球有不同的价值，需要计算所有的蓝色球的价值乘积</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+        <h2>枚举</h2>
+        <iframe data-animation="./枚举的结构.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p class="fragment">对于简单的枚举而言，只需要找到样本空间和简单的计算过程就行</p>
+        <p class="fragment">对于复杂的枚举而言，可能需要根据计算过程的性质，缩小遍历范围，优化样本空间的遍历</p>
+        <p class="fragment quote">我们会介绍一种数学工具，用来统一对枚举优化的分析</p>
+    </section>
+</section>

@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>C++福音</h1>
+        <p>STL中的数据结构和算法不用白不用</p>
+    </section>
+    <section>
+        <h2>STL</h2>
+        <p>主要就是vector，set，map和unordered_map</p>
+        <p>对于set和map，你需要知道如何在它们上二分查找</p>
+        <p>set还有帮我们去重的功能</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3370"></problem>
+    <section>
+        <h2>字符串哈希</h2>
+        <p>我们可以选择把字符串都丢进一个set里面，最后看set的大小，就是不同的字符串数量了</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                set < string > S;
+                for (int i = 1; i <= n; i++) {
+                    string tmp;
+                    cin >> tmp;
+                    S.insert(tmp);
+                }
+                cout << S.size() << '\n';
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,61 @@
+<section>
+    <section>
+        <h1>简单的有限网格问题</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P10714"></problem>
+    <section>
+        <h2>简单的有限网格问题</h2>
+        <iframe data-animation="./样例解释.js"
+            style="width: 1000px; height: 400px;"></iframe>
+        <p>在 $(n+m-2)^2$ 种两折路径中，经过的星星之和为多少？</p>
+    </section>
+    <section>
+        <h2>简单的有限网格问题</h2>
+        <p>设 $P$ 是一条两折路径，$f(P)$ 表示 $P$ 上的星星总数</p>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{任意一条路径P}f(P) \\
+            &=\sum_{任意一条路径P}\sum_{一颗在P上的星星}1 \\
+            &=\sum_{任意一颗星星}1[有多少条路径P包含该星星]
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>简单的有限网格问题</h2>
+        <div style="display: flex; align-items: center;">
+            <iframe data-animation="./分类讨论.js"
+                style="width: 60%; height: 400px;"></iframe>
+            <div style="width: 60%;">
+                <p>设星星坐标位于 $(a,b)$</p>
+                <p class="fragment">首先是比较简单的四个角落</p>
+                <ul>
+                    <li class="fragment">绿色部分：$a+b$</li>
+                    <li class="fragment">深蓝色部分：$a+(m-b+1)$</li>
+                    <li class="fragment">橙色部分：$(n-a+1)+b$</li>
+                    <li class="fragment">红色部分：$(n-a+1)+(m-b+1)$</li>
+                </ul>
+                <p class="fragment">然后是稍微复杂一点的同行同列</p>
+                <ul>
+                    <li class="fragment">浅蓝色部分：$(n-a-1)a+a(n+m-2)$</li>
+                    <li class="fragment">......</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>简单的有限网格问题</h2>
+        <codeblock>
+            <script type="text/template">
+                int Solve() {
+                    for (每一颗星星 (a[i], b[i])) {
+                        根据分类讨论结果，计算出有 k 条经过它的两折路径;
+                        ans = ans + k;
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
