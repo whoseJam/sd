@@ -1,25 +1,14 @@
 const gulp = require("gulp");
-const sd = load("./packages/cli/src/sd");
+const sd = require("./packages/cli/src/sd");
 const type = require("./packages/cli/src/type");
 const animation = require("./packages/cli/src/animation");
 const animationGroup = require("./packages/cli/src/animationGroup");
-const github = load("./packages/cli/src/github");
-const iframe = load("./packages/cli/src/iframe");
+const iframe = require("./packages/cli/src/iframe");
 const ppt = require("./packages/cli/src/ppt");
-const release = load("./packages/cli/src/release");
 const reveal = require("./packages/cli/src/reveal");
 const revealPlugin = require("./packages/cli/src/revealPlugin");
 const theme = require("./packages/cli/src/theme");
 const parser = require("./packages/cli/src/parser");
-
-function load(path) {
-    try {
-        const module = require(path);
-        return module;
-    } catch (_) {
-        return undefined;
-    }
-}
 
 global["projectRoot"] = __dirname.replaceAll("\\", "/");
 
@@ -64,16 +53,6 @@ gulp.task("animationGroup", done => {
 gulp.task("iframe", () => {
     const pptOutputPath = global["o"] || parser.parseConfig("pptOutputPath");
     return iframe(pptOutputPath);
-});
-
-gulp.task("release", () => {
-    const releaseOutputPath = global["o"] || parser.parseConfig("releaseOutputPath");
-    return release(releaseOutputPath);
-});
-
-gulp.task("github", () => {
-    const githubOutputPath = global["o"] || parser.parseConfig("githubOutputPath");
-    return github(githubOutputPath);
 });
 
 gulp.task("ppt", () => {
