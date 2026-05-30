@@ -22,8 +22,11 @@ export class Root {
     static group: Group;
     static viewBox: SDBox;
     static init() {
-        // screen delta / Window.RATE = svg delta
-        this.viewBox = { x: 0, y: 0, width: 1200, height: 600 };
+        // Math coordinates: (0, 0) is the canvas center, y grows upward. Each
+        // Shape's setter/getter explicitly converts between user-facing math
+        // values and SVG-attribute values; the viewBox itself is centered on
+        // origin so the SVG rendering surface lines up with math space.
+        this.viewBox = { x: -600, y: -300, width: 1200, height: 600 };
 
         if (true) {
             const body = RenderNode.getDocumentBodyRenderNode();
