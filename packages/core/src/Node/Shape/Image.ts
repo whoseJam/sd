@@ -14,9 +14,12 @@ export class Image extends BaseShape {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("image", {
+        // Math y is the bottom edge; SVG y attribute is the top edge.
+        // svg_y = -(math_y + height). Pre-flip at construction so _.y and
+        // the SVG attribute start in sync (same shape as Rect).
+        this.renderer = this.createSVGNode("image", {
             x: args?.x ?? 0,
-            y: args?.y ?? 0,
+            y: -((args?.y ?? 0) + (args?.height ?? 40)),
             width: args?.width ?? 40,
             height: args?.height ?? 40,
             src: args?.src ?? "",
@@ -24,7 +27,7 @@ export class Image extends BaseShape {
             preserveAspectRatio: "xMidYMid meet",
         });
 
-        args?.targetNode?.appendChild(this._.renderer);
+        args?.targetNode?.appendChild(this.renderer);
     }
 
     getX(): number {
@@ -32,7 +35,7 @@ export class Image extends BaseShape {
     }
 
     setX(x: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "x", x, this._.x, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "x", x, this._.x, Interp.numberInterp);
     }
 
     onXChanged(listener: (vn: number, vo: number) => void) {
@@ -44,15 +47,18 @@ export class Image extends BaseShape {
     }
 
     getY(): number {
-        return this._.y;
+        return -this._.y - this._.height;
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "y", y, this._.y, Interp.numberInterp);
+        const svgY = -(y + this._.height);
+        return this.triggerAttributeChanged(this.renderer, "y", svgY, this._.y, Interp.numberInterp);
     }
 
     onYChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("y", listener);
+        return this.onAttributeChanged("y", (svgVn, svgVo) =>
+            listener(-svgVn - this._.height, -svgVo - this._.height)
+        );
     }
 
     offYChanged(listener: (vn: number, vo: number) => void) {
@@ -64,7 +70,7 @@ export class Image extends BaseShape {
     }
 
     setWidth(width: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "width", width, this._.width, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "width", width, this._.width, Interp.numberInterp);
     }
 
     onWidthChanged(listener: (vn: number, vo: number) => void) {
@@ -80,7 +86,13 @@ export class Image extends BaseShape {
     }
 
     setHeight(height: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "height", height, this._.height, Interp.numberInterp);
+        // Keep math_y (bottom edge) constant when height changes; rewrite the
+        // SVG y attribute accordingly.
+        const oldHeight = this._.height;
+        const oldSvgY = this._.y;
+        const newSvgY = oldSvgY + oldHeight - height;
+        this.triggerAttributeChanged(this.renderer, "height", height, oldHeight, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "y", newSvgY, oldSvgY, Interp.numberInterp);
     }
 
     onHeightChanged(listener: (vn: number, vo: number) => void) {
@@ -96,7 +108,7 @@ export class Image extends BaseShape {
     }
 
     setSrc(src: string): this {
-        return this.triggerAttributeChanged(this._.renderer, "src", src, this._.src);
+        return this.triggerAttributeChanged(this.renderer, "src", src, this._.src);
     }
 
     onSrcChanged(listener: (vn: string, vo: string) => void) {

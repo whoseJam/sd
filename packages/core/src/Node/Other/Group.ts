@@ -9,7 +9,7 @@ export class Group extends SDSVGNode {
     constructor(args?: { targetNode?: Group; opacity?: number }) {
         super();
 
-        this._.renderer = this.createSVGNode("g", {
+        this.renderer = this.createSVGNode("g", {
             opacity: args?.opacity ?? 1,
         });
 
@@ -19,22 +19,22 @@ export class Group extends SDSVGNode {
     append(child: SDNode | RenderNode) {
         if (child instanceof SDNode) {
             this.getRootRenderNode().append(child.getRootRenderNode());
-            child._.parent = this;
+            child.parent = this;
         } else this.getRootRenderNode().append(child);
         return this;
     }
 
     appendChild(child: SDNode | RenderNode) {
-        child._.parent = this;
+        child.parent = this;
         if (child instanceof SDNode) {
             this.getRootRenderNode().appendChild(child.getRootRenderNode());
-            child._.parent = this;
+            child.parent = this;
         } else this.getRootRenderNode().appendChild(child);
         return this;
     }
 
     insertBefore(child: SDNode | RenderNode, referenced: SDNode | RenderNode) {
-        if (child instanceof SDNode) child._.parent = this;
+        if (child instanceof SDNode) child.parent = this;
         const child_ = child instanceof SDNode ? child.getRootRenderNode() : child;
         const referenced_ = referenced instanceof SDNode ? referenced.getRootRenderNode() : referenced;
         this.getRootRenderNode().insertBefore(child_, referenced_);

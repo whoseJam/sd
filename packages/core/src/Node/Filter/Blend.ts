@@ -24,7 +24,7 @@ export class Blend extends TwoInputFilter {
     constructor(args?: { targetNode?: Filter; in?: string; in2?: string; result?: string; mode?: Mode }) {
         super();
 
-        this._.renderer = this.createSVGNode("feBlend", {
+        this.renderer = this.createSVGNode("feBlend", {
             in: args?.in ?? "SourceGraphic",
             in2: args?.in2 ?? "SourceGraphic",
             mode: args?.mode ?? "normal",
@@ -38,7 +38,7 @@ export class Blend extends TwoInputFilter {
     }
 
     setMode(mode: string) {
-        return this.triggerAttributeChanged(this._.renderer, "mode", mode, this._.mode, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "mode", mode, this._.mode, Interp.stringInterp);
     }
 
     onModeChanged(listener: (vn: string, vo: string) => void) {

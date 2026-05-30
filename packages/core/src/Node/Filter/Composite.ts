@@ -27,7 +27,7 @@ export class Composite extends TwoInputFilter {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("feComposite", {
+        this.renderer = this.createSVGNode("feComposite", {
             in: args?.in ?? "SourceGraphic",
             in2: args?.in2 ?? "SourceGraphic",
             operator: args?.operator ?? "over",
@@ -46,7 +46,7 @@ export class Composite extends TwoInputFilter {
 
     setOperator(operator: string) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "operator",
             operator,
             this._.operator,
@@ -67,7 +67,7 @@ export class Composite extends TwoInputFilter {
     }
 
     setK1(k1: number) {
-        return this.triggerAttributeChanged(this._.renderer, "k1", k1, this._.k1, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k1", k1, this._.k1, Interp.numberInterp);
     }
 
     onK1Changed(listener: (vn: number, vo: number) => void) {
@@ -83,7 +83,7 @@ export class Composite extends TwoInputFilter {
     }
 
     setK2(k2: number) {
-        return this.triggerAttributeChanged(this._.renderer, "k2", k2, this._.k2, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k2", k2, this._.k2, Interp.numberInterp);
     }
 
     onK2Changed(listener: (vn: number, vo: number) => void) {
@@ -99,7 +99,7 @@ export class Composite extends TwoInputFilter {
     }
 
     setK3(k3: number) {
-        return this.triggerAttributeChanged(this._.renderer, "k3", k3, this._.k3, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k3", k3, this._.k3, Interp.numberInterp);
     }
 
     onK3Changed(listener: (vn: number, vo: number) => void) {
@@ -115,7 +115,7 @@ export class Composite extends TwoInputFilter {
     }
 
     setK4(k4: number) {
-        return this.triggerAttributeChanged(this._.renderer, "k4", k4, this._.k4, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k4", k4, this._.k4, Interp.numberInterp);
     }
 
     onK4Changed(listener: (vn: number, vo: number) => void) {

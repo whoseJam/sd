@@ -33,8 +33,8 @@ export class Slider extends BaseControl {
             type: "range",
         });
 
-        this._.foreign = foreign;
-        this._.renderer = renderer;
+        this.foreign = foreign;
+        this.renderer = renderer;
 
         Dom.addEventListener(renderer.element(), "mousedown", e => {
             if (!Status.isInteractable()) e.preventDefault();
@@ -65,7 +65,7 @@ export class Slider extends BaseControl {
      */
     setMax(max: number) {
         if (this.getValue() > max) this.setValue(max);
-        return this.triggerAttributeChanged(this._.renderer, "max", max, this._.max);
+        return this.triggerAttributeChanged(this.renderer, "max", max, this._.max);
     }
 
     /**
@@ -83,7 +83,7 @@ export class Slider extends BaseControl {
      */
     setMin(min?: number) {
         if (this.getValue() < min) this.setValue(min);
-        return this.triggerAttributeChanged(this._.renderer, "min", min, this._.min);
+        return this.triggerAttributeChanged(this.renderer, "min", min, this._.min);
     }
 
     /**
@@ -100,7 +100,7 @@ export class Slider extends BaseControl {
      * @returns The current component instance for method chaining.
      */
     setValue(value?: number) {
-        return this.triggerAttributeChanged(this._.renderer, "value", value, this._.value);
+        return this.triggerAttributeChanged(this.renderer, "value", value, this._.value);
     }
 
     onValueChanged(listener: (vn: any, vo: any) => void) {

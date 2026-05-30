@@ -105,6 +105,6 @@ export class Path extends BasePath {
 
     setD(d: string): this {
         Object.assign(this._, { d, ...PathEngine.toBox(d) });
-        return this.triggerAttributeChanged(this._.renderer, "d", d, this._.d, Interp.pathInterp);
+        return this.triggerAttributeChanged(this.renderer, "d", d, this._.d, Interp.pathInterp);
     }
 }

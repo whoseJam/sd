@@ -27,7 +27,7 @@ export class DropShadow extends OneInputFilter {
         super();
 
         if (typeof args?.stdDeviation === "number") args.stdDeviation = [args.stdDeviation, args.stdDeviation];
-        this._.renderer = this.createSVGNode("feDropShadow", {
+        this.renderer = this.createSVGNode("feDropShadow", {
             in: args?.in ?? "SourceGraphic",
             result: args?.result ?? "",
             colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
@@ -47,7 +47,7 @@ export class DropShadow extends OneInputFilter {
 
     setStdDeviation(std: number) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "stdDeviation",
             std,
             this._.stdDeviation,
@@ -68,7 +68,7 @@ export class DropShadow extends OneInputFilter {
     }
 
     setDx(dx: number) {
-        return this.triggerAttributeChanged(this._.renderer, "dx", dx, this._.dx, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dx", dx, this._.dx, Interp.numberInterp);
     }
 
     onDxChanged(listener: (vn: number, vo: number) => void) {
@@ -84,7 +84,7 @@ export class DropShadow extends OneInputFilter {
     }
 
     setDy(dy: number) {
-        return this.triggerAttributeChanged(this._.renderer, "dy", dy, this._.dy, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dy", dy, this._.dy, Interp.numberInterp);
     }
 
     onDyChanged(listener: (vn: number, vo: number) => void) {
@@ -101,7 +101,7 @@ export class DropShadow extends OneInputFilter {
 
     setFloodColor(color: SDColor) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "floodColor",
             color,
             this._.floodColor,
@@ -123,7 +123,7 @@ export class DropShadow extends OneInputFilter {
 
     setFloodOpacity(opacity: number) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "floodOpacity",
             opacity,
             this._.floodOpacity,

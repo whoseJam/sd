@@ -19,7 +19,7 @@ export class Offset extends OneInputFilter {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("feOffset", {
+        this.renderer = this.createSVGNode("feOffset", {
             in: args?.in ?? "SourceGraphic",
             result: args?.result ?? "",
             colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
@@ -33,7 +33,7 @@ export class Offset extends OneInputFilter {
     }
 
     setDx(dx: number) {
-        return this.triggerAttributeChanged(this._.renderer, "dx", dx, this._.dx, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dx", dx, this._.dx, Interp.numberInterp);
     }
 
     onDxChanged(listener: (vn: number, vo: number) => void) {
@@ -49,7 +49,7 @@ export class Offset extends OneInputFilter {
     }
 
     setDy(dy: number) {
-        return this.triggerAttributeChanged(this._.renderer, "dy", dy, this._.dy, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dy", dy, this._.dy, Interp.numberInterp);
     }
 
     onDyChanged(listener: (vn: number, vo: number) => void) {

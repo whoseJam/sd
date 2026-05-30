@@ -24,7 +24,7 @@ export function buildAnimation(
             mappings.map(mapping => mapping[0]),
             mappings.map(mapping => mapping[1]),
             postProcess,
-            text._.timingFunction,
+            text.timingFunction,
             text,
             "text:" + animatedKey
         )

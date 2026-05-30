@@ -20,7 +20,7 @@ export class BaseControl extends SDHTMLNode {
     }
 
     setX(x: number): this {
-        return this.triggerAttributeChanged(this._.foreign, "x", x, this._.x, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "x", x, this._.x, Interp.numberInterp);
     }
 
     getY(): number {
@@ -28,7 +28,7 @@ export class BaseControl extends SDHTMLNode {
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this._.foreign, "y", y, this._.y, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "y", y, this._.y, Interp.numberInterp);
     }
 
     getWidth(): number {
@@ -36,7 +36,7 @@ export class BaseControl extends SDHTMLNode {
     }
 
     setWidth(width: number): this {
-        return this.triggerAttributeChanged(this._.foreign, "width", width, this._.width, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "width", width, this._.width, Interp.numberInterp);
     }
 
     getHeight(): number {
@@ -44,6 +44,6 @@ export class BaseControl extends SDHTMLNode {
     }
 
     setHeight(height: number): this {
-        return this.triggerAttributeChanged(this._.foreign, "height", height, this._.height, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "height", height, this._.height, Interp.numberInterp);
     }
 }

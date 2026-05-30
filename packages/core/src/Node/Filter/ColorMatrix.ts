@@ -21,7 +21,7 @@ export class ColorMatrix extends OneInputFilter {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("feColorMatrix", {
+        this.renderer = this.createSVGNode("feColorMatrix", {
             in: args?.in ?? "SourceGraphic",
             result: args?.result ?? "",
             colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
@@ -37,7 +37,7 @@ export class ColorMatrix extends OneInputFilter {
     }
 
     setType(type: string) {
-        return this.triggerAttributeChanged(this._.renderer, "type", type, this._.type);
+        return this.triggerAttributeChanged(this.renderer, "type", type, this._.type);
     }
 
     onTypeChanged(listener: (vn: ColorMatrixType, vo: ColorMatrixType) => void) {
@@ -53,7 +53,7 @@ export class ColorMatrix extends OneInputFilter {
     }
 
     setValues(values: number | Array<number>) {
-        return this.triggerAttributeChanged(this._.renderer, "values", values, this._.values, Interp.arrayInterp);
+        return this.triggerAttributeChanged(this.renderer, "values", values, this._.values, Interp.arrayInterp);
     }
 
     onValuesChanged(listener: (vn: number | Array<number>, vo: number | Array<number>) => void) {

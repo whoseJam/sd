@@ -17,7 +17,7 @@ export class GaussianBlur extends OneInputFilter {
         super();
 
         if (typeof args?.stdDeviation === "number") args.stdDeviation = [args.stdDeviation, args.stdDeviation];
-        this._.renderer = this.createSVGNode("feGaussianBlur", {
+        this.renderer = this.createSVGNode("feGaussianBlur", {
             in: args?.in ?? "SourceGraphic",
             result: args?.result ?? "",
             colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
@@ -34,7 +34,7 @@ export class GaussianBlur extends OneInputFilter {
     setStdDeviation(std: number | [number, number]) {
         if (typeof std === "number") std = [std, std];
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "stdDeviation",
             std,
             this._.stdDeviation,

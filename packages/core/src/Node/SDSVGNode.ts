@@ -38,7 +38,7 @@ export abstract class SDSVGNode extends SDNode {
      */
     setFill(fill: SDAllColor) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "fill",
             C.toRGBA(C.toFill(fill)),
             this._.fill,
@@ -69,7 +69,7 @@ export abstract class SDSVGNode extends SDNode {
      */
     setStroke(stroke: SDAllColor): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "stroke",
             C.toRGBA(C.toStroke(stroke)),
             this._.stroke,
@@ -91,7 +91,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setFillOpacity(opacity: number): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "fillOpacity",
             opacity,
             this._.fillOpacity,
@@ -113,7 +113,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setStrokeOpacity(opacity: number): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "strokeOpacity",
             opacity,
             this._.strokeOpacity,
@@ -135,7 +135,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setStrokeWidth(width: number): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "strokeWidth",
             width,
             this._.strokeWidth,
@@ -157,7 +157,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setStrokeDashOffset(offset: number): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "strokeDashOffset",
             offset,
             this._.strokeDashOffset,
@@ -179,7 +179,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setStrokeDashArray(array: string | number | Array<number>): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "strokeDashArray",
             SDSVGNode.toStrokeDashArray(array),
             this._.strokeDashArray,
@@ -201,7 +201,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setStrokeLineCap(lineCap: StrokeLineCap) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "strokeLineCap",
             lineCap,
             this._.strokeLineCap,
@@ -223,7 +223,7 @@ export abstract class SDSVGNode extends SDNode {
 
     setStrokeLineJoin(lineJoin: StrokeLineJoin): this {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "strokeLineJoin",
             lineJoin,
             this._.strokeLineJoin,
@@ -242,7 +242,7 @@ export abstract class SDSVGNode extends SDNode {
     protected createSVGNode(label: string, attributes: Record<string, any> = {}): RenderNode {
         Object.assign(this._, attributes);
         const object = RenderNode.createRenderNode(this, undefined, label);
-        this._.renderer = object;
+        this.renderer = object;
         for (const key in attributes) object.setAttribute(key, attributes[key]);
         return object;
     }

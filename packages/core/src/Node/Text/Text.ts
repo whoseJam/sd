@@ -54,7 +54,7 @@ export class Text extends BaseText {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("text", {
+        this.renderer = this.createSVGNode("text", {
             "text": args?.text ?? "",
             "x": args?.x ?? 0,
             "y": args?.y ?? 0,
@@ -111,7 +111,7 @@ export class Text extends BaseText {
             this._.width = box.width;
             this._.height = box.height;
         }
-        return this.triggerAttributeChanged(this._.renderer, "fontSize", size, this._.fontSize, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "fontSize", size, this._.fontSize, Interp.numberInterp);
     }
 
     onFontSizeChanged(listener: (vn: number, vo: number) => void) {
@@ -143,7 +143,7 @@ export class Text extends BaseText {
             { text: this.getText(), styles: this._.subtextStyles },
             { text: text_ },
             transformProcess(mapping),
-            transformPostProcess(this, this._.parent.getRootRenderNode()),
+            transformPostProcess(this, this.parent.getRootRenderNode()),
             "transform"
         );
         const html = parseToHTML(styles, text_);
@@ -151,7 +151,7 @@ export class Text extends BaseText {
         this._.height = box.height;
         this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this._.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
         return this;
     }
 
@@ -176,15 +176,15 @@ export class Text extends BaseText {
             { text: this.getText() },
             { text: this.getText() },
             transformProcess([]),
-            transformPostProcess(this, this._.parent.getRootRenderNode()),
+            transformPostProcess(this, this.parent.getRootRenderNode()),
             "*"
         );
         const html = parseToHTML(styles, this.getText());
         this._.width = box.width;
         this._.height = box.height;
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this._.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
-        this.triggerAttributeChanged(this._.renderer, "fontFamily", family, this._.fontFamily, Interp.stringInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
+        this.triggerAttributeChanged(this.renderer, "fontFamily", family, this._.fontFamily, Interp.stringInterp);
         return this;
     }
 
@@ -204,7 +204,7 @@ export class Text extends BaseText {
             { text: this.getText(), styles: this._.subtextStyles },
             { text: text_ },
             typewritterProcess(),
-            typewritterPostProcess(this, this._.parent.getRootRenderNode()),
+            typewritterPostProcess(this, this.parent.getRootRenderNode()),
             "typewritter"
         );
         const html = parseToHTML(styles, text_);
@@ -212,7 +212,7 @@ export class Text extends BaseText {
         this._.height = box.height;
         this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this._.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
         return this;
     }
 
@@ -226,7 +226,7 @@ export class Text extends BaseText {
             { text: this.getText() },
             { text: this.getText() },
             transformProcess([]),
-            transformPostProcess(this, this._.parent.getRootRenderNode()),
+            transformPostProcess(this, this.parent.getRootRenderNode()),
             "*"
         );
         this._.subtextStyles = newStyles;
@@ -244,7 +244,7 @@ export class Text extends BaseText {
             { text: this.getText() },
             { text: this.getText() },
             transformProcess([]),
-            transformPostProcess(this, this._.parent.getRootRenderNode()),
+            transformPostProcess(this, this.parent.getRootRenderNode()),
             "*"
         );
         this._.subtextStyles = newStyles;
@@ -262,7 +262,7 @@ export class Text extends BaseText {
             { text: this.getText() },
             { text: this.getText() },
             transformProcess([]),
-            transformPostProcess(this, this._.parent.getRootRenderNode()),
+            transformPostProcess(this, this.parent.getRootRenderNode()),
             "*"
         );
         this._.subtextStyles = newStyles;

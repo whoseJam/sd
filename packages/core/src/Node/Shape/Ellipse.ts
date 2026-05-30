@@ -28,7 +28,7 @@ export class Ellipse extends BaseShape {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("ellipse", {
+        this.renderer = this.createSVGNode("ellipse", {
             rx: args?.rx ?? 20,
             ry: args?.ry ?? 20,
             cx: args?.cx ?? 20,
@@ -87,7 +87,7 @@ export class Ellipse extends BaseShape {
     }
 
     setCx(cx: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "cx", cx, this._.cx, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "cx", cx, this._.cx, Interp.numberInterp);
     }
 
     onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -119,7 +119,7 @@ export class Ellipse extends BaseShape {
     }
 
     setCy(cy: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "cy", -cy, this._.cy, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "cy", -cy, this._.cy, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
@@ -158,7 +158,7 @@ export class Ellipse extends BaseShape {
     }
 
     setRx(rx: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "rx", rx, this._.rx, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "rx", rx, this._.rx, Interp.numberInterp);
     }
 
     onRxChanged(listener: (vn: number, vo: number) => void) {
@@ -174,7 +174,7 @@ export class Ellipse extends BaseShape {
     }
 
     setRy(ry: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "ry", ry, this._.ry, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "ry", ry, this._.ry, Interp.numberInterp);
     }
 
     onRyChanged(listener: (vn: number, vo: number) => void) {

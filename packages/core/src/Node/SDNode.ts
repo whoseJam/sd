@@ -27,15 +27,24 @@ type AttributeListener = (vn: any, vo: any) => void;
 
 export abstract class SDNode {
     id: number;
+    // Engine state — typed first-class fields, not part of the dynamic _ bag.
+    // Public for now because sibling SDNode subclasses (Group, Filter) and
+    // free functions (ActionList.visible, text engines) read/write these
+    // across instances; tightening visibility is Phase 3 work.
+    parent: Group | Filter | undefined = undefined;
+    renderer: RenderNode | undefined = undefined;
+    foreign?: RenderNode;
+    frame: number = -1;
+    // delayMs / durationMs are read via delay() / duration() — kept under
+    // those method names because the field would collide with the method.
+    delayMs: number = 0;
+    durationMs: number = 0;
+    subAnimates: Array<Context> = [];
+    timingFunction: SDEasingFunction | undefined = undefined;
+    ready: boolean = false;
+    // _ still holds rendered attribute model (cx, cy, fill, opacity, etc.).
+    // Phase 2 of the cleanup will pull those out per-shape and delete this.
     _: {
-        parent: Group | Filter;
-        frame: number;
-        start: number;
-        duration: number;
-        subAnimates: Array<Context>;
-        timingFunction: SDEasingFunction;
-        renderer: RenderNode;
-        foreign?: RenderNode;
         opacity: number;
         scale: [number, number];
         rotate: number;
@@ -48,14 +57,6 @@ export abstract class SDNode {
     constructor() {
         this.id = ++SDNode.NODE_ID;
         this._ = {
-            parent: undefined,
-            renderer: undefined,
-            frame: -1,
-            start: 0,
-            duration: 0,
-            subAnimates: [],
-            timingFunction: undefined,
-            ready: false,
             opacity: 1,
             scale: [1, 1],
             rotate: 0,
@@ -66,31 +67,31 @@ export abstract class SDNode {
     }
 
     getRootRenderNode(): RenderNode {
-        if (this._.foreign) return this._.foreign;
-        return this._.renderer;
+        if (this.foreign) return this.foreign;
+        return this.renderer;
     }
 
     startSubAnimate() {
         const context = new Context(this);
-        this._.subAnimates.push(context);
+        this.subAnimates.push(context);
         return this;
     }
 
     subAnimate(l: number, r: number) {
-        const context = this._.subAnimates[this._.subAnimates.length - 1];
+        const context = this.subAnimates[this.subAnimates.length - 1];
         context.till(l, r);
         return this;
     }
     endSubAnimate() {
-        const context = this._.subAnimates.pop();
+        const context = this.subAnimates.pop();
         context.recover();
         return this;
     }
 
     startAnimate(args?: { delay?: number; duration?: number; easing?: SDEasingFunction }) {
-        this._.start = args?.delay ?? 0;
-        this._.duration = args?.duration ?? 300;
-        this._.timingFunction = T.toEasingFunction(args?.easing);
+        this.delayMs = args?.delay ?? 0;
+        this.durationMs = args?.duration ?? 300;
+        this.timingFunction = T.toEasingFunction(args?.easing);
         return this;
     }
 
@@ -100,9 +101,9 @@ export abstract class SDNode {
      * @returns The current component instance for method chaining.
      */
     endAnimate(): this {
-        this._.start = 0;
-        this._.duration = 0;
-        this._.timingFunction = undefined;
+        this.delayMs = 0;
+        this.durationMs = 0;
+        this.timingFunction = undefined;
         return this;
     }
 
@@ -112,14 +113,14 @@ export abstract class SDNode {
      * @returns The delay duration in milliseconds.
      */
     delay() {
-        return this._.start;
+        return this.delayMs;
     }
 
     /**
      * Gets the duration of current animation sequence.
      */
     duration() {
-        return this._.duration;
+        return this.durationMs;
     }
 
     /**
@@ -406,7 +407,7 @@ export abstract class SDNode {
         if (interp && Window.SHOULD_INTERP) {
             const interp_ = isInterpCreator(interp) ? interp(object, key) : interp;
             Animate.push(
-                new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this._.timingFunction, this, key)
+                new Action(this.delay(), this.delay() + this.duration(), vo, vn, interp_, this.timingFunction, this, key)
             );
         } else object?.setAttribute(key, vn);
         this.listeners[key]?.forEach(listener => listener(vn, vo));

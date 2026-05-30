@@ -39,7 +39,7 @@ export class Math extends BaseText {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("g", {
+        this.renderer = this.createSVGNode("g", {
             fill: args?.fill ?? C.black,
             stroke: args?.stroke ?? C.black,
         });
@@ -147,7 +147,7 @@ export class Math extends BaseText {
         this.triggerAttributeChanged(undefined, "string", String(text), this._.string, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this._.renderer, "html", html, this._.html, Interp.childBlankInMiddleInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.childBlankInMiddleInterp);
         return this;
     }
 
@@ -175,7 +175,7 @@ export class Math extends BaseText {
         );
         const html = parseToHTML(this, this._.string, newStyles)[0];
         this.triggerAttributeChanged(undefined, "subtextStyles", newStyles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this._.renderer, "html", html, this._.html, Interp.childBlankInMiddleInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.childBlankInMiddleInterp);
         return this;
     }
 }

@@ -31,7 +31,7 @@ export class Polygon extends BaseShape {
     }) {
         super();
 
-        this._.renderer = this.createSVGNode("polygon", {
+        this.renderer = this.createSVGNode("polygon", {
             points: Polygon.toPoints(args?.points),
             transformOrigin: ["center", "center"],
             opacity: args?.opacity ?? 1,
@@ -71,7 +71,7 @@ export class Polygon extends BaseShape {
     }
 
     setPoints(points: Array<[number, number]>): this {
-        return this.triggerAttributeChanged(this._.renderer, "points", points, this._.points, Interp.pointsInterp);
+        return this.triggerAttributeChanged(this.renderer, "points", points, this._.points, Interp.pointsInterp);
     }
 
     onPointsChanged(listener: (vn: Array<[number, number]>, vo: Array<[number, number]>) => void) {

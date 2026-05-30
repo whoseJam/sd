@@ -28,8 +28,8 @@ export class Button extends BaseControl {
             text: args?.text ?? "点击",
         });
 
-        this._.foreign = foreign;
-        this._.renderer = renderer;
+        this.foreign = foreign;
+        this.renderer = renderer;
 
         args?.targetNode?.appendChild(this);
     }
@@ -48,16 +48,16 @@ export class Button extends BaseControl {
      * @returns The current component instance for method chaining.
      */
     setText(text: string): this {
-        return this.triggerAttributeChanged(this._.renderer, "text", text, this._.text, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "text", text, this._.text, Interp.stringInterp);
     }
 
     onClick(listener: () => void): this {
-        this._.renderer.element().addEventListener("click", listener);
+        this.renderer.element().addEventListener("click", listener);
         return this;
     }
 
     offClick(listener: () => void): this {
-        this._.renderer.element().removeEventListener("click", listener);
+        this.renderer.element().removeEventListener("click", listener);
         return this;
     }
 }

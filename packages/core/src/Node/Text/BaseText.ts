@@ -63,7 +63,7 @@ export abstract class BaseText extends SDSVGNode {
     }
 
     setX(x: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "x", x, this._.x, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "x", x, this._.x, Interp.numberInterp);
     }
 
     onXChanged(listener: (vn: number, vo: number) => void) {
@@ -98,7 +98,7 @@ export abstract class BaseText extends SDSVGNode {
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "y", y, this._.y, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "y", y, this._.y, Interp.numberInterp);
     }
 
     onYChanged(listener: (vn: number, vo: number) => void) {

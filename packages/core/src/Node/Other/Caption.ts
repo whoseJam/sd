@@ -106,8 +106,8 @@ export class Caption extends SDHTMLNode {
             height: args?.height ?? 80,
         });
         const caption = new CaptionObject(this, container);
-        this._.foreign = foreign;
-        this._.renderer = container;
+        this.foreign = foreign;
+        this.renderer = container;
         this._.caption = caption;
 
         if (args?.cx !== undefined) this.setCx(args.cx);
@@ -123,7 +123,7 @@ export class Caption extends SDHTMLNode {
     }
 
     setX(x: number) {
-        return this.triggerAttributeChanged(this._.foreign, "x", x, this._.x, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "x", x, this._.x, Interp.numberInterp);
     }
 
     onXChanged(listener: (vn: number, vo: number) => void) {
@@ -139,7 +139,7 @@ export class Caption extends SDHTMLNode {
     }
 
     setY(y: number) {
-        return this.triggerAttributeChanged(this._.foreign, "y", y, this._.y, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "y", y, this._.y, Interp.numberInterp);
     }
 
     onYChanged(listener: (vn: number, vo: number) => void) {
@@ -155,7 +155,7 @@ export class Caption extends SDHTMLNode {
     }
 
     setWidth(width: number) {
-        return this.triggerAttributeChanged(this._.foreign, "width", width, this._.width, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "width", width, this._.width, Interp.numberInterp);
     }
 
     onWidthChanged(listener: (vn: number, vo: number) => void) {
@@ -171,7 +171,7 @@ export class Caption extends SDHTMLNode {
     }
 
     setHeight(height: number) {
-        return this.triggerAttributeChanged(this._.foreign, "height", height, this._.height, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "height", height, this._.height, Interp.numberInterp);
     }
 
     onHeightChanged(listener: (vn: number, vo: number) => void) {

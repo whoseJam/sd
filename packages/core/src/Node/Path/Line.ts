@@ -89,7 +89,7 @@ export class Line extends BasePath {
     }
 
     setX1(x1: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "x1", x1, this._.x1, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "x1", x1, this._.x1, Interp.numberInterp);
     }
 
     onX1Changed(listener: (vn: number, vo: number) => void): this {
@@ -105,7 +105,7 @@ export class Line extends BasePath {
     }
 
     setX2(x2: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "x2", x2, this._.x2, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "x2", x2, this._.x2, Interp.numberInterp);
     }
 
     onX2Changed(listener: (vn: number, vo: number) => void): this {
@@ -121,7 +121,7 @@ export class Line extends BasePath {
     }
 
     setY1(y1: number) {
-        return this.triggerAttributeChanged(this._.renderer, "y1", -y1, this._.y1, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "y1", -y1, this._.y1, Interp.numberInterp);
     }
 
     onY1Changed(listener: (vn: number, vo: number) => void): this {
@@ -137,7 +137,7 @@ export class Line extends BasePath {
     }
 
     setY2(y2: number): this {
-        return this.triggerAttributeChanged(this._.renderer, "y2", -y2, this._.y2, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "y2", -y2, this._.y2, Interp.numberInterp);
     }
 
     onY2Changed(listener: (vn: number, vo: number) => void): this {

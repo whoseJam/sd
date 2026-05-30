@@ -28,7 +28,7 @@ const SIZE_RELATED_KEY = new Set([
 const visible = (element: SDNode): boolean => {
     if (!(element instanceof SDNode)) return false;
     if (element.getOpacity() === 0) return false;
-    if (element._.parent) return visible(element._.parent);
+    if (element.parent) return visible(element.parent);
     return true;
 };
 

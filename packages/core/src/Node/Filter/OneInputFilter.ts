@@ -15,7 +15,7 @@ export class OneInputFilter extends BaseFilter {
     }
 
     setIn(input: string) {
-        return this.triggerAttributeChanged(this._.renderer, "in", input, this._.in, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "in", input, this._.in, Interp.stringInterp);
     }
 
     onInChanged(listener: (vn: string, vo: string) => void) {
@@ -31,7 +31,7 @@ export class OneInputFilter extends BaseFilter {
     }
 
     setResult(result: string) {
-        return this.triggerAttributeChanged(this._.renderer, "result", result, this._.result, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "result", result, this._.result, Interp.stringInterp);
     }
 
     onResultChanged(listener: (vn: string, vo: string) => void) {
@@ -48,7 +48,7 @@ export class OneInputFilter extends BaseFilter {
 
     setColorInterpolationFilters(color: ColorInterpolationFilters) {
         return this.triggerAttributeChanged(
-            this._.renderer,
+            this.renderer,
             "colorInterpolationFilters",
             color,
             this._.colorInterpolationFilters,
