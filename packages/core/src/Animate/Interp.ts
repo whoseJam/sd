@@ -64,51 +64,45 @@ export class InterpObject {
     }
 }
 
+const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t;
+
 export class Interp {
     static emptyInterp(object: any, key: string) {
         return new InterpObject(function (t: number) {});
     }
     static exLengthInterp(object: any, key: string) {
         const set = setter(object, key);
-        const f = (value: string) => +value.slice(0, -2);
+        const parse = (value: string) => +value.slice(0, -2);
         return new InterpObject(function (t) {
-            const A = this._source;
-            const B = this._target;
-            const current = A * (1 - t) + B * t;
-            set(current + "ex");
+            set(`${lerp(this._source, this._target, t)}ex`);
         }).onInit(function () {
-            this._source = f(this.source);
-            this._target = f(this.target);
+            this._source = parse(this.source);
+            this._target = parse(this.target);
         });
     }
     static numberInterp(object: any, key: string) {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            const A = this.source;
-            const B = this.target;
-            const current = A * (1 - t) + B * t;
-            set(current);
+            set(lerp(this.source, this.target, t));
         });
     }
     static pixelInterp(object: any, key: string) {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            const A = this.source;
-            const B = this.target;
-            const current = A * (1 - t) + B * t;
-            set(`${current}px`);
+            set(`${lerp(this.source, this.target, t)}px`);
         });
     }
     static colorInterp(object: any, key: string) {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            const fRGBA = this._source;
-            const tRGBA = this._target;
-            const r = fRGBA.r * (1 - t) + tRGBA.r * t;
-            const g = fRGBA.g * (1 - t) + tRGBA.g * t;
-            const b = fRGBA.b * (1 - t) + tRGBA.b * t;
-            const a = fRGBA.a * (1 - t) + tRGBA.a * t;
-            set({ r, g, b, a });
+            const A = this._source;
+            const B = this._target;
+            set({
+                r: lerp(A.r, B.r, t),
+                g: lerp(A.g, B.g, t),
+                b: lerp(A.b, B.b, t),
+                a: lerp(A.a, B.a, t),
+            });
         }).onInit(function () {
             this._source = Color.toRGBA(this.source);
             this._target = Color.toRGBA(this.target);
@@ -140,25 +134,17 @@ export class Interp {
 
     static arrayInterp(object: any, key: string) {
         const set = setter(object, key);
-        const f = (value: Array<number> | number) => {
-            if (typeof value === "number") return [value];
-            return value;
-        };
+        const toArr = (value: Array<number> | number) => (typeof value === "number" ? [value] : value);
         return new InterpObject(function (t) {
             const A = this._source;
             const B = this._target;
             const len = Math.max(A.length, B.length);
             const ans = [];
-            for (let i = 0; i < len; i++) {
-                const va = i < A.length ? A[i] : 0;
-                const vb = i < B.length ? B[i] : 0;
-                const v = va * (1 - t) + vb * t;
-                ans.push(v);
-            }
+            for (let i = 0; i < len; i++) ans.push(lerp(A[i] ?? 0, B[i] ?? 0, t));
             set(ans);
         }).onInit(function () {
-            this._source = f(this.source);
-            this._target = f(this.target);
+            this._source = toArr(this.source);
+            this._target = toArr(this.target);
         });
     }
 
@@ -167,9 +153,7 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this.source;
             const B = this.target;
-            const x = A[0] * (1 - t) + B[0] * t;
-            const y = A[1] * (1 - t) + B[1] * t;
-            set([x, y]);
+            set([lerp(A[0], B[0], t), lerp(A[1], B[1], t)]);
         });
     }
 
@@ -178,15 +162,8 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this.source;
             const B = this.target;
-            const current = {
-                a: A.a * (1 - t) + B.a * t,
-                b: A.b * (1 - t) + B.b * t,
-                c: A.c * (1 - t) + B.c * t,
-                d: A.d * (1 - t) + B.d * t,
-                e: A.e * (1 - t) + B.e * t,
-                f: A.f * (1 - t) + B.f * t,
-            };
-            set(`matrix(${current.a}, ${current.b}, ${current.c}, ${current.d}, ${current.e}, ${current.f})`);
+            const v = (k: "a" | "b" | "c" | "d" | "e" | "f") => lerp(A[k], B[k], t);
+            set(`matrix(${v("a")}, ${v("b")}, ${v("c")}, ${v("d")}, ${v("e")}, ${v("f")})`);
         });
     }
     static boxInterp(object: any, key: string) {
@@ -194,19 +171,15 @@ export class Interp {
         return new InterpObject(function (t) {
             const A = this.source;
             const B = this.target;
-            const x = A.x * (1 - t) + B.x * t;
-            const y = A.y * (1 - t) + B.y * t;
-            const width = A.width * (1 - t) + B.width * t;
-            const height = A.height * (1 - t) + B.height * t;
-            set(`${x} ${y} ${width} ${height}`);
+            set(`${lerp(A.x, B.x, t)} ${lerp(A.y, B.y, t)} ${lerp(A.width, B.width, t)} ${lerp(A.height, B.height, t)}`);
         });
     }
     static translateInterp(object: any, key: string) {
         const set = setter(object, key);
         return new InterpObject(function (t) {
-            const tx = this.source[0] + (this.target[0] - this.source[0]) * t;
-            const ty = this.source[1] + (this.target[1] - this.source[1]) * t;
-            set(`translate(${tx},${ty})`);
+            const A = this.source;
+            const B = this.target;
+            set(`translate(${lerp(A[0], B[0], t)},${lerp(A[1], B[1], t)})`);
         });
     }
     static pathInterp(object: any, key: string) {
@@ -217,7 +190,7 @@ export class Interp {
             const operators: PathOpers = [];
             for (let i = 0; i < A.length; i++) {
                 const operator: PathOper = [A[i][0]];
-                for (let j = 1; j < A[i].length; j++) operator.push(A[i][j] * (1 - t) + B[i][j] * t);
+                for (let j = 1; j < A[i].length; j++) operator.push(lerp(A[i][j], B[i][j], t));
                 operators.push(operator);
             }
             set(PathEngine.toString(operators));
@@ -231,7 +204,7 @@ export class Interp {
     }
     static pointsInterp(object: any, key?: string) {
         const set = setter(object, key);
-        const f = (value: Array<[number, number]>, length: number) => {
+        const pad = (value: Array<[number, number]>, length: number) => {
             while (value.length < length) value.push(value[value.length - 1]);
             return value;
         };
@@ -239,13 +212,12 @@ export class Interp {
             const A = this._source;
             const B = this._target;
             const ans = [];
-            for (let i = 0; i < A.length; i++)
-                ans.push([A[i][0] * (1 - t) + B[i][0] * t, A[i][1] * (1 - t) + B[i][1] * t]);
+            for (let i = 0; i < A.length; i++) ans.push([lerp(A[i][0], B[i][0], t), lerp(A[i][1], B[i][1], t)]);
             set(ans);
         }).onInit(function () {
             const length = Math.max(this.source.length, this.target.length);
-            this._source = f(this.source, length);
-            this._target = f(this.target, length);
+            this._source = pad(this.source, length);
+            this._target = pad(this.target, length);
         });
     }
 }
