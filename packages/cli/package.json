@@ -1,0 +1,7 @@
+{
+    "name": "@sd/cli",
+    "version": "0.0.1",
+    "private": true,
+    "description": "Build tasks and CLI entry points (sd-animation, sd-animationGroup, sd-ppt, sd-config)",
+    "license": "ISC"
+}

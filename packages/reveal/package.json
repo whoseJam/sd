@@ -1,0 +1,8 @@
+{
+    "name": "@sd/reveal",
+    "version": "0.0.1",
+    "private": true,
+    "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
+    "main": "dist/myreveal.js",
+    "license": "ISC"
+}

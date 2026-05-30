@@ -80,7 +80,6 @@
         "through2": "^4.0.2",
         "webpack": "^5.92.1",
         "webpack-cli": "^5.1.4",
-        "webpack-obfuscator": "^3.5.1",
         "webpack-stream": "^7.0.0"
     },
     "browser": {

@@ -1,30 +1,7 @@
-const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
 const webpack = require("webpack-stream");
 const TerserPlugin = require("terser-webpack-plugin");
-const JavaScriptObfuscator = require("webpack-obfuscator");
-
-function extractReversedNames() {
-    const filePath = path.join(__dirname, "../SD/sd.ts");
-    try {
-        const fileContent = fs.readFileSync(filePath, "utf8");
-        const regex = /\{([^}]+)\}/g;
-        const matched = new Set();
-        let match;
-        while ((match = regex.exec(fileContent)) !== null) {
-            match[1].split(",").forEach(content => {
-                const trimmed = content.trim();
-                if (trimmed !== "CONTINUE_STAGE" && !matched.has(trimmed) && /^[A-Z]/.test(trimmed))
-                    matched.add(trimmed);
-            });
-        }
-        return [...matched];
-    } catch (error) {
-        console.error("Error reading sd.ts file:", error.message);
-        return [];
-    }
-}
 
 module.exports = function (targetFolder) {
     return gulp
@@ -42,22 +19,6 @@ function getConfiguration() {
     const isWatch = global["w"] || false;
     const mode = isDevelopment ? "development" : "production";
     const plugins = [];
-
-    if (!isDevelopment) {
-        plugins.push(
-            new JavaScriptObfuscator({
-                identifierNamesGenerator: "mangled",
-                splitStrings: true,
-                rotateStringArray: true,
-                shuffleStringArray: true,
-                stringArray: true,
-                simplify: true,
-                reservedNames: extractReversedNames(),
-                compact: true,
-                controlFlowFlattening: false,
-            })
-        );
-    }
 
     return {
         mode,

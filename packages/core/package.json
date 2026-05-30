@@ -1,0 +1,8 @@
+{
+    "name": "@sd/core",
+    "version": "0.0.1",
+    "private": true,
+    "description": "SD rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)",
+    "main": "dist/sd.js",
+    "license": "ISC"
+}
