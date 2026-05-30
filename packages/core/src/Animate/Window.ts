@@ -22,10 +22,10 @@ export class Window {
     static SHOULD_FLUSH = false;
     static IS_CONTINUING = false;
     static IS_INTERACTING = false;
-    static SVG_MINX = 1200;
-    static SVG_MINY = 600;
-    static SVG_MAXX = 0;
-    static SVG_MAXY = 0;
+    static MATH_MINX = Infinity;
+    static MATH_MINY = Infinity;
+    static MATH_MAXX = -Infinity;
+    static MATH_MAXY = -Infinity;
     static PUPPETEER = false;
     static IFRAME_ID = undefined;
     static IFRAME_URL = undefined;
@@ -71,18 +71,18 @@ export class Window {
         window.parent.postMessage("inited", "*");
     }
     static notifyParent() {
+        // Sentinel: no entity contributed during the flush pass. Fall back to the
+        // centered default canvas so the host gets something usable instead of an
+        // infinite/empty viewBox.
+        const hasContent = isFinite(this.MATH_MINX) && isFinite(this.MATH_MAXX);
+        const x = hasContent ? this.MATH_MINX : -600;
+        const y = hasContent ? this.MATH_MINY : -300;
+        const w = hasContent ? this.MATH_MAXX - this.MATH_MINX : 1200;
+        const h = hasContent ? this.MATH_MAXY - this.MATH_MINY : 600;
         window.parent.postMessage(
             {
                 operator: "SetAnimationSize",
-                arguments: [
-                    // (id, url, x, y, width, height)
-                    this.IFRAME_ID,
-                    this.IFRAME_URL,
-                    this.SVG_MINX,
-                    this.SVG_MINY,
-                    this.SVG_MAXX - this.SVG_MINX,
-                    this.SVG_MAXY - this.SVG_MINY,
-                ],
+                arguments: [this.IFRAME_ID, this.IFRAME_URL, x, y, w, h],
             },
             "*"
         );

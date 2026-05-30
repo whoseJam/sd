@@ -273,22 +273,16 @@ export class ActionList {
         other.enabled = true;
         return other;
     }
+    // Every entity that has any action queued — not just size-related ones —
+    // contributes its math bounds, so animations whose geometry is set
+    // statically at construction still register.
     updateWindowSize() {
-        // Walk every entity that has any action queued — not just size-related ones.
-        // Otherwise an animation whose geometry is set statically at construction
-        // (e.g. `new Circle({cx, cy, r})` with only stroke animations) would never
-        // contribute to SVG_MIN/MAX even though its bounds are well-defined via
-        // SDNode.getX/getY/getMaxX/getMaxY on the model layer.
         this.actionsMap.forEach((_, entity) => {
             if (entity instanceof SDSVGNode && visible(entity)) {
-                const x = entity.getX();
-                const y = entity.getY();
-                const mx = entity.getMaxX();
-                const my = entity.getMaxY();
-                Window.SVG_MINX = Math.min(Window.SVG_MINX, x);
-                Window.SVG_MINY = Math.min(Window.SVG_MINY, y);
-                Window.SVG_MAXY = Math.max(Window.SVG_MAXY, my);
-                Window.SVG_MAXX = Math.max(Window.SVG_MAXX, mx);
+                Window.MATH_MINX = Math.min(Window.MATH_MINX, entity.getX());
+                Window.MATH_MINY = Math.min(Window.MATH_MINY, entity.getY());
+                Window.MATH_MAXX = Math.max(Window.MATH_MAXX, entity.getMaxX());
+                Window.MATH_MAXY = Math.max(Window.MATH_MAXY, entity.getMaxY());
             }
         });
     }

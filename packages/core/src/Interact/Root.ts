@@ -22,10 +22,7 @@ export class Root {
     static group: Group;
     static viewBox: SDBox;
     static init() {
-        // Math coordinates: (0, 0) is the canvas center, y grows upward. Each
-        // Shape's setter/getter explicitly converts between user-facing math
-        // values and SVG-attribute values; the viewBox itself is centered on
-        // origin so the SVG rendering surface lines up with math space.
+        // Math coordinates: (0, 0) is the canvas center, y grows upward.
         this.viewBox = { x: -600, y: -300, width: 1200, height: 600 };
 
         if (true) {
@@ -82,9 +79,11 @@ export class Root {
     }
 }
 
+// box is math (bottom-left anchored, y grows up). SVG viewBox uses top-left
+// with y growing down, so the y coordinate flips: svg_y = -(math_y + height).
 function updateSVGViewBox(box: SDBox) {
     const view = Root.svg;
-    view.setAttribute("viewBox", `${box.x} ${box.y} ${box.width} ${box.height}`);
+    view.setAttribute("viewBox", `${box.x} ${-(box.y + box.height)} ${box.width} ${box.height}`);
 }
 
 function updateWindowRate(box: SDBox) {
