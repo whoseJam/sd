@@ -1,11 +1,22 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { SDColor, Color as C } from "@/Utility/Color";
 import { Group } from "@/Node/Other/Group";
 import { Filter, SDFilter } from "@/Node/Filter/Filter";
 import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 
 export class Ellipse extends BaseShape {
+    protected cx: number = 20;
+    protected cy: number = 20;
+    protected rx: number = 20;
+    protected ry: number = 20;
+
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        if (key === "cy") return renderer.setAttribute("cy", -value);
+        super.renderAttribute(renderer, key, value);
+    }
+
     constructor(args?: {
         targetNode?: Group;
         cx?: number;
@@ -28,12 +39,16 @@ export class Ellipse extends BaseShape {
     }) {
         super();
 
+        this.cx = args?.cx ?? 20;
+        this.cy = args?.cy ?? 20;
+        this.rx = args?.rx ?? 20;
+        this.ry = args?.ry ?? 20;
+
         this.renderer = this.createSVGNode("ellipse", {
-            rx: args?.rx ?? 20,
-            ry: args?.ry ?? 20,
-            cx: args?.cx ?? 20,
-            // Math cy → SVG cy flip at construction (see Circle.ts).
-            cy: -(args?.cy ?? 20),
+            rx: this.rx,
+            ry: this.ry,
+            cx: this.cx,
+            cy: this.cy,
             opacity: args?.opacity ?? 1,
             fill: args?.fill ?? C.black,
             fillOpacity: args?.fillOpacity ?? 1,
@@ -83,11 +98,13 @@ export class Ellipse extends BaseShape {
     }
 
     getCx(): number {
-        return this._.cx;
+        return this.cx;
     }
 
     setCx(cx: number): this {
-        return this.triggerAttributeChanged(this.renderer, "cx", cx, this._.cx, Interp.numberInterp);
+        const old = this.cx;
+        this.cx = cx;
+        return this.triggerAttributeChanged(this.renderer, "cx", cx, old, Interp.numberInterp);
     }
 
     onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -115,15 +132,17 @@ export class Ellipse extends BaseShape {
     }
 
     getCy(): number {
-        return -this._.cy;
+        return this.cy;
     }
 
     setCy(cy: number): this {
-        return this.triggerAttributeChanged(this.renderer, "cy", -cy, this._.cy, Interp.numberInterp);
+        const old = this.cy;
+        this.cy = cy;
+        return this.triggerAttributeChanged(this.renderer, "cy", cy, old, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("cy", (svgVn, svgVo) => listener(-svgVn, -svgVo));
+        return this.onAttributeChanged("cy", listener);
     }
 
     offCyChanged(listener: (vn: number, vo: number) => void) {
@@ -154,11 +173,13 @@ export class Ellipse extends BaseShape {
     }
 
     getRx(): number {
-        return this._.rx;
+        return this.rx;
     }
 
     setRx(rx: number): this {
-        return this.triggerAttributeChanged(this.renderer, "rx", rx, this._.rx, Interp.numberInterp);
+        const old = this.rx;
+        this.rx = rx;
+        return this.triggerAttributeChanged(this.renderer, "rx", rx, old, Interp.numberInterp);
     }
 
     onRxChanged(listener: (vn: number, vo: number) => void) {
@@ -170,11 +191,13 @@ export class Ellipse extends BaseShape {
     }
 
     getRy(): number {
-        return this._.ry;
+        return this.ry;
     }
 
     setRy(ry: number): this {
-        return this.triggerAttributeChanged(this.renderer, "ry", ry, this._.ry, Interp.numberInterp);
+        const old = this.ry;
+        this.ry = ry;
+        return this.triggerAttributeChanged(this.renderer, "ry", ry, old, Interp.numberInterp);
     }
 
     onRyChanged(listener: (vn: number, vo: number) => void) {

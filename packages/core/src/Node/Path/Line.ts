@@ -2,12 +2,23 @@ import { Interp } from "@/Animate/Interp";
 import { Vector as V } from "@/Math/Vector";
 import { BasePath } from "@/Node/Path/BasePath";
 import { Group } from "@/Node/Other/Group";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { SDColor, Color as C } from "@/Utility/Color";
 import { Filter, SDFilter } from "@/Node/Filter/Filter";
 import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { TransformOrigin } from "../SDNode";
 
 export class Line extends BasePath {
+    protected x1: number = 0;
+    protected y1: number = 0;
+    protected x2: number = 40;
+    protected y2: number = 40;
+
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        if (key === "y1" || key === "y2") return renderer.setAttribute(key, -value);
+        super.renderAttribute(renderer, key, value);
+    }
+
     constructor(args?: {
         targetNode?: Group;
         x1?: number;
@@ -34,12 +45,16 @@ export class Line extends BasePath {
     }) {
         super();
 
+        this.x1 = args?.x1 ?? 0;
+        this.y1 = args?.y1 ?? 0;
+        this.x2 = args?.x2 ?? 40;
+        this.y2 = args?.y2 ?? 40;
+
         this.createSVGNode("line", {
-            x1: args?.x1 ?? 0,
-            // Math y → SVG y flip at construction (see Circle.ts).
-            y1: -(args?.y1 ?? 0),
-            x2: args?.x2 ?? 40,
-            y2: -(args?.y2 ?? 40),
+            x1: this.x1,
+            y1: this.y1,
+            x2: this.x2,
+            y2: this.y2,
             transformOrigin: args?.transformOrigin ?? ["center", "center"],
             translate: args?.translate ?? [0, 0],
             rotate: args?.rotate ?? 0,
@@ -69,7 +84,7 @@ export class Line extends BasePath {
     }
 
     getMaxX() {
-        return Math.max(this.getX1(), this.getY1());
+        return Math.max(this.getX1(), this.getX2());
     }
 
     getMaxY() {
@@ -85,11 +100,13 @@ export class Line extends BasePath {
     }
 
     getX1(): number {
-        return this._.x1;
+        return this.x1;
     }
 
     setX1(x1: number): this {
-        return this.triggerAttributeChanged(this.renderer, "x1", x1, this._.x1, Interp.numberInterp);
+        const old = this.x1;
+        this.x1 = x1;
+        return this.triggerAttributeChanged(this.renderer, "x1", x1, old, Interp.numberInterp);
     }
 
     onX1Changed(listener: (vn: number, vo: number) => void): this {
@@ -101,11 +118,13 @@ export class Line extends BasePath {
     }
 
     getX2(): number {
-        return this._.x2;
+        return this.x2;
     }
 
     setX2(x2: number): this {
-        return this.triggerAttributeChanged(this.renderer, "x2", x2, this._.x2, Interp.numberInterp);
+        const old = this.x2;
+        this.x2 = x2;
+        return this.triggerAttributeChanged(this.renderer, "x2", x2, old, Interp.numberInterp);
     }
 
     onX2Changed(listener: (vn: number, vo: number) => void): this {
@@ -117,15 +136,17 @@ export class Line extends BasePath {
     }
 
     getY1(): number {
-        return -this._.y1;
+        return this.y1;
     }
 
     setY1(y1: number) {
-        return this.triggerAttributeChanged(this.renderer, "y1", -y1, this._.y1, Interp.numberInterp);
+        const old = this.y1;
+        this.y1 = y1;
+        return this.triggerAttributeChanged(this.renderer, "y1", y1, old, Interp.numberInterp);
     }
 
     onY1Changed(listener: (vn: number, vo: number) => void): this {
-        return this.onAttributeChanged("y1", (svgVn, svgVo) => listener(-svgVn, -svgVo));
+        return this.onAttributeChanged("y1", listener);
     }
 
     offY1Changed(listener: (vn: number, vo: number) => void): this {
@@ -133,15 +154,17 @@ export class Line extends BasePath {
     }
 
     getY2(): number {
-        return -this._.y2;
+        return this.y2;
     }
 
     setY2(y2: number): this {
-        return this.triggerAttributeChanged(this.renderer, "y2", -y2, this._.y2, Interp.numberInterp);
+        const old = this.y2;
+        this.y2 = y2;
+        return this.triggerAttributeChanged(this.renderer, "y2", y2, old, Interp.numberInterp);
     }
 
     onY2Changed(listener: (vn: number, vo: number) => void): this {
-        return this.onAttributeChanged("y2", (svgVn, svgVo) => listener(-svgVn, -svgVo));
+        return this.onAttributeChanged("y2", listener);
     }
 
     offY2Changed(listener: (vn: number, vo: number) => void): this {
