@@ -9,22 +9,10 @@ type InitFunction = (this: Action) => void;
 type BeforeInterpFunction = (this: Action) => void;
 type AfterInterpFunction = (this: Action) => void;
 type Setter = (value: any) => void;
+type AttrTarget = { setAttribute(key: string, value: any): void };
 
-function setter(object: any, key: string): Setter {
-    if (object.setAttribute) {
-        return function (value: any) {
-            object.setAttribute(key, value);
-        };
-    } else if (typeof object[key] === "function") {
-        return function (value: any) {
-            object[key](value);
-        };
-    } else if (object[key] !== undefined) {
-        return function (value: any) {
-            object[key] = value;
-        };
-    }
-    throw new Error(`Unknown key: ${key}`);
+function setter(object: AttrTarget, key: string): Setter {
+    return value => object.setAttribute(key, value);
 }
 
 export class InterpObject {
