@@ -90,17 +90,6 @@ export class Interp {
             set(current);
         });
     }
-    static opacityInterp(object: any, key: string) {
-        const set = setter(object, key);
-        return new InterpObject(function (t) {
-            const A = this.source;
-            const B = this.target;
-            const current = A * (1 - t) + B * t;
-            set(current);
-            if (t === 1 && !this.entity._.clickableCalled)
-                object.setAttribute("pointer-events", current === 0 ? "none" : "auto");
-        });
-    }
     static pixelInterp(object: any, key: string) {
         const set = setter(object, key);
         return new InterpObject(function (t) {

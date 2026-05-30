@@ -54,7 +54,6 @@ export class Animate {
     }
     static tick(t: number) {
         checkWaterMark();
-        const dt = t - this.currentTimestamp;
         this.currentTimestamp = t;
         const currentActionList = this.currentActionList;
         if (Window.SHOULD_FLUSH || this.shouldStop) return;
@@ -64,7 +63,7 @@ export class Animate {
                 this.count--;
                 currentActionList.firstTick();
             }
-            currentActionList.tick(t, dt);
+            currentActionList.tick(t);
         }
         requestAnimationFrame(this.animationRequest);
     }

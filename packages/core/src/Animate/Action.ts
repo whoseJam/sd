@@ -9,7 +9,6 @@ export class Action {
     static stopFlag = 1 << 0;
     static hideFlag = 1 << 1;
     static firstCallFlag = 1 << 2;
-    skipping: number;
     t: number;
     l: number;
     r: number;
@@ -50,7 +49,6 @@ export class Action {
     ) {
         this.t = 0;
         this.reverse = false;
-        this.skipping = 0;
         if (l instanceof Action) {
             const other = arguments[0];
             this.l = other.l;
@@ -129,12 +127,6 @@ export class Action {
     }
     toString() {
         return `[${this.l}, ${this.r}] animatedKey=${this.animatedKey} source=${this.source} target=${this.target} id=${this.entity.id} frame=${this.frame}`;
-    }
-    entityIsReady() {
-        return true;
-    }
-    entityIsCreated() {
-        return true;
     }
     is(flag: number) {
         return (this.flag & flag) != 0;

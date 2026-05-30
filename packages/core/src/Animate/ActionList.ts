@@ -25,12 +25,11 @@ const SIZE_RELATED_KEY = new Set([
     "top",
 ]);
 
-const visible = (element: SDNode) => {
-    if (element instanceof SDNode) {
-        if (element.getOpacity() === 0) return false;
-        if (element._.parent) return visible(element._.parent);
-        return true;
-    }
+const visible = (element: SDNode): boolean => {
+    if (!(element instanceof SDNode)) return false;
+    if (element.getOpacity() === 0) return false;
+    if (element._.parent) return visible(element._.parent);
+    return true;
 };
 
 const isInstantaneous = (action: Action) => {
@@ -209,17 +208,13 @@ export class ActionList {
         });
         this.lazyActions = [];
     }
-    tick(t: number, dt: number) {
+    tick(t: number) {
         this.t = t;
         if (this.stopCount === this.validCount) return;
         this.actionsList.forEach(action => {
             if (action.is(Action.stopFlag)) return;
-            if (action.entityIsCreated() && !action.entityIsReady()) {
-                action.skipping += dt;
-                return;
-            }
             if (!action.t) action.t = t;
-            const duration = this.t - action.t + action.skipping;
+            const duration = this.t - action.t;
             action.tick(duration);
             if (action.is(Action.stopFlag)) this.stopCount++;
         });
