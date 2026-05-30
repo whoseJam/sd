@@ -31,6 +31,31 @@ module.exports = {
             fs.copyFileSync(`${src}/${font}`, `${dest}/${font}`);
         });
     },
+    /**
+     * Mirror packages/assets/ into `<dest>/vendor/` so that local builds can
+     * load every external dependency (snap.svg, dagre, MathJax2/3, themes,
+     * font-awesome, customcontrols, fonts) from the same origin as the deck
+     * itself — no whosejam.site or any other CDN required.
+     */
+    copyVendorAssets(projectRoot, dest) {
+        const src = path.join(projectRoot, "packages", "assets");
+        if (!fs.existsSync(src)) return;
+        const vendorDir = path.join(dest, "vendor");
+        // Walk the assets tree and copy everything except node_modules and
+        // the package metadata we don't need at runtime.
+        const skip = new Set(["node_modules", "package.json", ".npmignore", ".gitignore", ".travis.yml"]);
+        const walk = (s, d) => {
+            if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
+            for (const entry of fs.readdirSync(s, { withFileTypes: true })) {
+                if (skip.has(entry.name)) continue;
+                const sp = path.join(s, entry.name);
+                const dp = path.join(d, entry.name);
+                if (entry.isDirectory()) walk(sp, dp);
+                else fs.copyFileSync(sp, dp);
+            }
+        };
+        walk(src, vendorDir);
+    },
     validateJSFile(src) {
         if (!fs.existsSync(src)) {
             console.log(colors("red", `[Error] File ${src} not found. Please check if the input path is correct.`));
