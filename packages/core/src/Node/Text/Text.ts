@@ -88,6 +88,7 @@ export class Text extends BaseText {
             width: box.width,
             height: box.height,
         });
+        this.refreshY();
 
         if (args?.cx !== undefined) this.setCx(args.cx);
         if (args?.cy !== undefined) this.setCy(args.cy);
@@ -111,6 +112,7 @@ export class Text extends BaseText {
             this._.width = box.width;
             this._.height = box.height;
         }
+        this.refreshY();
         return this.triggerAttributeChanged(this.renderer, "fontSize", size, this._.fontSize, Interp.numberInterp);
     }
 
@@ -149,6 +151,7 @@ export class Text extends BaseText {
         const html = parseToHTML(styles, text_);
         this._.width = box.width;
         this._.height = box.height;
+        this.refreshY();
         this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
         this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
@@ -182,6 +185,7 @@ export class Text extends BaseText {
         const html = parseToHTML(styles, this.getText());
         this._.width = box.width;
         this._.height = box.height;
+        this.refreshY();
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
         this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);
         this.triggerAttributeChanged(this.renderer, "fontFamily", family, this._.fontFamily, Interp.stringInterp);
@@ -210,6 +214,7 @@ export class Text extends BaseText {
         const html = parseToHTML(styles, text_);
         this._.width = box.width;
         this._.height = box.height;
+        this.refreshY();
         this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
         this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.stringBlankInMiddleInterp);

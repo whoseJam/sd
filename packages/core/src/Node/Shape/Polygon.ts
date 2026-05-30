@@ -1,16 +1,22 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
 import { PolygonEngine } from "@/Node/Shape/PolygonEngine";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { Group } from "@/Node/Other/Group";
 import { SDColor, Color as C } from "@/Utility/Color";
 import { Filter, SDFilter } from "@/Node/Filter/Filter";
 import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
-import { point } from "@flatten-js/core";
 
 export class Polygon extends BaseShape {
-    _: BaseShape["_"] & {
-        points: Array<[number, number]>;
-    };
+    protected points: Array<[number, number]> = [];
+
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        if (key === "points") {
+            const flipped = (value as Array<[number, number]>).map(([px, py]) => [px, -py] as [number, number]);
+            return renderer.setAttribute("points", flipped);
+        }
+        super.renderAttribute(renderer, key, value);
+    }
 
     constructor(args?: {
         targetNode?: Group;
@@ -31,8 +37,10 @@ export class Polygon extends BaseShape {
     }) {
         super();
 
+        this.points = Polygon.toPoints(args?.points);
+
         this.renderer = this.createSVGNode("polygon", {
-            points: Polygon.toPoints(args?.points),
+            points: this.points,
             transformOrigin: ["center", "center"],
             opacity: args?.opacity ?? 1,
             fill: args?.fill ?? C.black,
@@ -51,27 +59,29 @@ export class Polygon extends BaseShape {
     }
 
     getX() {
-        return PolygonEngine.pointsToBox(this._.points).x;
+        return PolygonEngine.pointsToBox(this.points).x;
     }
 
     getY() {
-        return PolygonEngine.pointsToBox(this._.points).y;
+        return PolygonEngine.pointsToBox(this.points).y;
     }
 
     getWidth() {
-        return PolygonEngine.pointsToBox(this._.points).width;
+        return PolygonEngine.pointsToBox(this.points).width;
     }
 
     getHeight() {
-        return PolygonEngine.pointsToBox(this._.points).height;
+        return PolygonEngine.pointsToBox(this.points).height;
     }
 
     getPoints() {
-        return this._.points;
+        return this.points;
     }
 
     setPoints(points: Array<[number, number]>): this {
-        return this.triggerAttributeChanged(this.renderer, "points", points, this._.points, Interp.pointsInterp);
+        const old = this.points;
+        this.points = points;
+        return this.triggerAttributeChanged(this.renderer, "points", points, old, Interp.pointsInterp);
     }
 
     onPointsChanged(listener: (vn: Array<[number, number]>, vo: Array<[number, number]>) => void) {
@@ -83,35 +93,31 @@ export class Polygon extends BaseShape {
     }
 
     setX(x: number): this {
-        const box = PolygonEngine.pointsToBox(this._.points);
+        const box = PolygonEngine.pointsToBox(this.points);
         const dx = x - box.x;
-        const newPoints = this._.points.map(([px, py]) => [px + dx, py] as [number, number]);
-        return this.setPoints(newPoints);
+        return this.setPoints(this.points.map(([px, py]) => [px + dx, py] as [number, number]));
     }
 
     setY(y: number): this {
-        const box = PolygonEngine.pointsToBox(this._.points);
+        const box = PolygonEngine.pointsToBox(this.points);
         const dy = y - box.y;
-        const newPoints = this._.points.map(([px, py]) => [px, py + dy] as [number, number]);
-        return this.setPoints(newPoints);
+        return this.setPoints(this.points.map(([px, py]) => [px, py + dy] as [number, number]));
     }
 
     setWidth(width: number): this {
-        const box = PolygonEngine.pointsToBox(this._.points);
+        const box = PolygonEngine.pointsToBox(this.points);
         const scale = width / box.width;
-        const newPoints = this._.points.map(([px, py]) => [box.x + (px - box.x) * scale, py] as [number, number]);
-        return this.setPoints(newPoints);
+        return this.setPoints(this.points.map(([px, py]) => [box.x + (px - box.x) * scale, py] as [number, number]));
     }
 
     setHeight(height: number): this {
-        const box = PolygonEngine.pointsToBox(this._.points);
+        const box = PolygonEngine.pointsToBox(this.points);
         const scale = height / box.height;
-        const newPoints = this._.points.map(([px, py]) => [px, box.y + (py - box.y) * scale] as [number, number]);
-        return this.setPoints(newPoints);
+        return this.setPoints(this.points.map(([px, py]) => [px, box.y + (py - box.y) * scale] as [number, number]));
     }
 
     private static toPoints(points: string | Array<[number, number]>): Array<[number, number]> {
-        if (point === undefined) return [];
+        if (points === undefined) return [];
         if (typeof points === "string")
             return points.split(" ").map(p => p.split(",").map(n => parseFloat(n)) as [number, number]);
         return points;

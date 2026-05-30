@@ -1,5 +1,6 @@
 import { Interp } from "@/Animate/Interp";
 import { SDSVGNode } from "@/Node/SDSVGNode";
+import { RenderNode } from "@/Renderer/RenderNode";
 
 type TextMappingSubtextItem = [string, string];
 type TextMappingObjectSubtextItem = [BaseText, string, string];
@@ -57,6 +58,17 @@ export abstract class BaseText extends SDSVGNode {
         x: number;
         y: number;
     };
+
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        if (key === "y") return renderer.setAttribute("y", -(value + (this.getHeight() || 0)));
+        super.renderAttribute(renderer, key, value);
+    }
+
+    // SVG y attribute depends on this.getHeight(); subclasses call this whenever
+    // their height changes (setFontSize, setText, etc.) to keep math y constant.
+    protected refreshY(renderer: RenderNode = this.renderer) {
+        this.renderAttribute(renderer, "y", this._.y);
+    }
 
     getX(): number {
         return this._.x;

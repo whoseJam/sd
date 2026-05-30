@@ -1,6 +1,7 @@
 import { BasePath } from "@/Node/Path/BasePath";
 import { PathEngine } from "@/Node/Path/PathEngine";
 import { Group } from "@/Node/Other/Group";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { SDColor, Color as C } from "@/Utility/Color";
 import { Filter, SDFilter } from "@/Node/Filter/Filter";
 import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
@@ -8,13 +9,16 @@ import { Interp } from "@/Animate/Interp";
 import { TransformOrigin } from "@/Node/SDNode";
 
 export class Path extends BasePath {
-    _: BasePath["_"] & {
-        d: string;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
+    protected d: string = "";
+    protected x: number = 0;
+    protected y: number = 0;
+    protected width: number = 0;
+    protected height: number = 0;
+
+    renderAttribute(renderer: RenderNode, key: string, value: any) {
+        if (key === "d") return renderer.setAttribute("d", PathEngine.flipY(value));
+        super.renderAttribute(renderer, key, value);
+    }
 
     constructor(args?: {
         targetNode?: Group;
@@ -39,8 +43,15 @@ export class Path extends BasePath {
     }) {
         super();
 
+        this.d = args?.d ?? "";
+        const box = PathEngine.toBox(this.d);
+        this.x = box.x ?? 0;
+        this.y = box.y ?? 0;
+        this.width = box.width ?? 0;
+        this.height = box.height ?? 0;
+
         this.createSVGNode("path", {
-            d: args?.d ?? "",
+            d: this.d,
             transformOrigin: args?.transformOrigin ?? ["center", "center"],
             translate: args?.translate ?? [0, 0],
             rotate: args?.rotate ?? 0,
@@ -58,53 +69,51 @@ export class Path extends BasePath {
             filter: Filter.toURLString(args?.filter),
         });
 
-        const box = PathEngine.toBox(args?.d ?? "");
-
-        Object.assign(this._, {
-            d: args?.d ?? "",
-            x: box.x ?? 0,
-            y: box.y ?? 0,
-            width: box.width ?? 0,
-            height: box.height ?? 0,
-        });
-
         args?.targetNode?.appendChild(this);
     }
 
     getX() {
-        return this._.x;
+        return this.x;
     }
 
     getY() {
-        return this._.y;
+        return this.y;
     }
 
     getWidth() {
-        return this._.width;
+        return this.width;
     }
 
     getHeight() {
-        return this._.height;
+        return this.height;
     }
 
-    getPointAtRate(k: number) {
-        return PathEngine.getPointByRate(this.getD(), k);
+    getPointAtRate(k: number): [number, number] {
+        const [x, y] = PathEngine.getPointByRate(PathEngine.flipY(this.d), k);
+        return [x, -y];
     }
 
-    getPointAtLength(length: number) {
-        return PathEngine.getPointAtLength(this.getD(), length);
+    getPointAtLength(length: number): [number, number] {
+        const [x, y] = PathEngine.getPointAtLength(PathEngine.flipY(this.d), length);
+        return [x, -y];
     }
 
     totalLength() {
-        return PathEngine.getTotalLength(this.getD());
+        return PathEngine.getTotalLength(PathEngine.flipY(this.d));
     }
 
     getD(): string {
-        return this._.d;
+        return this.d;
     }
 
     setD(d: string): this {
-        Object.assign(this._, { d, ...PathEngine.toBox(d) });
-        return this.triggerAttributeChanged(this.renderer, "d", d, this._.d, Interp.pathInterp);
+        const old = this.d;
+        this.d = d;
+        const box = PathEngine.toBox(d);
+        this.x = box.x ?? 0;
+        this.y = box.y ?? 0;
+        this.width = box.width ?? 0;
+        this.height = box.height ?? 0;
+        return this.triggerAttributeChanged(this.renderer, "d", d, old, Interp.pathInterp);
     }
 }

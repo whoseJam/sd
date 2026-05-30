@@ -66,6 +66,7 @@ export class Math extends BaseText {
                 width: box.width,
                 height: box.height,
             });
+            this.refreshY(this._.html);
         }
 
         if (args?.cx !== undefined) this.setCx(args.cx);
@@ -106,6 +107,7 @@ export class Math extends BaseText {
             this._.width = box.width;
             this._.height = box.height;
         }
+        this.refreshY(this._.html);
         return this.triggerAttributeChanged(this._.html, "fontSize", size, this._.fontSize, Interp.numberInterp);
     }
 
@@ -144,6 +146,7 @@ export class Math extends BaseText {
         MathManager.applyStyles(html, styles);
         this._.width = box.width;
         this._.height = box.height;
+        this.refreshY(this._.html);
         this.triggerAttributeChanged(undefined, "string", String(text), this._.string, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
         this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);

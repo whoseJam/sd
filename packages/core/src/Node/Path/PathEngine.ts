@@ -33,8 +33,39 @@ export class PathEngine {
         this.pathSVG.setAttribute("opacity", 0);
     }
     static toBox(d: string): SDBox {
-        this.pathSVG.setAttribute("d", d);
-        return this.pathSVG.element().getBBox();
+        this.pathSVG.setAttribute("d", this.flipY(d));
+        const bbox = this.pathSVG.element().getBBox();
+        return { x: bbox.x, y: -bbox.y - bbox.height, width: bbox.width, height: bbox.height };
+    }
+    static flipY(d: string): string {
+        const operators = this.toOpers(d);
+        operators.forEach(operator => {
+            const code = operator[0];
+            switch (code) {
+                case "M": case "m":
+                case "T": case "t":
+                case "L": case "l":
+                    operator[2] = -(operator[2] as number);
+                    break;
+                case "V": case "v":
+                    operator[1] = -(operator[1] as number);
+                    break;
+                case "Q": case "q":
+                case "S": case "s":
+                    operator[2] = -(operator[2] as number);
+                    operator[4] = -(operator[4] as number);
+                    break;
+                case "C": case "c":
+                    operator[2] = -(operator[2] as number);
+                    operator[4] = -(operator[4] as number);
+                    operator[6] = -(operator[6] as number);
+                    break;
+                case "A": case "a":
+                    operator[7] = -(operator[7] as number);
+                    break;
+            }
+        });
+        return this.toString(operators);
     }
     static toOpers(d: string): PathOpers {
         // @ts-ignore
