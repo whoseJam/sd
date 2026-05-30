@@ -7,8 +7,8 @@
     <section>
         <h2>产生数</h2>
         <p>考虑输入的数字是 $n=\overline{a_1a_2a_3...a_k}$，相当于 $n$ 有 $k$ 个数码，第 $i$ 个数码的值为 $a_i$，其中 $\forall i \in [1,k]$ 都有 $a_i\in [0,9]$</p>
-        <iframe data-animation="./计数方案.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./计数方案.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment">设第 $i$ 个数码最终可以变成 $S_i$ 种不同的数码，根据乘法原理，总方案数就是
             $$
             \prod_{1\le i\le k} |S_i|

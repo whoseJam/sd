@@ -7,8 +7,8 @@
         <h2>trie图背景</h2>
         <p>在AC自动机做匹配的时候，发生失配时需要跳失配边</p>
         <p>设在 $u$ 上出现了字符 $c$ 失配，失配后会跳转到 $next(u,c)$ 上继续转移...</p>
-        <iframe data-animation="./背景.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./背景.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment">如果我们提前预处理出来所有的失配转移 $next(u,c)$，就不需要在匹配的时候跳失配边了<span class="fragment">——于是trie图就被发明出来了</span></p>
     </section>
     <section>
@@ -16,8 +16,8 @@
         <p>我们把<b>失配转移</b>和<b>trie树上的正常转移</b>都存储在ch数组里面</p>
         <p>用BFS从上往下递推出所有节点的fail指针和失配转移</p>
         <div style="display: flex; align-items: center;">
-            <iframe data-animation="./trie图.js"
-                style="width: 40%; height: 400px;"></iframe>
+            <sd-animation src="./trie图.js"
+                style="width: 40%; height: 400px;"></sd-animation>
             <codeblock style="width: 60%;">
                 <script type="text/template">
                     void Build() {

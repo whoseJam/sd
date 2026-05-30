@@ -27,8 +27,8 @@
         <p>设 $S=\sum_{i=1}^na_i$</p>
         <p>考虑有多少条项链恰好含有 $x$ 个第 $i$ 类珠子</p>
         <div style="display: flex;">
-            <iframe data-animation="./串项链.js"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./串项链.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
             <div>
                 <p class="fragment">剩下 $S-a_i$ 颗每颗可选可不选，第 $i$ 类珠子总共有 $a_i$ 颗，得从中选出 $x$ 颗来，那么总方案数就应该是 $2^{S-a_i}C_{a_i}^x$</p>
                 <p class="fragment quote">所以 $x$ 个第 $i$ 类珠子对答案的贡献就应该为 $2^{S-a_i}C_{a_i}^xv_i^x$</p>

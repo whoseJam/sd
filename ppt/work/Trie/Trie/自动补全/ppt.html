@@ -6,14 +6,14 @@
     <section>
         <h2>自动补全</h2>
         <p>能充当字符串 $s$ 自动补全的单词，在trie上一定是 $s$ 的后代</p>
-        <iframe data-animation="./自动补全.js" class="fragment"
-            style="width: 1000px; height: 450px;"></iframe>
+        <sd-animation src="./自动补全.js" class="fragment"
+            style="width: 1000px; height: 450px;"></sd-animation>
         <p class="fragment">统计子树内<b>终结节点个数</b>，就能在trie上找字典序第 $k$ 小的后代了</p>
     </section>
     <section>
         <h2>自动补全</h2>
-        <iframe data-animation="./分类讨论.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./分类讨论.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 int find(int u, int k) {

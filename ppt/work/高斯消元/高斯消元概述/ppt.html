@@ -145,8 +145,8 @@
     <section>
         <h2>高斯消元</h2>
         <p>最简单的高斯消元，就是直接把系数矩阵消为一个倒三角，中间没有任何特判</p>
-        <iframe data-animation="./高斯消元_normal_1.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./高斯消元_normal_1.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 void Gauss() {
@@ -172,8 +172,8 @@
         <h2>高斯消元</h2>
         <p>即使方程数多于未知数个数，也无所谓</p>
         <p>但要注意第 $i$ 行 $x_i$ 前面的系数恰好消成 $0$ 的情况，此时应该尝试找后面的某行顶替第 $i$ 行方程</p>
-        <iframe data-animation="./高斯消元_normal_2.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./高斯消元_normal_2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 int pos = -1;
@@ -188,8 +188,8 @@
     <section>
         <h2>高斯消元</h2>
         <p>不过有时会出现阶梯偏移的情况</p>
-        <iframe data-animation="./高斯消元_阶梯偏移_1.js"
-            style="width: 1000px; height: 240px;"></iframe>
+        <sd-animation src="./高斯消元_阶梯偏移_1.js"
+            style="width: 1000px; height: 240px;"></sd-animation>
         <p class="fragment">这告诉我们，当对第 $i$ 个未知量 $x_i$ 做消元的时候，并不一定是从第 $i$ 行方程开始消元</p>
         <codeblock class="fragment">
             <script type="text/template">
@@ -210,14 +210,14 @@
         <h2>高斯消元</h2>
         <p>再来一个阶梯偏移的例子</p>
         <p>阶梯偏移的正确处理非常重要，如果方程组恰好有唯一解，那其实就不会有阶梯偏移，但如果题目明确说了可能出现无解或者无穷多组解，你就得仔细处理这部分特判了</p>
-        <iframe data-animation="./高斯消元_阶梯偏移_2.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./高斯消元_阶梯偏移_2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
     </section>
     <section>
         <h2>高斯消元</h2>
         <p>有时我们消元完成后，会发现某个 $x_i$ 解不出来</p>
-        <iframe data-animation="./高斯消元_no_solution.js"
-            style="width: 1000px; height: 240px;"></iframe>
+        <sd-animation src="./高斯消元_no_solution.js"
+            style="width: 1000px; height: 240px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 bool noSolution(){
@@ -239,8 +239,8 @@
     <section>
         <h2>高斯消元</h2>
         <p>当阶梯不完美，而又并非是无解的情况，则为无穷多组解</p>
-        <iframe data-animation="./高斯消元_infinite.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./高斯消元_infinite.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 if (r < n) {

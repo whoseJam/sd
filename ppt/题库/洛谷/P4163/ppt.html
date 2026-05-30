@@ -6,17 +6,17 @@
     <section>
         <h2>排列</h2>
         <p>给定一个数字串 $s$ 和正整数 $d$，统计数字串有多少种不同的排列能被 $d$ 整除</p>
-        <iframe data-animation="./样例解释.js"
-            data-viewBoxDelta="0 0 0 80"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            viewbox-delta="0 0 0 80"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">注意到这里的数码最多只有 $10$ 个</p>
         <p class="fragment">我们可以认为我们要利用<b>数码资源</b>，把它们排成一个序列，最终序列能被 $d$ 整除</p>
         <p class="fragment quote">序列构造动态规划模型+有标号资源分配动态规划模型</p>
     </section>
     <section>
         <h2>排列</h2>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p>设 $f_{S,r}$ 表示使用了 $S$ 这个集合内的数码，构造出来的数字对 $d$ 取模的结果为 $r$ 的情况下，排列的数量</p>
         <p class="fragment">
             $$

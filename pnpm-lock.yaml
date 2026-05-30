@@ -118,13 +118,13 @@ importers:
         specifier: ^4.1.7
         version: 4.1.7(@types/node@25.9.1)(vite@8.0.14(@types/node@25.9.1)(sass@1.100.0)(terser@5.48.0))
 
-  packages/iframe: {}
+  packages/element: {}
 
   packages/reveal:
     dependencies:
-      '@sd/iframe':
+      '@sd/element':
         specifier: workspace:*
-        version: link:../iframe
+        version: link:../element
       reveal.js:
         specifier: ^5.1.0
         version: 5.2.1

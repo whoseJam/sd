@@ -27,8 +27,8 @@
             <li style="color: purple;">序列中的数字随便填</li>
         </ul>
         <p class="fragment">设 $f_{i,j}$ 表示序列构造到了第 $i$ 位，且这 $i$ 个数字之和模 $p$ 为 $j$，的方案数</p>
-        <iframe data-animation="./状态设置.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态设置.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">
             $$
             f_{i,j}\times F_k \stackrel{+}{\rightarrow} f_{i+1,(j+k)\%p}
@@ -73,8 +73,8 @@
             <li style="color: purple;">序列中的数字只能是合数</li>
         </ul>
         <p class="fragment">设 $g_{i,j}$ 表示序列构造到了第 $i$ 位，且这 $i$ 个数字之和模 $p$ 为 $j$，的方案数</p>
-        <iframe data-animation="./状态设置.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态设置.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">
             $$
             g_{i,j}\times G_k \stackrel{+}{\rightarrow} g_{i+1,(j+k)\%p}

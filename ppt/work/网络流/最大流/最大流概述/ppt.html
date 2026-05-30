@@ -13,8 +13,8 @@
     </section>
     <section>
         <h2>最大流</h2>
-        <iframe data-animation="./最大流例子.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./最大流例子.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p>设源点是 $A$，汇点是 $F$...</p>
         <p class="fragment">上图的最大流条数就是 $5$ 条</p>
     </section>
@@ -22,23 +22,23 @@
         <h2>最大流</h2>
         <p>那么我们如何去找一个图的最大流呢？</p>
         <p class="fragment">最朴素的思想，自然是不断DFS出源点到汇点的剩余容量不为 $0$ 的道路，找到这条道路的瓶颈，然后在这条道路上放尽可能多的流</p>
-        <iframe data-animation="./成功的朴素最大流.js" class="fragment"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./成功的朴素最大流.js" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment">我们把一条从源点到汇点、剩余容量不为 $0$ 的道路，叫做一条<b>增广路</b>，意指这条路可以让当前流变大</p>
     </section>
     <section>
         <h2>最大流</h2>
         <p>但是这样做是有反例的</p>
-        <iframe data-animation="./失败的朴素最大流.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./失败的朴素最大流.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>最大流</h2>
         <p>于是，我们引入了反悔流</p>
-        <iframe data-animation="./反悔最大流.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./反悔最大流.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment" style="margin-top: 0px;">反向边和原图中的边总是成对出现，我们把原图中的边叫做<b>正向弧</b>，每条与正向弧成对出现的方向相反的边叫做<b>反向弧</b><span class="fragment">，可以把走正向弧看作流量的决策，走反向弧看作流量的反悔</span></p>
-        <iframe data-animation="./流量的决策和反悔.js" class="fragment"
+        <sd-animation src="./流量的决策和反悔.js" class="fragment"
             style="width: 1000px; height: 60px;">
         </iframe>
     </section>
@@ -74,8 +74,8 @@
                 </codeblock>
             </div>
             <div style="width: 40%;">
-                <iframe data-animation="./单路增广.js"
-                    style="width: 1000px; height: 250px;"></iframe>
+                <sd-animation src="./单路增广.js"
+                    style="width: 1000px; height: 250px;"></sd-animation>
             </div>
         </div>
         <div style="display: flex;" class="fragment">
@@ -98,21 +98,21 @@
                 </codeblock>
             </div>
             <div style="width: 40%;">
-                <iframe data-animation="./多路增广.js"
-                    style="width: 1000px; height: 250px;"></iframe>
+                <sd-animation src="./多路增广.js"
+                    style="width: 1000px; height: 250px;"></sd-animation>
             </div>
         </div>
     </section>
     <section>
         <h2>ISAP分层优化</h2>
-        <iframe data-animation="./ISAP分层优化的必要性.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./ISAP分层优化的必要性.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>ISAP分层优化</h2>
         <p>为了避免上图中展示的这种情况，我们对原图进行分层，为每一个节点分配一个深度 $dis$</p>
-        <iframe data-animation="./ISAP_example_1.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./ISAP_example_1.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment" style="margin-top: 0px;">每次对某个节点 $u$ 增广完成后，将 $dis_u$ 自增<span class="fragment">；在找增广路的时候，保证如果 $u\rightarrow v$ 是一条增广路上的边，则一定有 $dis_u=dis_v+1$</span></p>
         <p class="fragment quote">如果 $dis$ 标号在某时刻出现了<b>断层</b>，由于增广路上每一条边 $(u,v)$ 需要满足 $dis_u=dis_v+1$，则显然不存在新的增广路，可直接结束算法</p>
     </section>
@@ -192,7 +192,7 @@
     </section>
     <section>
         <h2>ISAP</h2>
-        <iframe data-animation="./ISAP_example_2.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./ISAP_example_2.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
 </section>

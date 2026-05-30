@@ -6,23 +6,23 @@
     <section>
         <h2>实验室</h2>
         <p>在一个无限大的网格图中，选 $n$ 个连通的格子，使这些格子构成的图形周长最小</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">你需要给出一种构造方案</p>
         <p class="fragment">更进一步，你需要输出有多少种构造方案</p>
     </section>
     <section>
         <h2>实验室</h2>
         <p>对于第一问，不难想到枚举矩形长，计算矩形宽，取最小周长</p>
-        <iframe data-animation="./枚举.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./枚举.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">枚举 $a,b$，使得 $a\times b\ge n$，最小化 $a+b$</p>
     </section>
     <section>
         <h2>实验室</h2>
         <p class="quote">如何统计合法的方案数呢？</p>
-        <iframe data-animation="./四个角落.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./四个角落.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">可以看作是在四个角落各分配一些空位，空位需要排列成梯形，求方案数</p>
         <p class="fragment quote">不可能出现某个角落到另一个角落被完全打通的情况</p>
         <p class="fragment quote">资源分配动态规划模型+序列构造动态规划模型</p>

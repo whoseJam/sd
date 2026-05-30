@@ -13,8 +13,8 @@
         <p>我们先想一想BFS是如何求最短路的</p>
         <p class="fragment">假设我们拿到了一张图，图上每条边的边权都是 $1$，要求起点 $1$ 到终点 $n$ 的最短路</p>
         <div style="display: flex;">
-            <iframe data-animation="./BFS.js" class="fragment"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./BFS.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
             <div style="width: 800px;">
                 <p class="fragment">我们不断用<b style="color: purple;">距离值最小</b>的点，去更新它们的<b style="color: red;">邻接点</b></p>
                 <ul>
@@ -29,12 +29,12 @@
     <section>
         <h2>Dijkstra</h2>
         <p>那我们能不能稍微改造一下BFS算法，让它能适用于<b style="color: red;">边权各异</b>的图呢</p>
-        <iframe data-animation="./普通队列的不足之处.js" class="fragment"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./普通队列的不足之处.js" class="fragment"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment">把队列改为<b style="color: red;">以距离值为关键字</b>的<b style="color: brown;">优先队列</b>，就可以实现每次取出<b style="color: purple;">距离值最小</b>的松弛点</p>
         <div style="display: flex; align-items: center;" class="fragment">
-            <iframe data-animation="./Dijkstra.js"
-                style="width: 1000px; height: 300px; margin-right: 20px;"></iframe>
+            <sd-animation src="./Dijkstra.js"
+                style="width: 1000px; height: 300px; margin-right: 20px;"></sd-animation>
             <codeblock style="font-size: 15px;">
                 <script type="text/template">
                     using pa = pair < int, int >;

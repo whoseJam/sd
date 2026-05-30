@@ -5,8 +5,8 @@
     <problem data-problemset="luogu" data-problemid="P8756"></problem>
     <section>
         <h2>国际象棋</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>在一个 $N\times M$ 的棋盘上摆放 $K$ 个马，使之无法相互攻击，求方案数</p>
         <p class="fragment">注意到 $1\le N\le 6$...</p>
         <p class="fragment quote">棋盘构造动态规划模型+普通资源分配动态规划模型</p>
@@ -14,8 +14,8 @@
     <section>
         <h2>国际象棋</h2>
         <p>设 $f_{i,S,T,j}$ 表示构造到第 $i$ 行，第 $i$ 行的状态为 $S$，第 $i-1$ 行的状态为 $T$，使用了 $j$ 个马的总方案数</p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">
             $$
             f_{i,S,T,j}\stackrel{+}{\rightarrow} f_{i+1,P,S,j+count(P)},T与S与P能构成合法的相邻三行

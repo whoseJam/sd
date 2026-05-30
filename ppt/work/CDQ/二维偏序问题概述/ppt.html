@@ -5,8 +5,8 @@
     </section>
     <section>
         <h2>二维偏序问题</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p>给你 $n$ 个坐标，第 $i$ 个坐标为 $(x_i,y_i)$，如果两个坐标 $i$ 和 $j$，满足
             $$
             \left\{
@@ -26,14 +26,14 @@
     <section>
         <h2>二维偏序问题</h2>
         <p>先按第一维度排序，再用某种支持区间操作的线性数据结构去约束第二个维度就行了</p>
-        <iframe data-animation="./二维偏序问题1.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./二维偏序问题1.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
     <section>
         <h2>二维偏序问题</h2>
         <p>对原问题做分治处理，设 $L$ 是左区间集合，$R$ 是右区间集合</p>
-        <iframe data-animation="./二维偏序问题2.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./二维偏序问题2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">通过<b style="color: red;">排序</b>，使得 $\forall (j,i)\in (L,R)$ 满足 $x(j)\lt x(i)$</li>
             <li class="fragment">通过<b style="color: purple;">双指针</b>，对 $i\in R$，统计左边有多少个 $j$ 满足 $y(j)\lt y(i)$</li>

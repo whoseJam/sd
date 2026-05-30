@@ -24,8 +24,8 @@
     <section>
         <h2>陌上花开</h2>
         <p>对原问题做分治处理，设 $L$ 是左区间集合，$R$ 是右区间集合</p>
-        <iframe data-animation="./陌上花开.js"
-            style="width: 1000px; height: 450px;" ></iframe>
+        <sd-animation src="./陌上花开.js"
+            style="width: 1000px; height: 450px;" ></sd-animation>
         <ul>
             <li class="fragment">通过<b style="color: red;">排序</b>，使得 $\forall (j,i)\in (L,R)$ 满足 $a(j)\lt a(i)$</li>
             <li class="fragment">通过<b style="color: purple;">双指针</b>，对 $i\in R$，把左边所有 $l$ 满足 $b(j)\lt b(i)$ 的 $j$ 挑出来</li>

@@ -8,8 +8,8 @@
         <h2>AC自动机1</h2>
         <p>给出 $n$ 个模式串和一个主串 $s$，统计有多少个模式串在主串里出现过</p>
         <p class="fragment">把 $n$ 个模式串建成一个AC自动机，然后把主串 $s$ 放进AC自动机里面跑匹配...</p>
-        <iframe data-animation="./匹配.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./匹配.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">假设目前正在对 $s[i]$ 做匹配</li>
             <li class="fragment">如果 $u\stackrel{s[i]}{\rightarrow} v$存在<span class="fragment">——直接做匹配的转移即可</span></li>
@@ -19,16 +19,16 @@
     <section>
         <h2>AC自动机1</h2>
         <p>以 $\{aba,ba,aa,bb,b\}$ 为例，如果我们把匹配的途径点打上标记，是否就能统计出所有出现在主串中的模式串了呢？</p>
-        <iframe data-animation="./标记1.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./标记1.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote">主串 $s[1...i]$ 在AC自动机匹配到的节点，是所有<b>可匹配节点</b>中，长度最长的那个</p>
         <p class="fragment quote">可能有一个模式串 $s_i$ 是另一个模式串 $s_j$ 的后缀，匹配到 $s_j$ 时，<b style="color: red;">$s_i$ 出现在主串中了但没有走到</b></p>
     </section>
     <section>
         <h2>AC自动机1</h2>
         <p>以 $\{aba,ba,aa,bb,b\}$ 为例</p>
-        <iframe data-animation="./标记2.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./标记2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>为了修复上文的问题，只需要走到每个节点 $u$ 时，把 $u$ 的失配链上的每个点都打上标记即可<span class="fragment">——时间复杂度怎么保证？</span></p>
         <p class="fragment">可以保证每个节点最多被打一次标记，打标记这部分的均摊时间复杂度 $O(|AC自动机|)$</p>
     </section>

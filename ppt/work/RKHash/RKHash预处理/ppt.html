@@ -5,8 +5,8 @@
     <section>
         <h2>RKHash预处理</h2>
         <p>假设我有一个长度为 $n$ 的串，有 $m$ 次询问，每次询问查询其某个子串的Hash值</p>
-        <iframe data-animation="./多次询问子串Hash值.html"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./多次询问子串Hash值.html"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <p class="fragment">如果每次重新算，时间复杂度为 $O(nm)$</p>
         <p class="fragment">能否更快速地完成呢？</p>
     </section>
@@ -28,8 +28,8 @@
                 </p>
             </div>
         </div>
-        <iframe data-animation="./RKHash.js" class="fragment"
-            style="width: 1000px; height: 350px;"></iframe>
+        <sd-animation src="./RKHash.js" class="fragment"
+            style="width: 1000px; height: 350px;"></sd-animation>
         <p class="fragment">
             $$
             Hash(s,l,r)=S(r)-P(r-l+1)S(l-1)

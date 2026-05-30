@@ -6,15 +6,15 @@
     <section>
         <h2>晋升者计数</h2>
         <p>一棵树，树上每个节点有自己的能力值</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">你需要对每个节点统计，其子树内能力值比自己<b>更大</b>的节点数量</p>
     </section>
     <section>
         <h2>晋升者计数</h2>
         <p>容易想到按照能力值把节点数量塞进桶里，每一个节点上都会有一个桶</p>
-        <iframe data-animation="./线段树合并.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./线段树合并.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">把子树内的桶累加起来</p>
         <p class="fragment">最后对每个节点 $u$，查询 $[P_u,+\infty)$ 的和</p>
     </section>

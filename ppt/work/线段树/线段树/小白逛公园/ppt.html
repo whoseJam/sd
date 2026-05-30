@@ -16,21 +16,21 @@
         <h2>小白逛公园</h2>
         <p>假设我们在做线段合并，并且左区间和右区间的最大子段和都已经维护好了...</p>
         <div style="display: flex;">
-            <iframe data-animation="./线段合并1.js"
-                style="width: 1000px; height: 150px; margin-right: 30px;"></iframe>
-            <iframe data-animation="./线段合并2.js"
-                style="width: 1000px; height: 150px;"></iframe>            
+            <sd-animation src="./线段合并1.js"
+                style="width: 1000px; height: 150px; margin-right: 30px;"></sd-animation>
+            <sd-animation src="./线段合并2.js"
+                style="width: 1000px; height: 150px;"></sd-animation>            
         </div>
         <p class="fragment quote">新区间的最大子段和可能全部来自左区间，或者全部来自右区间...</p>
-        <iframe data-animation="./线段合并3.js" class="fragment"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./线段合并3.js" class="fragment"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment quote">还有可能是左区间的一个后缀，和右区间的一个前缀拼起来...</p>
         <p class="fragment quote">如何处理拼起来的情况呢？</p>
     </section>
     <section>
         <h2>小白逛公园</h2>
-        <iframe data-animation="./线段合并静态图.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./线段合并静态图.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p>贪心来看，一定是左区间的一个最大后缀，和右区间的一个最大前缀拼起来，所以就目前看来，我们需要维护区间的</p>
         <ol>
             <li class="fragment"><ruby>最大前缀和<rt>lmax</rt></ruby></li>
@@ -52,10 +52,10 @@
         <h2>小白逛公园</h2>
         <p>考虑如何计算一个线段的最大前缀和</p>
         <div style="display: flex;">
-            <iframe data-animation="./线段合并4.js"
-                style="width: 1000px; height: 150px; margin-right: 30px;"></iframe>
-            <iframe data-animation="./线段合并5.js"
-                style="width: 1000px; height: 150px;"></iframe>
+            <sd-animation src="./线段合并4.js"
+                style="width: 1000px; height: 150px; margin-right: 30px;"></sd-animation>
+            <sd-animation src="./线段合并5.js"
+                style="width: 1000px; height: 150px;"></sd-animation>
         </div>
         <codeblock class="fragment">
             <script type="text/template">
@@ -71,10 +71,10 @@
         <h2>小白逛公园</h2>
         <p>再来写最大子段和，就非常轻松了</p>
         <div style="display: flex;">
-            <iframe data-animation="./线段合并1.js"
-                style="width: 1000px; height: 150px; margin-right: 30px;"></iframe>
-            <iframe data-animation="./线段合并3.js"
-                style="width: 1000px; height: 150px;"></iframe>
+            <sd-animation src="./线段合并1.js"
+                style="width: 1000px; height: 150px; margin-right: 30px;"></sd-animation>
+            <sd-animation src="./线段合并3.js"
+                style="width: 1000px; height: 150px;"></sd-animation>
         </div>
         <codeblock class="fragment">
             <script type="text/template">

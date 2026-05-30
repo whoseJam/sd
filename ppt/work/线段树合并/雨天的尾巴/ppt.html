@@ -6,24 +6,24 @@
     <section>
         <h2>雨天的尾巴</h2>
         <p>$n$ 座房屋构成了一个树形结构</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">发放 $m$ 次救济粮，每次选择两个房屋 $(x,y)$，然后将 $x\rightarrow y$ 的路径上每个屋子发放一袋 $z$ 类型的救济粮</p>
         <p class="fragment">你需要回答，当所有救济粮发放完毕后，每座房子里存放最多的是哪种救济粮</p>
     </section>
     <section>
         <h2>雨天的尾巴</h2>
         <p>不妨考虑如果只有一种救济粮，如何统计出每个屋子里面最后有<b>多少袋</b>救济粮...</p>
-        <iframe data-animation="./普通差分.js"
-            data-viewBoxDelta="0 0 0 20"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./普通差分.js"
+            viewbox-delta="0 0 0 20"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote">差分就完了</p>
     </section>
     <section>
         <h2>雨天的尾巴</h2>
         <p>那现在有多种救济粮，如果我们在每个节点上用一个数组去分别做每种救济粮的差分...</p>
-        <iframe data-animation="./线段树合并.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./线段树合并.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">每个房屋处维护一个 $cnt$ 数组，其中 $cnt_i$ 存储了第 $i$ 类救济粮有多少个</li>
             <li class="fragment">想要知道第 $i$ 号房屋存储最多的救济粮，就是看 $cnt_i$ 的最大值</li>

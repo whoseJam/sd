@@ -10,7 +10,7 @@
     },
     "license": "ISC",
     "dependencies": {
-        "@sd/iframe": "workspace:*",
+        "@sd/element": "workspace:*",
         "reveal.js": "^5.1.0"
     }
 }

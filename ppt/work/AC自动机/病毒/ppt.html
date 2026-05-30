@@ -10,8 +10,8 @@
         <p class="fragment quote">如果我们把这 $n$ 个病毒代码建成一个trie图，找得到长度无限的<b>安全序列</b>的trie图应该有什么性质呢？</p>
         <div class="fragment quote">
             以前我们已知主串，然后把主串放在trie图上行走，在trie图上走出一条路径，这条路径对应了主串的匹配情况<span class="fragment">；如果主串尚不存在，直接在trie图上行走，是否意味着我们在构造一个主串呢？</span>
-            <iframe data-animation="./匹配与构造.js"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./匹配与构造.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
         </div>
     </section>
     <section>
@@ -20,13 +20,13 @@
         <div style="display: flex;">
             <div style="text-align: center;">
                 <span>$\{01,11,000\}$</span>
-                <iframe data-animation="./无环.js"
-                    style="width: 1000px; height: 400px;"></iframe>
+                <sd-animation src="./无环.js"
+                    style="width: 1000px; height: 400px;"></sd-animation>
             </div>
             <div style="text-align: center;">
                 <span>$\{011,11,000\}$</span>
-                <iframe data-animation="./有环.js"
-                    style="width: 1000px; height: 400px;"></iframe>
+                <sd-animation src="./有环.js"
+                    style="width: 1000px; height: 400px;"></sd-animation>
             </div>
         </div>
         <p class="fragment">判断有没有环，用DFS就行</p>

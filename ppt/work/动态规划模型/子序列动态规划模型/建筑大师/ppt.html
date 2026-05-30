@@ -7,15 +7,15 @@
         <h2>建筑大师</h2>
         <p>给定 $n$，有 $q$ 次询问，每次询问给出一个参数 $m$</p>
         <p>你会按规则放置 $n$ 个数字，规则如下</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment">求这 $n$ 个数字本质不同的子序列数量</p>
     </section>
     <section>
         <h2>建筑大师</h2>
         <p>设 $f_i$ 表示以 $a_i$ 为结尾的本质不同的子序列数量，转移与优化和上一题类似，观察到</p>
-        <iframe data-animation="./减少状态转移数量.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./减少状态转移数量.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">所以我们维护 $\{f\}$ 的前缀和，即可实现转移</p>
         <p class="fragment math-fragment">
             $$

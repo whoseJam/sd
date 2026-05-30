@@ -6,11 +6,11 @@
     <section>
         <h2>飞机调度</h2>
         <p>把航线看作节点，如果一个航线 $i$ 跑完来得及跑另一条航线 $j$，则 $i\rightarrow j$</p>
-        <iframe data-animation="./建图.js" class="fragment"
-            style="width: 1000px; height: 280px;"></iframe>
+        <sd-animation src="./建图.js" class="fragment"
+            style="width: 1000px; height: 280px;"></sd-animation>
         <p class="fragment">这显然会构成一个有向无环图，该有向无环图的最小覆盖即为答案</p>
-        <iframe data-animation="./连边.js" class="fragment"
-            style="width: 1000px; height: 90px;"></iframe>
+        <sd-animation src="./连边.js" class="fragment"
+            style="width: 1000px; height: 90px;"></sd-animation>
         <p class="fragment">
             $$
             D_i+T_{X_i,Y_i}+P_{Y_i}+f_{Y_i,X_j}\le D_j

@@ -17,15 +17,15 @@
                 </ul>
                 <p class="fragment quote">特别的，我们认为 $u$ 是自己的<b>零级祖先</b></p>
             </div>
-            <iframe data-animation="./k级祖先.js"
-                style="width: 20%; height: 400px; margin-left: 30px;"></iframe>
+            <sd-animation src="./k级祖先.js"
+                style="width: 20%; height: 400px; margin-left: 30px;"></sd-animation>
         </div>
     </section>
     <section>
         <h2>公共祖先</h2>
         <p>给定一棵有根树，若节点 $z$ 既是节点 $x$ 的祖先，又是节点 $y$ 的祖先，那么 $z$ 是 $x$ 和 $y$ 的<b style="color: red;">公共祖先</b></p>
-        <iframe data-animation="./LCA概念.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./LCA概念.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">在 $x$ 和 $y$ 的所有公共祖先中，<b>深度最大</b>的那一个称为 $x$ 和 $y$ 的最近公共祖先，记为 $LCA(x,y)$</p>
     </section>
     <section>
@@ -48,15 +48,15 @@
                     }
                 </script>
             </codeblock>
-            <iframe data-animation="./暴力LCA.js"
-                style="width: 50%; height: 280px;"></iframe>
+            <sd-animation src="./暴力LCA.js"
+                style="width: 50%; height: 280px;"></sd-animation>
         </div>
     </section>
     <section>
         <h2>LCA实现</h2>
         <p>容易发现，当树退化成一条链的时候，这么做时间复杂度会达到 $O(n)$</p>
-        <iframe data-animation="./暴力LCA不足之处.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./暴力LCA不足之处.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote">一次跳一个父亲实在是太慢了</p>
         <p class="fragment">我们很自然能想到一个优化，能不能让跳的过程加速——比如一次跳<b>很多很多个</b>父亲</p>
         <p class="fragment quote">我们把一次性跳多个父节点称为一次<b>大跳</b></p>
@@ -65,10 +65,10 @@
         <h2>LCA预处理</h2>
         <p>我们把每个点的 $1,2,4,8,16,32......$ 级祖先先保存下来，方便之后在树上做<b>大跳</b><span class="fragment" data-fragment-index="0">，预处理出来每个节点的 $2^j$ 倍祖先，设 $u$ 的 $2^i$ 级祖先为 $fa_{u,i}$</span></p>
         <div style="display: flex; justify-content: space-around; align-items: center;">
-            <iframe data-animation="./LCA预处理.js" class="fragment" data-fragment-index="1"
-                style="width: 60%; height: 340px;"></iframe>
-            <iframe data-animation="./LCA预处理递推.js" class="fragment" data-fragment-index="4"
-                style="width: 35%; height: 340px;"></iframe>
+            <sd-animation src="./LCA预处理.js" class="fragment" data-fragment-index="1"
+                style="width: 60%; height: 340px;"></sd-animation>
+            <sd-animation src="./LCA预处理递推.js" class="fragment" data-fragment-index="4"
+                style="width: 35%; height: 340px;"></sd-animation>
         </div>
         <p class="fragment quote" data-fragment-index="2">如何快速计算一个节点的 $2^i$ 级祖先呢？<span class="fragment" data-fragment-index="3">$u$ 的 $2^{i}$ 级祖先，应该等于其 $2^{i-1}$ 级祖先的 $2^{i-1}$ 级祖先</span></p>
         <codeblock class="fragment" data-fragment-index="5">
@@ -82,9 +82,9 @@
         <h2>倍增</h2>
         <p>现在我们能从任意一个节点以 $O(1)$ 的时间复杂度向上跳 $2^k$ 步</p>
         <p class="fragment">其实就能从任意一个节点以 $O(logn)$ 的时间复杂度向上跳任意 $d$ 步了</p>
-        <iframe data-animation="./二进制拆分.js" class="fragment"
-            data-viewBox="0 -5 500 150"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./二进制拆分.js" class="fragment"
+            viewbox="0 -5 500 150"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment"><b>任何一个数字 $d$ 总有其二进制表示，</b><b style="color: red;">所以我们总能把 $d$ 拆为不超过 $logd$ 个 $2^k$ 的和</b></p>
     </section>
     <section>
@@ -116,8 +116,8 @@
                     </script>
                 </codeblock>
             </div>
-            <iframe data-animation="./LCA查询.js"
-                style="width: 50%; height: 600px; margin-top: -100px;"></iframe>
+            <sd-animation src="./LCA查询.js"
+                style="width: 50%; height: 600px; margin-top: -100px;"></sd-animation>
         </div>
     </section>
 </section>

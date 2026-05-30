@@ -7,15 +7,15 @@
         <h2>甲虫</h2>
         <p>有一只甲虫站在 $x$ 轴上，有 $n$ 滴露珠，<b style="color: red;">每滴露珠都有 $m$ 个单位的水分</b></p>
         <p>这一天骄阳似火，每过一个时间单位，<b style="color: purple;">就会有一个单位的水分从每一滴露珠中流失</b>，甲虫每个时间单位能移动一个单位的距离，求甲虫最多能喝多少水</p>
-        <iframe data-animation="./样例解释.js"
-            data-viewBoxDelta="0 -10 0 10"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            viewbox-delta="0 -10 0 10"
+            style="width: 1000px; height: 200px;"></sd-animation>
     </section>
     <section>
         <h2>甲虫</h2>
         <p>类似上一题，设 $f(l,r,0)$ 表示甲虫喝完 $[l,r]$ 区间内的水滴，目前站在区间左端点/右端点上，最多能喝多少单位的水</p>
-        <iframe data-animation="./状态转移1.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态转移1.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">
             $$
             f(l,r,0)+?\stackrel{max}{\rightarrow}f(l-1,r,0)
@@ -28,8 +28,8 @@
     <section>
         <h2>甲虫</h2>
         <p>设 $f(l,r,0)$ 表示甲虫喝完 $[l,r]$ 区间内的水滴，目前站在区间左端点/右端点上，最少蒸发多少单位的水</p>
-        <iframe data-animation="./状态转移2.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态转移2.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment math-fragment">
             $$
             \begin{cases}

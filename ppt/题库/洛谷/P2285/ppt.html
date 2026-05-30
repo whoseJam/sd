@@ -5,16 +5,16 @@
     <problem data-problemset="luogu" data-problemid="P2285"></problem>
     <section>
         <h2>打鼹鼠</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>有一个 $n\times n$ 的网格，在某些时刻某些地方会出现鼹鼠</p>
         <p class="fragment">你需要操作机器人，打尽可能多的鼹鼠，你可以任选机器人的起始位置，机器人一个单位时间只能移动一个单位距离</p>
         <p class="fragment quote">乍看之下是坐标动态规划模型，但空间开不下，转为子序列动态规划模型</p>
     </section>
     <section>
         <h2>打鼹鼠</h2>
-        <iframe data-animation="./子序列.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./子序列.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p>将鼹鼠按照出现时间排序，那么就是从这个序列中选出一个子序列来打，最大化子序列长度</p>
         <p class="fragment">设 $f_i$ 表示最后一个要打的鼹鼠是第 $i$ 个，最多能打多少个鼹鼠...</p>
         <p class="fragment">

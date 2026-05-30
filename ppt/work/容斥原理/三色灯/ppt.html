@@ -7,8 +7,8 @@
         <h2>三色灯</h2>
         <p>我们肯定不能对每种操作，枚举所有被其触发的灯</p>
         <p class="fragment">注意到如果一盏灯是红色，那么它一定恰好是 $0,3,6...$ 个操作触发过</p>
-        <iframe data-animation="../维恩图/四元维恩图.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="../维恩图/四元维恩图.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">而我们想要计算至少是 $k$ 个操作的倍数的灯有多少个，是非常简单的<span class="fragment">，不妨假设这 $k$ 个操作的最小公倍数是 $lcm$，则答案就是 $\lfloor\frac n{lcm} \rfloor$</span></p>
         <p class="fragment">
             $$

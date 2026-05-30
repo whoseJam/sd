@@ -6,21 +6,21 @@
     <section>
         <h2>动态开点线段树</h2>
         <p>在线段树插入次数远小于线段树覆盖区间的情况下，我们可以用动态开点线段树来减少空间分配</p>
-        <iframe data-animation="./动态开点线段树.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./动态开点线段树.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote">动态开点线段树除了能让空间分配更小之外，有时还会让时间分配更小</p>
     </section>
     <section>
         <h2>序列合并</h2>
         <p>一棵线段树与一个序列是对应起来的，有时候我们想对两个序列进行合并...</p>
-        <iframe data-animation="./普通线段树合并.js"
-            style="width: 1000px; height: 450px;"></iframe>
+        <sd-animation src="./普通线段树合并.js"
+            style="width: 1000px; height: 450px;"></sd-animation>
         <p class="fragment quote">如果这两棵树都是普通的线段树，那么合并的时间复杂度必然是 $O(n)$ 的</p>
     </section>
     <section>
         <h2>序列合并</h2>
-        <iframe data-animation="./动态开点线段树合并.js"
-            style="width: 1000px; height: 450px;"></iframe>
+        <sd-animation src="./动态开点线段树合并.js"
+            style="width: 1000px; height: 450px;"></sd-animation>
         <codeblock class="fragment" style="margin-top: 0px;">
             <script type="text/template">
                 int Merge(int x, int y) { // 合并动态开点的线段树，当前树根分别为 x 和 y
@@ -36,8 +36,8 @@
     <section>
         <h2>时间复杂度</h2>
         <p>设值域为 $n$ 的若干线段树一共进行过 $k$ 次单点插入，则合并它们的时间复杂度为 $O(klogn)$</p>
-        <iframe data-animation="./时间复杂度.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./时间复杂度.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote">左侧时间复杂度为 $O(n^2)$，没超过 $O(n^2logn)$</p>
         <p class="fragment quote">右侧时间复杂度为 $O(nlogn)$</p>
     </section>

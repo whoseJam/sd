@@ -6,8 +6,8 @@
     <section>
         <h2><ruby>矩阵<rt>Matrix</rt></ruby></h2>
         <p>一个矩阵，就是一个 $n\times m$ 的二维数组 $\{a_{i,j}\}$，其中第 $i$ 行第 $j$ 列被描述为 $a_{i,j}$</p>
-        <iframe data-animation="./矩阵.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./矩阵.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">$i$ 叫做矩阵的行下标</li>
             <li class="fragment">$j$ 叫做矩阵的列下标</li>
@@ -35,8 +35,8 @@
     <section>
         <h2><ruby>矩阵乘法<rt>Matrix Multiply</rt></ruby></h2>
         <p>矩阵和数字一样，也可以进行乘法运算<span class="fragment">，<b>矩阵乘法</b>是人为约定的一种运算，并不是任意两个矩阵 $A$ 和 $B$ 都能拿来做乘法<span class="fragment">，<b style="color: red;">只有当 $C(A)=R(B)$ 时 $A$ 和 $B$ 才能进行乘法运算</b></span></p>
-        <iframe data-animation="./矩阵乘法概述.js" class="fragment"
-            style="width: 1000px; height: 220px;"></iframe>
+        <sd-animation src="./矩阵乘法概述.js" class="fragment"
+            style="width: 1000px; height: 220px;"></sd-animation>
         <ul>
             <li class="fragment">抽取 $A$ 矩阵的第 $i$ 行，共 $C(A)$ 个元素，构成一个序列</li>
             <li class="fragment">抽取 $B$ 矩阵的第 $j$ 列，共 $R(B)$ 个元素，构成一个序列</li>
@@ -49,8 +49,8 @@
     </section>
     <section>
         <h2>矩阵乘法</h2>
-        <iframe data-animation="./矩阵乘法1.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./矩阵乘法1.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
     </section>
     <section>
         <h2>矩阵</h2>
@@ -67,8 +67,8 @@
             $$
             每一项的系数抽取出来，写作一个矩阵的形式
         </p>
-        <iframe data-animation="./矩阵乘法2.js" class="fragment"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./矩阵乘法2.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment">可以简记为 $Ax=b$</p>
     </section>
     <section>
@@ -88,8 +88,8 @@
     </section>
     <section>
         <h2>矩阵乘法</h2>
-        <iframe data-animation="./矩阵乘法实现.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./矩阵乘法实现.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 struct Matrix {
@@ -126,10 +126,10 @@
     </section>
     <section>
         <h2>单位矩阵</h2>
-        <iframe data-animation="./矩阵乘法3.js"
-            style="width: 1000px; height: 250px;"></iframe>
-        <iframe data-animation="./矩阵乘法4.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./矩阵乘法3.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <sd-animation src="./矩阵乘法4.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment">单位阵之于矩阵乘法，就如同 $1$ 之于乘法，任何一个矩阵 $A$ 乘上单位阵，其结果都是 $A$</p>
         <p class="fragment">...不管是左乘还是右乘</p>
     </section>
@@ -167,8 +167,8 @@
     </section>
     <section>
         <h2>矩阵乘法的意义</h2>
-        <iframe data-animation="./矩阵乘法意义.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./矩阵乘法意义.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>矩阵乘法让我们可以把一组<b style="color: red;">元素</b>，附以不同的<b style="color: purple;">权重</b>，组合到一起，形成一组新的元素</p>
         <p class="fragment">事实上，这里的组合过程有一个更专业的名字，叫做<b><ruby>线性组合<rt>Linear Combination</rt></ruby></b></p>
         <ul>

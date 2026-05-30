@@ -20,16 +20,16 @@
         <p class="fragment quote">先构造一个简单的不是二分序列的序列？</p>
         <div class="fragment">
             3 2 1
-            <iframe data-animation="./非二分序列.js"
-                style="width: 1000px; height: 200px;"></iframe>
+            <sd-animation src="./非二分序列.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
         </div>
         <p class="fragment quote">序列中但凡出现了长度为 $3$ 的下降子序列，就必然不是二分序列，这看上去是一个很严格的限制条件</p>
         <p class="fragment quote">假设序列中从没有出现过长度为 $3$ 的下降子序列，序列可能是什么样的？</p>
     </section>
     <section>
         <h2>二分序列</h2>
-        <iframe data-animation="./合法序列.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./合法序列.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>一定会形成至多两条上升路径</p>
         <p class="fragment quote">这种情况下有可能形成非二分图吗？</p>
     </section>
@@ -42,8 +42,8 @@
         <h2>二分序列</h2>
         <p>在动态规划时肯定要记录两个序列的末尾，以及当前考虑到哪个位置了</p>
         <p class="fragment">设 $f_{i,x,y}$ 表示考虑到第 $i$ 个位置，第一个上升子序列的末尾数值为 $x$，第二个上升子序列的末尾数值为 $y$，是否可行</p>
-        <iframe data-animation="./状态定义1.js" class="fragment"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./状态定义1.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment">
             $$
             \begin{cases}
@@ -58,8 +58,8 @@
     <section>
         <h2>二分序列</h2>
         <p>发现其中一个上升子序列的末尾一定是 $a_i$ 或者 $-a_i$</p>
-        <iframe data-animation="./状态定义2.js" class="fragment"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./状态定义2.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment" style="margin-top: -10px;">设 $f_{i,x,0/1}$ 表示考虑到第 $i$ 个位置，第一个上升子序列的末尾为 $x$，第二个上升子序列的末尾为 $a_i$ 或者 $-a_i$，是否可行</p>
         <p class="fragment">
             $$
@@ -84,8 +84,8 @@
     <section>
         <h2>二分序列</h2>
         <p>设 $f_{i,0/1}$ 表示考虑到第 $i$ 个位置，第二个上升子序列的末尾是 $a_i$ 或者 $-a_i$ 的情况下，第一个上升子序列末尾最小可以是多小</p>
-        <iframe data-animation="./状态定义3.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./状态定义3.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment">
             $$
             \begin{cases}

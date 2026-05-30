@@ -9,8 +9,8 @@
         <ul>
             <li><code>Add(l, r, d)</code>：把 $[l,r]$ 这个区间内的元素整体加上 $d$（$d$ 可正可负）</li>
         </ul>
-        <iframe data-animation="./线段树区间修改面临的困境.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./线段树区间修改面临的困境.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment">最坏情况下，有 $2n$ 个线段的特征都被改变了</p>
         <p class="fragment">我们可以引入<b>懒标记</b>来解决这个问题</p>
     </section>
@@ -27,8 +27,8 @@
     </section>
     <section>
         <h2>懒标记</h2>
-        <iframe data-animation="./线段树懒标记.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./线段树懒标记.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <ul>
             <li class="fragment">在区间修改时，只修改区间最上层的线段特征，只对它们的祖先做更新，它们的后代的<b>延迟更新</b></li>
             <li class="fragment">在不需要访问后代节点时，后代节点错误的特征并不会对答案造成影响</li>
@@ -54,8 +54,8 @@
     <section>
         <h2>懒标记</h2>
         <p>对一个线段树节点推送 $add$ 标记</p>
-        <iframe data-animation="./add标记分析.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./add标记分析.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 void pushAdd(int x,int d){

@@ -4,8 +4,8 @@
     </section>
     <section>
         <h2>基础元素</h2>
-        <iframe data-animation="./自带形状的元素.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./自带形状的元素.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock lang="js">
             <script type="text/template">
                 const rect = new sd.Rect(svg).x(100).y(100);
@@ -30,8 +30,8 @@
             <li>$cx/cy$：物体在 $x/y$ 方向上的中点坐标，满足 $cx=x+\frac w 2$</li>
             <li>$mx/my$：物体在 $x/y$ 方向上最远点坐标，满足 $mx=x+w$</li>
         </ul>
-        <iframe data-animation="./位置.js"
-            style="width: 1000px; height: 120px;"></iframe>
+        <sd-animation src="./位置.js"
+            style="width: 1000px; height: 120px;"></sd-animation>
         <codeblock lang="js">
             <script type="text/template">
                 const rect = new sd.Rect(svg).x(100).y(100);
@@ -54,9 +54,9 @@
         <h2>边框与填充</h2>
         <p class="quote">方法一览：stroke，strokeWidth，strokeDashArray，strokeDashOffset，fill</p>
         <p>基本上所有基础svg元素都有<b>边框（stroke）</b>和<b>填充（fill）</b>这两个概念</p>
-        <iframe data-animation="./边框与填充.js"
-            data-viewBoxDelta="0 -10 0 20"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./边框与填充.js"
+            viewbox-delta="0 -10 0 20"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock lang="js">
             <script type="text/template">
                 const C = sd.color(); // C 是一个颜色模块
@@ -75,9 +75,9 @@
     <section>
         <h2>透明度</h2>
         <p class="quote">方法一览：opacity，fillOpacity，strokeOpacity</p>
-        <iframe data-animation="./透明度.js"
-            data-viewBoxDelta="0 -3 0 3"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./透明度.js"
+            viewbox-delta="0 -3 0 3"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock lang="js">
             <script type="text/template">
                 const p1 = V.makeComplex(10, 0);
@@ -96,8 +96,8 @@
     <section>
         <h2>试一试</h2>
         <p>文字渐入渐出效果</p>
-        <iframe data-animation="./文字渐入渐出.js"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./文字渐入渐出.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 const text = new sd.Text(svg, "hello");
@@ -110,9 +110,9 @@
     <section>
         <h2>试一试</h2>
         <p>创建矩形效果</p>
-        <iframe data-animation="./创建矩形.js"
-            data-viewBoxDelta="0 -3 0 3"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./创建矩形.js"
+            viewbox-delta="0 -3 0 3"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock lang="js">
             <script type="text/template">
                 const rect = new sd.Rect(svg)

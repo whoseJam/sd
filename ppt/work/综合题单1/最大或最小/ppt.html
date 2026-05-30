@@ -16,8 +16,8 @@
             <li class="fragment">比 $x$ 更小（记为 $-$）</li>
             <li class="fragment">和 $x$ 相等（目标状态）</li>
         </ul>
-        <iframe data-animation="./符号表示动画.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./符号表示动画.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment quote">问题转化为考虑每一条由 $o$ 隔开的链的答案</p>
     </section>
     <section>
@@ -25,21 +25,21 @@
         <p class="quote">不妨从特殊的情况开始讨论</p>
         <p class="fragment quote">假设一条链为 $o+++++o$</p>
         <p class="fragment">直接逐个修改即可，假设有 $k$ 个 $+$，则需要操作 $k$ 次</p>
-        <iframe data-animation="./单调序列动画.js" class="fragment"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./单调序列动画.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
     </section>
     <section>
         <h2>最大或最小</h2>
         <p>假设一条链为 $o+-+-+-+-+o$</p>
         <p class="fragment">在相邻操作间插入额外步骤即可，假设长度为 $k$，则需要操作 $k+\lfloor\frac{k}{2}\rfloor$</p>
-        <iframe data-animation="./交替序列动画.js" class="fragment"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./交替序列动画.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
     </section>
     <section>
         <h2>最大或最小</h2>
         <p>对于一般情况 $o+++----++--++++--+-+--o$</p>
-        <iframe data-animation="./一般序列动画.js" class="fragment"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./一般序列动画.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment">答案就是
             $$
             \sum_{极长+-串}\lfloor\frac{len}{2}\rfloor+n

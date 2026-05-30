@@ -11,8 +11,8 @@
             <li>考虑一对匹配的括号，需要<b>恰有一个</b>括号被染色</li>
             <li>相邻两个括号的颜色不能相同</li>
         </ul>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <p class="fragment">求符合条件的染色方案数，对 $10^9+7$ 取模</p>
         <p class="fragment quote">一个合法的括号序列，一定暗藏了一棵区间树——我们只需要把匹配的括号做一个连线就能看出来</p>
     </section>
@@ -22,16 +22,16 @@
         <p class="quote">这里的 $cl,cr\in\{0,1,2\}$，$0$ 对应不染色，$1$ 对应染为红色，$2$ 对应染为蓝色</p>
         <div class="fragment">
             <li>如果 $l+1=r$（在 $[l,r]$ 构成的括号序列合法的情况下），则一定是这样的情况</li>
-            <iframe data-animation="./状态转移1.js"
-                style="width: 1000px; height: 60px;"></iframe>
+            <sd-animation src="./状态转移1.js"
+                style="width: 1000px; height: 60px;"></sd-animation>
             <span class="fragment">$$f_{l,r,1,0}=f_{l,r,0,1}=f_{l,r,2,0}=f_{l,r,0,2}=1$$</span>
         </div>
     </section>
     <section>
         <h2>括号染色</h2>
         <li>如果 $l$ 端点和 $r$ 端点的括号是匹配的，则一定是这样的情况</li>
-        <iframe data-animation="./状态转移2.js"
-            style="width: 1000px; height: 60px;"></iframe>
+        <sd-animation src="./状态转移2.js"
+            style="width: 1000px; height: 60px;"></sd-animation>
         <span class="fragment math-fragment">
             $$
             \begin{aligned}
@@ -46,8 +46,8 @@
     <section>
         <h2>括号染色</h2>
         <li>如果 $l$ 端点和 $r$ 端点的括号不是匹配的，则一定是这样的情况</li>
-        <iframe data-animation="./状态转移3.js"
-            style="width: 1000px; height: 60px;"></iframe>
+        <sd-animation src="./状态转移3.js"
+            style="width: 1000px; height: 60px;"></sd-animation>
         <p>设与 $l$ 端点处的左括号，匹配的右括号的位置为 $m$</p>
         <span class="fragment">
             $$

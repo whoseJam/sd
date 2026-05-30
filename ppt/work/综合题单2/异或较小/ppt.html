@@ -18,8 +18,8 @@
     <section>
         <h2>异或较小</h2>
         <p class="quote">trie树上怎么选数？</p>
-        <iframe data-animation="./01trie.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./01trie.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">如果 $x$ 的某一位为 $0$，那么肯定就不能跨子树选，一个子树内的数字只能内部组合</li>
             <li class="fragment">如果 $x$ 的某一位为 $1$，那么就可以跨子树选，但又不能跨子树乱选...</li>
@@ -32,8 +32,8 @@
     </section>
     <section>
         <h2>异或较小</h2>
-        <iframe data-animation="./转移图1.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./转移图1.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p>可以使用搜索，找出任意一对合法的组合</p>
         <ul>
             <li class="fragment">遇到 $0$，就让两个指针走同一方向</li>
@@ -46,10 +46,10 @@
         <h2>异或较小</h2>
         <p>设 $f_{x,y}$ 表示在 $x$ 和 $y$ 的子树内选数方案数，要求选出的数字的低二进制位是不超过 $k$ 对应的二进制位的</p>
         <div style="display: flex;">
-            <iframe data-animation="./状态转移1.js"
-                style="width: 287px; height: 300px;"></iframe>
-            <iframe data-animation="./状态转移2.js"
-                style="width: 600px; height: 300px; margin-left: 40px;"></iframe>
+            <sd-animation src="./状态转移1.js"
+                style="width: 287px; height: 300px;"></sd-animation>
+            <sd-animation src="./状态转移2.js"
+                style="width: 600px; height: 300px; margin-left: 40px;"></sd-animation>
         </div>
         <p>如果 $x$ 和 $y$ 对应层的二进制位上是 $0$...</p>
         <div style="display: flex;">
@@ -77,10 +77,10 @@
         <h2>异或较小</h2>
         <p>设 $f_{x,y}$ 表示在 $x$ 和 $y$ 的子树内选数方案数，要求选出的数字的低二进制位是不超过 $k$ 对应的二进制位的</p>
         <div style="display: flex;">
-            <iframe data-animation="./状态转移1.js"
-                style="width: 287px; height: 300px;"></iframe>
-            <iframe data-animation="./状态转移2.js"
-                style="width: 600px; height: 300px; margin-left: 40px;"></iframe>
+            <sd-animation src="./状态转移1.js"
+                style="width: 287px; height: 300px;"></sd-animation>
+            <sd-animation src="./状态转移2.js"
+                style="width: 600px; height: 300px; margin-left: 40px;"></sd-animation>
         </div>
         <p>如果 $x$ 和 $y$ 对应层的二进制位上是 $1$...</p>
         <div style="display: flex;">

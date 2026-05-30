@@ -6,16 +6,16 @@
     <section>
         <h2>按摩</h2>
         <p>给出一个 $n\times n$ 的网格，其中 $m$ 个点是黑点</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">总共有 $k$ 次操作，每次操作把一个点黑白反转</p>
         <p class="fragment">求每次操作结束后是否存在一个<b style="color: red;">以黑点为顶点的</b><b style="color: purple;">所有边均平行于网格的</b><b>多边形</b></p>
     </section>
     <section>
         <h2>按摩</h2>
         <p>考虑如何快速判断，当一个白点变成黑点的时候，会不会产生合法的多边形</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">每一个黑点 $(i,j)$ 向 $X_i$ 和 $Y_j$ 连边，如果出现了环则意味着产生了一个多边形</p>
         <p class="fragment">判断环出现与否可以使用并查集<span class="fragment">——参考<a href="https://cdn.acwing.com/solution/content/117179/" target="_blank">格子游戏</a></span></p>
         <p class="fragment quote">白点变成黑点要在并查集上做合并，黑点变成白点要在并查集上删除<span class="fragment">，使用线段树分治</span></p>

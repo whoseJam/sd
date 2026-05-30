@@ -6,19 +6,19 @@
     <section>
         <h2>嗅探器</h2>
         <p>有一个信息网络，数据包通过网线流通</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>你需要放一个嗅探器，监听到所有从 $a\rightarrow b$ 的数据包，求哪些点可以放嗅探器（嗅探器不能放在 $a$ 点或者 $b$ 点上）</p>
     </section>
     <section>
         <h2>嗅探器</h2>
         <p>不妨以 $a$ 为根，把DFS树建出来，看看有哪些点是可以放嗅探器的...</p>
         <div style="display: flex;">
-            <iframe data-animation="./嗅探器.js"
-                style="width: 1000px; height: 400px;"></iframe>
-            <iframe data-animation="./分析.js" class="fragment"
+            <sd-animation src="./嗅探器.js"
+                style="width: 1000px; height: 400px;"></sd-animation>
+            <sd-animation src="./分析.js" class="fragment"
                 data-fragment-index="5"
-                style="width: 1000px; height: 400px;"></iframe>
+                style="width: 1000px; height: 400px;"></sd-animation>
             <div style="width: 1000px;">
                 <ul>
                     <li class="fragment" data-fragment-index="0">放嗅探器的位置一定是一个割点</li>

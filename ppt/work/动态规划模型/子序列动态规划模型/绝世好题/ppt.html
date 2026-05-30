@@ -15,8 +15,8 @@
     <section>
         <h2>绝世好题</h2>
         <p>设 $f_i$ 表示以 $a_i$ 为结尾的、符合题目条件的子序列最长长度</p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">
             $$
             f(i)=\mathop{max}\limits_{ \begin{aligned} j&\lt i \\ a_j\& &a_i\ne 0 \end{aligned} }\{f(j)+1\}
@@ -31,8 +31,8 @@
             $$
         </p>
         <p>考虑倒数第二个位置的转移可能从什么地方转移过来<span class="fragment">——必然存在某个二进制位，使得 $a_i$ 和 $a_j$ 在这个二进制位上都是 $1$</span></p>
-        <iframe data-animation="./减少状态转移数量.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./减少状态转移数量.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">稍微思考一下，发现我们只需要对每一个二进制位保存一下最大的 $f(j)$ 即可</p>
         <codeblock class="fragment">
             <script type="text/template">

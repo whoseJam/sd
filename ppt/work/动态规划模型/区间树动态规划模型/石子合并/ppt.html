@@ -6,9 +6,9 @@
     <section>
         <h2>石子合并</h2>
         <p>有 $n$ 堆石子排成一排，第 $i$ 堆石子的质量为 $m_i$</p>
-        <iframe data-animation="./样例解释.js"
-            data-viewBoxDelta="0 -180 0 180"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            viewbox-delta="0 -180 0 180"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>现在要将这 $n$ 堆石子合并为一堆，每次只能合并相邻的两堆，合并的代价为这两堆石子的质量之和，合并后的新堆质量为这两堆石子质量之和</p>
         <p class="fragment">求最小合并代价</p>
         <p class="fragment quote">不难发现合并的过程就是构造区间树的过程，而且区间树<b>一定是一棵二叉区间树</b>，我们需要最小化区间树的代价</p>
@@ -16,8 +16,8 @@
     <section>
         <h2>石子合并</h2>
         <p>设 $f_{l,r}$ 表示把 $[l,r]$ 区间合并到一起，产生的最小代价</p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">设 $\{S\}$ 为石子质量的前缀和</p>
         <p class="fragment">
             $$

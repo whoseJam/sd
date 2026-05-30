@@ -12,8 +12,8 @@
             $$\sum_{1\le u\le n}u点上所有员工的能力最大值$$
         </p>
         <div style="display: flex;">
-            <iframe data-animation="./样例解释.js" class="fragment"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./样例解释.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
             <div>
                 <p class="fragment">支持两类事件</p>
                 <ul class="fragment">
@@ -28,16 +28,16 @@
         <h2>人员调度</h2>
         <p>不妨先考虑在没有任何事件的情况下，怎么求出最大公司效益...</p>
         <p class="fragment">容易想到一个从叶子往上的贪心算法</p>
-        <iframe data-animation="./贪心.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./贪心.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">在每个点上维护一个列表，列表最长长度为子树大小，按照能力值降序保存优秀员工<span class="fragment">，每次合并子树的列表后，排序并截断</span></p>
     </section>
     <section>
         <h2>人员调度</h2>
         <p style="margin-top: -10px;">考虑在节点 $u$ 上新加入一个能力值 $v$ 优秀员工会发生什么...</p>
         <div style="display: flex;">
-            <iframe data-animation="./新增一个优秀员工.js"
-                style="width: 1000px; height: 500px;"></iframe>
+            <sd-animation src="./新增一个优秀员工.js"
+                style="width: 1000px; height: 500px;"></sd-animation>
             <div style="margin-top: -30px;">
                 <p class="fragment">树上从 $u$ 开始的一条链，由于其列表本身是有空位的，所以可以直接把该员工塞进空位上</p>
                 <p class="fragment">到第一个列表长度等于子树大小的节点 $f$，由于其列表已经满了，考虑新员工能否替换 $f$ 的现有列表中的能力最小者</p>
@@ -61,8 +61,8 @@
         <p class="fragment">考虑每个点上只维护<b style="color: purple;">最终对树根的有序列表有贡献的</b>那些优秀员工</p>
         <p class="fragment">由于需要取有序列表中的最小值，且一个节点的有序列表中的所有元素均来自该点的<b style="color: red;">子树</b>，所有我们维护一下每个节点子树内<b style="color: purple;">对树根有贡献</b>的员工的能力最小值即可</p>
         <div style="display: flex; align-items: center;">
-            <iframe data-animation="./子树最小.js" class="fragment"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./子树最小.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
             <codeblock class="fragment" style="height: 200px;">
                 <script type="text/template">
                     multiset< int > Sv[N]; 
@@ -83,8 +83,8 @@
         <h2>人员调度</h2>
         <p>由于我们修改了每个节点上有序列表维护的东西的定义，现在重新审视一下在节点 $u$ 上新加入一个能力值 $v$ 优秀员工会发生什么...</p>
         <div style="display: flex;">
-            <iframe data-animation="./重新审视新增一个优秀员工.js"
-                style="width: 1000px; height: 500px;"></iframe>
+            <sd-animation src="./重新审视新增一个优秀员工.js"
+                style="width: 1000px; height: 500px;"></sd-animation>
             <div>
                 <p class="fragment">树上从 $u$ 开始的一条链，由于其列表本身是有空位的，所以可以直接把该员工塞进空位上</p>
                 <p class="fragment">到第一个列表长度等于子树大小的节点 $f$，由于其列表已经满了，考虑新员工能否替换 $f$ 的现有列表中的能力最小者</p>

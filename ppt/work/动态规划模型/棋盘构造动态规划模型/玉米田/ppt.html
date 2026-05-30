@@ -5,8 +5,8 @@
     <problem data-problemset="luogu" data-problemid="P1879"></problem>
     <section>
         <h2>玉米田</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p>有一块 $m\times n$ 的玉米田，你需要在这片田地上种植玉米，遵循以下规则：</p>
         <ul>
             <li>$1$ 代表土地肥沃可以种植玉米</li>
@@ -19,8 +19,8 @@
     <section>
         <h2>玉米田</h2>
         <p>我们可以把<b>某一行种玉米的情况</b>压缩为<b>一个状态</b>，再逐行考虑如何种玉米</p>
-        <iframe data-animation="./状态定义.js"
-            style="width: 1000px; height: 120px;"></iframe>
+        <sd-animation src="./状态定义.js"
+            style="width: 1000px; height: 120px;"></sd-animation>
         <p class="fragment quote">上图为了展示方便，调换了二进制数的顺序，实际上第 $1$ 列应该对应二进制数的最低位，第 $2$ 列对应二进制数的第二位，以此类推</p>
         <p class="fragment">在一行土地上，并非<b>种植状态</b>都合法......</p>
         <codeblock class="fragment">

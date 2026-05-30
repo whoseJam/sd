@@ -17,8 +17,8 @@
             \mathop{max}\limits_{\begin{aligned}l\le r\le R\\unique(a_l,a_{l+1}&,...,a_r)\end{aligned} }(r-l+1)
             $$
         </p>
-        <iframe data-animation="./贪心.js" class="fragment"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./贪心.js" class="fragment"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <ul>
             <li class="fragment">设 $l$ 为左端点的互不相同子区间的<b style="color: red;">最右端点为 $F_l$</b>，那么 $l$ 为左端点的区间的贡献为 $min(R,F_l)-l+1$</li>
         </ul>
@@ -34,7 +34,7 @@
             $$
         </p>
         <p class="fragment">我们预处理出 $F_i$ 表示，以 $i$ 这个元素为左端点的<b>最长与众不同的序列</b>的右端点</p>
-        <iframe data-animation="./与众不同.js" class="fragment"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./与众不同.js" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
 </section>

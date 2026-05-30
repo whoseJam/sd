@@ -22,8 +22,8 @@
     <section>
         <h2>分特产</h2>
         <p>问题的正面是所有人都分得特产的方案数，问题的反面是至少存在一个人拿不到特产的方案数</p>
-        <iframe data-animation="./维恩图.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./维恩图.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">把 $m$ 个特产分给 $n$ 个人的方案数为 $C_{m+(n-1)}^{n-1}$</p>
         <ul style="font-size: 20px;">
             <li class="fragment">至少 $1$ 个人拿不到特产的方案数：<span class="fragment">$C_n^1\prod_iC_{a_i+((n-1)-1)}^{(n-1)-1}$</span></li>

@@ -6,8 +6,8 @@
     <section>
         <h2>二分图</h2>
         <p>如果一张图可以被染为两种不同的颜色，并且一条边两端的节点颜色不同，则该图被称为<b style="color: red;">二分图</b></p>
-        <iframe data-animation="./染色.js"
-            style="width: 1000px; height: 280px;"></iframe>
+        <sd-animation src="./染色.js"
+            style="width: 1000px; height: 280px;"></sd-animation>
         <p class="fragment">二分图可以用于描述很多生活中的现象</p>
         <div class="fragment quote">
             <h3>座位问题</h3>
@@ -17,8 +17,8 @@
     <section>
         <h2>二分图</h2>
         <p>以下是<b>座位问题</b>的一个具体的例子（共四个乘客和四个座位）</p>
-        <iframe data-animation="./匹配与最大匹配.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./匹配与最大匹配.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p class="fragment quote">容易注意到上图描述的座位问题中，并非所有乘客都能坐到自己钟意的位置上</p>
         <p class="fragment">每一种为乘客分配<b>其钟意的座位</b>的方案，被称为二分图的一个<b style="color: red;">匹配</b></p>
         <p class="fragment quote">在无法满足所有乘客需求的情况下，我们或许希望知道，<b>最多有多少人能坐到自己钟意的位置上</b></p>
@@ -37,8 +37,8 @@
     <section>
         <h2>增广路</h2>
         <p>想象我们已经获取到了一个匹配<span class="fragment">，我们现在希望让这个匹配扩大</span></p>
-        <iframe data-animation="./增广路.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./增广路.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">我们尝试找到一条<b style="color: red;">匹配边</b>和<b>非匹配边</b>交替出现的路径</p>
         <ul>
             <li class="fragment">在这条路径的开头是一条<b>非匹配边</b></li>
@@ -49,8 +49,8 @@
     <section>
         <h2>二分图的最大匹配</h2>
         <p>对于二分图最大匹配而言，我们只需要从每一个点开始，都尝试一次找增广路就行了</p>
-        <iframe data-animation="./最大匹配.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./最大匹配.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">容易发现单次增广的理论时间复杂度上限应该为 $O(n+m)$（每个点和边都搜索过一次）</p>
         <p class="fragment">找增广路的次数显然应该等于<b>二分图点少的那一侧</b><b style="color: purple;">点的数量</b></p>
         <p class="fragment">如果我们认为二分图两侧的点分布是均匀的，则总时间复杂度为 $O(n(n+m))$</p>

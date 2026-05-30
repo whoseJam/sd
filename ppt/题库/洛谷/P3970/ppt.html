@@ -12,15 +12,15 @@
         </p>
         <div class="fragment">
             <p style="font-size: 20px; text-align: center; margin-bottom: -30px;">以 $\{1,2\}$ 为例，它会在序列中被统计到多次</p>
-            <iframe data-animation="./上升子序列.js"
-                style="width: 1000px; height: 200px;"></iframe>
+            <sd-animation src="./上升子序列.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
         </div>
         <p class="fragment">不难想到可以人为约定，每种上升序列所使用的元素，都尽可能往后移动</p>
     </section>
     <section>
         <h2>上升子序列</h2>
-        <iframe data-animation="./转移裁剪.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./转移裁剪.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment">设 $has(l,r,x)$ 表示判断区间 $[l,r]$ 中是否存在值为 $x$ 的元素，则
             <span style="font-size: 20px;">
                 $$
@@ -44,8 +44,8 @@
     </section>
     <section>
         <h2>上升子序列</h2>
-        <iframe data-animation="./转移裁剪.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./转移裁剪.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p>最后，用序列数据结构完成对代码的优化改造即可</p>
         <codeblock>
             <script type="text/template">

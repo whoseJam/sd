@@ -7,12 +7,12 @@
     <section>
         <h2>百事世界杯之旅</h2>
         <p>总共有 $n$ 个球星需要收集，每一瓶饮料开奖出来每位球星的概率是相同的，求期望需要开多少瓶饮料，才能开出所有球星</p>
-        <iframe data-animation="./状态图.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./状态图.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment">设 $f_k$ 表示已经开奖了 $k$ 位球星，期望还需要开多少瓶饮料，才能开出所有球星</p>
         <div style="display: flex; align-items: center;">
-            <iframe data-animation="./状态转移.js" class="fragment"
-                style="width: 400px; height: 200px;"></iframe>
+            <sd-animation src="./状态转移.js" class="fragment"
+                style="width: 400px; height: 200px;"></sd-animation>
             <table class="fragment">
                 <tbody>
                     <tr>
@@ -66,8 +66,8 @@
     <section>
         <h2>百事世界杯之旅</h2>
         <p>另一种做法是，考虑期望的线性性</p>
-        <iframe data-animation="./状态图.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./状态图.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p style="font-size: 18px;">
             $$
             \begin{aligned}
@@ -80,8 +80,8 @@
         </p>
         <p class="fragment">设 $E_k$ 表示从第 $k$ 个球星到第 $k+1$ 个球星的开瓶总次数</p>
         <div style="display: flex; align-items: center; margin-top: -20px;">
-            <iframe data-animation="./状态转移.js" class="fragment"
-                style="width: 400px; height: 150px;"></iframe>
+            <sd-animation src="./状态转移.js" class="fragment"
+                style="width: 400px; height: 150px;"></sd-animation>
             <p class="fragment math-fragment" style="font-size: 20px;">
                 $$
                 \begin{aligned}

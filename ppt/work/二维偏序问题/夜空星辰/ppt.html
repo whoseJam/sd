@@ -6,8 +6,8 @@
     <section>
         <h2>夜空星辰</h2>
         <p>夜空中有 $n$ 颗星星，定义每颗星星的能级为其左下角的星星数量，能级最小为 $0$ 最大为 $n-1$</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment">求每种能级的星星各有多少颗</p>
         <p class="fragment quote">保证星星的坐标互不重叠</p>
     </section>
@@ -15,7 +15,7 @@
         <h2>夜空星辰</h2>
         <p>就是在统计每个星星左下角的星星个数</p>
         <p class="fragment">如果 $x_j\le x_i$ 且 $y_j\le y_i$，则第 $j$ 个星星能对第 $i$ 个星星产生贡献</p>
-        <iframe data-animation="./计算过程.js" class="fragment"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./计算过程.js" class="fragment"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
 </section>

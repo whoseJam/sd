@@ -1,4 +1,6 @@
-import { configure, has, start, stop, update } from "@sd/iframe";
+// Reveal plugin: drives <sd-animation> elements across slide transitions.
+// Each slide that wants an animation embeds `<sd-animation src="...">`; this
+// plugin starts the active slide's animations and stops the previous slide's.
 import { getLocationFromAncestor } from "../Inject";
 
 export default function SDAnimation() {
@@ -6,20 +8,23 @@ export default function SDAnimation() {
 }
 
 function init(reveal) {
+    resolveAllSources(reveal.getRevealElement());
+
     reveal.addEventListener("slidechanged", event => {
         const currentSlide = event.currentSlide;
         const previousSlide = event.previousSlide;
+
         if (previousSlide) {
-            const iframes = previousSlide.querySelectorAll("iframe[data-animation]");
-            for (let i = 0; i < iframes.length; i++) stop(iframes[i]);
+            for (const el of previousSlide.querySelectorAll("sd-animation")) {
+                if (typeof el.stop === "function") el.stop();
+            }
         }
 
-        const iframes = currentSlide.querySelectorAll("iframe[data-animation]");
         const urls = [];
-        for (const iframe of iframes) {
-            if (has(iframe)) start(iframe);
-            else update(iframe);
-            urls.push(getURL(iframe));
+        for (const el of currentSlide.querySelectorAll("sd-animation")) {
+            if (typeof el.show === "function") el.show();
+            const src = el.getAttribute("src");
+            if (src) urls.push(resolveSrc(src, el));
         }
 
         if (window.parent) {
@@ -32,17 +37,22 @@ function init(reveal) {
             );
         }
     });
-
-    configure({
-        getURL,
-    });
 }
 
-function getURL(iframe) {
-    let url = iframe.getAttribute("data-animation");
-    if (url.endsWith(".js")) url = url.replace(".js", ".html");
-    if (url.startsWith("./animation") || url.startsWith("http") || url.startsWith("animation")) return url;
-    const location = getLocationFromAncestor(iframe);
-    if (location) return location + "/" + url;
-    return url;
+function resolveAllSources(root) {
+    if (!root) return;
+    for (const el of root.querySelectorAll("sd-animation")) {
+        const src = el.getAttribute("src");
+        if (!src) continue;
+        const resolved = resolveSrc(src, el);
+        if (resolved !== src) el.setAttribute("src", resolved);
+    }
+}
+
+function resolveSrc(src, el) {
+    if (src.endsWith(".js")) src = src.replace(/\.js$/, ".html");
+    if (src.startsWith("./animation") || src.startsWith("http") || src.startsWith("animation")) return src;
+    const location = getLocationFromAncestor(el);
+    if (location) return location + "/" + src;
+    return src;
 }

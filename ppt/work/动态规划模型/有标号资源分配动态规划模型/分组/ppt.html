@@ -5,8 +5,8 @@
     <problem data-problemset="atcoder" data-problemid="dp_u"></problem>
     <section>
         <h2>分组</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p>把 $n$ 个物品任意分组（分组的数量不限，每组物品的数量不限）</p>
         <p class="fragment">如果第 $i$ 个物品和第 $j$ 个物品在一组，则会产生 $a_{i,j}$ 的得分<span class="fragment">，最大化得分</span></p>
         <p class="fragment quote">分组是如何进行的？</p>
@@ -20,8 +20,8 @@
     <section>
         <h2>分组</h2>
         <p>设 $f(S)$ 表示把 $S$ 这个集合中的物品都分完组丢一边去了，能获得的最大价值</p>
-        <iframe data-animation="./状态转移.html"
-            style="width: 1000px; height: 300px; "></iframe>
+        <sd-animation src="./状态转移.html"
+            style="width: 1000px; height: 300px; "></sd-animation>
         <p class="fragment">$$f(S\lor T)=max\{f(S\lor T),f(S)+v(T)\},S\land T=\emptyset$$</p>
         <p class="fragment">其中 $v(T)$ 表示把 $T$ 这个集合内的物品分一组，能产生的得分之和</p>
     </section>

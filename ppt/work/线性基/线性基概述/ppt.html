@@ -12,8 +12,8 @@
             <li class="fragment">一个三维向量：$\vec{v_2}=(5,6,7)$</li>
         </ul>
         <p class="fragment quote">感觉向量和坐标一样，事实上既可以把向量理解为一种坐标，又可以理解为相对于原点的一个方向</p>
-        <iframe data-animation="./二维向量.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./二维向量.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
     </section>
     <section>
         <h2><ruby>空间<rt>Space</rt></ruby></h2>
@@ -57,8 +57,8 @@
             $$
         </p>
         <p class="fragment">那么 $\vec{x}$ 就可以被这组向量<b style="color: red;">线性组合</b>出来，或者说 $\vec{x}$ 能被这组向量<b style="color: red;">线性表出</b></p>
-        <iframe data-animation="./二维线性组合.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./二维线性组合.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote" style="margin-top: 10px;">从几何角度可以看出，如果两个二维向量不共线，那么它们必然能线性组合出平面内的任意一个向量<span class="fragment">，事实上，对于 $D$ 维空间，最优情况下也能用 $D$ 个向量组合出空间内的任意一个向量</span></p>
     </section>
     <section>
@@ -67,8 +67,8 @@
             <li>对于一组向量 $\vec{a},\vec{b},\vec{c}...$，如果任意一个向量都不能被剩余的向量线性表出，则这些向量是<b style="color: red;">线性无关</b>的</li>
             <li>对于一组向量 $\vec{a},\vec{b},\vec{c}...$，如果存在一个向量能被剩余的向量线性表出，则这些向量是<b style="color: red;">线性相关</b>的</li>
         </ul>
-        <iframe data-animation="./二维线性组合.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./二维线性组合.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">对二维空间，如果两个二维向量是线性无关的，那么它们必然能线性组合出平面内的任意一个向量</li>
             <li class="fragment">对 $D$ 维空间，如果 $D$ 个 $D$ 维向量是线性无关的，那么它们必然能线性组合出空间内的任意一个向量</li>
@@ -82,10 +82,10 @@
             <li class="fragment">它的大小需要尽可能小</li>
         </ul>
         <div style="display: flex;">
-            <iframe data-animation="./二维基向量1.js" class="fragment"
-                style="width: 1000px; height: 300px;"></iframe>
-            <iframe data-animation="./二维基向量2.js" class="fragment"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./二维基向量1.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
+            <sd-animation src="./二维基向量2.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
         </div>
         <p class="fragment quote">显然基向量不止一组</p>
         <p class="fragment quote">基向量的数量不一定就等同于向量的维度，可能小于向量的维度，但绝不可能大于向量的维度</p>
@@ -118,8 +118,8 @@
     <section>
         <h2>异或线性基</h2>
         <p>假设往线性基中先后添加 $(00001)_2,(00101)_2,(01001)_2,(00100)_2$...</p>
-        <iframe data-animation="./异或线性基.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./异或线性基.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 bool insert(int v) {
@@ -141,8 +141,8 @@
     <section>
         <h2>实数线性基</h2>
         <p>实数线性基写起来会稍微麻烦一点，因为不像二进制数那样可以方便地对一整行进行操作</p>
-        <iframe data-animation="./实数线性基.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./实数线性基.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 bool insert(vector< int > v) { // v 是一个实数向量

@@ -6,8 +6,8 @@
     <section>
         <h2>面包店</h2>
         <p>不难设状态 $f_{i,j}$ 表示，考虑 $[1,i]$ 这个区间被分成了 $j$ 段的最大价值</p>
-        <iframe data-animation="./状态表示和转移.js"
-            style="width: 1000px; height: 50px;"></iframe>
+        <sd-animation src="./状态表示和转移.js"
+            style="width: 1000px; height: 50px;"></sd-animation>
         <p class="fragment">考虑最后一段是 $[x+1,i]$，那么 $[1,x]$ 这个区间就应该被分成 $j-1$ 段</p>
         <p class="fragment">
             $$
@@ -23,8 +23,8 @@
             f_{i,j}=\mathop{max}\limits_{k\lt i} \{f_{k,j-1}+diff(k+1,i)\}
             $$
         </p>
-        <iframe data-animation="./多维更新.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./多维更新.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">由于 $k\le 50$，所以我们可以用 $50$ 棵线段树维护每一排对下一排的贡献</p>
         <p class="fragment">对于新加入的第 $i$ 个面包，假设前一个与之相同的面包在 $pre_i$，我们讨论<b style="color: purple;">这个面包的加入会对贡献产生何种影响</b></p>
         <ul>

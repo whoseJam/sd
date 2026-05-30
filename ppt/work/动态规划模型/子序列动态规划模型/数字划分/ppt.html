@@ -6,15 +6,15 @@
     <section>
         <h2>数字划分</h2>
         <p>给定一个长度为 $n$ 的数码串，你需要把这个数码串划分成若干段，使得每一段都是 $m$ 的倍数</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <p class="fragment">求总共有多少种划分方案</p>
     </section>
     <section>
         <h2>数字划分</h2>
         <p class="quote">这个为什么也被归于子序列模型？它明明是在对序列进行划分呀？</p>
-        <iframe data-animation="./从划分到子序列.js"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./从划分到子序列.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <p class="fragment">我们往往可以把每一个划分的最后一个元素提取出来，认为是子序列中的一个点</p>
         <p class="fragment">如果设 $f_i$ 表示划分末尾为 $a_i$ 的合法情况方案数</p>
         <p class="fragment">那么转移成立与否只和前一个划分的末尾在哪有关</p>
@@ -29,9 +29,9 @@
         <p>为了快速检验一段数码是否是 $m$ 的倍数，我们只需要检查它们对 $m$ 取模的结果是否为 $0$ 就行了</p>
         <p class="fragment quote">一个数是 $k$ 的倍数，则这个数对 $k$ 取模结果为 $0$，这个技巧我们已经见过了</p>
         <p class="fragment quote">如何快速提取一段数码对 $k$ 取模的结果？</p>
-        <iframe data-animation="./检验.js" class="fragment"
-            data-viewBoxDelta="0 0 0 10"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./检验.js" class="fragment"
+            viewbox-delta="0 0 0 10"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment quote">这一步怎么想到的？<span class="fragment">——字符串哈希就是这个思路，由它借鉴过来的</span></p>
     </section>
     <section>
@@ -53,8 +53,8 @@
             f_i=\sum_{\begin{aligned}j\lt i&\\s_{i}\equiv 10^{i-j}s_{j}&(\mathop{mod} m)\end{aligned} }f_j
             $$
         </p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
         <p class="fragment">可以认为只有 $s_i\equiv 0(\mathop{mod} m)$ 的那些 $i$ 可以参与转移</p>
         <codeblock class="fragment">
             <script type="text/template">

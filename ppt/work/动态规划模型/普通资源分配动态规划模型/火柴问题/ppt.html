@@ -11,8 +11,8 @@
             <li>$N$ 根火柴必须恰好用完</li>
         </ul>
         <p class="fragment">设 $f_i$ 表示使用 $i$ 根火柴能拼出的最大数字，$A$ 表示<b style="color: purple;">可选数字集</b></p>
-        <iframe data-animation="./状态转移.js" class="fragment"
-            style="width: 1000px; height: 50px;"></iframe>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 50px;"></sd-animation>
         <p class="fragment">
             $$
             f_i=\mathop{max}\limits_{k\in A}\{f_{i-u_k}\times 10 + k\}

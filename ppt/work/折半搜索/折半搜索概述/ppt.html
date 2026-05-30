@@ -11,16 +11,16 @@
             <li>序列上的每个位置可能有 $2\sim 3$ 种选择</li>
             <li>不同的决策会带来不同的收益，我们希望找到最优决策</li>
         </ul>
-        <iframe data-animation="./决策序列.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./决策序列.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">我们不妨把这个长度为 $n$ 的序列叫做<b style="color: purple;">决策序列</b></p>
         <p class="fragment quote">如果直接暴力搜出决策序列的所有可能性，时间复杂度显然为 $O(2^n |计算决策收益的时间复杂度|)$</p>
     </section>
     <section>
         <h2>折半搜索</h2>
         <p>折半搜索尝试把一个决策序列拆成两半</p>
-        <iframe data-animation="./折半搜索优化效率.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./折半搜索优化效率.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <ul>
             <li class="fragment">首先并列地搜出这两半决策的所有可能性</li>
             <li class="fragment">再尝试找到一种比较快的方法，去把这两半决策合并起来</li>

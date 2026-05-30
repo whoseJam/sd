@@ -7,8 +7,8 @@
         <h2>路边的水沟</h2>
         <p>在一个 $n\times m$ 的网格中，每个格点上都有一个闸门，水流在格点和网格边上移动</p>
         <div>
-            <iframe data-animation="./样例解释.js"
-                style="width: 1000px; height: 350px;"></iframe>
+            <sd-animation src="./样例解释.js"
+                style="width: 1000px; height: 350px;"></sd-animation>
             <p style="font-size: 20px; text-align: center;">图中展示的网格实际上是格点，一个高为 $n+1$ 的网格的实际高度为 $n$</p>
         </div>
         <p>一条水流，从 $(1,1)$ 流到 $(n,m)$，每次只能向上或者向右流动一个单位，求有多少种流动方式</p>
@@ -16,8 +16,8 @@
     <section>
         <h2>路边的水沟</h2>
         <p>我们把水流流到终点看作一个操作序列</p>
-        <iframe data-animation="./水流操作.js" class="fragment"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./水流操作.js" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment quote">这个长度 $n+m$ 的操作序列中，应该恰好有 $n$ 个 ↑，$m$ 个 →</p>
         <p class="fragment">答案即为 $C_{n+m}^n$</p>
     </section>

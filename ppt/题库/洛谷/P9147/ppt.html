@@ -11,8 +11,8 @@
     <section>
         <h2>签到题</h2>
         <p>考察假设改了 $a_i$ 的值...</p>
-        <iframe data-animation="./修改.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./修改.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>设 $f_i$ 表示以 $i$ 结尾的最长连续上升序列的长度，$g_i$ 表示以 $i$ 开头的最长连续上升序列的长度</p>
         <ul>
             <li class="fragment">如果 $a_{i-1}+1\le a_{i+1}-1$，则改 $a_i$ 所能产生的最长连续上升序列的长度为 $f_{i-1}+g_{i+1}$</li>

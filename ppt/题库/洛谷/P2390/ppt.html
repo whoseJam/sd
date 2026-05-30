@@ -7,17 +7,17 @@
         <h2>地标访问</h2>
         <p>对于 $30\%$ 的数据，$n\le 10^3$</p>
         <p>容易发现我们要么是先往左边走，再往右边走；要么是先往右边走，再往左边走</p>
-        <iframe data-animation="./贪心.js"
-            data-viewBoxDelta="0 -6 0 12"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./贪心.js"
+            viewbox-delta="0 -6 0 12"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <p class="fragment">所以我们可以考虑枚举左右端点，在路径长度不超过 $T$ 的情况下，将路过的地标数量取一个最大值</p>
         <p class="fragment">时间复杂度 $O(n^2)$</p>    
     </section>
     <section>
         <h2>地标访问</h2>
         <p>容易发现，当左端点固定的时候，右端点最远到什么地方可以让路径长度不超过 $T$ 其实是可以二分出来的</p>
-        <iframe data-animation="./贪心.js"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./贪心.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
         <p class="fragment">时间复杂度 $O(nlogn)$</p>
     </section>
 </section>

@@ -6,8 +6,8 @@
     <problem data-problemset="luogu" data-problemid="P1297"></problem>
     <section>
         <h2>单选错位</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p>有 $n$ 个试题，第 $i$ 个试题有 $a_i$ 个选项，每个选项成为正确答案的概率是均等的</p>
         <p class="fragment">某同学挑选出了所有题目的正确选项，但在抄写答题卡的时候抄错位了，第 $i$ 题的答案抄到了第 $i+1$ 题上，特别地，第 $n$ 题的答案抄到了第 $1$ 题上</p>
         <p class="fragment">求该同学期望答对多少个题目</p>
@@ -28,20 +28,20 @@
         <div style="display: flex; justify-content: space-around;">
             <div style="width: 33%;">
                 <p>如果 $a_i=a_{i-1}$</p>
-                <iframe data-animation="./平平.js" class="fragment"
-                    style="width: 1000px; height: 300px;"></iframe>
+                <sd-animation src="./平平.js" class="fragment"
+                    style="width: 1000px; height: 300px;"></sd-animation>
                 <p class="fragment">正确率显然是 $\frac 1 {a_i}$</p>        
             </div>
             <div style="width: 33%;">
                 <p class="fragment">如果 $a_i\gt a_{i-1}$</p>
-                <iframe data-animation="./低高.js" class="fragment"
-                    style="width: 1000px; height: 300px;"></iframe>
+                <sd-animation src="./低高.js" class="fragment"
+                    style="width: 1000px; height: 300px;"></sd-animation>
                 <p class="fragment">正确率显然是 $\frac{a_{i-1} }{a_i}\frac{1}{a_{i-1} }$</p>        
             </div>
             <div style="width: 33%;">
                 <p class="fragment">如果 $a_i\lt a_{i-1}$</p>
-                <iframe data-animation="./高低.js" class="fragment"
-                    style="width: 1000px; height: 300px;"></iframe>
+                <sd-animation src="./高低.js" class="fragment"
+                    style="width: 1000px; height: 300px;"></sd-animation>
                 <p class="fragment">正确率显然是 $\frac{a_{i} }{a_{i-1} }\frac{1}{a_{i} }$</p>
             </div>
         </div>

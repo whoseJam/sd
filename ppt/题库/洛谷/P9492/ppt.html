@@ -16,16 +16,16 @@
     <section>
         <h2>进行一个拆的解</h2>
         <p>对于 $100\%$ 的数据，$n\le 10^5$</p>
-        <iframe data-animation="./子序列的可拓展性.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./子序列的可拓展性.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">注意到如果有两个序列 $s$ 和 $t$，如果 $t$ 是 $s$ 的一个子序列，那么把 $s$ 稍微延长，把 $t$ 稍微缩短后，$t$ 仍然是 $s$ 的子序列</p>
     </section>
     <section>
         <h2>进行一个拆的解</h2>
         <p>当 $n$ 为偶数时，取一个特殊点 $l=\frac n 2$</p>
-        <iframe data-animation="./偶数特殊点.js"
-            data-viewBoxDelta="0 0 0 10"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./偶数特殊点.js"
+            viewbox-delta="0 0 0 10"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">我们必须让序列的前一半和后一半相等</p>
         <p class="fragment">又由于之前得到的结论，无论我们是把 $l$ 往前推还是往后推，其中一个序列必然为另一个序列的子序列</p>
         <p class="fragment">所以当 $n$ 为偶数时，我们只需要检查 $[1...\frac{n}{2}]$ 这个区间和 $[\frac{n}{2}+1...n]$ 这个区间是否完全相同<span class="fragment">，如果完全相同则答案为 $NO$，否则答案为 $YES$</span></p>

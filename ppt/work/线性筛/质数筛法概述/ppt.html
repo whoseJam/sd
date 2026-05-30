@@ -23,15 +23,15 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./朴素筛.js" class="fragment"
-            style="width: 100%; height: 200px;"></iframe>
+        <sd-animation src="./朴素筛.js" class="fragment"
+            style="width: 100%; height: 200px;"></sd-animation>
         <p class="fragment">时间复杂度为 $O(\frac n 2 +\frac n 3 + ... + \frac n n)\sim O(nlogn)$</p>
     </section>
     <section>
         <h2>质数筛法</h2>
         <p>虽然这看上去已经是一个很好的效率了，不过我们很快就发现了朴素筛法存在的可改进点</p>
-        <iframe data-animation="./朴素筛.js" class="fragment"
-            style="width: 100%; height: 200px;"></iframe>
+        <sd-animation src="./朴素筛.js" class="fragment"
+            style="width: 100%; height: 200px;"></sd-animation>
         <p class="fragment">例如上图中，$12$ 这个合数，实际上被它的每个因子都筛了一遍</p>
         <p class="fragment">我们完全没必要让合数因子参与筛查，只让质因子参与筛查即可</p>
     </section>
@@ -51,8 +51,8 @@
             </script>
         </codeblock>
         <p class="fragment">经过这么一个小优化之后，时间复杂度变为了 $O(nloglogn)$</p>
-        <iframe data-animation="./埃氏筛法.html" class="fragment"
-            style="width: 100%; height: 180px;"></iframe>
+        <sd-animation src="./埃氏筛法.html" class="fragment"
+            style="width: 100%; height: 180px;"></sd-animation>
         <p class="fragment">不过终究会有合数被重复筛去</p>
         <p class="fragment">而线性筛解决了这个问题——对于线性筛来说，每个合数只会被筛去一次，线性筛的时间复杂度也正如其名，为 $O(n)$</p>
     </section>

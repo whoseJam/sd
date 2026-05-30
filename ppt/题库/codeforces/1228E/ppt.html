@@ -11,8 +11,8 @@
     <section>
         <h2>Another Filling the Grid</h2>
         <p>为了让事情简单一点，我们先考虑一个 $1\times n$ 的网格怎么做</p>
-        <iframe data-animation="./一行.js"
-            style="width: 1000px; height: 140px;"></iframe>
+        <sd-animation src="./一行.js"
+            style="width: 1000px; height: 140px;"></sd-animation>
         <p class="fragment">只要网格中出现过一次 $1$ 即可</p>
         <p class="fragment">
             $$
@@ -32,8 +32,8 @@
         <h2>Another Filling the Grid</h2>
         <p>至少某一列不存在 $1$ 很简单，我们只需要选出这一列，然后让这一列的取值范围为 $[2,k]$ 即可</p>
         <div style="display: flex; align-items: center; justify-content: space-around;">
-            <iframe data-animation="./不合法方案.js"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./不合法方案.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
             <picture data-source="./三元维恩图.png" class="fragment" data-fragment-index="2"
                 style="width: 500px; height: 300px;"></picture>
         </div>

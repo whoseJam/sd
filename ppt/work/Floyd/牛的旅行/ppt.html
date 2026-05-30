@@ -8,8 +8,8 @@
         <h2>牛的旅行</h2>
         <p>给出 $n$ 个点的坐标和它们的连边情况</p>
         <p>定义一个连通块的直径，为连通块中最远的一对点的距离（后文提到的距离都是指两个点之间的最小距离）</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">你需要添加一条新边，使得该边添加后，新连通块的直径最小（你需要保证该边一定连接了两个不同的连通块） </p>
         <p class="fragment quote">保证输入至少有两个连通块</p>
     </section>
@@ -17,8 +17,8 @@
         <h2>牛的旅行</h2>
         <p>设将要合并的两个连通块为 $A$ 和 $B$，新添加的边为 $(i,j)$，其中 $i\in A$ 且 $j\in B$，新连通块为 $S$</p>
         <p class="fragment">考虑连接 $(i,j)$ 后，$S$ 的直径可能是多少</p>
-        <iframe data-animation="./牛的旅行.html" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./牛的旅行.html" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <ol>
             <li class="fragment">$A$ 连通块内的直径</li>
             <li class="fragment">$B$ 连通块内的直径</li>

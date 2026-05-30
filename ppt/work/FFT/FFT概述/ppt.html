@@ -5,8 +5,8 @@
     <section>
         <h2>FFT</h2>
         <p>多项式的本质是......</p>
-        <iframe data-animation="./多项式与函数.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./多项式与函数.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">两点确定一条直线<span class="fragment">（一个一次多项式）</span></li>
             <li class="fragment">三点确定一个二次多项式</li>
@@ -18,8 +18,8 @@
     <section>
         <h2>系数表示与点值表示</h2>
         <p>所以一个 $n$ 次多项式，除了可以用每一项前面的系数（共 $n+1$ 个系数）来表示之外，还可以用平面上的 $n+1$ 个点确定下来</p>
-        <iframe data-animation="./系数表示与点值表示.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./系数表示与点值表示.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">如果我们记录多项式每一项前面的系数，以此来确定一个多项式，称这种多项式的表示为<b>多项式的系数表示</b></li>
             <li class="fragment">如果我们记录多项式对应的函数上的 $n+1$ 个点的坐标，以此来确定一个多项式，称这种多项式的表示为<b>多项式的点值表示</b></li>
@@ -29,8 +29,8 @@
         <h2>多项式乘法</h2>
         <p>如果在系数表示下，做两个 $n$ 次多项式的乘法，那时间复杂度显然是 $O(n^2)$</p>
         <p class="fragment">但如果两个多项式都按照点值表示好了，并且每个取值点的坐标是一一对应的......</p>
-        <iframe data-animation="./点值表示多项式乘法.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./点值表示多项式乘法.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 // A 取了 2n+1 个点值
@@ -104,8 +104,8 @@
             <li class="fragment">$a$ 为复数的实数部分，简称实部</li>
             <li class="fragment">$b$ 为复数的虚数部分，简称虚部</li>
         </ul>
-        <iframe data-animation="./复平面.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./复平面.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment"><b>模长</b>：复数在复平面上的长度，即 $\sqrt{a^2+b^2}$</li>
             <li class="fragment"><b>辐角</b>：复数与 $x$ 轴形成的夹角 $\theta$</li>
@@ -125,9 +125,9 @@
     </section>
     <section>
         <h2>复数单位根</h2>
-        <iframe data-animation="./复数单位根.js"
-            data-viewBoxDelta="-20 0 20 0"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./复数单位根.js"
+            viewbox-delta="-20 0 20 0"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">记复数的 $n$ 次单位根为 $w_n$</p>
         <p class="fragment">
             $$
@@ -205,8 +205,8 @@
             \end{cases}
             $$
         </p>
-        <iframe data-animation="./FFT单次分治演示.js"
-            style="width: 1000px; height: 200px; margin-top: 20px;"></iframe>
+        <sd-animation src="./FFT单次分治演示.js"
+            style="width: 1000px; height: 200px; margin-top: 20px;"></sd-animation>
         <div class="quote fragment">
             本来我们要把 $\{w_n^0,w_n^1,...,w_n^{n-1}\}$ 带入到一个含有 $n$ 项的多项式中，现在我们只需要把 $\{w_{n/2}^0,w_{n/2}^1,...,w_{n/2}^{n/2-1}\}$ 带入到两个含有 $\frac n 2$ 项的多项式中即可
             <div style="text-align: center;">
@@ -216,13 +216,13 @@
     </section>
     <section>
         <h2>分治演示</h2>
-        <iframe data-animation="./FFT分治演示.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./FFT分治演示.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
     <section>
         <h2>蝶形变化</h2>
-        <iframe data-animation="./FFT蝶形变换.js"
-            style="width: 1000px; height: 175px;"></iframe>
+        <sd-animation src="./FFT蝶形变换.js"
+            style="width: 1000px; height: 175px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 void FFT(Complex a[], int len) {
@@ -253,8 +253,8 @@
     <section>
         <h2>预处理</h2>
         <p>为了实现把每个数字提前放到自己该去的地方，我们预处理出<b>每个数字经过蝶形变换后去了哪里</b></p>
-        <iframe data-animation="./rev数组.js"
-            style="width: 1000px; height: 350px;"></iframe>
+        <sd-animation src="./rev数组.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 int Make(int n) { // 把一个含有 n 项的多项式补齐，并预处理 rev 数组

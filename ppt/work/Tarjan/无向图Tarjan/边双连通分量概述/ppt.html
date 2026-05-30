@@ -24,8 +24,8 @@
                     }
                 </script>
             </codeblock>
-            <iframe data-animation="统计思路.js"
-                style="width: 1000px; height: 450px; margin-left: 20px;"></iframe>
+            <sd-animation src="统计思路.js"
+                style="width: 1000px; height: 450px; margin-left: 20px;"></sd-animation>
         </div>
         <p>在构建DFS树的同时，对第 $i$ 个边双连通分量 $BCC_i$，我们在 $BCC_i$ 在DFS树中的<b>顶部</b>，处理出所有属于该 $BCC_i$ 的节点</p>
         <p class="fragment">具体来说，我们用一个栈来维护边双连通分量，每次路过一个节点就把它放入栈内；每找到一个边双连通分量的<b>顶部</b>，就从栈中弹出所有属于该边双连通分量的节点</p>

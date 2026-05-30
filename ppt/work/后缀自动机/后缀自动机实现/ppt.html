@@ -19,13 +19,13 @@
     <section>
         <h2>后缀自动机</h2>
         <p>在构建后缀自动机时，我们会存一个 $len$ 信息，其中 $len(u)$ 代表 <b style="color: purple;">$u$ 节点表示的所有字符串中最长字符串的长度</b></p>
-        <iframe data-animation="./len.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./len.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>实现</h2>
-        <iframe data-animation="./path1.js"
-            style="width: 1000px; height: 350px;"></iframe>
+        <sd-animation src="./path1.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
         <p>记 $last$ 为上一次插入的最后一个节点<span class="fragment">，新建一个节点，用以表示 $endpos$ 为加上这个字符后字符串的尾部的<b>那些字符串</b></span><span class="fragment">，将 $last\rightarrow 1$ 这条树链上的节点都添加 $\stackrel{c}{\rightarrow} u$ 的转移</span></p>
         <codeblock class="fragment">
             <script type="text/template">
@@ -41,12 +41,12 @@
     <section>
         <h2>实现</h2>
         <p class="quote">但如果树链上某个节点已经存在 $\stackrel{c}{\rightarrow}$ 转移了呢？</p>
-        <iframe data-animation="./path2.js"
-            style="width: 1000px; height: 350px;"></iframe>
+        <sd-animation src="./path2.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
         <p class="fragment" style="margin-top: 0px;">设 $p$ 表示树链上第一个出现冲突的节点，$q$ 表示 $p$ 已存在的 $\stackrel{c}{\rightarrow}$ 转移对应的节点</p>
         <div style="display: flex; align-items: center; margin-top: -20px;">
-            <iframe data-animation="讨论.js" class="fragment"
-                style="width: 60%; height: 100%;"></iframe>
+            <sd-animation src="讨论.js" class="fragment"
+                style="width: 60%; height: 100%;"></sd-animation>
             <codeblock class="fragment">
                 <script type="text/template">
                     // ......
@@ -66,11 +66,11 @@
                 最后一种情况是 $q$ 对应的字符串不完全是 $u$ 对应的字符串的后缀<br>
                 在这种情况下，我们需要新建一个辅助节点
             </div>
-            <iframe data-animation="./复杂讨论.js"
-                style="width: 60%; height: 120px;"></iframe>
+            <sd-animation src="./复杂讨论.js"
+                style="width: 60%; height: 120px;"></sd-animation>
         </div>
-        <iframe data-animation="./path3.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./path3.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 // ......

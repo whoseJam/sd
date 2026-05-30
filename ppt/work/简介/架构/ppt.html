@@ -4,8 +4,8 @@
         <p>whoseJam</p>
     </section>
     <section>
-        <iframe data-animation="./架构.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./架构.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 o.startAnimate();
@@ -17,8 +17,8 @@
     </section>
     <section>
         <h2>以一个矩形为例</h2>
-        <iframe data-animation="./移动1.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./移动1.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 const svg = sd.svg(); // 获取 svg 画布
@@ -28,8 +28,8 @@
                 rect.startAnimate().y(100).endAnimate();
             </script>
         </codeblock>
-        <iframe data-animation="./移动2.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./移动2.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 rect.startAnimate().x(100).y(100).endAnimate();
@@ -39,8 +39,8 @@
     <section>
         <h2>延时动画</h2>
         <p>有时候我们可能希望一段动画被延时调度</p>
-        <iframe data-animation="./移动3.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./移动3.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 const r1 = new sd.Rect(svg);
@@ -60,8 +60,8 @@
     </section>
     <section>
         <h2>动画时长</h2>
-        <iframe data-animation="./移动4.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./移动4.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 // r1, r2, r3, r4, r5 是从上到下五个矩形
@@ -75,8 +75,8 @@
     </section>
     <section>
         <h2>动画 vs 非动画</h2>
-        <iframe data-animation="./移动5.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./移动5.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock class="fragment" lang="js">
             <script type="text/template">
                 // r1, r2 是两个矩形

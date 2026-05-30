@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+  Manual smoke test for <sd-animation>.
+  How to run:
+    1. Build at least one animation into examples/animations: `gulp animation -i examples/animations/<name>.ts -o <dir>`
+    2. Either:
+       (a) copy this file next to that output dir, or
+       (b) edit the `src=` below to a path your dev server can reach.
+    3. Serve `<dir>` (or repo root) with any static server and open this page.
+       Expected: three iframes appear, each rendering its animation. Keyboard N/P
+       should advance/rewind whichever iframe is focused.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>&lt;sd-animation&gt; demo</title>
+    <script type="module" src="../src/SDAnimationElement.js"></script>
+    <style>
+        body { margin: 0; font-family: sans-serif; padding: 24px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .cell { border: 1px solid #ccc; height: 320px; position: relative; }
+    </style>
+</head>
+<body>
+    <h1>&lt;sd-animation&gt; demo (3 instances, multi-instance free)</h1>
+    <div class="grid">
+        <div class="cell"><sd-animation src="./foo.html"></sd-animation></div>
+        <div class="cell"><sd-animation src="./bar.html"></sd-animation></div>
+        <div class="cell"><sd-animation src="./baz.html" lazy></sd-animation></div>
+        <div class="cell"><sd-animation src="./foo.html" viewbox="0 0 1200 600"></sd-animation></div>
+    </div>
+</body>
+</html>

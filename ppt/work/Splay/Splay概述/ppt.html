@@ -62,8 +62,8 @@
         <p>一次旋转操作，改变Splay的一个<b>局部</b>的结构，但不影响Splay作为二叉查找树的性质</p>
         <div class="fragment">
             <p>我们可以把一次旋转视作一个函数 <code>void rotate(int x)</code>，该函数尝试将 $x$ 和其父节点 $fa(x)$ 进行倒反天罡，即让 $x$ 变成 $fa(x)$ 的父节点</p>
-            <iframe data-animation="./rotate效果.js"
-                style="width: 1000px; height: 400px;"></iframe>
+            <sd-animation src="./rotate效果.js"
+                style="width: 1000px; height: 400px;"></sd-animation>
         </div>
     </section>
     <section>
@@ -108,9 +108,9 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./rotate.js" class="fragment"
-            data-viewBox="200 120 800 500"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./rotate.js" class="fragment"
+            viewbox="200 120 800 500"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>Splay</h2>
@@ -209,8 +209,8 @@
     <section>
         <h2>查询前驱 <code>int findPrev(int x)</code></h2>
         <p>例如我们要定位 $6$ 号节点的前驱节点编号</p>
-        <iframe data-animation="./findPrev演示.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./findPrev演示.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
     <section>
         <h2>插入到某节点之后 <code>void insertAfter(int x, int v)</code></h2>
@@ -232,8 +232,8 @@
     <section>
         <h2>插入到某节点之后 <code>void insertAfter(int x, int v)</code></h2>
         <p>例如我们要插入一个新节点到 $5$ 号节点之后</p>
-        <iframe data-animation="./insertAfter演示.js" 
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./insertAfter演示.js" 
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
     <section>
         <h2>找到第 $k$ 个元素 <code>int findKth(int k)</code></h2>
@@ -270,8 +270,8 @@
     <section>
         <h2>提取一段区间 <code>int extract(int l, int r)</code></h2>
         <p>例如我们要提取第 $3$ 个节点到第 $6$ 个节点这段区间</p>
-        <iframe data-animation="./extract演示.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./extract演示.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
     <section>
         <h2>区间求和<code>sum(l, r)</code></h2>

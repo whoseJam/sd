@@ -28,8 +28,8 @@
     </section>
     <section>
         <h2>数列</h2>
-        <iframe data-animation="./坐标转换.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./坐标转换.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>曼哈顿距离不超过 $k$，作出图像来看是一个斜着的正方形<span class="fragment">，这并不方便我们进一步处理</span></p>
         <p class="fragment quote">这里会用到一个常见技巧，即曼哈顿距离和切比雪夫距离的互换<span class="fragment">，二维空间中两点之间的切比雪夫距离的定义为  $max(|x_1-x_2|,|y_1-y_2|)$</span></p>
         <p class="fragment">将原始坐标 $(x,y)$ 转换为 $(y+x, y-x)$<span class="fragment">，这样曼哈顿距离 $\leq k$ 的区域就变成了一个边长为 $2k-1$ 的正方形</span></p>

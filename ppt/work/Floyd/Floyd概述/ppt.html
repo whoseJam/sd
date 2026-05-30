@@ -11,8 +11,8 @@
             <li class="fragment">如果 <b style="color: purple;">$i\rightarrow j$ 当前的最短路</b>经过点 $k$，那么 $d_{i,j}=d_{i,k}+d_{k,j}$</li>
             <li class="fragment">如果 <b style="color: purple;">$i\rightarrow j$ 当前的最短路</b>不经过点 $k$，那么 $d_{i,j}$ 不变</li>
         </ul>
-        <iframe data-animation="./状态转移.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <div class="fragment quote">
             <h3>什么叫<b>当前的最短路</b>？</h3>
             <span><b style="color: purple;">$i\rightarrow j$ 当前的最短路</b>需要满足，除了起点和终点外，只允许经过 $1,2,3,...,k$ 这些中转点</span><br>
@@ -26,8 +26,8 @@
             d_{i,j}=\mathop{min}\{d_{i,k}+d_{k,j},d_{i,j}\}
             $$
         </p>
-        <iframe data-animation="./Floyd实现.html"
-            style="width: 1000px; height: 350px;"></iframe>
+        <sd-animation src="./Floyd实现.html"
+            style="width: 1000px; height: 350px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 int d[N][N], n, m;

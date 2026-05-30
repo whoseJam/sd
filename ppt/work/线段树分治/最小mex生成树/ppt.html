@@ -11,14 +11,14 @@
     <section>
         <h2>最小mex生成树</h2>
         <p>朴素想法是，从小到大枚举 $mex$，然后把所有边权等于 $mex$ 的边都删了，再检查能否求出一个生成树</p>
-        <iframe data-animation="./暴力.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./暴力.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">检查生成树可以用并查集完成，但是删边...</p>
     </section>
     <section>
         <h2>最小mex生成树</h2>
         <p>套一个线段树分治即可</p>
-        <iframe data-animation="./线段树分治.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./线段树分治.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
 </section>

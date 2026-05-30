@@ -11,15 +11,15 @@
         <h2>逆序对</h2>
         <p>逆序对需要满足 $j\lt i$ 且 $a_j\gt a_i$</p>
         <p>如果我们把坐标系看作一个横着的 $i$ 轴，一个竖着的 $a$ 轴</p>
-        <iframe data-animation="./样例解释.js" class="fragment"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./样例解释.js" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment quote">求每个元素左上方的元素数量</p>
     </section>
     <section>
         <h2>逆序对</h2>
         <p>逆序对需要满足 $j\lt i$ 且 $a_j\gt a_i$</p>
-        <iframe data-animation="./计算过程.js"
-            style="width: 1000px; height: 450px;"></iframe>
+        <sd-animation src="./计算过程.js"
+            style="width: 1000px; height: 450px;"></sd-animation>
         <p class="fragment quote">然后就会发现一个问题，本题 $a_i\le 10^9$，而贴在 $a$ 轴上的数据结构无论如何也不能开这么大的空间</p>
     </section>
     <section>
@@ -46,8 +46,8 @@
     <section>
         <h2>逆序对</h2>
         <p>又或者，你可以把 $i$ 轴和 $a$ 轴翻一翻，这样数据结构就是贴在 $i$ 轴上的</p>
-        <iframe data-animation="./i轴优先.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./i轴优先.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment quote">由于 $i$ 轴上的值域为 $[1,n]$，这个问题自然就不是问题了</p>
     </section>
 </section>

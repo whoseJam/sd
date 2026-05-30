@@ -23,8 +23,8 @@
             $$
         </p>
         <p>考察答案在笛卡尔树上的意义</p>
-        <iframe data-animation="./笛卡尔树.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./笛卡尔树.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">笛卡尔树上，$[x,y]$ 中的最小值等于树上 $x$ 和 $y$ 的最近公共祖先的点权</p>
         <p class="fragment quote">先选出 $m$ 个点，将其的点权的 $m$ 倍加上，再减去若干个最近公共祖先的点权</p>
     </section>
@@ -32,8 +32,8 @@
         <h2>子序列</h2>
         <p>设 $f_{u,k}$ 表示在 $u$ 的子树内选了 $k$ 个节点，所能产生的最大价值</p>
         <p class="fragment quote">用树上背包的形式去进行更新</p>
-        <iframe data-animation="./状态转移.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">
             $$
             f_{u,i}+f_{v,j}-2a_uij\rightarrow f_{u,i+j}

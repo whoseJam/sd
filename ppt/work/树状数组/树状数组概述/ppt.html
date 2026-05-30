@@ -13,14 +13,14 @@
     </section>
     <section>
         <h2>分析</h2>
-        <iframe data-animation="./直接数组模拟.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./直接数组模拟.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>如果直接用数组模拟，那么 <code>Add</code> 可以 $O(1)$ 完成，<code>Query</code> 是 $O(n)$ 的，总复杂度为 $O(nm)$</p>
     </section>
     <section>
         <h2>分析</h2>
-        <iframe data-animation="./前缀和模拟.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./前缀和模拟.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p>如果另外维护一个前缀和数组 $\{S\}$ 来存储 $A_1$ 到 $A_n$ 的和，那么 <code>Query</code> 可以 $O(1)$ 完成，<code>Add</code> 是 $O(n)$ 的，总时间复杂度还是 $O(nm)$</p>
     </section>
     <section>
@@ -51,9 +51,9 @@
     <section>
         <h2>二进制拆分</h2>
         <p>我们尝试对每一种长度的前缀和做二进制拆分......</p>
-        <iframe data-animation="./二进制拆分8.js"
-            data-viewBoxDelta="-20 0 40 0"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./二进制拆分8.js"
+            viewbox-delta="-20 0 40 0"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <ul>
             <li class="fragment">对于 <code>Query</code> 类操作来说，任意一个前缀和一定能被 $O(logn)$ 算出</li>
             <li class="fragment">对于 <code>Add</code> 类操作来说，任意一个位置最多被 $O(logn)$ 个区间覆盖</li>
@@ -62,9 +62,9 @@
     </section>
     <section>
         <h2>二进制拆分</h2>
-        <iframe data-animation="./二进制拆分12.js"
-            data-viewBoxDelta="-20 0 40 0"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./二进制拆分12.js"
+            viewbox-delta="-20 0 40 0"
+            style="width: 1000px; height: 500px;"></sd-animation>
         <p class="quote">这是一份长度为 $12$ 的序列的树状数组的情况</p>
     </section>
     <section>
@@ -94,21 +94,21 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./lowbit.js"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./lowbit.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
     </section>
     <section>
         <h2>lowbit的意义</h2>
-        <iframe data-animation="./lowbit的意义.js"
-            data-viewBoxDelta="0 0 0 80"
-            style="width: 1000px; height: 500px;"></iframe>
+        <sd-animation src="./lowbit的意义.js"
+            viewbox-delta="0 0 0 80"
+            style="width: 1000px; height: 500px;"></sd-animation>
         <p style="margin-top: -20px;">$lowbit(x)$ 就对应了 $x$ 的二进制拆分中最后一段区间的长度</p>
     </section>
     <section>
         <h2>求和</h2>
-        <iframe data-animation="./求和.js"
-            data-viewBoxDelta="0 0 0 80"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./求和.js"
+            viewbox-delta="0 0 0 80"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 int Sum(int x) {
@@ -123,9 +123,9 @@
     </section>
     <section>
         <h2>修改</h2>
-        <iframe data-animation="./修改.js"
-            data-viewBoxDelta="0 0 0 80"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./修改.js"
+            viewbox-delta="0 0 0 80"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 void Add(int x, int d) {

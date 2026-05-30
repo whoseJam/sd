@@ -5,8 +5,8 @@
     </section>
     <section>
         <h2>Tarjan</h2>
-        <iframe data-animation="./边分类.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./边分类.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>Tarjan尝试通过DFS，对无向边定向，把一张无向图划分为一棵树加上若干条额外边</p>
         <p class="fragment">根据额外边的不同特质，我们有如下分类</p>
         <ul>
@@ -17,8 +17,8 @@
     </section>
     <section>
         <h2>dfn&low</h2>
-        <iframe data-animation="./dfn&low.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./dfn&low.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>在遍历整张图时，把遍历到的每个节点依次记录下来，形成一个序列，并记点 $u$ 在序列中的位置为 $dfn(u)$<span class="fragment">，由于<b style="color: red;">返祖边</b>的存在，导致某些节点可以逆流而上，来到自己的祖先处，形成一个个环</span><span class="fragment">，为了描述这样的结构，我们对点 $u$ 记录 $low(u)$，表示从 $u$ 能回溯到的<b>最顶端的祖先</b>的 $dfn$ 是多少</span></p>
         <p class="fragment quote">特别地，一个节点总能访问到它自己，所以 $low(u)\le dfn(u)$</p>
     </section>
@@ -26,15 +26,15 @@
         <h2>dfn&low</h2>
         <div style="display: flex;">
             <div style="margin-top: -10px; font-size: 20px;">
-                <iframe data-animation="./low_1.js"
-                    style="width: 1000px; height: 150px;"></iframe>
+                <sd-animation src="./low_1.js"
+                    style="width: 1000px; height: 150px;"></sd-animation>
                 $$
                 low(u)=min\{low(u),low(v)\}
                 $$
             </div>
             <div style="margin-top: -10px; font-size: 20px;">
-                <iframe data-animation="./low_2.js"
-                    style="width: 1000px; height: 150px;"></iframe>
+                <sd-animation src="./low_2.js"
+                    style="width: 1000px; height: 150px;"></sd-animation>
                 $$
                 low(u)=min\{low(u),dfn(v)\}
                 $$

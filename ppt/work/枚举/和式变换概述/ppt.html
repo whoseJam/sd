@@ -22,9 +22,9 @@
             \end{aligned}
             $$
         </div>
-        <iframe data-animation="./trans1.js" class="fragment"
-            data-viewBoxDelta="0 -10 0 20"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./trans1.js" class="fragment"
+            viewbox-delta="0 -10 0 20"
+            style="width: 1000px; height: 100px;"></sd-animation>
     </section>
     <section>
         <h2>“把常数拿出来”</h2>
@@ -43,9 +43,9 @@
             \end{aligned}
             $$
         </div>
-        <iframe data-animation="./trans2.js" class="fragment"
-            data-viewBoxDelta="0 -10 0 20"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./trans2.js" class="fragment"
+            viewbox-delta="0 -10 0 20"
+            style="width: 1000px; height: 100px;"></sd-animation>
     </section>
     <section>
         <h2>“把独立多重和式拆开”</h2>
@@ -55,9 +55,9 @@
             \sum_{i\in I}a_i\sum_{j\in J}b_j=(\sum_{i\in I}a_i)(\sum_{j\in J}b_j)
             $$
         </p>
-        <iframe data-animation="./trans3.js" class="fragment"
-            data-viewBoxDelta="0 -10 0 20"
-            style="width: 1000px; height: 100px;"></iframe>
+        <sd-animation src="./trans3.js" class="fragment"
+            viewbox-delta="0 -10 0 20"
+            style="width: 1000px; height: 100px;"></sd-animation>
     </section>
     <section>
         <h2>小试一下</h2>
@@ -72,10 +72,10 @@
                 <span style="width: 50%;" class="fragment quote">当然不行，$F(i)$ 是和 $i$ 有关的函数，会随着循环变量 $i$ 的变化而变化</span>
             </div>
         </div>
-        <iframe data-animation="./clarify1.js" class="fragment"
+        <sd-animation src="./clarify1.js" class="fragment"
             data-fragment-index="1"
-            data-viewBoxDelta="0 -10 0 20"
-            style="width: 1000px; height: 180px;"></iframe>
+            viewbox-delta="0 -10 0 20"
+            style="width: 1000px; height: 180px;"></sd-animation>
         <p class="fragment quote">甚至后者本身就是一个有问题的写法<span class="fragment">——不应该在一个循环的外部，去使用该循环定义的循环变量</span></p>
     </section>
     <section>
@@ -86,9 +86,9 @@
                 <span style="width: 50%;" class="fragment quote">我们把 $a_i$ 视作了常数往外<b style="color: purple;">提了一层</b><span class="fragment">，这是可以的，因为对内层循环来说其循环变量是 $j$，无论 $j$ 如何变化都无法改变 $a_i$ 的值，所以 $a_i$ 对内层循环而言是常数，可以提</span></span>
             </div>
         </div>
-        <iframe data-animation="./clarify2.js"
-            data-viewBoxDelta="0 -10 0 20"
-            style="width: 1000px; height: 100px; margin-top: 30px;"></iframe>
+        <sd-animation src="./clarify2.js"
+            viewbox-delta="0 -10 0 20"
+            style="width: 1000px; height: 100px; margin-top: 30px;"></sd-animation>
     </section>
     <section>
         <h2>小试一下</h2>
@@ -151,14 +151,14 @@
             \sum_{i=1}^n\sum_{j=1}^ma_{i,j}=\sum_{j=1}^m\sum_{i=1}^na_{i,j}
             $$
         </p>
-        <iframe data-animation="./交换枚举顺序1.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./交换枚举顺序1.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
     </section>
     <section>
         <h2>小试一下</h2>
         <div style="display: flex; justify-content: space-around; align-items: center;">
-            <iframe data-animation="./交换枚举顺序2.js"
-                style="width: 50%; height: 300px;"></iframe>
+            <sd-animation src="./交换枚举顺序2.js"
+                style="width: 50%; height: 300px;"></sd-animation>
             <p class="math-fragment">
                 $$
                 \begin{aligned}
@@ -175,8 +175,8 @@
         <h2>小试一下</h2>
         <p class="quote" style="margin-bottom: 0px;">定义整除符号 $|$，如果 $a|b$，则说明 $a$ 整除于 $b$，$a$ 是 $b$ 的因数，$b$ 是 $a$ 的倍数</p>
         <div style="display: flex; justify-content: space-around; align-items: center;">
-            <iframe data-animation="./交换枚举顺序3.js"
-                style="width: 50%; height: 500px;"></iframe>
+            <sd-animation src="./交换枚举顺序3.js"
+                style="width: 50%; height: 500px;"></sd-animation>
             <p class="math-fragment">
                 $$
                 \begin{aligned}

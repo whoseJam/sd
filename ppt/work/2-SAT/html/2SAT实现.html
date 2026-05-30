@@ -28,25 +28,25 @@
     </section>
     <section>
         <h2>2-SAT</h2>
-        <iframe data-animation="./animation/YiYj.html"
+        <sd-animation src="./animation/YiYj.html"
             style="width: 1000px; height: 500px;">
         </iframe>
     </section>
     <section>
         <h2>2-SAT</h2>
-        <iframe data-animation="./animation/YiNj.html"
+        <sd-animation src="./animation/YiNj.html"
             style="width: 1000px; height: 500px;">
         </iframe>
     </section>
     <section>
         <h2>2-SAT</h2>
-        <iframe data-animation="./animation/NiYj.html"
+        <sd-animation src="./animation/NiYj.html"
             style="width: 1000px; height: 500px;">
         </iframe>
     </section>
     <section>
         <h2>2-SAT</h2>
-        <iframe data-animation="./animation/NiNj.html"
+        <sd-animation src="./animation/NiNj.html"
             style="width: 1000px; height: 500px;">
         </iframe>
     </section>
@@ -62,8 +62,8 @@
     <section>
         <h2>2-SAT解的存在性</h2>
         <p>我们可以把建立好的连边构成的<b>链</b>，视作一条逻辑链，如果存在这样一条路径：</p>
-        <iframe data-animation="./animation/逻辑链.html"
-            style="width: 1000px; height: 50px;"></iframe>
+        <sd-animation src="./animation/逻辑链.html"
+            style="width: 1000px; height: 50px;"></sd-animation>
         <p class="fragment">
             如果 $V_1$ 这个取值成立：
             <ul>
@@ -83,8 +83,8 @@
             无解的情况自然就引出了：
             <span class="fragment"><b>如果存在一条路径，使得 $Y_i$ 可以抵达 $N_i$，且 $N_i$ 也可以抵达 $Y_i$， 则无解</b></span>
         </p>
-        <iframe data-animation="./animation/无解的情况.html" class="fragment"
-            style="width: 1000px; height: 180px;" rate="1.01"></iframe>
+        <sd-animation src="./animation/无解的情况.html" class="fragment"
+            style="width: 1000px; height: 180px;" rate="1.01"></sd-animation>
         <p class="fragment quote">因为变量 $i$ 不可能同时为 $Y$ 和 $N$，但当 $i$ 取值为 $Y$ 时能推导出 $i$ 取值为 $N$；当 $i$ 取值为 $N$ 时能推导出 $i$ 取值为 $Y$</p>
         <p class="fragment">换言之，如果 $\exists i \in [1,n]$，满足 $Y_i$ 和 $N_i$ 在<b>同一个强连通分量</b>里面，那么就无解</p>
         <codeblock class="fragment">
@@ -128,8 +128,8 @@
         <h2>2-SAT解的构造</h2>
         <p>不过我们代码实现上，判断 $u\rightarrow v$ 有点难写</p>
         <p class="fragment">更常见地，我们用Tarjan求出的每个点的 $bel_u$ 来判断2-SAT的解</p>
-        <iframe data-animation="./animation/Tarjan的bel.html" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./animation/Tarjan的bel.html" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment quote">Tarjan中 $bel$ 小的肯定位于有向路径的末端，$bel$ 大的肯定位于有向路径的前端</p>
     </section>
     <section>

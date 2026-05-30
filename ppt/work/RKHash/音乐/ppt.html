@@ -6,8 +6,8 @@
     <problem data-problemset="luogu" data-problemid="P10634"></problem>
     <section>
         <h2>音乐</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
     </section>
     <section>
         <h2>音乐</h2>
@@ -16,8 +16,8 @@
             <li class="fragment">B 串是不会动的，可以提前预处理出它离散化后的Hash值</li>
             <li class="fragment">A 串上相当于有一个大小为 $m$ 的滑动窗口，我们需要想办法在窗口滑动的过程中，维护出这段窗口对应的Hash值</li>
         </ul>
-        <iframe data-animation="./特例.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./特例.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <ul>
             <li class="fragment">$H_1=H_0-(rk_C)(Base^{m-1})$</li>
             <li class="fragment">$H_2=H_1\times Base$</li>

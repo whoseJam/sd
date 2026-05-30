@@ -16,8 +16,8 @@
     <section>
         <h2>在KMP以前......</h2>
         <p>暴力匹配，把字符串 $t$ 和字符串 $s$ 的后缀 $s[i...M]$ 对齐，然后扫描逐一比较</p>
-        <iframe data-animation="./暴力匹配.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./暴力匹配.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p>时间复杂度 $O(|s||t|)$</p>
         <codeblock>
             <script type="text/template">
@@ -37,8 +37,8 @@
     <section>
         <h2>在KMP以前......</h2>
         <p>又或者，我们可以用Hash，在 $O(|s|+|t|)$ 的时间复杂度内预处理出字符串 $s$ 和字符串 $t$ 的前缀Hash值，然后就可以 $O(1)$ 查询字符串的任意一个子串的Hash值</p>
-        <iframe data-animation="./Hash匹配.js"
-            style="width: 1000px; height: 280px;"></iframe>
+        <sd-animation src="./Hash匹配.js"
+            style="width: 1000px; height: 280px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 for (int i = 1; i <= len(s) - len(t) + 1; i++) {
@@ -52,24 +52,24 @@
     <section>
         <h2>KMP</h2>
         <p>KMP延续了暴力的思路，在暴力的基础上做优化</p>
-        <iframe data-animation="./KMP概览.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./KMP概览.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">KMP能让主串上的指针一直向前移动，当发生失配的时候，KMP能通过合理地移动模式串的指针来避免主串上的指针的回退，实现<b style="color: red;">跳过那些显然匹配不上的位置</b></p>
         <p class="fragment quote">怎么分析哪些位置是可以跳过的呢？</p>
     </section>
     <section>
         <h2>KMP</h2>
         <p>假设 $t[1...j]$ 都与 $s$ 串的某个子区间匹配上了，在 $t[j+1]$ 处发生失配...</p>
-        <iframe data-animation="./失配利用.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./失配利用.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">注意到失配后<b>能跳过的字符数</b>，其实与 $t[1...j]$ 中前缀等于后缀的最长长度有关</p>
         <p class="fragment">在后文中，我们将会以 $len_j$ 来指代 $t[1...j]$ 的最长前缀等于后缀的长度</p>
         <p class="fragment">倘若 $t[j+1]$ 与 $s[i]$ 匹配失败了，则我们能尝试让 $t[len_j+1]$ 和 $s[i]$ 接着匹配</p>
     </section>
     <section>
         <h2>KMP</h2>
-        <iframe data-animation="./KMP匹配.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./KMP匹配.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 void Match(char* s, char* t, int ls, int lt) {
@@ -86,8 +86,8 @@
     <section>
         <h2>KMP</h2>
         <p>那么我们如何求解 $len$ 数组呢？很简单，我们让 $t$ 串和自己做一个自匹配即可</p>
-        <iframe data-animation="./KMP自匹配.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./KMP自匹配.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 void Prepare() { // len[1] = 0，不过在下面没有体现

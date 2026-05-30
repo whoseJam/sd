@@ -7,8 +7,8 @@
     <section>
         <h2>AC自动机2</h2>
         <p>给出一个主串 $s$，你需要统计每个模式串分别在主串中出现了多少次</p>
-        <iframe data-animation="./匹配.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./匹配.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">考虑匹配到了主串的第 $i$ 个位置，AC自动机上所有<b>可匹配点</b>都在主串的第 $i$ 个位置上出现了一次<span class="fragment">，不妨设此刻的<b>最大匹配点</b>为 $u$，那么只需要让 $u$ 到树根的这条fail链上每个点的出现次数增加一次即可</span></p>
         <div class="fragment quote">
             <span>如何让这条链上的每个点的出现次数增加？暴力爬吗？</span>
@@ -21,8 +21,8 @@
     </section>
     <section>
         <h2>AC自动机2</h2>
-        <iframe data-animation="./标记.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./标记.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul>
             <li class="fragment">在匹配过程中，标记所有途径点（一个节点可能被标记多次）</li>
             <li class="fragment">在fail树上，每一个标记到树根的这条树链，都在主串中某位置出现了一次</li>

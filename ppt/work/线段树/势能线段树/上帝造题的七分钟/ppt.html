@@ -6,8 +6,8 @@
     <section>
         <h2>上帝造题的七分钟</h2>
         <p>假设我们维护好了线段的区间和，当遇上区间开根时...</p>
-        <iframe data-animation="./区间开根分析.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./区间开根分析.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">
             $$
             \sqrt{a_1+a_2+...+a_n}\ne \sqrt{a_1}+\sqrt{a_2}+...+\sqrt{a_n}
@@ -18,10 +18,10 @@
         <h2>上帝造题的七分钟</h2>
         <p>我们对一个最大值为 $1$ 的区间开根，其区间和不会改变...</p>
         <div style="display: flex;">
-            <iframe data-animation="./开根情况1.js"
-                style="width: 1000px; height: 200px;"></iframe>
-            <iframe data-animation="./开根情况2.js"
-                style="width: 1000px; height: 200px;"></iframe>
+            <sd-animation src="./开根情况1.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
+            <sd-animation src="./开根情况2.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
         </div>
         <p class="fragment quote">所以在区间开根时，先对区间最大值做检查，如果最大值不超过 $1$，则该区间不必开根，直接返回</p>
         <codeblock class="fragment">

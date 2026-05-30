@@ -5,8 +5,8 @@
     <problem data-problemset="luogu" data-problemid="P3195"></problem>
     <section>
         <h2>玩具装箱</h2>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">求如何划分整个序列，才能让序列的价值最小</p>
     </section>
     <section>
@@ -17,8 +17,8 @@
             $$
         </p>
         <p>其中 $s_i$ 为 $\{C_i+1\}$ 的前缀和，即 $s_i=\sum_{j\le i}(C_j+1)$</p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 280px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 280px;"></sd-animation>
         <p class="fragment">设 $T=L+1$，则
             $$
             f_i=\mathop{min}_{j\lt i}\{f_j+(s_i-s_j-T)^2\}
@@ -42,8 +42,8 @@
             \end{aligned}
             $$
         </p>
-        <iframe data-animation="./数形结合.js" class="fragment"
-            style="width: 1000px; height: 70px;"></iframe>
+        <sd-animation src="./数形结合.js" class="fragment"
+            style="width: 1000px; height: 70px;"></sd-animation>
         <p class="fragment">所以我们只需要取每个转移点 $(x_j,y_j)$ 如下
             $$
             \begin{cases}
@@ -79,8 +79,8 @@
     </section>
     <section>
         <h2>玩具装箱</h2>
-        <iframe data-animation="./单调队列维护凸包.js"
-            data-viewBox="125.1775 37.5 531.645 403.5"
-            style="width: 1000px; height: 600px;"></iframe>
+        <sd-animation src="./单调队列维护凸包.js"
+            viewbox="125.1775 37.5 531.645 403.5"
+            style="width: 1000px; height: 600px;"></sd-animation>
     </section>
 </section>

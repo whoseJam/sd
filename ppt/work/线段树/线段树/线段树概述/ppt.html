@@ -19,9 +19,9 @@
             <li class="fragment">单点修改</li>
             <li class="fragment">区间查询</li>
         </ul>
-        <iframe data-animation="./线段树锁定单点.js" class="fragment"
-            data-viewBox="60 40 900 450"
-            style="width: 1000px; height: 450px;"></iframe>
+        <sd-animation src="./线段树锁定单点.js" class="fragment"
+            viewbox="60 40 900 450"
+            style="width: 1000px; height: 450px;"></sd-animation>
     </section>
     <section>
         <h2>线段树</h2>
@@ -38,15 +38,15 @@
                 } t[N * 4];
             </script>
         </codeblock>
-        <iframe data-animation="./线段树节点结构定义.js" class="fragment"
+        <sd-animation src="./线段树节点结构定义.js" class="fragment"
             style="width: 1000px; height: 300px;"> 
         </iframe>
     </section>
     <section>
         <h2>线段树</h2>
         <p>我们并未存储某个节点的左右儿子编号，因为我们可以采用堆式建树</p>
-        <iframe data-animation="./线段树的节点编号.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./线段树的节点编号.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">
             在这种建树方案中，每个节点 $x$ 的左儿子编号一定是 $2x$，右儿子编号一定是 $2x+1$
         </p>
@@ -63,8 +63,8 @@
     </section>
     <section>
         <h2>线段树的建立</h2>
-        <iframe data-animation="./线段树节点结构定义.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./线段树节点结构定义.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <codeblock>
             <script type="text/template">
                 void pushUp(int x) { // 合并两个区间的特征
@@ -96,8 +96,8 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./线段树修改单点.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./线段树修改单点.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>线段树区间查询</h2>
@@ -112,8 +112,8 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./线段树查询区间.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./线段树查询区间.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>线段树区间查询</h2>
@@ -126,8 +126,8 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./线段树查询区间naive.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./线段树查询区间naive.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>线段树区间查询</h2>
@@ -142,6 +142,6 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./线段树查询区间.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./线段树查询区间.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
 </section>

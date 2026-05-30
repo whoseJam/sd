@@ -22,8 +22,8 @@
             <li><code>3 a b</code>：询问区间 $[a,b]$ 上有多少条<b>单位线段</b> $[k,k+1]$ 被涂上了颜色</li>
         </ul>
         <p>对一条线段，我们需要维护在其内部有多少条单位线段是<b>有颜色</b>的</p>
-        <iframe data-animation="./线段合并.js" class="fragment"
-            style="width: 1000px; height: 200px; margin-top: 20px;"></iframe>
+        <sd-animation src="./线段合并.js" class="fragment"
+            style="width: 1000px; height: 200px; margin-top: 20px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 void pushUp(int x) {
@@ -46,8 +46,8 @@
         <h2>线段统计</h2>
         <p>考虑当一条线段被打上 $col=1$ 的标记会发生什么</p>
         <p class="quote">该区间需要被全部染色</p>
-        <iframe data-animation="./懒标记1.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./懒标记1.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 void pushCol(int c) {
@@ -62,8 +62,8 @@
     <section>
         <h2>线段统计</h2>
         <p>考虑当一条线段被打上 $col=2$ 的标记会发生什么</p>
-        <iframe data-animation="./懒标记2.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./懒标记2.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 void pushCol(int c) {

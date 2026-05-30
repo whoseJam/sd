@@ -16,13 +16,13 @@
                 }
             </script>
         </codeblock>
-        <iframe data-animation="./问题定义.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./问题定义.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
     </section>
     <section>
         <h2>数的划分</h2>
-        <iframe data-animation="./问题实现.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./问题实现.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 int sum;
@@ -41,8 +41,8 @@
     </section>
     <section>
         <h2>数的划分</h2>
-        <iframe data-animation="./问题边界.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./问题边界.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <codeblock class="fragment">
             <script type="text/template">
                 int sum;
@@ -67,15 +67,15 @@
         <h2>数的划分</h2>
         <div>
             <p style="font-size: 20px; text-align: center; margin-bottom: -10px;">$n=4,k=3$</p>
-            <iframe data-animation="./数的划分无剪枝.js"
-                data-viewBox="-2.500000000000002 -1.5500000000000005 1005 222.55"
-                style="width: 1000px; height: 200px;"></iframe>
+            <sd-animation src="./数的划分无剪枝.js"
+                viewbox="-2.500000000000002 -1.5500000000000005 1005 222.55"
+                style="width: 1000px; height: 200px;"></sd-animation>
         </div>
         <p class="fragment">但只要我们稍微加一个剪枝......</p>
         <p class="fragment">假设前面构造出的数列之和为 $sum$，当前打算放的数字是 $i$，之后还有 $t$ 个位置需要放数字</p>
         <p class="fragment">$$sum+it\lt n$$</p>
-        <iframe data-animation="./数的划分有剪枝.js" class="fragment"
-            data-viewBox="0 0 1000 220"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./数的划分有剪枝.js" class="fragment"
+            viewbox="0 0 1000 220"
+            style="width: 1000px; height: 200px;"></sd-animation>
     </section>
 </section>

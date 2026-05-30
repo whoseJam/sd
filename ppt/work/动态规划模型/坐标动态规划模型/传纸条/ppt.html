@@ -13,14 +13,14 @@
             <li>再求出一个纸条从 $(m,n)$ 到 $(1,1)$ 的路线最大值</li>
             <li>统计两次传递的和</li>
         </ol>
-        <iframe data-animation="./反例1.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./反例1.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
     </section>
     <section>
         <h2>传纸条</h2>
         <p>但是这样做是有问题的</p>
-        <iframe data-animation="./反例2.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./反例2.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
     </section>
     <section>
         <h2>传纸条</h2>
@@ -33,8 +33,8 @@
     </section>
     <section>
         <h2>传纸条</h2>
-        <iframe data-animation="./状态设置.js"
-            style="width: 1000px; height: 250px;"></iframe>
+        <sd-animation src="./状态设置.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
         <p>设 $f(x_1,y_1,x_2,y_2)$ 表示纸条 $1$ 到达 $(x_1,y_1)$，纸条 $2$ 到达 $(x_2,y_2)$，所能获得的最大好感度</p>
         <p class="fragment" style="font-size: 20px;">
             $$
@@ -92,8 +92,8 @@
             <li class="fragment">比如 $f(3,4,3,4)$：两个纸条走到同一个位置上了</li>
             <li class="fragment">比如 $f(1,5,2,1)$：其中一个纸条走了 $4$ 步，而另一个纸条只走了一步</li>
         </ul>
-        <iframe data-animation="./减小状态空间.js" class="fragment"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./减小状态空间.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment">这启发我们可以定义一种新的状态空间，让这个状态空间中只包含<b style="color: teal;">合法的状态</b></p>
     </section>
     <section>

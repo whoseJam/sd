@@ -26,14 +26,14 @@
             \mathop{min}\limits_{\begin{aligned}l\le r\le n\\sum(F_{l},F_{l+1},...,&F_r)\ge M\end{aligned} }max(S_{l},S_{l+1},...,S_r)
             $$
         </p>
-        <iframe data-animation="./贪心.js" class="fragment"
-            style="width: 1000px; height: 150px;"></iframe>
+        <sd-animation src="./贪心.js" class="fragment"
+            style="width: 1000px; height: 150px;"></sd-animation>
     </section>
     <section>
         <h2>干草捆盛宴</h2>
         <p>不难想到用双指针找出所有左端点 $l$ 对应的最近右端点 $r$</p>
-        <iframe data-animation="./干草捆盛宴.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./干草捆盛宴.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">再对每一个区间 $[l,r]$ 求一个辣度最大值即可</p>
     </section>
     <section>

@@ -12,14 +12,14 @@
         <h2>拓扑排序</h2>
         <p>在我们学习课程的时候，有些课必须在另一些课学习完成之后，才能开始学习</p>
         <p class="fragment">如果我们把<b style="color: red;">课程</b>当作图上的<b style="color: red;">节点</b>，把这种<b style="color: purple;">先修关系</b>当作图上的<b style="color: purple;">有向边</b>...</p>
-        <iframe data-animation="./课程学习.js" class="fragment"
-            style="width: 1000px; height: 400px;" ></iframe>
+        <sd-animation src="./课程学习.js" class="fragment"
+            style="width: 1000px; height: 400px;" ></sd-animation>
     </section>
     <section>
         <h2>拓扑排序</h2>
         <p>拓扑排序就是在尝试找出一条合法的学习路线，让这些先修关系都得到满足</p>
-        <iframe data-animation="./拓扑排序概念.js" class="fragment"
-            style="width: 1000px; height: 450px"></iframe>
+        <sd-animation src="./拓扑排序概念.js" class="fragment"
+            style="width: 1000px; height: 450px"></sd-animation>
         <p class="fragment">拓扑排序得到的结果，就是如上所示的一个序列，我们把这玩意叫做<b style="color: purple;">拓扑序</b></p>
         <p class="fragment">容易发现，拓扑序不是唯一的</p>
     </section>
@@ -39,8 +39,8 @@
             <li>节点 $u$ 的<b style="color: teal;">入度</b>，就是 $u$ 的<b style="color: teal;">入边</b>的数量</li>
             <li>节点 $u$ 的<b style="color: red;">出度</b>，就是 $u$ 的<b style="color: red;">出边</b>的数量</li>
         </ul>
-        <iframe data-animation="./入度和出度.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./入度和出度.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment" style="text-align: center; font-size: 20px; margin-top: -20px;">
             $ind(4)=3$，$oud(4)=2$
         </p>
@@ -60,8 +60,8 @@
                 <p class="fragment">如果算法结束后，还有点没有被从图中删去，那么说明图中有环路，否则得到的拓扑序就是一种合法的拓扑序</p>
                 <p class="fragment"></p>
             </div>
-            <iframe data-animation="./拓扑排序演示.js"
-                style="width: 1000px; height: 500px;"></iframe>        
+            <sd-animation src="./拓扑排序演示.js"
+                style="width: 1000px; height: 500px;"></sd-animation>        
         </div>
     </section>
 </section>

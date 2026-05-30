@@ -9,8 +9,8 @@
         <p class="fragment">现在进行 $n$ 次操作，每次操作给出 $(pos_i,v_i)$，本次操作的效果如下</p>
         <div class="fragment">
             <p style="font-size: 20px; text-align: center; margin-bottom: -10px;">$v=3$</p>
-            <iframe data-animation="./样例解释.js"
-                style="width: 1000px; height: 200px;"></iframe>
+            <sd-animation src="./样例解释.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
         </div>
         <ul>
             <li class="fragment">对于 $[pos_i-3v_i+1,pos_i-2v_i]$ 这个区间，每个元素依次增加 $\{1,2...v_i\}$</li>
@@ -25,8 +25,8 @@
     <section>
         <h2>狼人</h2>
         <p>每一次的增量数组 $\{c_i\}$ 是一个波浪形的结构，我们试试差分之后能否把它变成一个稀疏的数组</p>
-        <iframe data-animation="./狼人.js" class="fragment"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./狼人.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <ul class="fragment">理论可行</ul>
     </section>
     <section>
@@ -114,8 +114,8 @@
             </tbody>
         </table>
         <div class="fragment">
-            <iframe data-animation="./二维差分.js"
-                style="width: 1000px; height: 300px;"></iframe>
+            <sd-animation src="./二维差分.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
             <p style="text-align: center; margin-top: 0px; font-size: 20px;">以 $p=7,v=2$ 为例</p>
         </div>
     </section>

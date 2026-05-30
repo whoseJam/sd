@@ -6,9 +6,9 @@
     <section>
         <h2>涂色</h2>
         <p>有一个长度为 $n$ 的木板，最初木板没有任何颜色，你需要给这个木板涂色，使之变成某个目标模样</p>
-        <iframe data-animation="./样例解释.js"
-            data-viewBoxDelta="0 0 0 80"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            viewbox-delta="0 0 0 80"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">你每次可以选择一段连续的区间，把这段区间涂上相同的颜色，求至少要涂多少次才能让木板变成目标模样</p>
         <p class="fragment quote">手玩一些小样例后容易发现，区间树形式的染色方案具有<b>不劣性</b></p>
         <p class="fragment">本题的染色成本就是区间树上的节点个数</p>
@@ -20,8 +20,8 @@
             <li class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间染为正确的颜色，至少需要做多少次染色</li>
             <li class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间的区间树构建出来，这个区间树上至少包含多少个节点</li>
         </ul>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 200px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
         <p class="fragment math-fragment">
             $$
             f_{l,r}=min\begin{cases}

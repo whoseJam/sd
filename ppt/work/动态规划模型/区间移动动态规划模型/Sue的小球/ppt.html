@@ -6,16 +6,16 @@
     <section>
         <h2>Sue的小球</h2>
         <p>天空中有 $n$ 个彩蛋，第 $i$ 个彩蛋的初始坐标为 $(x_i,y_i)$，匀速下落，速度为 $v_i$</p>
-        <iframe data-animation="./样例解释.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p>主角<b style="color: purple;">必须获得所有彩蛋</b>，主角初始坐标为 $(x_0,0)$，每个单位时间可以向左/右移动一个单位距离<span class="fragment">，当来到某个彩蛋的位置上时，<b style="color: red;">无论这个彩蛋目前是飘在空中的，还是已经沉入海面的，都能瞬间获得该彩蛋</b></span></p>
         <p class="fragment">一个彩蛋的得分为彩蛋被获取的时候的 $y$ 坐标的千分之一，最大化得分</p>
     </section>
     <section>
         <h2>Sue的小球</h2>
         <p>容易设 $f(l,r,0)$ 表示主角吃掉 $[l,r]$ 区间内的彩蛋，目前站在区间左端点/右端点上，得分最大是多少</p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">
             $$
             f(l,r,0)+?\stackrel{max}{\rightarrow}f(l-1,r,0)
@@ -27,8 +27,8 @@
     <section>
         <h2>Sue的小球</h2>
         <p>设 $f(l,r,0)$ 表示主角吃掉 $[l,r]$ 区间内的彩蛋，目前站在区间的左端点/右端点上，最少损失多少得分</p>
-        <iframe data-animation="./状态转移.js"
-            style="width: 1000px; height: 300px;"></iframe>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
         <p class="fragment">将彩蛋从左往右排列，设 $\{S\}$ 是彩蛋下落速度的前缀和</p>
         <p class="fragment math-fragment" style="font-size: 20px; margin-top: -10px;">
             $$

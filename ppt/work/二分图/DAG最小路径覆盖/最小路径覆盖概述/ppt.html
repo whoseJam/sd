@@ -5,8 +5,8 @@
     <section>
         <h2>最小路径覆盖</h2>
         <p>给定一个DAG，求至少需要选出多少条路径，才能让DAG被完全覆盖</p>
-        <iframe data-animation="./最小路径覆盖概念.js"
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./最小路径覆盖概念.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment quote">上图最小路径覆盖就是 $3$</p>
     </section>
     <section>
@@ -20,8 +20,8 @@
     <section>
         <h2>最小路径覆盖</h2>
         <p>初始情况下每个点都是独立的一条路径，总共有 $n$ 条互不相交的路径</p>
-        <iframe data-animation="./最小路径覆盖建图.js" 
-            style="width: 1000px; height: 400px;"></iframe>
+        <sd-animation src="./最小路径覆盖建图.js" 
+            style="width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment">我们每次在二分图中找到一条匹配边，就相当于把两条路径合成了一条路径，也就是路径数减少 $1$</p>
         <p class="fragment">找了多少条匹配边，路径数就减少多少，所以<b>最小路径覆盖=节点总数-二分图最大匹配数</b></p>
     </section>
