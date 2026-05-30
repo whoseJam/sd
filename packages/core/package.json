@@ -5,12 +5,18 @@
     "description": "SD rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)",
     "main": "src/sd.ts",
     "license": "ISC",
+    "scripts": {
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
     "dependencies": {
         "@flatten-js/core": "^1.6.2",
         "dagre": "^0.8.5",
         "opentype.js": "^1.3.4"
     },
     "devDependencies": {
-        "@types/opentype.js": "^1.3.8"
+        "@types/node": "^25.9.1",
+        "@types/opentype.js": "^1.3.8",
+        "vitest": "^4.1.7"
     }
 }

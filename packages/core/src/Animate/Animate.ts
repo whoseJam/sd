@@ -114,4 +114,4 @@ export class Animate {
     }
 }
 
-requestAnimationFrame(Animate.animationRequest);
+if (typeof requestAnimationFrame !== "undefined") requestAnimationFrame(Animate.animationRequest);

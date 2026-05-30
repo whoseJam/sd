@@ -99,7 +99,6 @@ export class ActionList {
     actionsList: ActionLinkList;
     lazyActions: Array<Action>;
     enabled: boolean;
-    frame: number;
     constructor() {
         this.t = 0;
         this.zeroCount = 0; // action (l = 0 & r = 0)
@@ -110,7 +109,6 @@ export class ActionList {
         this.actionsList = new ActionLinkList();
         this.lazyActions = [];
         this.enabled = false;
-        this.frame = Window.CURRENT_FRAME;
     }
     push(action: Action) {
         if (action.lazyInterp) this.pushLazyAction(action);
