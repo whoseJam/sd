@@ -7,45 +7,45 @@ const webpack = require("webpack-stream");
  * @returns {NodeJS.ReadWriteStream}
  */
 module.exports = function (targetFolder) {
-    const config = getConfiguration();
-    return (
-        gulp
-            // webpack stream
-            .src("./packages/reveal/src/plugin/SDAnimation.js")
-            .pipe(webpack(config))
-            .pipe(gulp.dest(targetFolder))
-    );
+  const config = getConfiguration();
+  return (
+    gulp
+      // webpack stream
+      .src("./packages/reveal/src/plugin/SDAnimation.js")
+      .pipe(webpack(config))
+      .pipe(gulp.dest(targetFolder))
+  );
 };
 
 function getConfiguration() {
-    const mode = global["d"] ? "development" : "production";
-    const watch = global["w"] ? true : false;
-    return {
-        mode,
-        watch,
-        output: {
-            filename: "SDAnimation.js",
-            library: "SDAnimation",
-            libraryTarget: "umd",
-            globalObject: "this",
-            libraryExport: "default",
+  const mode = global["d"] ? "development" : "production";
+  const watch = global["w"] ? true : false;
+  return {
+    mode,
+    watch,
+    output: {
+      filename: "SDAnimation.js",
+      library: "SDAnimation",
+      libraryTarget: "umd",
+      globalObject: "this",
+      libraryExport: "default",
+    },
+    module: {
+      rules: [
+        {
+          test: /.js$/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-react", "@babel/preset-env"],
+            },
+          },
         },
-        module: {
-            rules: [
-                {
-                    test: /.js$/,
-                    use: {
-                        loader: "babel-loader",
-                        options: {
-                            presets: ["@babel/preset-react", "@babel/preset-env"],
-                        },
-                    },
-                },
-            ],
-        },
-        performance: {
-            hints: false,
-        },
-        cache: true,
-    };
+      ],
+    },
+    performance: {
+      hints: false,
+    },
+    cache: true,
+  };
 }

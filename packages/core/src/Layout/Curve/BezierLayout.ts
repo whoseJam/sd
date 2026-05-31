@@ -1,14 +1,14 @@
 import { Vector as V } from "@/Math/Vector";
 import { PathPen } from "@/Node/Path/PathPen";
-import { SDNode } from "@/Node/SDNode";
-import { Path } from "@/sd";
+import type { SDNode } from "@/Node/SDNode";
+import type { Path } from "@/sd";
 import { trim } from "@/Utility/Trim";
 
 interface BezierLayoutArgs {
-    source: [number, number];
-    target: [number, number];
-    sourceClipper?: SDNode;
-    targetClipper?: SDNode;
+  source: [number, number];
+  target: [number, number];
+  sourceClipper?: SDNode;
+  targetClipper?: SDNode;
 }
 
 /**
@@ -64,27 +64,31 @@ interface BezierLayoutArgs {
  */
 
 export function BezierLayout(path: Path, args: BezierLayoutArgs) {
-    const { source, target, sourceClipper, targetClipper } = args;
+  const { source, target, sourceClipper, targetClipper } = args;
 
-    // Generate Bezier curve path using the same algorithm as Bezier class
-    const v1 = source;
-    const v2 = target;
-    const d = V.sub(v2, v1);
-    const d1q = V.numberMul(d, 0.25);
-    const d3q = V.numberMul(d, 0.75);
-    const pc1 = V.add(V.add(v1, d1q), V.rotate(d1q, Math.PI / 2));
-    const pm = V.add(v1, V.numberMul(d, 0.5));
-    const pc2 = V.add(V.add(v1, d3q), V.rotate(d1q, -Math.PI / 2));
+  // Generate Bezier curve path using the same algorithm as Bezier class
+  const v1 = source;
+  const v2 = target;
+  const d = V.sub(v2, v1);
+  const d1q = V.numberMul(d, 0.25);
+  const d3q = V.numberMul(d, 0.75);
+  const pc1 = V.add(V.add(v1, d1q), V.rotate(d1q, Math.PI / 2));
+  const pm = V.add(v1, V.numberMul(d, 0.5));
+  const pc2 = V.add(V.add(v1, d3q), V.rotate(d1q, -Math.PI / 2));
 
-    // Build the path string
-    const pathString = new PathPen().MoveTo(v1).Quad(pc1, pm).Quad(pc2, v2).toString();
+  // Build the path string
+  const pathString = new PathPen()
+    .MoveTo(v1)
+    .Quad(pc1, pm)
+    .Quad(pc2, v2)
+    .toString();
 
-    // Set the path data
-    path.d(pathString);
+  // Set the path data
+  path.d(pathString);
 
-    // Apply trimming if clippers are provided
-    if (sourceClipper || targetClipper) {
-        // todo
-        trim(path, sourceClipper, targetClipper);
-    }
+  // Apply trimming if clippers are provided
+  if (sourceClipper || targetClipper) {
+    // todo
+    trim(path, sourceClipper, targetClipper);
+  }
 }

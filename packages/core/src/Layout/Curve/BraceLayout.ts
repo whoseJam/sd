@@ -1,15 +1,15 @@
 import { Vector as V } from "@/Math/Vector";
-import { Path } from "@/Node/Path/Path";
+import type { Path } from "@/Node/Path/Path";
 import { PathPen } from "@/Node/Path/PathPen";
-import { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@/Node/SDNode";
 import { trim } from "@/Utility/Trim";
 
 interface BraceLayoutArgs {
-    source: [number, number];
-    target: [number, number];
-    bending?: number;
-    sourceClipper?: SDNode;
-    targetClipper?: SDNode;
+  source: [number, number];
+  target: [number, number];
+  bending?: number;
+  sourceClipper?: SDNode;
+  targetClipper?: SDNode;
 }
 
 /**
@@ -76,35 +76,35 @@ interface BraceLayoutArgs {
  * });
  */
 export function BraceLayout(path: Path, args: BraceLayoutArgs) {
-    const { source, target, bending = 5, sourceClipper, targetClipper } = args;
+  const { source, target, bending = 5, sourceClipper, targetClipper } = args;
 
-    // Generate brace curve path using the same algorithm as Brace class
-    const vs = source;
-    const vt = target;
-    const vc = V.numberMul(V.add(vs, vt), 0.5);
-    const d = V.numberMul(V.identity(V.sub(vt, vs)), bending);
-    const dl = V.rotate(d, -Math.PI / 2);
-    const p1 = V.add(vs, dl);
-    const p2 = V.add(p1, d);
-    const c2 = V.add(vc, dl);
-    const c1 = V.sub(c2, d);
-    const c3 = V.add(c2, d);
-    const c = V.add(c2, dl);
-    const p4 = V.add(vt, dl);
-    const p3 = V.sub(p4, d);
+  // Generate brace curve path using the same algorithm as Brace class
+  const vs = source;
+  const vt = target;
+  const vc = V.numberMul(V.add(vs, vt), 0.5);
+  const d = V.numberMul(V.identity(V.sub(vt, vs)), bending);
+  const dl = V.rotate(d, -Math.PI / 2);
+  const p1 = V.add(vs, dl);
+  const p2 = V.add(p1, d);
+  const c2 = V.add(vc, dl);
+  const c1 = V.sub(c2, d);
+  const c3 = V.add(c2, d);
+  const c = V.add(c2, dl);
+  const p4 = V.add(vt, dl);
+  const p3 = V.sub(p4, d);
 
-    // Build the path string
-    const pen = new PathPen();
-    pen.MoveTo(vs).Quad(p1, p2);
-    pen.LineTo(c1).Quad(c2, c).Quad(c2, c3);
-    pen.LineTo(p3).Quad(p4, vt);
-    const pathString = pen.toString();
+  // Build the path string
+  const pen = new PathPen();
+  pen.MoveTo(vs).Quad(p1, p2);
+  pen.LineTo(c1).Quad(c2, c).Quad(c2, c3);
+  pen.LineTo(p3).Quad(p4, vt);
+  const pathString = pen.toString();
 
-    // Set the path data
-    path.d(pathString);
+  // Set the path data
+  path.d(pathString);
 
-    // Apply trimming if clippers are provided
-    if (sourceClipper || targetClipper) {
-        trim(path, sourceClipper, targetClipper);
-    }
+  // Apply trimming if clippers are provided
+  if (sourceClipper || targetClipper) {
+    trim(path, sourceClipper, targetClipper);
+  }
 }

@@ -1,130 +1,160 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
-import { Group } from "@/Node/Other/Group";
-import { RenderNode } from "@/Renderer/RenderNode";
+import type { Group } from "@/Node/Other/Group";
+import type { RenderNode } from "@/Renderer/RenderNode";
 
 export class Image extends BaseShape {
-    protected x: number = 0;
-    protected y: number = 0;
-    protected width: number = 40;
-    protected height: number = 40;
-    protected src: string = "";
+  protected x: number = 0;
+  protected y: number = 0;
+  protected width: number = 40;
+  protected height: number = 40;
+  protected src: string = "";
 
-    renderAttribute(renderer: RenderNode, key: string, value: any) {
-        if (key === "y") return renderer.setAttribute("y", -(value + this.height));
-        super.renderAttribute(renderer, key, value);
-    }
+  renderAttribute(renderer: RenderNode, key: string, value: any) {
+    if (key === "y") return renderer.setAttribute("y", -(value + this.height));
+    super.renderAttribute(renderer, key, value);
+  }
 
-    constructor(args?: {
-        targetNode?: Group;
-        x?: number;
-        y?: number;
-        width?: number;
-        height?: number;
-        src?: string;
-        opacity?: number;
-    }) {
-        super();
+  constructor(args?: {
+    targetNode?: Group;
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+    src?: string;
+    opacity?: number;
+  }) {
+    super();
 
-        this.x = args?.x ?? 0;
-        this.y = args?.y ?? 0;
-        this.width = args?.width ?? 40;
-        this.height = args?.height ?? 40;
-        this.src = args?.src ?? "";
+    this.x = args?.x ?? 0;
+    this.y = args?.y ?? 0;
+    this.width = args?.width ?? 40;
+    this.height = args?.height ?? 40;
+    this.src = args?.src ?? "";
 
-        this.renderer = this.createSVGNode("image", {
-            x: this.x,
-            y: this.y,
-            width: this.width,
-            height: this.height,
-            src: this.src,
-            opacity: args?.opacity ?? 1,
-            preserveAspectRatio: "xMidYMid meet",
-        });
+    this.renderer = this.createSVGNode("image", {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      src: this.src,
+      opacity: args?.opacity ?? 1,
+      preserveAspectRatio: "xMidYMid meet",
+    });
 
-        args?.targetNode?.appendChild(this.renderer);
-    }
+    args?.targetNode?.appendChild(this.renderer);
+  }
 
-    getX(): number {
-        return this.x;
-    }
+  getX(): number {
+    return this.x;
+  }
 
-    setX(x: number): this {
-        return this.change("x", x, Interp.numberInterp);
-    }
+  setX(x: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "x",
+      x,
+      this.x,
+      Interp.numberInterp,
+    );
+  }
 
-    onXChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("x", listener);
-    }
+  onXChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("x", listener);
+  }
 
-    offXChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("x", listener);
-    }
+  offXChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("x", listener);
+  }
 
-    getY(): number {
-        return this.y;
-    }
+  getY(): number {
+    return this.y;
+  }
 
-    setY(y: number): this {
-        return this.change("y", y, Interp.numberInterp);
-    }
+  setY(y: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "y",
+      y,
+      this.y,
+      Interp.numberInterp,
+    );
+  }
 
-    onYChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("y", listener);
-    }
+  onYChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("y", listener);
+  }
 
-    offYChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("y", listener);
-    }
+  offYChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("y", listener);
+  }
 
-    getWidth(): number {
-        return this.width;
-    }
+  getWidth(): number {
+    return this.width;
+  }
 
-    setWidth(width: number): this {
-        return this.change("width", width, Interp.numberInterp);
-    }
+  setWidth(width: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "width",
+      width,
+      this.width,
+      Interp.numberInterp,
+    );
+  }
 
-    onWidthChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("width", listener);
-    }
+  onWidthChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("width", listener);
+  }
 
-    offWidthChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("width", listener);
-    }
+  offWidthChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("width", listener);
+  }
 
-    getHeight(): number {
-        return this.height;
-    }
+  getHeight(): number {
+    return this.height;
+  }
 
-    // SVG y depends on height (svg_y = -(y + height)); a height change must
-    // re-fire the y attribute so renderAttribute reads the new height.
-    setHeight(height: number): this {
-        this.change("height", height, Interp.numberInterp);
-        return this.triggerAttributeChanged(this.renderer, "y", this.y, this.y, Interp.numberInterp);
-    }
+  // SVG y depends on height (svg_y = -(y + height)); a height change must
+  // re-fire the y attribute so renderAttribute reads the new height.
+  setHeight(height: number): this {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "height",
+      height,
+      this.height,
+      Interp.numberInterp,
+    );
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "y",
+      this.y,
+      this.y,
+      Interp.numberInterp,
+    );
+  }
 
-    onHeightChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("height", listener);
-    }
+  onHeightChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("height", listener);
+  }
 
-    offHeightChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("height", listener);
-    }
+  offHeightChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("height", listener);
+  }
 
-    getSrc(): string {
-        return this.src;
-    }
+  getSrc(): string {
+    return this.src;
+  }
 
-    setSrc(src: string): this {
-        return this.change("src", src);
-    }
+  setSrc(src: string): this {
+    return this.triggerAttributeChanged(this.renderer, "src", src, this.src);
+  }
 
-    onSrcChanged(listener: (vn: string, vo: string) => void) {
-        return this.onAttributeChanged("src", listener);
-    }
+  onSrcChanged(listener: (vn: string, vo: string) => void) {
+    return this.onAttributeChanged("src", listener);
+  }
 
-    offSrcChanged(listener: (vn: string, vo: string) => void) {
-        return this.offAttributeChanged("src", listener);
-    }
+  offSrcChanged(listener: (vn: string, vo: string) => void) {
+    return this.offAttributeChanged("src", listener);
+  }
 }

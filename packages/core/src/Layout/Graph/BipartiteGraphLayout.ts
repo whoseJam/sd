@@ -1,4 +1,4 @@
-import { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@/Node/SDNode";
 
 /**
  * Layout function for arranging nodes in a bipartite graph pattern.
@@ -67,47 +67,56 @@ import { SDNode } from "@/Node/SDNode";
 
  */
 export function BipartiteGraphLayout(
-    nodes: SDNode[],
-    links: any[],
-    args: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        no: { [key: string]: 0 | 1 };
-        getNodeId: (node: SDNode) => string | number;
-        getLinkSourceId: (link: any) => string | number;
-        getLinkTargetId: (link: any) => string | number;
-    }
+  nodes: SDNode[],
+  links: any[],
+  args: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    no: { [key: string]: 0 | 1 };
+    getNodeId: (node: SDNode) => string | number;
+    getLinkSourceId: (link: any) => string | number;
+    getLinkTargetId: (link: any) => string | number;
+  },
 ) {
-    const { x, y, width, height, no, getNodeId, getLinkSourceId, getLinkTargetId } = args;
+  const {
+    x,
+    y,
+    width,
+    height,
+    no,
+    getNodeId,
+    getLinkSourceId,
+    getLinkTargetId,
+  } = args;
 
-    const orderedNodes: SDNode[] = [];
-    const count = [0, 0];
-    const currentIndex = [1, 1];
+  const orderedNodes: SDNode[] = [];
+  const count = [0, 0];
+  const currentIndex = [1, 1];
 
-    // Count nodes in each group
-    for (const node of nodes) {
-        const id = String(getNodeId(node));
-        orderedNodes.push(node);
-        count[no[id]]++;
-    }
+  // Count nodes in each group
+  for (const node of nodes) {
+    const id = String(getNodeId(node));
+    orderedNodes.push(node);
+    count[no[id]]++;
+  }
 
-    const mx = x + width;
-    const my = y + height;
-    const gap = [(mx - x) / (count[0] + 1), (mx - x) / (count[1] + 1)];
+  const mx = x + width;
+  const my = y + height;
+  const gap = [(mx - x) / (count[0] + 1), (mx - x) / (count[1] + 1)];
 
-    const position = (id: string) => {
-        return x + gap[no[id]] * currentIndex[no[id]];
-    };
+  const position = (id: string) => {
+    return x + gap[no[id]] * currentIndex[no[id]];
+  };
 
-    // Position each node
-    for (const node of orderedNodes) {
-        const id = String(getNodeId(node));
-        const xPos = position(id);
-        const yPos = no[id] === 0 ? y : my;
+  // Position each node
+  for (const node of orderedNodes) {
+    const id = String(getNodeId(node));
+    const xPos = position(id);
+    const yPos = no[id] === 0 ? y : my;
 
-        node.cx(xPos).cy(yPos);
-        currentIndex[no[id]]++;
-    }
+    node.cx(xPos).cy(yPos);
+    currentIndex[no[id]]++;
+  }
 }

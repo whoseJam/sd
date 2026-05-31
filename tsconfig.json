@@ -1,30 +1,30 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "checkJs": true,
-        "noEmit": true,
-        "target": "es6",
-        "module": "es6",
-        "lib": ["es6", "DOM"],
-        "baseUrl": ".",
-        "paths": {
-            "@/*": ["packages/core/src/*"],
-            "@/sd": ["packages/core/src/sd.ts"]
-        },
-        "strict": false,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
-        "strictFunctionTypes": false,
-        "moduleResolution": "Node",
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "sourceMap": true,
-        "declaration": true,
-        "declarationDir": "./dist/types",
-        "resolveJsonModule": true,
-        "incremental": true
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "target": "es6",
+    "module": "es6",
+    "lib": ["es6", "DOM"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["packages/core/src/*"],
+      "@/sd": ["packages/core/src/sd.ts"]
     },
-    "include": ["packages/core/src/**/*", "examples/**/*"],
-    "exclude": ["node_modules", "dist", "**/*.spec.ts", "work", "题库"]
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "resolveJsonModule": true,
+    "incremental": true
+  },
+  "include": ["packages/core/src/**/*", "examples/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "work", "题库"]
 }

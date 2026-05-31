@@ -1,202 +1,231 @@
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
-import { RenderNode } from "@/Renderer/RenderNode";
-import { SDColor, Color as C } from "@/Utility/Color";
-import { Group } from "@/Node/Other/Group";
-import { Filter, SDFilter } from "@/Node/Filter/Filter";
-import { SDSVGNode, StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
+import type { RenderNode } from "@/Renderer/RenderNode";
+import type { SDColor } from "@/Utility/Color";
+import { Color as C } from "@/Utility/Color";
+import type { Group } from "@/Node/Other/Group";
+import type { SDFilter } from "@/Node/Filter/Filter";
+import { Filter } from "@/Node/Filter/Filter";
+import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
+import { SDSVGNode } from "@/Node/SDSVGNode";
 
 export class Ellipse extends BaseShape {
-    protected cx: number = 20;
-    protected cy: number = 20;
-    protected rx: number = 20;
-    protected ry: number = 20;
+  protected cx: number = 20;
+  protected cy: number = 20;
+  protected rx: number = 20;
+  protected ry: number = 20;
 
-    renderAttribute(renderer: RenderNode, key: string, value: any) {
-        if (key === "cy") return renderer.setAttribute("cy", -value);
-        super.renderAttribute(renderer, key, value);
-    }
+  renderAttribute(renderer: RenderNode, key: string, value: any) {
+    if (key === "cy") return renderer.setAttribute("cy", -value);
+    super.renderAttribute(renderer, key, value);
+  }
 
-    constructor(args?: {
-        targetNode?: Group;
-        cx?: number;
-        cy?: number;
-        rx?: number;
-        ry?: number;
-        opacity?: number;
-        fill?: SDColor;
-        fillOpacity?: number;
-        stroke?: SDColor;
-        strokeOpacity?: number;
-        strokeWidth?: number;
-        strokeDashOffset?: number;
-        strokeDashoffset?: number;
-        strokeDashArray?: string | number | Array<number>;
-        strokeDasharray?: string | number | Array<number>;
-        strokeLineCap?: StrokeLineCap;
-        strokeLineJoin?: StrokeLineJoin;
-        filter?: SDFilter;
-    }) {
-        super();
+  constructor(args?: {
+    targetNode?: Group;
+    cx?: number;
+    cy?: number;
+    rx?: number;
+    ry?: number;
+    opacity?: number;
+    fill?: SDColor;
+    fillOpacity?: number;
+    stroke?: SDColor;
+    strokeOpacity?: number;
+    strokeWidth?: number;
+    strokeDashOffset?: number;
+    strokeDashoffset?: number;
+    strokeDashArray?: string | number | Array<number>;
+    strokeDasharray?: string | number | Array<number>;
+    strokeLineCap?: StrokeLineCap;
+    strokeLineJoin?: StrokeLineJoin;
+    filter?: SDFilter;
+  }) {
+    super();
 
-        this.cx = args?.cx ?? 20;
-        this.cy = args?.cy ?? 20;
-        this.rx = args?.rx ?? 20;
-        this.ry = args?.ry ?? 20;
+    this.cx = args?.cx ?? 20;
+    this.cy = args?.cy ?? 20;
+    this.rx = args?.rx ?? 20;
+    this.ry = args?.ry ?? 20;
 
-        this.renderer = this.createSVGNode("ellipse", {
-            rx: this.rx,
-            ry: this.ry,
-            cx: this.cx,
-            cy: this.cy,
-            opacity: args?.opacity ?? 1,
-            fill: args?.fill ?? C.black,
-            fillOpacity: args?.fillOpacity ?? 1,
-            stroke: args?.stroke ?? C.none,
-            strokeOpacity: args?.strokeOpacity ?? 1,
-            strokeWidth: args?.strokeWidth ?? 1,
-            strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
-            strokeDashArray: SDSVGNode.toStrokeDashArray(args?.strokeDashArray ?? args?.strokeDasharray),
-            strokeLineCap: args?.strokeLineCap ?? "butt",
-            strokeLineJoin: args?.strokeLineJoin ?? "miter",
-            filter: Filter.toURLString(args?.filter) ?? "",
-        });
+    this.renderer = this.createSVGNode("ellipse", {
+      rx: this.rx,
+      ry: this.ry,
+      cx: this.cx,
+      cy: this.cy,
+      opacity: args?.opacity ?? 1,
+      fill: args?.fill ?? C.black,
+      fillOpacity: args?.fillOpacity ?? 1,
+      stroke: args?.stroke ?? C.none,
+      strokeOpacity: args?.strokeOpacity ?? 1,
+      strokeWidth: args?.strokeWidth ?? 1,
+      strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
+      strokeDashArray: SDSVGNode.toStrokeDashArray(
+        args?.strokeDashArray ?? args?.strokeDasharray,
+      ),
+      strokeLineCap: args?.strokeLineCap ?? "butt",
+      strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      filter: Filter.toURLString(args?.filter) ?? "",
+    });
 
-        args?.targetNode?.appendChild(this);
-    }
+    args?.targetNode?.appendChild(this);
+  }
 
-    getX(): number {
-        return this.getCenterX() - this.getRx();
-    }
+  getX(): number {
+    return this.getCenterX() - this.getRx();
+  }
 
-    setX(x: number): this {
-        return this.setCenterX(this.getCenterX() + x - this.getX());
-    }
+  setX(x: number): this {
+    return this.setCenterX(this.getCenterX() + x - this.getX());
+  }
 
-    getY(): number {
-        return this.getCenterY() - this.getRy();
-    }
+  getY(): number {
+    return this.getCenterY() - this.getRy();
+  }
 
-    setY(y: number): this {
-        return this.setCenterY(this.getCenterY() + y - this.getY());
-    }
+  setY(y: number): this {
+    return this.setCenterY(this.getCenterY() + y - this.getY());
+  }
 
-    getWidth(): number {
-        return this.getRx() * 2;
-    }
+  getWidth(): number {
+    return this.getRx() * 2;
+  }
 
-    setWidth(width: number): this {
-        return this.setRx(width / 2);
-    }
+  setWidth(width: number): this {
+    return this.setRx(width / 2);
+  }
 
-    getHeight(): number {
-        return this.getRy() * 2;
-    }
+  getHeight(): number {
+    return this.getRy() * 2;
+  }
 
-    setHeight(height: number): this {
-        return this.setRy(height / 2);
-    }
+  setHeight(height: number): this {
+    return this.setRy(height / 2);
+  }
 
-    getCx(): number {
-        return this.cx;
-    }
+  getCx(): number {
+    return this.cx;
+  }
 
-    setCx(cx: number): this {
-        return this.change("cx", cx, Interp.numberInterp);
-    }
+  setCx(cx: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "cx",
+      cx,
+      this.cx,
+      Interp.numberInterp,
+    );
+  }
 
-    onCxChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("cx", listener);
-    }
+  onCxChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("cx", listener);
+  }
 
-    offCxChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("cx", listener);
-    }
+  offCxChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("cx", listener);
+  }
 
-    getCenterX(): number {
-        return this.getCx();
-    }
+  getCenterX(): number {
+    return this.getCx();
+  }
 
-    setCenterX(cx: number): this {
-        return this.setCx(cx);
-    }
+  setCenterX(cx: number): this {
+    return this.setCx(cx);
+  }
 
-    onCenterXChanged(listener: (vn: number, vo: number) => void) {
-        return this.onCxChanged(listener);
-    }
+  onCenterXChanged(listener: (vn: number, vo: number) => void) {
+    return this.onCxChanged(listener);
+  }
 
-    offCenterXChanged(listener: (vn: number, vo: number) => void) {
-        return this.offCxChanged(listener);
-    }
+  offCenterXChanged(listener: (vn: number, vo: number) => void) {
+    return this.offCxChanged(listener);
+  }
 
-    getCy(): number {
-        return this.cy;
-    }
+  getCy(): number {
+    return this.cy;
+  }
 
-    setCy(cy: number): this {
-        return this.change("cy", cy, Interp.numberInterp);
-    }
+  setCy(cy: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "cy",
+      cy,
+      this.cy,
+      Interp.numberInterp,
+    );
+  }
 
-    onCyChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("cy", listener);
-    }
+  onCyChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("cy", listener);
+  }
 
-    offCyChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("cy", listener);
-    }
+  offCyChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("cy", listener);
+  }
 
-    getCenterY(): number {
-        return this.getCy();
-    }
+  getCenterY(): number {
+    return this.getCy();
+  }
 
-    setCenterY(cy: number): this {
-        return this.setCy(cy);
-    }
+  setCenterY(cy: number): this {
+    return this.setCy(cy);
+  }
 
-    onCenterYChanged(listener: (vn: number, vo: number) => void) {
-        return this.onCyChanged(listener);
-    }
+  onCenterYChanged(listener: (vn: number, vo: number) => void) {
+    return this.onCyChanged(listener);
+  }
 
-    offCenterYChanged(listener: (vn: number, vo: number) => void) {
-        return this.offCyChanged(listener);
-    }
+  offCenterYChanged(listener: (vn: number, vo: number) => void) {
+    return this.offCyChanged(listener);
+  }
 
-    setCenter(center: [number, number]): this;
-    setCenter(cx: number, cy: number): this;
-    setCenter(cx: number | [number, number], cy?: number) {
-        if (Array.isArray(cx)) return this.setCenter(cx[0], cx[1]);
-        return this.setCenterX(cx).setCenterY(cy);
-    }
+  setCenter(center: [number, number]): this;
+  setCenter(cx: number, cy: number): this;
+  setCenter(cx: number | [number, number], cy?: number) {
+    if (Array.isArray(cx)) return this.setCenter(cx[0], cx[1]);
+    return this.setCenterX(cx).setCenterY(cy);
+  }
 
-    getRx(): number {
-        return this.rx;
-    }
+  getRx(): number {
+    return this.rx;
+  }
 
-    setRx(rx: number): this {
-        return this.change("rx", rx, Interp.numberInterp);
-    }
+  setRx(rx: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "rx",
+      rx,
+      this.rx,
+      Interp.numberInterp,
+    );
+  }
 
-    onRxChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("rx", listener);
-    }
+  onRxChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("rx", listener);
+  }
 
-    offRxChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("rx", listener);
-    }
+  offRxChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("rx", listener);
+  }
 
-    getRy(): number {
-        return this.ry;
-    }
+  getRy(): number {
+    return this.ry;
+  }
 
-    setRy(ry: number): this {
-        return this.change("ry", ry, Interp.numberInterp);
-    }
+  setRy(ry: number): this {
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "ry",
+      ry,
+      this.ry,
+      Interp.numberInterp,
+    );
+  }
 
-    onRyChanged(listener: (vn: number, vo: number) => void) {
-        return this.onAttributeChanged("ry", listener);
-    }
+  onRyChanged(listener: (vn: number, vo: number) => void) {
+    return this.onAttributeChanged("ry", listener);
+  }
 
-    offRyChanged(listener: (vn: number, vo: number) => void) {
-        return this.offAttributeChanged("ry", listener);
-    }
+  offRyChanged(listener: (vn: number, vo: number) => void) {
+    return this.offAttributeChanged("ry", listener);
+  }
 }

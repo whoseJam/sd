@@ -6,36 +6,33 @@
  * reveal.js is Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
  */
 
-
 // Default mixins and settings -----------------
 @import "../template/mixins";
 @import "../template/settings";
 // ---------------------------------------------
 
-
-
 // Include theme-specific fonts
 @import url(https://fonts.googleapis.com/css?family=News+Cycle:400,700);
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);
 
-
 // Override theme settings (see ../template/settings.scss)
-$systemFontsMono: Menlo,
-                  Consolas,
-                  Monaco,
-                  Liberation Mono,
-                  Lucida Console,
-                  monospace;
+$systemFontsMono:
+  Menlo,
+  Consolas,
+  Monaco,
+  Liberation Mono,
+  Lucida Console,
+  monospace;
 $codeFont: "Fira Code", $systemFontsMono;
-$mainFont: 'Lato', sans-serif;
+$mainFont: "Lato", sans-serif;
 $mainColor: #000;
-$headingFont: 'News Cycle', Impact, sans-serif;
+$headingFont: "News Cycle", Impact, sans-serif;
 $headingColor: #000;
 $headingTextShadow: none;
 $headingTextTransform: none;
 $backgroundColor: #fff;
-$linkColor: #00008B;
-$linkColorHover: lighten( $linkColor, 20% );
+$linkColor: #00008b;
+$linkColorHover: lighten($linkColor, 20%);
 $selectionBackgroundColor: rgba(0, 0, 0, 0.99);
 
 $overlayElementBgColor: 0, 0, 0;
@@ -44,15 +41,12 @@ $overlayElementFgColor: 240, 240, 240;
 // Change text colors against dark slide backgrounds
 @include dark-bg-text-color(#fff);
 
-
 // Theme template ------------------------------
 @import "../template/theme";
 // ---------------------------------------------
 
-
-
 .hljs {
-    background: #FFFFDF; /* Half and Half (approx.) */
+  background: #ffffdf; /* Half and Half (approx.) */
 }
 
 .hljs, /* --- used for PureBASIC base color --- */
@@ -63,7 +57,7 @@ $overlayElementFgColor: 240, 240, 240;
 .hljs-attr,
 .hljs-params,
 .hljs-subst {
-    color: #000000; /* Black */
+  color: #000000; /* Black */
 }
 
 .hljs-comment, /* --- used for PureBASIC Comments --- */
@@ -71,7 +65,7 @@ $overlayElementFgColor: 240, 240, 240;
 .hljs-section,
 .hljs-selector-pseudo,
 .hljs-addition {
-    color: #00AAAA; /* Persian Green (approx.) */
+  color: #00aaaa; /* Persian Green (approx.) */
 }
 
 .hljs-keyword, /* --- used for PureBASIC Keywords --- */
@@ -80,41 +74,41 @@ $overlayElementFgColor: 240, 240, 240;
 
 .hljs-selector-class,
 .hljs-built_in {
-    color: #006666; /* Blue Stone (approx.) */
-    font-weight: bold;
+  color: #006666; /* Blue Stone (approx.) */
+  font-weight: bold;
 }
 
 .hljs-title, /* --- used for PureBASIC Procedures Names --- */
 .hljs-tag,
 .hljs-variable,
-.hljs-code  {
-    color: #006666; /* Blue Stone (approx.) */
+.hljs-code {
+  color: #006666; /* Blue Stone (approx.) */
 }
 
 .hljs-string, /* --- used for PureBASIC Strings --- */
 .hljs-selector-attr {
-    color: #0080FF; /* Azure Radiance (approx.) */
+  color: #0080ff; /* Azure Radiance (approx.) */
 }
 
 .hljs-symbol, /* --- used for PureBASIC Constants --- */
 .hljs-link,
 .hljs-deletion,
 .hljs-attribute {
-    color: #924B72; /* Cannon Pink (approx.) */
+  color: #924b72; /* Cannon Pink (approx.) */
 }
 
 .hljs-meta,
 .hljs-literal,
 .hljs-selector-id {
-    color: #924B72; /* Cannon Pink (approx.) */
-    font-weight: bold;
+  color: #924b72; /* Cannon Pink (approx.) */
+  font-weight: bold;
 }
 
 .hljs-strong,
 .hljs-name {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .hljs-emphasis {
-    font-style: italic;
+  font-style: italic;
 }

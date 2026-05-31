@@ -9,21 +9,21 @@ import { MathManager } from "@/Node/Text/TextEngine/Mathjax";
 import { FontManager } from "@/Node/Text/TextEngine/Opentype";
 
 function setupButtonStyles() {
-    const css = `button:active { box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }`;
-    const styleSheet = new CSSStyleSheet();
-    styleSheet.insertRule(css, 0);
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
+  const css = `button:active { box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }`;
+  const styleSheet = new CSSStyleSheet();
+  styleSheet.insertRule(css, 0);
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
 }
 
 export function init() {
-    setupButtonStyles();
-    Root.init();
-    Window.init();
-    Device.init();
-    Status.init();
-    FontManager.init();
-    MathManager.init();
-    PathEngine.init();
-    PolygonEngine.init();
-    createWaterMark();
+  setupButtonStyles();
+  Root.init();
+  Window.init();
+  Device.init();
+  Status.init();
+  FontManager.init();
+  MathManager.init();
+  PathEngine.init();
+  PolygonEngine.init();
+  createWaterMark();
 }

@@ -25,17 +25,11 @@
 4. `HTML Boilerplate`：不知道具体作用，总之作者有。
 5. `HTML CSS Support`：不知道具体作用，总之作者有。
 
-
-
 ---
-
-
 
 # 任务
 
 本框架使用 `gulp` 作为任务管理中枢，其内定义了 `animation` 任务用于生成动画，定义了 `ppt` 任务生成课件。
-
-
 
 ## 动画任务
 
@@ -77,8 +71,6 @@ gulp animation -i ./example/animation/rect.js -l
 gulp animation -i ./example/animation/rect.js -domain http://localhost:8081
 ```
 
-
-
 ## PPT任务
 
 使用 `ppt` 任务来生成课件。相关指令如下：
@@ -119,8 +111,6 @@ gulp ppt -i ./example/ppt/队列 -l
 gulp ppt -i ./example/ppt/队列 -domain http://localhost:8081
 ```
 
-
-
 # 动画组任务
 
 使用 `animationGroup` 来生成一组动画，下面以动画组指代一组动画。这条命令的意义在于，当编写完大量动画后，可以用一条指令完成动画编译任务，而不需要重复多次使用 `animation` 指令。相关指令如下：
@@ -160,4 +150,3 @@ gulp animationGroup -i ./example/animation -l
 ```shell
 gulp animationGroup -i ./example/animation -domain http://localhost:8081
 ```
-

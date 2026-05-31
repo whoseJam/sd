@@ -5,32 +5,30 @@
  * This theme is Copyright (C) 2012-2013 Owen Versteeg, http://owenversteeg.com - it is MIT licensed.
  */
 
-
 // Default mixins and settings -----------------
 @import "../template/mixins";
 @import "../template/settings";
 // ---------------------------------------------
 
-
-
 // Override theme settings (see ../template/settings.scss)
-$systemFontsMono: Menlo,
-                  Consolas,
-                  Monaco,
-                  Liberation Mono,
-                  Lucida Console,
-                  monospace;
+$systemFontsMono:
+  Menlo,
+  Consolas,
+  Monaco,
+  Liberation Mono,
+  Lucida Console,
+  monospace;
 $codeFont: "Fira Code", $systemFontsMono;
-$mainFont: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+$mainFont: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
 $mainColor: #000;
-$headingFont: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
-$headingColor: #383D3D;
+$headingFont: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
+$headingColor: #383d3d;
 $headingTextShadow: none;
 $headingTextTransform: none;
-$backgroundColor: #F0F1EB;
-$linkColor: #51483D;
-$linkColorHover: lighten( $linkColor, 20% );
-$selectionBackgroundColor: #26351C;
+$backgroundColor: #f0f1eb;
+$linkColor: #51483d;
+$linkColorHover: lighten($linkColor, 20%);
+$selectionBackgroundColor: #26351c;
 
 $overlayElementBgColor: 0, 0, 0;
 $overlayElementFgColor: 240, 240, 240;
@@ -42,34 +40,32 @@ $overlayElementFgColor: 240, 240, 240;
 // Change text colors against dark slide backgrounds
 @include dark-bg-text-color(#fff);
 
-
 // Theme template ------------------------------
 @import "../template/theme";
 // ---------------------------------------------
 
-
 .hljs {
-    color: #444;
-    background: #f0f0f0;
+  color: #444;
+  background: #f0f0f0;
 }
 .hljs-subst {
-    color: #444;
+  color: #444;
 }
 .hljs-comment {
-    color: #888888;
+  color: #888888;
 }
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-meta .hljs-keyword,
 .hljs-doctag,
 .hljs-name {
-    font-weight: bold;
+  font-weight: bold;
 }
 .hljs-attribute {
-    color: #0E9A00;
+  color: #0e9a00;
 }
 .hljs-function {
-    color: #99069A;
+  color: #99069a;
 }
 .hljs-type,
 .hljs-string,
@@ -79,12 +75,12 @@ $overlayElementFgColor: 240, 240, 240;
 .hljs-quote,
 .hljs-template-tag,
 .hljs-deletion {
-    color: #880000;
+  color: #880000;
 }
 .hljs-title,
 .hljs-section {
-    color: #880000;
-    font-weight: bold;
+  color: #880000;
+  font-weight: bold;
 }
 .hljs-regexp,
 .hljs-symbol,
@@ -93,26 +89,26 @@ $overlayElementFgColor: 240, 240, 240;
 .hljs-link,
 .hljs-selector-attr,
 .hljs-selector-pseudo {
-    color: #BC6060;
+  color: #bc6060;
 }
 .hljs-literal {
-    color: #78A960;
+  color: #78a960;
 }
 .hljs-built_in,
 .hljs-bullet,
 .hljs-code,
 .hljs-addition {
-    color: #0C9A9A;
+  color: #0c9a9a;
 }
 .hljs-meta {
-    color: #1f7199;
+  color: #1f7199;
 }
 .hljs-meta .hljs-string {
-    color: #4d99bf;
+  color: #4d99bf;
 }
 .hljs-emphasis {
-    font-style: italic;
+  font-style: italic;
 }
 .hljs-strong {
-    font-weight: bold;
+  font-weight: bold;
 }

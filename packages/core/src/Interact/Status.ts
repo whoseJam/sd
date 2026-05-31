@@ -3,13 +3,13 @@ import { Device as D } from "@/Interact/Device";
 import { Dom } from "@/Utility/Dom";
 
 function reload(): void {
-    if (window.parent) {
-        window.parent.postMessage({
-            operator: "ResetAnimationSize",
-            arguments: [Window.IFRAME_ID, Window.IFRAME_URL],
-        });
-    }
-    window.location.reload();
+  if (window.parent) {
+    window.parent.postMessage({
+      operator: "ResetAnimationSize",
+      arguments: [Window.IFRAME_ID, Window.IFRAME_URL],
+    });
+  }
+  window.location.reload();
 }
 
 const RELOAD_ICON = `
@@ -38,12 +38,12 @@ const DESCRIPTION_ICON = `
 `;
 
 export class Status {
-    static status: HTMLElement;
-    static description: HTMLElement;
+  static status: HTMLElement;
+  static description: HTMLElement;
 
-    static init(): void {
-        const element = Dom.createElementAndAppendToBody("div");
-        element.innerHTML = `
+  static init(): void {
+    const element = Dom.createElementAndAppendToBody("div");
+    element.innerHTML = `
         <div id="buttons" style="position: fixed; left: 10px; top: 10px; width: 100px; height: 20px; display: flex; opacity: 1;">
             <div style="width: 20px; height: 20px;">
                 <div id="status" style="width: 10px; height: 10px; border-radius: 50%; background-color: green; translate: 5px 5px;"></div>
@@ -58,39 +58,41 @@ export class Status {
         </div>
         `;
 
-        Status.status = Dom.getHTMLByID("status");
-        Dom.addEventListener(Dom.getByID("reload"), "click", () => reload());
-        Dom.addEventListener(Dom.getByID("prev"), "click", () => D.keyDown("P"));
-        Dom.addEventListener(Dom.getByID("next"), "click", () => D.keyDown("N"));
+    Status.status = Dom.getHTMLByID("status");
+    Dom.addEventListener(Dom.getByID("reload"), "click", () => reload());
+    Dom.addEventListener(Dom.getByID("prev"), "click", () => D.keyDown("P"));
+    Dom.addEventListener(Dom.getByID("next"), "click", () => D.keyDown("N"));
 
-        const detail = Dom.getHTMLByID("detail");
-        this.description = Dom.getHTMLByID("description");
-        Dom.addEventListener(detail, "mouseenter", () => {
-            this.description.style.display = "block";
-        });
-        Dom.addEventListener(detail, "mouseleave", () => {
-            this.description.style.display = "none";
-        });
+    const detail = Dom.getHTMLByID("detail");
+    this.description = Dom.getHTMLByID("description");
+    Dom.addEventListener(detail, "mouseenter", () => {
+      this.description.style.display = "block";
+    });
+    Dom.addEventListener(detail, "mouseleave", () => {
+      this.description.style.display = "none";
+    });
 
-        D.onKeyDown("tT", () => {
-            const buttons = Dom.getHTMLByID("buttons");
-            const opacity = +buttons.style["opacity"];
-            buttons.style["opacity"] = String(opacity ^ 1);
-        });
-    }
+    D.onKeyDown("tT", () => {
+      const buttons = Dom.getHTMLByID("buttons");
+      const opacity = +buttons.style["opacity"];
+      buttons.style["opacity"] = String(opacity ^ 1);
+    });
+  }
 
-    static updateFrameStatus(): void {
-        Status.status.style["backgroundColor"] = this.isInteractable() ? "green" : "red";
-    }
+  static updateFrameStatus(): void {
+    Status.status.style["backgroundColor"] = this.isInteractable()
+      ? "green"
+      : "red";
+  }
 
-    static isInteractable(): boolean {
-        if (Window.IS_CONTINUING) return false;
-        if (Window.IS_INTERACTING) return false;
-        if (Window.MAXIMUM_FRAME !== Window.CURRENT_FRAME) return false;
-        return true;
-    }
+  static isInteractable(): boolean {
+    if (Window.IS_CONTINUING) return false;
+    if (Window.IS_INTERACTING) return false;
+    if (Window.MAXIMUM_FRAME !== Window.CURRENT_FRAME) return false;
+    return true;
+  }
 
-    static setDescription(description: string) {
-        this.description.innerHTML = description;
-    }
+  static setDescription(description: string) {
+    this.description.innerHTML = description;
+  }
 }

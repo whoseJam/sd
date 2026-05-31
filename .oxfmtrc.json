@@ -1,0 +1,12 @@
+{
+  "printWidth": 80,
+  "endOfLine": "lf",
+  "ignorePatterns": [
+    "packages/assets/**",
+    "packages/reveal/src/plugin/HighlightEngine.js",
+    "ppt/**",
+    "dist/**",
+    "node_modules/**",
+    "**/*.html"
+  ]
+}

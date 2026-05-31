@@ -1,9 +1,9 @@
 import * as sd from "@/sd";
 
 class TextBox extends sd.Group {
-    constructor() {
-        super([new sd.Rect(), new sd.Circle()]);
-    }
+  constructor() {
+    super([new sd.Rect(), new sd.Circle()]);
+  }
 }
 
 const svg = sd.svg();

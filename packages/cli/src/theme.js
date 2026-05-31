@@ -10,18 +10,24 @@ const autoprefixer = require("gulp-autoprefixer");
  * @returns {NodeJS.ReadWriteStream}
  */
 module.exports = function (targetFolder) {
-    const themePath = path.join(__dirname, "../../reveal/src/css/theme");
-    const sourcePath = path.join(themePath, "source/**/*.scss");
-    return gulp
-        .src(sourcePath)
-        .pipe(sass().on("error", sass.logError))
-        .pipe(
-            autoprefixer({
-                overrideBrowserslist: ["last 5 versions", "ie >= 10", "Firefox >= 45", "Chrome >= 45", "Safari >= 10"],
-                cascade: true,
-                remove: false,
-            })
-        )
-        .pipe(cleanCSS({ compatibility: "ie8", keepSpecialComments: 1 }))
-        .pipe(gulp.dest(targetFolder));
+  const themePath = path.join(__dirname, "../../reveal/src/css/theme");
+  const sourcePath = path.join(themePath, "source/**/*.scss");
+  return gulp
+    .src(sourcePath)
+    .pipe(sass().on("error", sass.logError))
+    .pipe(
+      autoprefixer({
+        overrideBrowserslist: [
+          "last 5 versions",
+          "ie >= 10",
+          "Firefox >= 45",
+          "Chrome >= 45",
+          "Safari >= 10",
+        ],
+        cascade: true,
+        remove: false,
+      }),
+    )
+    .pipe(cleanCSS({ compatibility: "ie8", keepSpecialComments: 1 }))
+    .pipe(gulp.dest(targetFolder));
 };

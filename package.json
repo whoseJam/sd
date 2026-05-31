@@ -1,28 +1,35 @@
 {
-    "name": "slidew",
-    "version": "1.0.14",
-    "description": "",
-    "scripts": {},
-    "bin": {
-        "sd-animation": "./packages/cli/src/animation.js",
-        "sd-animationGroup": "./packages/cli/src/animationGroup.js",
-        "sd-ppt": "./packages/cli/src/ppt.js",
-        "sd-config": "./packages/cli/src/config.js"
-    },
-    "repository": {
-        "type": "",
-        "url": ""
-    },
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "@svgdotjs/svg.js": "^3.2.0",
-        "gulp": "^5.0.0",
-        "typescript": "^5.5.2"
-    },
-    "browser": {
-        "fs": false,
-        "path": false,
-        "os": false
-    }
+  "name": "slidew",
+  "version": "1.0.14",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "bin": {
+    "sd-animation": "./packages/cli/src/animation.js",
+    "sd-animationGroup": "./packages/cli/src/animationGroup.js",
+    "sd-config": "./packages/cli/src/config.js",
+    "sd-ppt": "./packages/cli/src/ppt.js"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
+  "scripts": {
+    "format": "oxfmt && oxlint --fix",
+    "lint": "oxlint",
+    "check:format": "oxfmt --check",
+    "check:lint": "oxlint"
+  },
+  "devDependencies": {
+    "@svgdotjs/svg.js": "^3.2.0",
+    "gulp": "^5.0.0",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.58.0",
+    "typescript": "^5.5.2"
+  }
 }

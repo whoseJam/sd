@@ -1,14 +1,14 @@
-import { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@/Node/SDNode";
 
 type Align = "x" | "cx" | "mx";
 type Justify = "y" | "cy" | "my";
 
 interface StackLayoutParam {
-    x: number;
-    y: number;
-    elementHeight: number;
-    align?: Align;
-    justify?: Justify;
+  x: number;
+  y: number;
+  elementHeight: number;
+  align?: Align;
+  justify?: Justify;
 }
 
 /**
@@ -31,28 +31,28 @@ interface StackLayoutParam {
  * });
  */
 export function StackLayout(arr: Array<SDNode>, args: StackLayoutParam) {
-    const { x, y, elementHeight, align = "cx", justify = "cy" } = args;
+  const { x, y, elementHeight, align = "cx", justify = "cy" } = args;
 
-    arr.forEach((element, i) => {
-        // Calculate vertical position based on justify mode
-        if (justify === "y") {
-            // Top align: element starts at y + i * elementHeight
-            element.y(y + elementHeight * i);
-        } else if (justify === "cy") {
-            // Center align: element center at y + (i + 0.5) * elementHeight
-            element.cy(y + elementHeight * (i + 0.5));
-        } else {
-            // Bottom align: element ends at y + (i + 1) * elementHeight
-            element.my(y + elementHeight * (i + 1));
-        }
+  arr.forEach((element, i) => {
+    // Calculate vertical position based on justify mode
+    if (justify === "y") {
+      // Top align: element starts at y + i * elementHeight
+      element.y(y + elementHeight * i);
+    } else if (justify === "cy") {
+      // Center align: element center at y + (i + 0.5) * elementHeight
+      element.cy(y + elementHeight * (i + 0.5));
+    } else {
+      // Bottom align: element ends at y + (i + 1) * elementHeight
+      element.my(y + elementHeight * (i + 1));
+    }
 
-        // Calculate horizontal position based on align mode
-        if (align === "x") {
-            element.x(x);
-        } else if (align === "cx") {
-            element.cx(x);
-        } else {
-            element.mx(x);
-        }
-    });
+    // Calculate horizontal position based on align mode
+    if (align === "x") {
+      element.x(x);
+    } else if (align === "cx") {
+      element.cx(x);
+    } else {
+      element.mx(x);
+    }
+  });
 }

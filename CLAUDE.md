@@ -61,6 +61,7 @@ gulp serve -p 8080
 ## Architecture Notes
 
 ### `@sd/core` (packages/core/src/)
+
 - `sd.ts` is the public surface — every visual primitive, layout, and utility is re-exported here.
 - All visual elements inherit from `SDNode` (`Node/SDNode.ts`, ~450 LOC) and specialize into `SDHTMLNode` / `SDSVGNode`.
 - Reactive system lives under `Node/Core/`.
@@ -70,12 +71,14 @@ gulp serve -p 8080
 - TS path alias inside the package: `@/*` → `packages/core/src/*`.
 
 ### `@sd/reveal` (packages/reveal/src/)
+
 - `MyReveal.js` is the bundle entry; ships as global `MyReveal` (UMD).
 - Plugins (MathJax2, Codeblock, Chalkboard, SDAnimation, ...) live under `plugin/`.
 - Theme SCSS lives under `css/theme/source/`; `gulp theme` compiles them.
 - `plugin/SDAnimation.js` drives `<sd-animation>` elements across slide transitions (start/stop the active slide's animations); `MyReveal.js` imports `@sd/element` so the bundle auto-registers the tag.
 
 ### `@sd/cli` (packages/cli/src/)
+
 - Each gulp task (`sd.js`, `reveal.js`, `element.js`, `animation.js`, `ppt.js`, `theme.js`, ...) wraps a webpack-stream pipeline.
 - `parser.js` holds CLI arg parsing and `myconfig.json` IO.
 - HTML templates `aniIndex.html` and `pptIndex.html` use a single `<%= base %>` placeholder (".") for self-contained local builds, or the `-d <domain>` value for remote deploys.
@@ -84,6 +87,7 @@ gulp serve -p 8080
 ## Build Flow
 
 Animation bundles do NOT inline `@sd/core`. Instead:
+
 - `aniIndex.html` loads `sd.js` first (as global `sd`), then the per-animation bundle.
 - The per-animation webpack config marks `@/sd` and `slidew` as externals mapping to global `sd`.
 - This keeps each animation script tiny (~5-20 KB) and the shared engine cacheable.

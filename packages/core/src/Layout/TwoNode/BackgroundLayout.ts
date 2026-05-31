@@ -1,5 +1,5 @@
-import { SDNode, SDNodeWithRadius } from "@/Node/SDNode";
-import { Circle } from "@/Node/Shape/Circle";
+import type { SDNode, SDNodeWithRadius } from "@/Node/SDNode";
+import type { Circle } from "@/Node/Shape/Circle";
 
 /**
  * This function positions and sizes the rhs node to exactly match the lhs's
@@ -19,7 +19,7 @@ import { Circle } from "@/Node/Shape/Circle";
  * BackgroundLayout(background, text);
  */
 export function BackgroundLayout(lhs: SDNode, rhs: SDNode) {
-    rhs.width(lhs.width()).height(lhs.height()).x(lhs.x()).y(lhs.y());
+  rhs.width(lhs.width()).height(lhs.height()).x(lhs.x()).y(lhs.y());
 }
 
 /**
@@ -39,6 +39,9 @@ export function BackgroundLayout(lhs: SDNode, rhs: SDNode) {
  * const background = new sd.Circle(svg).fill("lightblue");
  * CircleBackgroundLayout(background, circle);
  */
-export function CircleBackgroundLayout(lhs: Circle | SDNodeWithRadius, rhs: Circle | SDNodeWithRadius) {
-    rhs.r(lhs.r()).x(lhs.x()).y(lhs.y());
+export function CircleBackgroundLayout(
+  lhs: Circle | SDNodeWithRadius,
+  rhs: Circle | SDNodeWithRadius,
+) {
+  rhs.r(lhs.r()).x(lhs.x()).y(lhs.y());
 }

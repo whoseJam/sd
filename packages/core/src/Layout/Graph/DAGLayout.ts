@@ -1,5 +1,5 @@
 import { mapTo } from "@/Math/Math";
-import { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@/Node/SDNode";
 import { layout as DAGLayoutEngine, graphlib as DAGLib } from "dagre";
 
 type Align = "UL" | "UR" | "DL" | "DR" | "C";
@@ -10,7 +10,7 @@ type Direction = "TB" | "BT" | "LR" | "RL";
  * This is a generic interface - the actual link object can have any structure.
  */
 export interface DAGLink {
-    [key: string]: any;
+  [key: string]: any;
 }
 
 /**
@@ -92,114 +92,114 @@ export interface DAGLink {
 
  */
 export function DAGLayout(
-    nodes: SDNode[],
-    links: DAGLink[],
-    args: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        direction?: Direction;
-        align?: Align;
-        getNodeId: (node: SDNode) => string | number;
-        getLinkSourceId: (link: DAGLink) => string | number;
-        getLinkTargetId: (link: DAGLink) => string | number;
-        nodeWidth?: number;
-        nodeHeight?: number;
-        rankSep?: number;
-        nodeSep?: number;
-    }
+  nodes: SDNode[],
+  links: DAGLink[],
+  args: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    direction?: Direction;
+    align?: Align;
+    getNodeId: (node: SDNode) => string | number;
+    getLinkSourceId: (link: DAGLink) => string | number;
+    getLinkTargetId: (link: DAGLink) => string | number;
+    nodeWidth?: number;
+    nodeHeight?: number;
+    rankSep?: number;
+    nodeSep?: number;
+  },
 ) {
-    const {
-        x,
-        y,
-        width,
-        height,
-        direction = "TB",
-        align = "C",
-        getNodeId,
-        getLinkSourceId,
-        getLinkTargetId,
-        nodeWidth = 50,
-        nodeHeight = 50,
-        rankSep = 50,
-        nodeSep = 50,
-    } = args;
+  const {
+    x,
+    y,
+    width,
+    height,
+    direction = "TB",
+    align = "C",
+    getNodeId,
+    getLinkSourceId,
+    getLinkTargetId,
+    nodeWidth = 50,
+    nodeHeight = 50,
+    rankSep = 50,
+    nodeSep = 50,
+  } = args;
 
-    // Create internal Dagre graph
-    const graph = new DAGLib.Graph();
+  // Create internal Dagre graph
+  const graph = new DAGLib.Graph();
 
-    // Configure graph settings
-    graph.setGraph({
-        rankdir: direction,
-        align: align,
-        ranksep: rankSep,
-        nodesep: nodeSep,
+  // Configure graph settings
+  graph.setGraph({
+    rankdir: direction,
+    align: align,
+    ranksep: rankSep,
+    nodesep: nodeSep,
+  });
+
+  // Set default edge label
+  graph.setDefaultEdgeLabel(() => ({}));
+
+  // Add all nodes to the graph
+  for (const node of nodes) {
+    const id = String(getNodeId(node));
+    graph.setNode(id, {
+      width: nodeWidth,
+      height: nodeHeight,
     });
+  }
 
-    // Set default edge label
-    graph.setDefaultEdgeLabel(() => ({}));
+  // Add all edges to the graph
+  for (const link of links) {
+    const sourceId = String(getLinkSourceId(link));
+    const targetId = String(getLinkTargetId(link));
+    graph.setEdge(sourceId, targetId);
+  }
 
-    // Add all nodes to the graph
-    for (const node of nodes) {
-        const id = String(getNodeId(node));
-        graph.setNode(id, {
-            width: nodeWidth,
-            height: nodeHeight,
-        });
+  // Compute layout
+  DAGLayoutEngine(graph);
+
+  // Get bounding box of the computed layout
+  const box = toBox(graph);
+
+  // Create mappers to transform from Dagre coordinates to target coordinates
+  const mapperX = mapTo(box.x, box.width, x, width);
+  const mapperY = mapTo(box.y, box.height, y, height);
+
+  const position = (layout: any): [number, number] => {
+    return [mapperX(layout.x), mapperY(layout.y)];
+  };
+
+  // Position each node
+  for (const node of nodes) {
+    const id = String(getNodeId(node));
+    const layout = graph.node(id);
+    if (layout) {
+      const [cx, cy] = position(layout);
+      node.cx(cx).cy(cy);
     }
-
-    // Add all edges to the graph
-    for (const link of links) {
-        const sourceId = String(getLinkSourceId(link));
-        const targetId = String(getLinkTargetId(link));
-        graph.setEdge(sourceId, targetId);
-    }
-
-    // Compute layout
-    DAGLayoutEngine(graph);
-
-    // Get bounding box of the computed layout
-    const box = toBox(graph);
-
-    // Create mappers to transform from Dagre coordinates to target coordinates
-    const mapperX = mapTo(box.x, box.width, x, width);
-    const mapperY = mapTo(box.y, box.height, y, height);
-
-    const position = (layout: any): [number, number] => {
-        return [mapperX(layout.x), mapperY(layout.y)];
-    };
-
-    // Position each node
-    for (const node of nodes) {
-        const id = String(getNodeId(node));
-        const layout = graph.node(id);
-        if (layout) {
-            const [cx, cy] = position(layout);
-            node.cx(cx).cy(cy);
-        }
-    }
+  }
 }
 
 /**
  * Helper function to compute the bounding box of a Dagre graph layout.
  */
 function toBox(graph: DAGLib.Graph) {
-    let x: number, mx: number, y: number, my: number;
+  let x: number, mx: number, y: number, my: number;
 
-    graph.nodes().forEach(function (info) {
-        const layout = graph.node(info);
-        if (x === undefined) {
-            x = mx = layout.x;
-            y = my = layout.y;
-        } else {
-            x = Math.min(x, layout.x);
-            mx = Math.max(mx, layout.x);
-            y = Math.min(y, layout.y);
-            my = Math.max(my, layout.y);
-        }
-    });
+  graph.nodes().forEach(function (info) {
+    const layout = graph.node(info);
+    if (x === undefined) {
+      x = mx = layout.x;
+      y = my = layout.y;
+    } else {
+      x = Math.min(x, layout.x);
+      mx = Math.max(mx, layout.x);
+      y = Math.min(y, layout.y);
+      my = Math.max(my, layout.y);
+    }
+  });
 
-    if (x === undefined) x = mx = y = my = 0;
-    return { x, y, width: mx - x, height: my - y };
+  if (x === undefined) x = mx = y = my = 0;
+  return { x, y, width: mx - x, height: my - y };
 }

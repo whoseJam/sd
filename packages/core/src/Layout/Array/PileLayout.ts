@@ -1,14 +1,14 @@
-import { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@/Node/SDNode";
 
 type Align = "x" | "cx" | "mx";
 type Justify = "y" | "cy" | "my";
 
 interface PileLayoutParam {
-    x: number;
-    my: number;
-    elementHeight: number;
-    align?: Align;
-    justify?: Justify;
+  x: number;
+  my: number;
+  elementHeight: number;
+  align?: Align;
+  justify?: Justify;
 }
 
 /**
@@ -33,28 +33,28 @@ interface PileLayoutParam {
  * });
  */
 export function PileLayout(arr: Array<SDNode>, args: PileLayoutParam) {
-    const { x, my, elementHeight, align = "cx", justify = "cy" } = args;
+  const { x, my, elementHeight, align = "cx", justify = "cy" } = args;
 
-    arr.forEach((element, i) => {
-        // Calculate vertical position based on justify mode (growing upward from my)
-        if (justify === "my") {
-            // Bottom align: element ends at my - i * elementHeight
-            element.my(my - elementHeight * i);
-        } else if (justify === "cy") {
-            // Center align: element center at my - (i + 0.5) * elementHeight
-            element.cy(my - elementHeight * (i + 0.5));
-        } else {
-            // Top align: element starts at my - (i + 1) * elementHeight
-            element.y(my - elementHeight * (i + 1));
-        }
+  arr.forEach((element, i) => {
+    // Calculate vertical position based on justify mode (growing upward from my)
+    if (justify === "my") {
+      // Bottom align: element ends at my - i * elementHeight
+      element.my(my - elementHeight * i);
+    } else if (justify === "cy") {
+      // Center align: element center at my - (i + 0.5) * elementHeight
+      element.cy(my - elementHeight * (i + 0.5));
+    } else {
+      // Top align: element starts at my - (i + 1) * elementHeight
+      element.y(my - elementHeight * (i + 1));
+    }
 
-        // Calculate horizontal position based on align mode
-        if (align === "x") {
-            element.x(x);
-        } else if (align === "cx") {
-            element.cx(x);
-        } else {
-            element.mx(x);
-        }
-    });
+    // Calculate horizontal position based on align mode
+    if (align === "x") {
+      element.x(x);
+    } else if (align === "cx") {
+      element.cx(x);
+    } else {
+      element.mx(x);
+    }
+  });
 }

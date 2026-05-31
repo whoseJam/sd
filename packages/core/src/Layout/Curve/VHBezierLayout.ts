@@ -1,14 +1,14 @@
 import { Vector as V } from "@/Math/Vector";
 import { PathPen } from "@/Node/Path/PathPen";
-import { SDNode } from "@/Node/SDNode";
-import { Path } from "@/sd";
+import type { SDNode } from "@/Node/SDNode";
+import type { Path } from "@/sd";
 import { trim } from "@/Utility/Trim";
 
 interface VHBezierLayoutArgs {
-    source: [number, number];
-    target: [number, number];
-    sourceClipper?: SDNode;
-    targetClipper?: SDNode;
+  source: [number, number];
+  target: [number, number];
+  sourceClipper?: SDNode;
+  targetClipper?: SDNode;
 }
 
 /**
@@ -58,36 +58,40 @@ interface VHBezierLayoutArgs {
  * });
  */
 export function VHBezierLayout(path: Path, args: VHBezierLayoutArgs) {
-    const { source, target, sourceClipper, targetClipper } = args;
+  const { source, target, sourceClipper, targetClipper } = args;
 
-    // Generate VH Bezier curve path using the same algorithm as VHBezier class
-    const v1 = source;
-    const v2 = target;
-    const d = V.sub(v2, v1);
-    let p1: [number, number];
-    let p2: [number, number];
-    let pm: [number, number];
+  // Generate VH Bezier curve path using the same algorithm as VHBezier class
+  const v1 = source;
+  const v2 = target;
+  const d = V.sub(v2, v1);
+  let p1: [number, number];
+  let p2: [number, number];
+  let pm: [number, number];
 
-    pm = V.add(v1, V.numberMul(d, 0.5));
+  pm = V.add(v1, V.numberMul(d, 0.5));
 
-    if (d[0] < d[1]) {
-        // Vertical-first path
-        p1 = [v1[0], v1[1] + d[1] * 0.5];
-        p2 = [v2[0], v2[1] - d[1] * 0.5];
-    } else {
-        // Horizontal-first path
-        p1 = [v1[0] + d[0] * 0.5, v1[1]];
-        p2 = [v2[0] - d[0] * 0.5, v2[1]];
-    }
+  if (d[0] < d[1]) {
+    // Vertical-first path
+    p1 = [v1[0], v1[1] + d[1] * 0.5];
+    p2 = [v2[0], v2[1] - d[1] * 0.5];
+  } else {
+    // Horizontal-first path
+    p1 = [v1[0] + d[0] * 0.5, v1[1]];
+    p2 = [v2[0] - d[0] * 0.5, v2[1]];
+  }
 
-    // Build the path string
-    const pathString = new PathPen().MoveTo(v1).Quad(p1, pm).Quad(p2, v2).toString();
+  // Build the path string
+  const pathString = new PathPen()
+    .MoveTo(v1)
+    .Quad(p1, pm)
+    .Quad(p2, v2)
+    .toString();
 
-    // Set the path data
-    path.d(pathString);
+  // Set the path data
+  path.d(pathString);
 
-    // Apply trimming if clippers are provided
-    if (sourceClipper || targetClipper) {
-        trim(path, sourceClipper, targetClipper);
-    }
+  // Apply trimming if clippers are provided
+  if (sourceClipper || targetClipper) {
+    trim(path, sourceClipper, targetClipper);
+  }
 }

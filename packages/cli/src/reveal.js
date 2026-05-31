@@ -8,43 +8,43 @@ const webpack = require("webpack-stream");
  * @returns {NodeJS.ReadWriteStream}
  */
 module.exports = function (targetFolder) {
-    const config = getConfiguration();
-    return (
-        gulp
-            // webpack stream
-            .src("./packages/reveal/src/MyReveal.js")
-            .pipe(webpack(config))
-            .pipe(gulp.dest(targetFolder))
-    );
+  const config = getConfiguration();
+  return (
+    gulp
+      // webpack stream
+      .src("./packages/reveal/src/MyReveal.js")
+      .pipe(webpack(config))
+      .pipe(gulp.dest(targetFolder))
+  );
 };
 
 function getConfiguration() {
-    const mode = global["d"] ? "development" : "production";
-    const watch = global["w"] ? true : false;
-    return {
-        mode,
-        watch,
-        output: {
-            filename: "myreveal.js",
-            library: "MyReveal",
-            libraryTarget: "umd",
-            umdNamedDefine: true,
-            globalObject: "this",
+  const mode = global["d"] ? "development" : "production";
+  const watch = global["w"] ? true : false;
+  return {
+    mode,
+    watch,
+    output: {
+      filename: "myreveal.js",
+      library: "MyReveal",
+      libraryTarget: "umd",
+      umdNamedDefine: true,
+      globalObject: "this",
+    },
+    module: {
+      rules: [
+        {
+          test: /.js$/,
+          use: {
+            loader: "babel-loader",
+          },
         },
-        module: {
-            rules: [
-                {
-                    test: /.js$/,
-                    use: {
-                        loader: "babel-loader",
-                    },
-                },
-                { test: /\.css$/, use: ["style-loader", "css-loader"] },
-            ],
-        },
-        performance: {
-            hints: false,
-        },
-        cache: true,
-    };
+        { test: /\.css$/, use: ["style-loader", "css-loader"] },
+      ],
+    },
+    performance: {
+      hints: false,
+    },
+    cache: true,
+  };
 }

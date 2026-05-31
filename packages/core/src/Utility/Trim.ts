@@ -1,7 +1,7 @@
-import { BaseCurve } from "@/Node/Curve/BaseCurve";
-import { BasePath } from "@/Node/Path/BasePath";
-import { Line } from "@/Node/Path/Line";
-import { SDNode } from "@/Node/SDNode";
+import type { BaseCurve } from "@/Node/Curve/BaseCurve";
+import type { BasePath } from "@/Node/Path/BasePath";
+import type { Line } from "@/Node/Path/Line";
+import type { SDNode } from "@/Node/SDNode";
 
 /**
  * Trims the source end of the link path.
@@ -12,16 +12,16 @@ import { SDNode } from "@/Node/SDNode";
  * @returns The normalized position (0-1) where trimming should start
  */
 function trimSource(link: BasePath, source: SDNode | null | undefined): number {
-    if (!source) return 0;
-    let l = 0;
-    let r = 1;
-    while (r - l > 1e-3) {
-        const mid = (l + r) / 2.0;
-        if (source.inRange(link.at(mid))) l = mid;
-        else r = mid;
-    }
-    if (link.totalLength() * l <= 1) return 0;
-    return l;
+  if (!source) return 0;
+  let l = 0;
+  let r = 1;
+  while (r - l > 1e-3) {
+    const mid = (l + r) / 2.0;
+    if (source.inRange(link.at(mid))) l = mid;
+    else r = mid;
+  }
+  if (link.totalLength() * l <= 1) return 0;
+  return l;
 }
 
 /**
@@ -33,16 +33,16 @@ function trimSource(link: BasePath, source: SDNode | null | undefined): number {
  * @returns The normalized position (0-1) where trimming should end
  */
 function trimTarget(link: BasePath, target: SDNode | null | undefined): number {
-    if (!target) return 1;
-    let l = 0;
-    let r = 1;
-    while (r - l > 1e-3) {
-        const mid = (l + r) / 2.0;
-        if (target.inRange(link.at(mid))) r = mid;
-        else l = mid;
-    }
-    if (link.totalLength() * (1 - l) <= 1) return 1;
-    return l;
+  if (!target) return 1;
+  let l = 0;
+  let r = 1;
+  while (r - l > 1e-3) {
+    const mid = (l + r) / 2.0;
+    if (target.inRange(link.at(mid))) r = mid;
+    else l = mid;
+  }
+  if (link.totalLength() * (1 - l) <= 1) return 1;
+  return l;
 }
 
 /**
@@ -56,15 +56,15 @@ function trimTarget(link: BasePath, target: SDNode | null | undefined): number {
  * @param target - The target node (optional)
  */
 export function trim(
-    link: Line | BaseCurve,
-    source: SDNode | null | undefined,
-    target: SDNode | null | undefined
+  link: Line | BaseCurve,
+  source: SDNode | null | undefined,
+  target: SDNode | null | undefined,
 ): void {
-    const s = trimSource(link, source);
-    const t = trimTarget(link, target);
-    const ls = link.at(s);
-    const lt = link.at(t);
-    // TO FIX
-    link.source(ls);
-    link.target(lt);
+  const s = trimSource(link, source);
+  const t = trimTarget(link, target);
+  const ls = link.at(s);
+  const lt = link.at(t);
+  // TO FIX
+  link.source(ls);
+  link.target(lt);
 }

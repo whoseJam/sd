@@ -11,38 +11,41 @@ import { GridGraphLayout } from "@/Layout/Graph/GridGraphLayout";
 import { TinyGraphLayout } from "@/Layout/Graph/TinyGraphLayout";
 import { GridLayout } from "@/Layout/Grid/GridLayout";
 import { AsideLayout } from "@/Layout/TwoNode/AsideLayout";
-import { BackgroundLayout, CircleBackgroundLayout } from "@/Layout/TwoNode/BackgroundLayout";
 import {
-    CenterCircleContentFitLayout,
-    CenterContentFitLayout,
-    CenterEllipseContentFitLayout,
-    CenterLayout,
-    CenterRectContentFitLayout,
+  BackgroundLayout,
+  CircleBackgroundLayout,
+} from "@/Layout/TwoNode/BackgroundLayout";
+import {
+  CenterCircleContentFitLayout,
+  CenterContentFitLayout,
+  CenterEllipseContentFitLayout,
+  CenterLayout,
+  CenterRectContentFitLayout,
 } from "@/Layout/TwoNode/CenterLayout";
 
 const Layout = {
-    ArrayLayout,
-    StackLayout,
-    PileLayout,
-    BezierLayout,
-    CurveLayout,
-    VHBezierLayout,
-    BraceLayout,
-    GridLayout,
-    TinyGraphLayout,
-    GridGraphLayout,
-    BipartiteGraphLayout,
-    DAGLayout,
-    CenterLayout,
-    CenterContentFitLayout,
-    CenterRectContentFitLayout,
-    CenterCircleContentFitLayout,
-    CenterEllipseContentFitLayout,
-    AsideLayout,
-    BackgroundLayout,
-    CircleBackgroundLayout,
+  ArrayLayout,
+  StackLayout,
+  PileLayout,
+  BezierLayout,
+  CurveLayout,
+  VHBezierLayout,
+  BraceLayout,
+  GridLayout,
+  TinyGraphLayout,
+  GridGraphLayout,
+  BipartiteGraphLayout,
+  DAGLayout,
+  CenterLayout,
+  CenterContentFitLayout,
+  CenterRectContentFitLayout,
+  CenterCircleContentFitLayout,
+  CenterEllipseContentFitLayout,
+  AsideLayout,
+  BackgroundLayout,
+  CircleBackgroundLayout,
 };
 
 export function layout() {
-    return Layout;
+  return Layout;
 }

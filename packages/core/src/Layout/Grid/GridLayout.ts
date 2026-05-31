@@ -1,17 +1,17 @@
-import { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@/Node/SDNode";
 
 type Align = "x" | "cx" | "mx" | "y" | "cy" | "my";
 type Axis = "row" | "col";
 
 interface GridLayoutParam {
-    x: number;
-    y: number;
-    elementWidth: number;
-    elementHeight: number;
-    elements: Array<Array<SDNode>>;
-    m: number;
-    axis?: Axis;
-    align?: Align;
+  x: number;
+  y: number;
+  elementWidth: number;
+  elementHeight: number;
+  elements: Array<Array<SDNode>>;
+  m: number;
+  axis?: Axis;
+  align?: Align;
 }
 
 /**
@@ -117,57 +117,74 @@ interface GridLayoutParam {
  * });
  */
 export function GridLayout(args: GridLayoutParam) {
-    const { x, y, elementWidth, elementHeight, elements, m, axis = "row", align = "x" } = args;
+  const {
+    x,
+    y,
+    elementWidth,
+    elementHeight,
+    elements,
+    m,
+    axis = "row",
+    align = "x",
+  } = args;
 
-    // Calculate derived values
-    const dict = {
-        x: x,
-        y: y,
-        mx: x + elementWidth * m,
-        my: y + elementHeight * elements.length,
-        lx: elementWidth,
-        ly: elementHeight,
-    };
+  // Calculate derived values
+  const dict = {
+    x: x,
+    y: y,
+    mx: x + elementWidth * m,
+    my: y + elementHeight * elements.length,
+    lx: elementWidth,
+    ly: elementHeight,
+  };
 
-    // Determine main and auxiliary axes
-    const mainAxis = axis === "row" ? "y" : "x";
-    const auxiAxis = axis === "row" ? "x" : "y";
+  // Determine main and auxiliary axes
+  const mainAxis = axis === "row" ? "y" : "x";
+  const auxiAxis = axis === "row" ? "x" : "y";
 
-    // Select offset function based on alignment
-    const offset = align === "x" || align === "y" ? offsetN : align === "cx" || align === "cy" ? offsetC : offsetM;
+  // Select offset function based on alignment
+  const offset =
+    align === "x" || align === "y"
+      ? offsetN
+      : align === "cx" || align === "cy"
+        ? offsetC
+        : offsetM;
 
-    // Layout each element
-    for (let i = 0; i < elements.length; i++) {
-        if (!elements[i]) continue;
+  // Layout each element
+  for (let i = 0; i < elements.length; i++) {
+    if (!elements[i]) continue;
 
-        for (let j = 0; j < elements[i].length; j++) {
-            const element = elements[i][j];
-            if (!element) continue;
+    for (let j = 0; j < elements[i].length; j++) {
+      const element = elements[i][j];
+      if (!element) continue;
 
-            // Position element based on axis orientation
-            element[mainAxis](dict[mainAxis] + i * dict[`l${mainAxis}`]);
-            element[auxiAxis](dict[auxiAxis] + (offset(m, elements[i].length) + j) * dict[`l${auxiAxis}`]);
-        }
+      // Position element based on axis orientation
+      element[mainAxis](dict[mainAxis] + i * dict[`l${mainAxis}`]);
+      element[auxiAxis](
+        dict[auxiAxis] +
+          (offset(m, elements[i].length) + j) * dict[`l${auxiAxis}`],
+      );
     }
+  }
 }
 
 /**
  * Helper function for left/top alignment (no offset)
  */
 function offsetN() {
-    return 0;
+  return 0;
 }
 
 /**
  * Helper function for center alignment
  */
 function offsetC(m: number, length: number) {
-    return (m - length) / 2;
+  return (m - length) / 2;
 }
 
 /**
  * Helper function for right/bottom alignment
  */
 function offsetM(m: number, length: number) {
-    return m - length;
+  return m - length;
 }

@@ -3,57 +3,54 @@
  * Based on https://draculatheme.com
  */
 
-
 // Default mixins and settings -----------------
 @import "../template/mixins";
 @import "../template/settings";
 // ---------------------------------------------
 
-
-
 // Include theme-specific fonts
-$systemFontsSansSerif: -apple-system,
-                       BlinkMacSystemFont,
-                       avenir next,
-                       avenir,
-                       segoe ui,
-                       helvetica neue,
-                       helvetica,
-                       Cantarell,
-                       Ubuntu,
-                       roboto,
-                       noto,
-                       arial,
-                       sans-serif;
-$systemFontsMono: Menlo,
-                  Consolas,
-                  Monaco,
-                  Liberation Mono,
-                  Lucida Console,
-                  monospace;
+$systemFontsSansSerif:
+  -apple-system,
+  BlinkMacSystemFont,
+  avenir next,
+  avenir,
+  segoe ui,
+  helvetica neue,
+  helvetica,
+  Cantarell,
+  Ubuntu,
+  roboto,
+  noto,
+  arial,
+  sans-serif;
+$systemFontsMono:
+  Menlo,
+  Consolas,
+  Monaco,
+  Liberation Mono,
+  Lucida Console,
+  monospace;
 
 /**
  * Dracula colors by Zeno Rocha
  * https://draculatheme.com/contribute
  */
 html * {
-    color-profile: sRGB;
-    rendering-intent: auto;
+  color-profile: sRGB;
+  rendering-intent: auto;
 }
 
 $background: #ebd9e8;
 $foreground: #d314da;
-$selection: #44475A;
-$comment: #6272A4;
-$red: #FF5555;
+$selection: #44475a;
+$comment: #6272a4;
+$red: #ff5555;
 $orange: #cf6e06;
-$yellow: #F1FA8C;
-$green: #50FA7B;
+$yellow: #f1fa8c;
+$green: #50fa7b;
 $purple: #7431d2;
-$cyan: #8BE9FD;
-$pink: #FF79C6;
-
-
+$cyan: #8be9fd;
+$pink: #ff79c6;
 
 // Override theme settings (see ../template/settings.scss)
 $mainColor: $foreground;
@@ -80,59 +77,63 @@ $codeFont: "Fira Code", $systemFontsMono;
 // Define additional color effects based on Dracula spec
 // https://spec.draculatheme.com/
 :root {
-    --r-bold-color: #{$orange};
-    --r-italic-color: #{$yellow};
-    --r-inline-code-color: #{$inlineCodeColor};
-    --r-list-bullet-color: #{$listBulletColor};
+  --r-bold-color: #{$orange};
+  --r-italic-color: #{$yellow};
+  --r-inline-code-color: #{$inlineCodeColor};
+  --r-list-bullet-color: #{$listBulletColor};
 }
 
 .reveal {
-    strong, b {
-        color: var(--r-bold-color);
+  strong,
+  b {
+    color: var(--r-bold-color);
+  }
+  em,
+  i,
+  blockquote {
+    color: var(--r-italic-color);
+  }
+  code {
+    color: var(--r-inline-code-color);
+  }
+  // Dracula colored list bullets and numbers
+  ul,
+  ol {
+    li::marker {
+      color: var(--r-list-bullet-color);
     }
-    em, i, blockquote {
-        color: var(--r-italic-color);
-    }
-    code {
-        color: var(--r-inline-code-color);
-    }
-    // Dracula colored list bullets and numbers
-    ul, ol {
-        li::marker {
-            color: var(--r-list-bullet-color);
-        }
-    }
+  }
 }
 
 .hljs {
-    background: #2d2b57;
-    color: #e3dfff;
-    font-weight: normal;
+  background: #2d2b57;
+  color: #e3dfff;
+  font-weight: normal;
 }
 .hljs-subst {
-    color: #e3dfff;
+  color: #e3dfff;
 }
 .hljs-title {
-    color: #fad000;
-    font-weight: normal;
+  color: #fad000;
+  font-weight: normal;
 }
 .hljs-name {
-    color: #a1feff;
+  color: #a1feff;
 }
 .hljs-tag {
-    color: #ffffff;
+  color: #ffffff;
 }
 .hljs-attr {
-    color: #f8d000;
-    font-style: italic;
+  color: #f8d000;
+  font-style: italic;
 }
 .hljs-built_in,
 .hljs-selector-tag,
 .hljs-section {
-    color: #fb9e00;
+  color: #fb9e00;
 }
 .hljs-keyword {
-    color: #fb9e00;
+  color: #fb9e00;
 }
 .hljs-string,
 .hljs-attribute,
@@ -147,29 +148,29 @@ $codeFont: "Fira Code", $systemFontsMono;
 .hljs-template-tag,
 .hljs-quote,
 .hljs-deletion {
-    color: #4cd213;
+  color: #4cd213;
 }
 .hljs-meta,
 .hljs-meta .hljs-string {
-    color: #fb9e00;
+  color: #fb9e00;
 }
 .hljs-comment {
-    color: #ac65ff;
+  color: #ac65ff;
 }
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-literal,
 .hljs-name,
 .hljs-strong {
-    font-weight: normal;
+  font-weight: normal;
 }
 .hljs-literal,
 .hljs-number {
-    color: #fa658d;
+  color: #fa658d;
 }
 .hljs-emphasis {
-    font-style: italic;
+  font-style: italic;
 }
 .hljs-strong {
-    font-weight: bold;
+  font-weight: bold;
 }

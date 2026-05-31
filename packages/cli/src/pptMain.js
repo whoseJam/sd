@@ -4,26 +4,34 @@ import "@sd/reveal/plugin/reset.css";
 import "@sd/reveal/plugin/reveal.css";
 
 class ThemeManager {
-    static AVAILABLE_THEMES = ["beige", "dracula", "serif", "simple", "sky", "solarized", "white"];
-    constructor() {
-        this.themeSelector = null;
-        this.initializeThemeSelector();
-        this.setupEventListeners();
-    }
-    initializeThemeSelector() {
-        this.themeSelector = this.createThemeSelectorElement();
-        document.body.appendChild(this.themeSelector);
-    }
-    createThemeSelectorElement() {
-        const selector = document.createElement("div");
-        selector.id = "theme-selector";
-        selector.style.cssText = this.getThemeSelectorStyles();
-        const select = this.createThemeDropdown();
-        selector.appendChild(select);
-        return selector;
-    }
-    getThemeSelectorStyles() {
-        return `
+  static AVAILABLE_THEMES = [
+    "beige",
+    "dracula",
+    "serif",
+    "simple",
+    "sky",
+    "solarized",
+    "white",
+  ];
+  constructor() {
+    this.themeSelector = null;
+    this.initializeThemeSelector();
+    this.setupEventListeners();
+  }
+  initializeThemeSelector() {
+    this.themeSelector = this.createThemeSelectorElement();
+    document.body.appendChild(this.themeSelector);
+  }
+  createThemeSelectorElement() {
+    const selector = document.createElement("div");
+    selector.id = "theme-selector";
+    selector.style.cssText = this.getThemeSelectorStyles();
+    const select = this.createThemeDropdown();
+    selector.appendChild(select);
+    return selector;
+  }
+  getThemeSelectorStyles() {
+    return `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -39,21 +47,21 @@ class ThemeManager {
             width: 200px;
             max-width: 90vw;
         `;
-    }
-    createThemeDropdown() {
-        const select = document.createElement("select");
-        select.style.cssText = this.getDropdownStyles();
-        ThemeManager.AVAILABLE_THEMES.forEach(theme => {
-            const option = document.createElement("option");
-            option.value = theme;
-            option.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
-            select.appendChild(option);
-        });
-        select.addEventListener("change", e => this.loadTheme(e.target.value));
-        return select;
-    }
-    getDropdownStyles() {
-        return `
+  }
+  createThemeDropdown() {
+    const select = document.createElement("select");
+    select.style.cssText = this.getDropdownStyles();
+    ThemeManager.AVAILABLE_THEMES.forEach((theme) => {
+      const option = document.createElement("option");
+      option.value = theme;
+      option.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+      select.appendChild(option);
+    });
+    select.addEventListener("change", (e) => this.loadTheme(e.target.value));
+    return select;
+  }
+  getDropdownStyles() {
+    return `
             appearance: none;
             width: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -70,60 +78,63 @@ class ThemeManager {
             background-repeat: no-repeat;
             background-position: right 15px center;
         `;
+  }
+  setupEventListeners() {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "t" || e.key === "T") {
+        this.toggleThemeSelector();
+      }
+    });
+  }
+  toggleThemeSelector() {
+    if (!this.themeSelector) return;
+    const isHidden = this.themeSelector.style.display === "none";
+    this.themeSelector.style.display = isHidden ? "block" : "none";
+    if (isHidden) {
+      const currentTheme =
+        document.querySelector("link[data-theme]")?.dataset.theme || "beige";
+      const select = this.themeSelector.querySelector("select");
+      if (select) select.value = currentTheme;
     }
-    setupEventListeners() {
-        document.addEventListener("keydown", e => {
-            if (e.key === "t" || e.key === "T") {
-                this.toggleThemeSelector();
-            }
-        });
+  }
+  loadTheme(themeName) {
+    if (!ThemeManager.AVAILABLE_THEMES.includes(themeName)) {
+      console.error(
+        `Invalid Theme: ${themeName}. Available Themes: ${ThemeManager.AVAILABLE_THEMES.join(", ")}`,
+      );
+      return;
     }
-    toggleThemeSelector() {
-        if (!this.themeSelector) return;
-        const isHidden = this.themeSelector.style.display === "none";
-        this.themeSelector.style.display = isHidden ? "block" : "none";
-        if (isHidden) {
-            const currentTheme = document.querySelector("link[data-theme]")?.dataset.theme || "beige";
-            const select = this.themeSelector.querySelector("select");
-            if (select) select.value = currentTheme;
-        }
+    this.removeExistingTheme();
+    this.applyNewTheme(themeName);
+  }
+  removeExistingTheme() {
+    const existingTheme = document.querySelector("link[data-theme]");
+    if (existingTheme) {
+      existingTheme.remove();
     }
-    loadTheme(themeName) {
-        if (!ThemeManager.AVAILABLE_THEMES.includes(themeName)) {
-            console.error(`Invalid Theme: ${themeName}. Available Themes: ${ThemeManager.AVAILABLE_THEMES.join(", ")}`);
-            return;
-        }
-        this.removeExistingTheme();
-        this.applyNewTheme(themeName);
-    }
-    removeExistingTheme() {
-        const existingTheme = document.querySelector("link[data-theme]");
-        if (existingTheme) {
-            existingTheme.remove();
-        }
-    }
-    applyNewTheme(themeName) {
-        const base = window.__SD_THEMES_URL__;
-        if (!base) return;
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.type = "text/css";
-        link.href = `${base}/${themeName}.css`;
-        link.dataset.theme = themeName;
-        document.head.appendChild(link);
-        const selector = document.querySelector("#theme-selector select");
-        if (selector) selector.value = themeName;
-    }
-    static initializeFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const theme = urlParams.get("theme") || "beige";
-        return new ThemeManager().loadTheme(theme);
-    }
+  }
+  applyNewTheme(themeName) {
+    const base = window.__SD_THEMES_URL__;
+    if (!base) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = `${base}/${themeName}.css`;
+    link.dataset.theme = themeName;
+    document.head.appendChild(link);
+    const selector = document.querySelector("#theme-selector select");
+    if (selector) selector.value = themeName;
+  }
+  static initializeFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get("theme") || "beige";
+    return new ThemeManager().loadTheme(theme);
+  }
 }
 
 window.addEventListener("load", () => {
-    const themeManager = new ThemeManager();
-    themeManager.loadTheme("beige");
+  const themeManager = new ThemeManager();
+  themeManager.loadTheme("beige");
 });
 
 includeHTML(window.MyRevealCallback);

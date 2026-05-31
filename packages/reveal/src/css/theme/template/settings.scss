@@ -46,27 +46,27 @@ $overlayElementFgColor: 0, 0, 0;
 // Generates the presentation background, can be overridden
 // to return a background image or gradient
 @mixin bodyBackground() {
-    background: $backgroundColor;
+  background: $backgroundColor;
 }
 
 #notescanvas,
 #chalkboard {
-    -webkit-backdrop-filter: blur(0px);
-    backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
 }
 
 section:not(:has(h1)) {
-    text-align: left;
+  text-align: left;
 }
 
 .hljs {
-    font-size: 20px;
-    line-height: 1.05;
+  font-size: 20px;
+  line-height: 1.05;
 }
 
 .quote {
-    background-color: lightgray;
-    border: #222 1px solid;
-    padding: 8px;
-    margin-top: 20px;
+  background-color: lightgray;
+  border: #222 1px solid;
+  padding: 8px;
+  margin-top: 20px;
 }

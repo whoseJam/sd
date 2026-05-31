@@ -1,30 +1,30 @@
 import { ReplaceElement } from "./Util";
 
 export default function Codeblock() {
-    return { id: "codeblock", init };
+  return { id: "codeblock", init };
 }
 
 function init(reveal) {
-    const elements = document.getElementsByTagName("codeblock");
-    if (elements.length === 0) return;
+  const elements = document.getElementsByTagName("codeblock");
+  if (elements.length === 0) return;
 
-    const element = elements[0];
-    const parent = element.parentNode;
-    const script = element.querySelector("script");
-    const fontSize = element.style.fontSize;
-    let lang = element.getAttribute("lang");
-    if (!lang) lang = "cpp";
-    const pre = document.createElement("pre");
-    const code = document.createElement("code");
-    pre.className = element.className;
-    code.setAttribute("data-trim", "");
-    code.setAttribute("data-line-numbers", "");
-    code.setAttribute("class", lang);
-    if (fontSize) code.style.fontSize = fontSize;
-    pre.append(code);
-    code.append(script);
+  const element = elements[0];
+  const parent = element.parentNode;
+  const script = element.querySelector("script");
+  const fontSize = element.style.fontSize;
+  let lang = element.getAttribute("lang");
+  if (!lang) lang = "cpp";
+  const pre = document.createElement("pre");
+  const code = document.createElement("code");
+  pre.className = element.className;
+  code.setAttribute("data-trim", "");
+  code.setAttribute("data-line-numbers", "");
+  code.setAttribute("class", lang);
+  if (fontSize) code.style.fontSize = fontSize;
+  pre.append(code);
+  code.append(script);
 
-    ReplaceElement(parent, element, pre);
+  ReplaceElement(parent, element, pre);
 
-    init(reveal);
+  init(reveal);
 }

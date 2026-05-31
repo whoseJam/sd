@@ -4,67 +4,77 @@
 // ---------------------------------------------
 
 // Override theme settings
-$systemFontsMono: Menlo,
-                  Consolas,
-                  Monaco,
-                  Liberation Mono,
-                  Lucida Console,
-                  monospace;
+$systemFontsMono:
+  Menlo,
+  Consolas,
+  Monaco,
+  Liberation Mono,
+  Lucida Console,
+  monospace;
 $codeFont: "Fira Code", $systemFontsMono;
 $mainColor: #333;
 $headingColor: #333;
 $headingTextShadow: none;
 $backgroundColor: #f7f3de;
 $linkColor: #8b743d;
-$linkColorHover: lighten( $linkColor, 20% );
+$linkColorHover: lighten($linkColor, 20%);
 $selectionBackgroundColor: rgba(79, 64, 28, 0.99);
-$heading1TextShadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 20px 20px rgba(0,0,0,.15);
+$heading1TextShadow:
+  0 1px 0 #ccc,
+  0 2px 0 #c9c9c9,
+  0 3px 0 #bbb,
+  0 4px 0 #b9b9b9,
+  0 5px 0 #aaa,
+  0 6px 1px rgba(0, 0, 0, 0.1),
+  0 0 5px rgba(0, 0, 0, 0.1),
+  0 1px 3px rgba(0, 0, 0, 0.3),
+  0 3px 5px rgba(0, 0, 0, 0.2),
+  0 5px 10px rgba(0, 0, 0, 0.25),
+  0 20px 20px rgba(0, 0, 0, 0.15);
 
 $overlayElementBgColor: 0, 0, 0;
 $overlayElementFgColor: 240, 240, 240;
 
 // Background generator
 @mixin bodyBackground() {
-    @include radial-gradient( rgba(247,242,211,1), rgba(255,255,255,1) );
+  @include radial-gradient(rgba(247, 242, 211, 1), rgba(255, 255, 255, 1));
 }
 
 // Change text colors against dark slide backgrounds
 @include dark-bg-text-color(#fff);
 
-
 // Theme template ------------------------------
 @import "../template/theme";
 // ---------------------------------------------
 
-
 .hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 0.5em;
-    background: #3f3f3f;
-    color: #dcdcdc;
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #3f3f3f;
+  color: #dcdcdc;
 }
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-tag {
-    color: #e3ceab;
-} 
+  color: #e3ceab;
+}
 .hljs-template-tag {
-    color: #dcdcdc;
-} 
+  color: #dcdcdc;
+}
 .hljs-number {
-    color: #8cd0d3;
+  color: #8cd0d3;
 }
 .hljs-variable,
 .hljs-template-variable,
 .hljs-attribute {
-    color: #efdcbc;
+  color: #efdcbc;
 }
 .hljs-literal {
-	color: #efefaf;
+  color: #efefaf;
 }
 .hljs-subst {
-	color: #8f8f8f;
+  color: #8f8f8f;
 }
 .hljs-title,
 .hljs-name,
@@ -72,28 +82,28 @@ $overlayElementFgColor: 240, 240, 240;
 .hljs-selector-class,
 .hljs-section,
 .hljs-type {
-	color: #efef8f;
+  color: #efef8f;
 }
 .hljs-symbol,
 .hljs-bullet,
 .hljs-link {
-	color: #dca3a3;
+  color: #dca3a3;
 }
 .hljs-deletion,
 .hljs-string,
 .hljs-built_in,
 .hljs-builtin-name {
-	color: #cc9393;
+  color: #cc9393;
 }
 .hljs-addition,
 .hljs-comment,
 .hljs-quote,
 .hljs-meta {
-	color: #7f9f7f;
+  color: #7f9f7f;
 }
 .hljs-emphasis {
-	font-style: italic;
+  font-style: italic;
 }
 .hljs-strong {
-	font-weight: bold;
+  font-weight: bold;
 }

@@ -1,16 +1,16 @@
 {
-    "name": "@sd/reveal",
-    "version": "0.0.1",
-    "private": true,
-    "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
-    "main": "src/MyReveal.js",
-    "exports": {
-        ".": "./src/MyReveal.js",
-        "./*": "./src/*"
-    },
-    "license": "ISC",
-    "dependencies": {
-        "@sd/element": "workspace:*",
-        "reveal.js": "^5.1.0"
-    }
+  "name": "@sd/reveal",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
+  "license": "ISC",
+  "main": "src/MyReveal.js",
+  "exports": {
+    ".": "./src/MyReveal.js",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@sd/element": "workspace:*",
+    "reveal.js": "^5.1.0"
+  }
 }

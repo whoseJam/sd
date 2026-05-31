@@ -1,15 +1,15 @@
 import { Vector as V } from "@/Math/Vector";
 import { PathPen } from "@/Node/Path/PathPen";
-import { SDNode } from "@/Node/SDNode";
-import { Path } from "@/sd";
+import type { SDNode } from "@/Node/SDNode";
+import type { Path } from "@/sd";
 import { trim } from "@/Utility/Trim";
 
 interface CurveLayoutArgs {
-    source: [number, number];
-    target: [number, number];
-    bending?: number;
-    sourceClipper?: SDNode;
-    targetClipper?: SDNode;
+  source: [number, number];
+  target: [number, number];
+  bending?: number;
+  sourceClipper?: SDNode;
+  targetClipper?: SDNode;
 }
 
 /**
@@ -74,24 +74,27 @@ interface CurveLayoutArgs {
  * });
  */
 export function CurveLayout(path: Path, args: CurveLayoutArgs) {
-    const { source, target, bending = 0.25, sourceClipper, targetClipper } = args;
+  const { source, target, bending = 0.25, sourceClipper, targetClipper } = args;
 
-    // Generate curve path using the same algorithm as Curve class
-    const v1 = source;
-    const v2 = target;
-    const d = V.sub(v2, v1);
-    const dis = V.norm(d);
-    const left = V.identity(V.rotate(d, Math.PI / 2));
-    const vc = V.add(V.add(v1, V.numberMul(d, 0.5)), V.numberMul(left, dis * bending));
+  // Generate curve path using the same algorithm as Curve class
+  const v1 = source;
+  const v2 = target;
+  const d = V.sub(v2, v1);
+  const dis = V.norm(d);
+  const left = V.identity(V.rotate(d, Math.PI / 2));
+  const vc = V.add(
+    V.add(v1, V.numberMul(d, 0.5)),
+    V.numberMul(left, dis * bending),
+  );
 
-    // Build the path string
-    const pathString = new PathPen().MoveTo(v1).Quad(vc, v2).toString();
+  // Build the path string
+  const pathString = new PathPen().MoveTo(v1).Quad(vc, v2).toString();
 
-    // Set the path data
-    path.d(pathString);
+  // Set the path data
+  path.d(pathString);
 
-    // Apply trimming if clippers are provided
-    if (sourceClipper || targetClipper) {
-        trim(path, sourceClipper, targetClipper);
-    }
+  // Apply trimming if clippers are provided
+  if (sourceClipper || targetClipper) {
+    trim(path, sourceClipper, targetClipper);
+  }
 }

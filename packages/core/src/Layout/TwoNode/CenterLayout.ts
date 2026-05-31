@@ -1,7 +1,7 @@
-import { SDNode, SDNodeWithRadius } from "@/Node/SDNode";
+import type { SDNode, SDNodeWithRadius } from "@/Node/SDNode";
 
 interface CenterContentFitLayoutParam {
-    rate?: number;
+  rate?: number;
 }
 
 /**
@@ -11,7 +11,7 @@ interface CenterContentFitLayoutParam {
  * @param rhs - The node to be centered
  */
 export function CenterLayout(lhs: SDNode, rhs: SDNode) {
-    rhs.center(lhs.center());
+  rhs.center(lhs.center());
 }
 
 /**
@@ -24,15 +24,19 @@ export function CenterLayout(lhs: SDNode, rhs: SDNode) {
  * @param args - Layout parameters
  * @param args.rate - Scale factor for fitting (default: 1.2, larger = smaller rhs)
  */
-export function CenterContentFitLayout(lhs: SDNode, rhs: SDNode, args?: CenterContentFitLayoutParam) {
-    const { rate = 1.2 } = args ?? {};
+export function CenterContentFitLayout(
+  lhs: SDNode,
+  rhs: SDNode,
+  args?: CenterContentFitLayoutParam,
+) {
+  const { rate = 1.2 } = args ?? {};
 
-    const circle = lhs as SDNodeWithRadius;
-    if (typeof circle.r === "function") {
-        CenterCircleContentFitLayout(lhs, rhs, { rate });
-    } else {
-        CenterRectContentFitLayout(lhs, rhs, { rate });
-    }
+  const circle = lhs as SDNodeWithRadius;
+  if (typeof circle.r === "function") {
+    CenterCircleContentFitLayout(lhs, rhs, { rate });
+  } else {
+    CenterRectContentFitLayout(lhs, rhs, { rate });
+  }
 }
 
 /**
@@ -50,18 +54,23 @@ export function CenterContentFitLayout(lhs: SDNode, rhs: SDNode, args?: CenterCo
  * 3. Scale rhs dimensions
  * 4. Center rhs within lhs
  */
-export function CenterRectContentFitLayout(lhs: SDNode, rhs: SDNode, args?: CenterContentFitLayoutParam) {
-    const { rate = 1.2 } = args ?? {};
+export function CenterRectContentFitLayout(
+  lhs: SDNode,
+  rhs: SDNode,
+  args?: CenterContentFitLayoutParam,
+) {
+  const { rate = 1.2 } = args ?? {};
 
-    const center = lhs.center();
-    const [w, h] = [lhs.width(), lhs.height()];
-    const cw = Math.max(rhs.width(), 1);
-    const ch = Math.max(rhs.height(), 1);
-    const k = Math.min(w / cw, h / ch) / rate;
+  const center = lhs.center();
+  const [w, h] = [lhs.width(), lhs.height()];
+  const cw = Math.max(rhs.width(), 1);
+  const ch = Math.max(rhs.height(), 1);
+  const k = Math.min(w / cw, h / ch) / rate;
 
-    rhs.width(cw * k)
-        .height(ch * k)
-        .center(center);
+  rhs
+    .width(cw * k)
+    .height(ch * k)
+    .center(center);
 }
 
 /**
@@ -79,18 +88,22 @@ export function CenterRectContentFitLayout(lhs: SDNode, rhs: SDNode, args?: Cent
  * 3. Apply the rate factor
  * 4. Center rhs within lhs
  */
-export function CenterCircleContentFitLayout(lhs: SDNode, rhs: SDNode, args?: CenterContentFitLayoutParam) {
-    const { rate = 1.2 } = args ?? {};
+export function CenterCircleContentFitLayout(
+  lhs: SDNode,
+  rhs: SDNode,
+  args?: CenterContentFitLayoutParam,
+) {
+  const { rate = 1.2 } = args ?? {};
 
-    const center = lhs.center();
-    const r = Math.min(lhs.width(), lhs.height()) / 2 / rate;
-    const cw = Math.max(rhs.width(), 1);
-    const ch = Math.max(rhs.height(), 1);
-    const k = ch / cw;
-    const w = 2 * Math.sqrt((r * r) / (k * k + 1));
-    const h = w * k;
+  const center = lhs.center();
+  const r = Math.min(lhs.width(), lhs.height()) / 2 / rate;
+  const cw = Math.max(rhs.width(), 1);
+  const ch = Math.max(rhs.height(), 1);
+  const k = ch / cw;
+  const w = 2 * Math.sqrt((r * r) / (k * k + 1));
+  const h = w * k;
 
-    rhs.width(w).height(h).center(center);
+  rhs.width(w).height(h).center(center);
 }
 
 /**
@@ -108,16 +121,25 @@ export function CenterCircleContentFitLayout(lhs: SDNode, rhs: SDNode, args?: Ce
  * 3. Apply the rate factor
  * 4. Center rhs within lhs
  */
-export function CenterEllipseContentFitLayout(lhs: SDNode, rhs: SDNode, args?: CenterContentFitLayoutParam) {
-    const { rate = 1.2 } = args ?? {};
+export function CenterEllipseContentFitLayout(
+  lhs: SDNode,
+  rhs: SDNode,
+  args?: CenterContentFitLayoutParam,
+) {
+  const { rate = 1.2 } = args ?? {};
 
-    const center = lhs.center();
-    const [w, h] = [lhs.width() / 2 / rate, lhs.height() / 2 / rate];
-    const cw = Math.max(rhs.width(), 1);
-    const ch = Math.max(rhs.height(), 1);
-    const k = Math.min((2 * w) / cw, (2 * h) / ch, (2 * Math.sqrt(w * h)) / Math.sqrt(cw * ch));
+  const center = lhs.center();
+  const [w, h] = [lhs.width() / 2 / rate, lhs.height() / 2 / rate];
+  const cw = Math.max(rhs.width(), 1);
+  const ch = Math.max(rhs.height(), 1);
+  const k = Math.min(
+    (2 * w) / cw,
+    (2 * h) / ch,
+    (2 * Math.sqrt(w * h)) / Math.sqrt(cw * ch),
+  );
 
-    rhs.width(cw * k)
-        .height(ch * k)
-        .center(center);
+  rhs
+    .width(cw * k)
+    .height(ch * k)
+    .center(center);
 }

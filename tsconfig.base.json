@@ -1,21 +1,21 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "es6",
-        "moduleResolution": "Node",
-        "lib": ["es6", "DOM"],
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true,
-        "allowJs": true,
-        "checkJs": true,
-        "strict": false,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
-        "strictFunctionTypes": false,
-        "sourceMap": true,
-        "declaration": true,
-        "incremental": true
-    }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "Node",
+    "lib": ["es6", "DOM"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "sourceMap": true,
+    "declaration": true,
+    "incremental": true
+  }
 }

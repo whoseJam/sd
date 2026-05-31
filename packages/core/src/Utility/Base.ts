@@ -1,4 +1,10 @@
-import { FIRST_INTER_STAGE, LAST_INTER_STAGE, LAST_MAIN_STAGE, pause, Window } from "@/Animate/Window";
+import {
+  FIRST_INTER_STAGE,
+  LAST_INTER_STAGE,
+  LAST_MAIN_STAGE,
+  pause,
+  Window,
+} from "@/Animate/Window";
 import { Animate as A } from "@/Animate/Animate";
 
 let initFinished: boolean = true;
@@ -14,17 +20,22 @@ let initFinished: boolean = true;
  *                   or perform asynchronous operations before the main application starts.
  *                   If no custom logic is needed, this parameter can be omitted.
  */
-export async function init(callback: (args?: Record<string, any>) => void | Promise<void>): Promise<void> {
-    initFinished = false;
-    const fn = async (): Promise<void> => {
-        if (window.self === window.top || (window.self !== window.top && Window.IFRAME_INITED)) {
-            await callback(Window.IFRAME_ARGS ?? {});
-            initFinished = true;
-        } else {
-            setTimeout(fn, 20);
-        }
-    };
-    setTimeout(fn, 20);
+export async function init(
+  callback: (args?: Record<string, any>) => void | Promise<void>,
+): Promise<void> {
+  initFinished = false;
+  const fn = async (): Promise<void> => {
+    if (
+      window.self === window.top ||
+      (window.self !== window.top && Window.IFRAME_INITED)
+    ) {
+      await callback(Window.IFRAME_ARGS ?? {});
+      initFinished = true;
+    } else {
+      setTimeout(fn, 20);
+    }
+  };
+  setTimeout(fn, 20);
 }
 
 /**
@@ -37,28 +48,32 @@ export async function init(callback: (args?: Record<string, any>) => void | Prom
  *                   Place all code that depends on the animation lifecycle here.
  *                   Use `sd.pause()` within this callback to segment the animation into stages.
  */
-export async function main(callback: () => void | Promise<void>): Promise<void> {
-    A.forceToFinish();
-    const fn = async (): Promise<void> => {
-        if (initFinished) {
-            await callback();
-            await pause(LAST_MAIN_STAGE);
-        } else {
-            setTimeout(fn, 20);
-        }
-    };
-    setTimeout(fn, 20);
+export async function main(
+  callback: () => void | Promise<void>,
+): Promise<void> {
+  A.forceToFinish();
+  const fn = async (): Promise<void> => {
+    if (initFinished) {
+      await callback();
+      await pause(LAST_MAIN_STAGE);
+    } else {
+      setTimeout(fn, 20);
+    }
+  };
+  setTimeout(fn, 20);
 }
 
-export async function loopUpdate(callback: (t: number) => void | Promise<void>): Promise<void> {
-    A.forceToFinish();
-    const wrapper = (dt: number) => {
-        Window.SHOULD_INTERP = false;
-        callback(dt);
-        Window.SHOULD_INTERP = true;
-        requestAnimationFrame(wrapper);
-    };
+export async function loopUpdate(
+  callback: (t: number) => void | Promise<void>,
+): Promise<void> {
+  A.forceToFinish();
+  const wrapper = (dt: number) => {
+    Window.SHOULD_INTERP = false;
+    callback(dt);
+    Window.SHOULD_INTERP = true;
     requestAnimationFrame(wrapper);
+  };
+  requestAnimationFrame(wrapper);
 }
 
 /**
@@ -70,10 +85,12 @@ export async function loopUpdate(callback: (t: number) => void | Promise<void>):
  *
  * @param callback - The extra animation logic to execute.
  */
-export async function inter(callback: () => void | Promise<void>): Promise<void> {
-    await pause(FIRST_INTER_STAGE);
-    await callback();
-    await pause(LAST_INTER_STAGE);
+export async function inter(
+  callback: () => void | Promise<void>,
+): Promise<void> {
+  await pause(FIRST_INTER_STAGE);
+  await callback();
+  await pause(LAST_INTER_STAGE);
 }
 
 /**
@@ -86,12 +103,13 @@ export async function inter(callback: () => void | Promise<void>): Promise<void>
 export function make1d(length: number): Array<any>;
 export function make1d(length: number, defaultValue: any): Array<any>;
 export function make1d(length: number, defaultValue: any = 0): Array<any> {
-    const result: any[] = [];
-    for (let i = 0; i < length; i++) {
-        if (typeof defaultValue === "object") result.push(Object.assign({}, defaultValue));
-        else result.push(defaultValue);
-    }
-    return result;
+  const result: any[] = [];
+  for (let i = 0; i < length; i++) {
+    if (typeof defaultValue === "object")
+      result.push(Object.assign({}, defaultValue));
+    else result.push(defaultValue);
+  }
+  return result;
 }
 
 /**
@@ -103,11 +121,19 @@ export function make1d(length: number, defaultValue: any = 0): Array<any> {
  * @returns A new 2D array with the specified dimensions and default values.
  */
 export function make2d(rows: number, columns: number): Array<Array<any>>;
-export function make2d(rows: number, columns: number, defaultValue: any): Array<any>;
-export function make2d(rows: number, columns: number, defaultValue: any = 0): Array<any> {
-    const result: any[] = [];
-    for (let i = 0; i < rows; i++) result.push(make1d(columns, defaultValue));
-    return result;
+export function make2d(
+  rows: number,
+  columns: number,
+  defaultValue: any,
+): Array<any>;
+export function make2d(
+  rows: number,
+  columns: number,
+  defaultValue: any = 0,
+): Array<any> {
+  const result: any[] = [];
+  for (let i = 0; i < rows; i++) result.push(make1d(columns, defaultValue));
+  return result;
 }
 
 /**
@@ -115,7 +141,7 @@ export function make2d(rows: number, columns: number, defaultValue: any = 0): Ar
  * This allows the action to be undone in the animation system.
  */
 export function reversible(): void {
-    Window.ACTION_TICK++;
+  Window.ACTION_TICK++;
 }
 
 /**
@@ -123,13 +149,13 @@ export function reversible(): void {
  * This prevents the action from being undone in the animation system.
  */
 export function irreversible(): void {
-    Window.ACTION_TICK--;
+  Window.ACTION_TICK--;
 }
 
 export function getOS() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.includes("win")) return "Windows";
-    else if (userAgent.includes("mac")) return "macOS";
-    else if (userAgent.includes("linux")) return "Linux";
-    else return "未知系统";
+  const userAgent = navigator.userAgent.toLowerCase();
+  if (userAgent.includes("win")) return "Windows";
+  else if (userAgent.includes("mac")) return "macOS";
+  else if (userAgent.includes("linux")) return "Linux";
+  else return "未知系统";
 }
