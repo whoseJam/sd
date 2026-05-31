@@ -47,15 +47,10 @@ export abstract class SDNode {
     protected rotate: number = 0;
     protected translate: [number, number] = [0, 0];
     protected transformOrigin: [NumberOrPercent, NumberOrPercent] = ["50%", "50%"];
-    // _ is a fallback bag for attributes that haven't been migrated to typed
-    // fields yet (Text/Math/Filter/Caption state). triggerAttributeChanged
-    // also writes through it via [key]: any so listeners-by-key keep working.
-    _: { [key: string]: any };
     private listeners: { [key: string]: Array<AttributeListener> };
     static NODE_ID = 0;
     constructor() {
         this.id = ++SDNode.NODE_ID;
-        this._ = {};
         this.listeners = {};
     }
 
@@ -382,7 +377,6 @@ export abstract class SDNode {
         vo: any,
         interp?: InterpObject | InterpFunction | LazyInterpFunction | InterpCreator
     ) {
-        this._[key] = vn;
         if (interp && Window.SHOULD_INTERP) {
             const interp_ = isInterpCreator(interp) ? interp(object, key) : interp;
             Animate.push(

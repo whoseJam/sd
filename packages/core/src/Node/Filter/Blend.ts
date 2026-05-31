@@ -17,9 +17,10 @@ type Mode =
     | "exclusion";
 
 export class Blend extends TwoInputFilter {
-    _: TwoInputFilter["_"] & {
+    /* model fields:
+
         mode: Mode;
-    };
+        */
 
     constructor(args?: { targetNode?: Filter; in?: string; in2?: string; result?: string; mode?: Mode }) {
         super();
@@ -34,11 +35,11 @@ export class Blend extends TwoInputFilter {
     }
 
     getMode() {
-        return this._.mode;
+        return this.mode;
     }
 
     setMode(mode: string) {
-        return this.triggerAttributeChanged(this.renderer, "mode", mode, this._.mode, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "mode", mode, this.mode, Interp.stringInterp);
     }
 
     onModeChanged(listener: (vn: string, vo: string) => void) {

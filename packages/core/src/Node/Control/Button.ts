@@ -4,9 +4,10 @@ import { Color as C } from "@/Utility/Color";
 import { SDNode } from "@/Node/SDNode";
 
 export class Button extends BaseControl {
-    _: BaseControl["_"] & {
+    /* model fields:
+
         text: string;
-    };
+        */
 
     constructor(args?: {
         targetNode?: SDNode;
@@ -39,7 +40,7 @@ export class Button extends BaseControl {
      * @returns The text content.
      */
     getText(): string {
-        return this._.text;
+        return this.text;
     }
 
     /**
@@ -48,7 +49,7 @@ export class Button extends BaseControl {
      * @returns The current component instance for method chaining.
      */
     setText(text: string): this {
-        return this.triggerAttributeChanged(this.renderer, "text", text, this._.text, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "text", text, this.text, Interp.stringInterp);
     }
 
     onClick(listener: () => void): this {

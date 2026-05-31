@@ -4,10 +4,11 @@ import { Filter } from "@/Node/Filter/Filter";
 import { Interp } from "@/Animate/Interp";
 
 export class Offset extends OneInputFilter {
-    _: OneInputFilter["_"] & {
+    /* model fields:
+
         dx: number;
         dy: number;
-    };
+        */
 
     constructor(args?: {
         targetNode?: Filter;
@@ -29,11 +30,11 @@ export class Offset extends OneInputFilter {
     }
 
     getDx() {
-        return this._.dx;
+        return this.dx;
     }
 
     setDx(dx: number) {
-        return this.triggerAttributeChanged(this.renderer, "dx", dx, this._.dx, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dx", dx, this.dx, Interp.numberInterp);
     }
 
     onDxChanged(listener: (vn: number, vo: number) => void) {
@@ -45,11 +46,11 @@ export class Offset extends OneInputFilter {
     }
 
     getDy() {
-        return this._.dy;
+        return this.dy;
     }
 
     setDy(dy: number) {
-        return this.triggerAttributeChanged(this.renderer, "dy", dy, this._.dy, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dy", dy, this.dy, Interp.numberInterp);
     }
 
     onDyChanged(listener: (vn: number, vo: number) => void) {

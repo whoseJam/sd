@@ -6,10 +6,11 @@ import { Interp } from "@/Animate/Interp";
 type ColorMatrixType = "saturate" | "hueRotate" | "luminanceToAlpha" | "matrix";
 
 export class ColorMatrix extends OneInputFilter {
-    _: OneInputFilter["_"] & {
+    /* model fields:
+
         type: ColorMatrixType;
         values: number | Array<number>;
-    };
+        */
 
     constructor(args?: {
         targetNode?: Filter;
@@ -33,11 +34,11 @@ export class ColorMatrix extends OneInputFilter {
     }
 
     getType() {
-        return this._.type;
+        return this.type;
     }
 
     setType(type: string) {
-        return this.triggerAttributeChanged(this.renderer, "type", type, this._.type);
+        return this.triggerAttributeChanged(this.renderer, "type", type, this.type);
     }
 
     onTypeChanged(listener: (vn: ColorMatrixType, vo: ColorMatrixType) => void) {
@@ -49,11 +50,11 @@ export class ColorMatrix extends OneInputFilter {
     }
 
     getValues() {
-        return this._.values;
+        return this.values;
     }
 
     setValues(values: number | Array<number>) {
-        return this.triggerAttributeChanged(this.renderer, "values", values, this._.values, Interp.arrayInterp);
+        return this.triggerAttributeChanged(this.renderer, "values", values, this.values, Interp.arrayInterp);
     }
 
     onValuesChanged(listener: (vn: number | Array<number>, vo: number | Array<number>) => void) {

@@ -4,11 +4,12 @@ import { Dom } from "@/Utility/Dom";
 import { SDNode } from "@/Node/SDNode";
 
 export class Slider extends BaseControl {
-    _: BaseControl["_"] & {
+    /* model fields:
+
         min: number;
         max: number;
         value: number;
-    };
+        */
 
     constructor(args: {
         targetNode?: SDNode;
@@ -55,7 +56,7 @@ export class Slider extends BaseControl {
      * @returns The maximum value of the range.
      */
     getMax(): number {
-        return this._.max;
+        return this.max;
     }
 
     /**
@@ -65,7 +66,7 @@ export class Slider extends BaseControl {
      */
     setMax(max: number) {
         if (this.getValue() > max) this.setValue(max);
-        return this.triggerAttributeChanged(this.renderer, "max", max, this._.max);
+        return this.triggerAttributeChanged(this.renderer, "max", max, this.max);
     }
 
     /**
@@ -73,7 +74,7 @@ export class Slider extends BaseControl {
      * @returns The minimum value of the range.
      */
     getMin(): number {
-        return this._.min;
+        return this.min;
     }
 
     /**
@@ -83,7 +84,7 @@ export class Slider extends BaseControl {
      */
     setMin(min?: number) {
         if (this.getValue() < min) this.setValue(min);
-        return this.triggerAttributeChanged(this.renderer, "min", min, this._.min);
+        return this.triggerAttributeChanged(this.renderer, "min", min, this.min);
     }
 
     /**
@@ -91,7 +92,7 @@ export class Slider extends BaseControl {
      * @returns The value.
      */
     getValue(): number {
-        return this._.value;
+        return this.value;
     }
 
     /**
@@ -100,7 +101,7 @@ export class Slider extends BaseControl {
      * @returns The current component instance for method chaining.
      */
     setValue(value?: number) {
-        return this.triggerAttributeChanged(this.renderer, "value", value, this._.value);
+        return this.triggerAttributeChanged(this.renderer, "value", value, this.value);
     }
 
     onValueChanged(listener: (vn: any, vo: any) => void) {

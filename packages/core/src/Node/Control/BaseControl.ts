@@ -3,47 +3,48 @@ import { SDHTMLNode } from "@/Node/SDHTMLNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class BaseControl extends SDHTMLNode {
-    _: SDHTMLNode["_"] & {
+    /* model fields:
+
         foreign: RenderNode;
         x: number;
         y: number;
         width: number;
         height: number;
-    };
+        */
 
     constructor() {
         super();
     }
 
     getX(): number {
-        return this._.x;
+        return this.x;
     }
 
     setX(x: number): this {
-        return this.triggerAttributeChanged(this.foreign, "x", x, this._.x, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "x", x, this.x, Interp.numberInterp);
     }
 
     getY(): number {
-        return this._.y;
+        return this.y;
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this.foreign, "y", y, this._.y, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "y", y, this.y, Interp.numberInterp);
     }
 
     getWidth(): number {
-        return this._.width;
+        return this.width;
     }
 
     setWidth(width: number): this {
-        return this.triggerAttributeChanged(this.foreign, "width", width, this._.width, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "width", width, this.width, Interp.numberInterp);
     }
 
     getHeight(): number {
-        return this._.height;
+        return this.height;
     }
 
     setHeight(height: number): this {
-        return this.triggerAttributeChanged(this.foreign, "height", height, this._.height, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.foreign, "height", height, this.height, Interp.numberInterp);
     }
 }

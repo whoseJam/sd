@@ -3,9 +3,8 @@ import { SDSVGNode } from "@/Node/SDSVGNode";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export class Group extends SDSVGNode {
-    _: SDSVGNode["_"] & {
-        nodes: Array<SDNode>;
-    };
+    protected nodes: Array<SDNode> = [];
+
     constructor(args?: { targetNode?: Group; opacity?: number }) {
         super();
 
@@ -42,26 +41,26 @@ export class Group extends SDSVGNode {
     }
 
     getX() {
-        let x = this._.nodes[0].getX();
-        for (let i = 1; i < this._.nodes.length; i++) x = Math.min(x, this._.nodes[i].getX());
+        let x = this.nodes[0].getX();
+        for (let i = 1; i < this.nodes.length; i++) x = Math.min(x, this.nodes[i].getX());
         return x;
     }
 
     getY() {
-        let y = this._.nodes[0].getY();
-        for (let i = 1; i < this._.nodes.length; i++) y = Math.min(y, this._.nodes[i].getY());
+        let y = this.nodes[0].getY();
+        for (let i = 1; i < this.nodes.length; i++) y = Math.min(y, this.nodes[i].getY());
         return y;
     }
 
     getMaxX() {
-        let mx = this._.nodes[0].getMaxX();
-        for (let i = 1; i < this._.nodes.length; i++) mx = Math.max(mx, this._.nodes[i].getMaxX());
+        let mx = this.nodes[0].getMaxX();
+        for (let i = 1; i < this.nodes.length; i++) mx = Math.max(mx, this.nodes[i].getMaxX());
         return mx;
     }
 
     getMaxY() {
-        let my = this._.nodes[0].getMaxY();
-        for (let i = 1; i < this._.nodes.length; i++) my = Math.max(my, this._.nodes[i].getMaxY());
+        let my = this.nodes[0].getMaxY();
+        for (let i = 1; i < this.nodes.length; i++) my = Math.max(my, this.nodes[i].getMaxY());
         return my;
     }
 

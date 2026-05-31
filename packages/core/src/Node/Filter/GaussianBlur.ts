@@ -3,9 +3,10 @@ import { Filter } from "@/Node/Filter/Filter";
 import { Interp } from "@/Animate/Interp";
 
 export class GaussianBlur extends OneInputFilter {
-    _: OneInputFilter["_"] & {
+    /* model fields:
+
         stdDeviation: [number, number];
-    };
+        */
 
     constructor(args?: {
         targetNode?: Filter;
@@ -28,7 +29,7 @@ export class GaussianBlur extends OneInputFilter {
     }
 
     getStdDeviation() {
-        return this._.stdDeviation;
+        return this.stdDeviation;
     }
 
     setStdDeviation(std: number | [number, number]) {
@@ -37,7 +38,7 @@ export class GaussianBlur extends OneInputFilter {
             this.renderer,
             "stdDeviation",
             std,
-            this._.stdDeviation,
+            this.stdDeviation,
             Interp.vectorInterp
         );
     }

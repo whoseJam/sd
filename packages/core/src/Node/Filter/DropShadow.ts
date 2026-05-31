@@ -5,13 +5,14 @@ import { SDAllColor, SDColor, Color as C } from "@/Utility/Color";
 import { Percent } from "@/Node/SDNode";
 
 export class DropShadow extends OneInputFilter {
-    _: OneInputFilter["_"] & {
+    /* model fields:
+
         stdDeviation: number | [number, number];
         dx: number;
         dy: number;
         floodColor: SDAllColor;
         floodOpacity: number;
-    };
+        */
 
     constructor(args?: {
         targetNode?: Filter;
@@ -42,7 +43,7 @@ export class DropShadow extends OneInputFilter {
     }
 
     getStdDeviation() {
-        return this._.stdDeviation;
+        return this.stdDeviation;
     }
 
     setStdDeviation(std: number) {
@@ -50,7 +51,7 @@ export class DropShadow extends OneInputFilter {
             this.renderer,
             "stdDeviation",
             std,
-            this._.stdDeviation,
+            this.stdDeviation,
             Interp.vectorInterp
         );
     }
@@ -64,11 +65,11 @@ export class DropShadow extends OneInputFilter {
     }
 
     getDx() {
-        return this._.dx;
+        return this.dx;
     }
 
     setDx(dx: number) {
-        return this.triggerAttributeChanged(this.renderer, "dx", dx, this._.dx, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dx", dx, this.dx, Interp.numberInterp);
     }
 
     onDxChanged(listener: (vn: number, vo: number) => void) {
@@ -80,11 +81,11 @@ export class DropShadow extends OneInputFilter {
     }
 
     getDy() {
-        return this._.dy;
+        return this.dy;
     }
 
     setDy(dy: number) {
-        return this.triggerAttributeChanged(this.renderer, "dy", dy, this._.dy, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "dy", dy, this.dy, Interp.numberInterp);
     }
 
     onDyChanged(listener: (vn: number, vo: number) => void) {
@@ -96,7 +97,7 @@ export class DropShadow extends OneInputFilter {
     }
 
     getFloodColor() {
-        return this._.floodColor;
+        return this.floodColor;
     }
 
     setFloodColor(color: SDColor) {
@@ -104,7 +105,7 @@ export class DropShadow extends OneInputFilter {
             this.renderer,
             "floodColor",
             color,
-            this._.floodColor,
+            this.floodColor,
             Interp.colorInterp
         );
     }
@@ -118,7 +119,7 @@ export class DropShadow extends OneInputFilter {
     }
 
     getFloodOpacity() {
-        return this._.floodOpacity;
+        return this.floodOpacity;
     }
 
     setFloodOpacity(opacity: number) {
@@ -126,7 +127,7 @@ export class DropShadow extends OneInputFilter {
             this.renderer,
             "floodOpacity",
             opacity,
-            this._.floodOpacity,
+            this.floodOpacity,
             Interp.numberInterp
         );
     }

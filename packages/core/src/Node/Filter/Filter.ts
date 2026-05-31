@@ -8,9 +8,10 @@ import { Interp } from "@/Animate/Interp";
 export type SDFilter = Filter | string | URLString;
 
 export class Filter extends BaseFilter {
-    _: BaseFilter["_"] & {
+    /* model fields:
+
         id: string;
-    };
+        */
 
     constructor(args?: {
         targetNode?: Group;
@@ -59,27 +60,27 @@ export class Filter extends BaseFilter {
     }
 
     getId() {
-        return this._.id;
+        return this.id;
     }
 
     setId(id: string) {
-        return this.triggerAttributeChanged(this.renderer, "id", id, this._.id, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "id", id, this.id, Interp.stringInterp);
     }
 
     setX(x: Percent) {
-        return this.triggerAttributeChanged(this.renderer, "x", x, this._.x);
+        return this.triggerAttributeChanged(this.renderer, "x", x, this.x);
     }
 
     setY(y: Percent) {
-        return this.triggerAttributeChanged(this.renderer, "y", y, this._.y);
+        return this.triggerAttributeChanged(this.renderer, "y", y, this.y);
     }
 
     setWidth(width: Percent) {
-        return this.triggerAttributeChanged(this.renderer, "width", width, this._.width);
+        return this.triggerAttributeChanged(this.renderer, "width", width, this.width);
     }
 
     setHeight(height: Percent) {
-        return this.triggerAttributeChanged(this.renderer, "height", height, this._.height);
+        return this.triggerAttributeChanged(this.renderer, "height", height, this.height);
     }
 
     static toURLString(filter: SDFilter) {

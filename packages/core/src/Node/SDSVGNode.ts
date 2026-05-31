@@ -167,7 +167,6 @@ export abstract class SDSVGNode extends SDNode {
     }
 
     protected createSVGNode(label: string, attributes: Record<string, any> = {}): RenderNode {
-        Object.assign(this._, attributes);
         Object.assign(this, attributes);
         const object = RenderNode.createRenderNode(this, undefined, label);
         this.renderer = object;

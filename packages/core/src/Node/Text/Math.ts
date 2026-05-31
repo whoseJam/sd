@@ -10,15 +10,13 @@ import { Color as C, SDAllColor, SDColor } from "@/Utility/Color";
 import { matchSubtext } from "@/Node/Text/TextEngine/Mapping";
 
 export class Math extends BaseText {
-    _: BaseText["_"] & {
-        string: string;
-        text: Array<string>;
-        html: RenderNode;
-        width: number;
-        height: number;
-        fontSize: number;
-        subtextStyles: Array<PathStyle>;
-    };
+    protected string: string = "";
+    protected text: Array<string> = [];
+    protected html: RenderNode | undefined = undefined;
+    protected width: number = 0;
+    protected height: number = 0;
+    protected fontSize: number = 20;
+    protected subtextStyles: Array<PathStyle> = [];
 
     constructor(args?: {
         targetNode?: Group;
@@ -44,29 +42,27 @@ export class Math extends BaseText {
             stroke: args?.stroke ?? C.black,
         });
 
-        Object.assign(this._, {
-            x: args?.x ?? 0,
-            y: args?.y ?? 0,
-            opacity: args?.opacity ?? 1,
-            string: args?.text ?? "",
-            fontSize: args?.fontSize ?? 20,
-            strokeWidth: args?.strokeWidth ?? 1,
-            strokeDashOffset: args?.strokeDashOffset ?? 0,
-            strokeDashArray: args?.strokeDashArray ?? [1, 0],
-        });
+        this.x = args?.x ?? 0;
+        this.y = args?.y ?? 0;
+        this.opacity = args?.opacity ?? 1;
+        this.string = args?.text ?? "";
+        this.fontSize = args?.fontSize ?? 20;
+        this.strokeWidth = args?.strokeWidth ?? 1;
+        this.strokeDashOffset = args?.strokeDashOffset ?? 0;
+        this.strokeDashArray = (typeof args?.strokeDashArray === "number"
+            ? [args.strokeDashArray]
+            : args?.strokeDashArray) ?? [1, 0];
 
         if (this.getText() !== "") {
             const [html, text, styles] = parseToHTML(this, this.getText());
             const box = MathManager.boundingBox(this.getY(), html);
             this.getRootRenderNode().__append(html);
-            Object.assign(this._, {
-                text,
-                subtextStyles: styles,
-                html: html,
-                width: box.width,
-                height: box.height,
-            });
-            this.refreshY(this._.html);
+            this.text = text;
+            this.subtextStyles = styles;
+            this.html = html;
+            this.width = box.width;
+            this.height = box.height;
+            this.refreshY(this.html);
         }
 
         if (args?.cx !== undefined) this.setCx(args.cx);
@@ -78,37 +74,37 @@ export class Math extends BaseText {
     }
 
     setX(x: number): this {
-        return this.triggerAttributeChanged(this._.html, "x", x, this._.x, Interp.numberInterp);
+        return this.change("x", x, Interp.numberInterp, this.html);
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this._.html, "y", y, this._.y, Interp.numberInterp);
+        return this.change("y", y, Interp.numberInterp, this.html);
     }
 
     setFill(fill: SDAllColor) {
-        return this.triggerAttributeChanged(this._.html, "fill", fill, this.getFill(), Interp.colorInterp);
+        return this.triggerAttributeChanged(this.html, "fill", fill, this.getFill(), Interp.colorInterp);
     }
 
     setStroke(stroke: SDAllColor) {
-        return this.triggerAttributeChanged(this._.html, "stroke", stroke, this.getStroke(), Interp.colorInterp);
+        return this.triggerAttributeChanged(this.html, "stroke", stroke, this.getStroke(), Interp.colorInterp);
     }
 
     getFontSize(): number {
-        return this._.fontSize;
+        return this.fontSize;
     }
 
     setFontSize(size: number): this {
         if (this.getFontSize() > 1e-1) {
             const k = size / this.getFontSize();
-            this._.width *= k;
-            this._.height *= k;
+            this.width *= k;
+            this.height *= k;
         } else {
-            const box = MathManager.boundingBox(this.getY(), this._.html);
-            this._.width = box.width;
-            this._.height = box.height;
+            const box = MathManager.boundingBox(this.getY(), this.html);
+            this.width = box.width;
+            this.height = box.height;
         }
-        this.refreshY(this._.html);
-        return this.triggerAttributeChanged(this._.html, "fontSize", size, this._.fontSize, Interp.numberInterp);
+        this.refreshY(this.html);
+        return this.triggerAttributeChanged(this.html, "fontSize", size, this.fontSize, Interp.numberInterp);
     }
 
     onFontSizeChanged(listener: (vn: number, vo: number) => void) {
@@ -120,15 +116,15 @@ export class Math extends BaseText {
     }
 
     getWidth(): number {
-        return this._.width;
+        return this.width;
     }
 
     getHeight(): number {
-        return this._.height;
+        return this.height;
     }
 
     getText(): string {
-        return this._.string;
+        return this.string;
     }
 
     setText(text: string | number, mapping?: TextMapping): this {
@@ -137,20 +133,20 @@ export class Math extends BaseText {
         const box = MathManager.boundingBox(this.getY(), html);
         const styles = buildAnimation(
             this,
-            { text: this._.text, styles: this._.subtextStyles },
+            { text: this.text, styles: this.subtextStyles },
             { text: text_ },
             transformProcess(mapping),
             transformPostProcess(this, this.getRootRenderNode()),
             "transform"
         );
         MathManager.applyStyles(html, styles);
-        this._.width = box.width;
-        this._.height = box.height;
-        this.refreshY(this._.html);
-        this.triggerAttributeChanged(undefined, "string", String(text), this._.string, Interp.emptyInterp);
-        this.triggerAttributeChanged(undefined, "text", text_, this._.text, Interp.emptyInterp);
-        this.triggerAttributeChanged(undefined, "subtextStyles", styles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.childBlankInMiddleInterp);
+        this.width = box.width;
+        this.height = box.height;
+        this.refreshY(this.html);
+        this.triggerAttributeChanged(undefined, "string", String(text), this.string, Interp.emptyInterp);
+        this.triggerAttributeChanged(undefined, "text", text_, this.text, Interp.emptyInterp);
+        this.triggerAttributeChanged(undefined, "subtextStyles", styles, this.subtextStyles, Interp.emptyInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this.html, Interp.childBlankInMiddleInterp);
         return this;
     }
 
@@ -163,22 +159,22 @@ export class Math extends BaseText {
     }
 
     setSubtextFill(subtext: string | number, color: SDColor, i: number = 0): this {
-        const textView = createTextView(this._.text, {});
+        const textView = createTextView(this.text, {});
         const text = parseToHTML(this, String(subtext))[1];
         const subtextView = matchSubtext(textView, text);
-        const newStyles = this._.subtextStyles.map((style: PathStyle) => style.clone());
+        const newStyles = this.subtextStyles.map((style: PathStyle) => style.clone());
         subtextView.__iterate(i => (newStyles[i].fill = color));
         buildAnimation(
             this,
-            { text: this._.text },
-            { text: this._.text },
+            { text: this.text },
+            { text: this.text },
             transformProcess([]),
             transformPostProcess(this, this.getRootRenderNode()),
             "*"
         );
-        const html = parseToHTML(this, this._.string, newStyles)[0];
-        this.triggerAttributeChanged(undefined, "subtextStyles", newStyles, this._.subtextStyles, Interp.emptyInterp);
-        this.triggerAttributeChanged(this.renderer, "html", html, this._.html, Interp.childBlankInMiddleInterp);
+        const html = parseToHTML(this, this.string, newStyles)[0];
+        this.triggerAttributeChanged(undefined, "subtextStyles", newStyles, this.subtextStyles, Interp.emptyInterp);
+        this.triggerAttributeChanged(this.renderer, "html", html, this.html, Interp.childBlankInMiddleInterp);
         return this;
     }
 }

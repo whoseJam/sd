@@ -4,19 +4,20 @@ import { BaseFilter } from "@/Node/Filter/BaseFilter";
 export type ColorInterpolationFilters = "sRGB" | "linearRGB";
 
 export class TwoInputFilter extends BaseFilter {
-    _: BaseFilter["_"] & {
+    /* model fields:
+
         in: string;
         in2: string;
         result: string;
         colorInterpolationFilters: ColorInterpolationFilters;
-    };
+        */
 
     getIn() {
-        return this._.in;
+        return this.in;
     }
 
     setIn(input: string) {
-        return this.triggerAttributeChanged(this.renderer, "in", input, this._.in, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "in", input, this.in, Interp.stringInterp);
     }
 
     onInChanged(listener: (vn: string, vo: string) => void) {
@@ -28,11 +29,11 @@ export class TwoInputFilter extends BaseFilter {
     }
 
     getIn2() {
-        return this._.in2;
+        return this.in2;
     }
 
     setIn2(input: string) {
-        return this.triggerAttributeChanged(this.renderer, "in2", input, this._.in2, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "in2", input, this.in2, Interp.stringInterp);
     }
 
     onIn2Changed(listener: (vn: string, vo: string) => void) {
@@ -44,11 +45,11 @@ export class TwoInputFilter extends BaseFilter {
     }
 
     getResult() {
-        return this._.result;
+        return this.result;
     }
 
     setResult(result: string) {
-        return this.triggerAttributeChanged(this.renderer, "result", result, this._.result, Interp.stringInterp);
+        return this.triggerAttributeChanged(this.renderer, "result", result, this.result, Interp.stringInterp);
     }
 
     onResultChanged(listener: (vn: string, vo: string) => void) {
@@ -60,7 +61,7 @@ export class TwoInputFilter extends BaseFilter {
     }
 
     getColorInterpolationFilters() {
-        return this._.colorInterpolationFilters;
+        return this.colorInterpolationFilters;
     }
 
     setColorInterpolationFilters(color: ColorInterpolationFilters) {
@@ -68,7 +69,7 @@ export class TwoInputFilter extends BaseFilter {
             this.renderer,
             "colorInterpolationFilters",
             color,
-            this._.colorInterpolationFilters,
+            this.colorInterpolationFilters,
             Interp.stringInterp
         );
     }

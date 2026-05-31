@@ -6,13 +6,14 @@ import { Percent } from "@/Node/SDNode";
 type Operator = "over" | "in" | "out" | "atop" | "xor" | "arithmetic" | "lighter";
 
 export class Composite extends TwoInputFilter {
-    _: TwoInputFilter["_"] & {
+    /* model fields:
+
         operator: Operator;
         k1: number;
         k2: number;
         k3: number;
         k4: number;
-    };
+        */
 
     constructor(args?: {
         targetNode?: Filter;
@@ -41,7 +42,7 @@ export class Composite extends TwoInputFilter {
     }
 
     getOperator() {
-        return this._.operator;
+        return this.operator;
     }
 
     setOperator(operator: string) {
@@ -49,7 +50,7 @@ export class Composite extends TwoInputFilter {
             this.renderer,
             "operator",
             operator,
-            this._.operator,
+            this.operator,
             Interp.stringInterp
         );
     }
@@ -63,11 +64,11 @@ export class Composite extends TwoInputFilter {
     }
 
     getK1() {
-        return this._.k1;
+        return this.k1;
     }
 
     setK1(k1: number) {
-        return this.triggerAttributeChanged(this.renderer, "k1", k1, this._.k1, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k1", k1, this.k1, Interp.numberInterp);
     }
 
     onK1Changed(listener: (vn: number, vo: number) => void) {
@@ -79,11 +80,11 @@ export class Composite extends TwoInputFilter {
     }
 
     getK2() {
-        return this._.k2;
+        return this.k2;
     }
 
     setK2(k2: number) {
-        return this.triggerAttributeChanged(this.renderer, "k2", k2, this._.k2, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k2", k2, this.k2, Interp.numberInterp);
     }
 
     onK2Changed(listener: (vn: number, vo: number) => void) {
@@ -95,11 +96,11 @@ export class Composite extends TwoInputFilter {
     }
 
     getK3() {
-        return this._.k3;
+        return this.k3;
     }
 
     setK3(k3: number) {
-        return this.triggerAttributeChanged(this.renderer, "k3", k3, this._.k3, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k3", k3, this.k3, Interp.numberInterp);
     }
 
     onK3Changed(listener: (vn: number, vo: number) => void) {
@@ -111,11 +112,11 @@ export class Composite extends TwoInputFilter {
     }
 
     getK4() {
-        return this._.k4;
+        return this.k4;
     }
 
     setK4(k4: number) {
-        return this.triggerAttributeChanged(this.renderer, "k4", k4, this._.k4, Interp.numberInterp);
+        return this.triggerAttributeChanged(this.renderer, "k4", k4, this.k4, Interp.numberInterp);
     }
 
     onK4Changed(listener: (vn: number, vo: number) => void) {
