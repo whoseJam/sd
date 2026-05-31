@@ -35,34 +35,27 @@ export abstract class SDNode {
     renderer: RenderNode | undefined = undefined;
     foreign?: RenderNode;
     frame: number = -1;
-    // delayMs / durationMs are read via delay() / duration() — kept under
-    // those method names because the field would collide with the method.
+    // delayMs / durationMs collide with the delay() / duration() methods if
+    // named the same; the methods stay because they're the public API.
     delayMs: number = 0;
     durationMs: number = 0;
     subAnimates: Array<Context> = [];
     timingFunction: SDEasingFunction | undefined = undefined;
     ready: boolean = false;
-    // _ still holds rendered attribute model (cx, cy, fill, opacity, etc.).
-    // Phase 2 of the cleanup will pull those out per-shape and delete this.
-    _: {
-        opacity: number;
-        scale: [number, number];
-        rotate: number;
-        translate: [number, number];
-        transformOrigin: [NumberOrPercent, NumberOrPercent];
-        [key: string]: any;
-    };
+    protected opacity: number = 1;
+    protected scale: [number, number] = [1, 1];
+    protected rotate: number = 0;
+    protected translate: [number, number] = [0, 0];
+    protected transformOrigin: [NumberOrPercent, NumberOrPercent] = ["50%", "50%"];
+    // _ is a fallback bag for attributes that haven't been migrated to typed
+    // fields yet (Text/Math/Filter/Caption state). triggerAttributeChanged
+    // also writes through it via [key]: any so listeners-by-key keep working.
+    _: { [key: string]: any };
     private listeners: { [key: string]: Array<AttributeListener> };
     static NODE_ID = 0;
     constructor() {
         this.id = ++SDNode.NODE_ID;
-        this._ = {
-            opacity: 1,
-            scale: [1, 1],
-            rotate: 0,
-            translate: [0, 0],
-            transformOrigin: ["50%", "50%"],
-        };
+        this._ = {};
         this.listeners = {};
     }
 
@@ -136,17 +129,11 @@ export abstract class SDNode {
     }
 
     getOpacity(): number {
-        return this._.opacity;
+        return this.opacity;
     }
 
     setOpacity(opacity: number): this {
-        return this.triggerAttributeChanged(
-            this.getRootRenderNode(),
-            "opacity",
-            opacity,
-            this._.opacity,
-            Interp.numberInterp
-        );
+        return this.change("opacity", opacity, Interp.numberInterp, this.getRootRenderNode());
     }
 
     onOpacityChanged(listener: (vn: number, vo: number) => void): this {
@@ -168,17 +155,11 @@ export abstract class SDNode {
     setScale(sx: number | [number, number], sy?: number): this {
         if (Array.isArray(sx)) return this.setScale(sx[0], sx[1]);
         if (sy === undefined) return this.setScale(sx, sx);
-        return this.triggerAttributeChanged(
-            this.getRootRenderNode(),
-            "scale",
-            [sx, sy],
-            this._.scale,
-            Interp.arrayInterp
-        );
+        return this.change("scale", [sx, sy], Interp.arrayInterp, this.getRootRenderNode());
     }
 
     getScale(): [number, number] {
-        return this._.scale;
+        return this.scale;
     }
 
     onScaleChanged(listener: (vn: [number, number], vo: [number, number]) => void): this {
@@ -190,13 +171,7 @@ export abstract class SDNode {
     }
 
     setRotate(rotate: number): this {
-        return this.triggerAttributeChanged(
-            this.getRootRenderNode(),
-            "rotate",
-            rotate,
-            this._.rotate,
-            Interp.numberInterp
-        );
+        return this.change("rotate", rotate, Interp.numberInterp, this.getRootRenderNode());
     }
 
     setRotation(rotation: number): this {
@@ -215,13 +190,7 @@ export abstract class SDNode {
     setTranslate(d: [number, number]): this;
     setTranslate(dx: number | [number, number], dy?: number): this {
         if (Array.isArray(dx)) return this.setTranslate(dx[0], dx[1]);
-        return this.triggerAttributeChanged(
-            this.getRootRenderNode(),
-            "translate",
-            [dx, dy],
-            this._.translate,
-            Interp.arrayInterp
-        );
+        return this.change("translate", [dx, dy], Interp.arrayInterp, this.getRootRenderNode());
     }
 
     onTranslateChanged(listener: (vn: [number, number], vo: [number, number]) => void) {
@@ -236,16 +205,11 @@ export abstract class SDNode {
     setTransformOrigin(origin: [XLocation, YLocation]): this;
     setTransformOrigin(x: XLocation | [XLocation, YLocation], y?: YLocation) {
         if (Array.isArray(x)) return this.setTransformOrigin(x[0], x[1]);
-        return this.triggerAttributeChanged(
-            this.getRootRenderNode(),
-            "transformOrigin",
-            [x, y],
-            this._.transformOrigin
-        );
+        return this.change("transformOrigin", [x, y] as [NumberOrPercent, NumberOrPercent], undefined, this.getRootRenderNode());
     }
 
     getTransformOrigin(): [NumberOrPercent, NumberOrPercent] {
-        return this._.transformOrigin;
+        return this.transformOrigin;
     }
 
     onTransformOriginChanged(
@@ -398,6 +362,17 @@ export abstract class SDNode {
         const index = this.listeners[key].indexOf(listener);
         if (index !== -1) this.listeners[key].splice(index, 1);
         return this;
+    }
+
+    protected change<K extends string & keyof this>(
+        field: K,
+        value: this[K],
+        interp?: InterpObject | InterpFunction | LazyInterpFunction | InterpCreator,
+        renderer: RenderNode = this.renderer,
+    ): this {
+        const old = this[field];
+        this[field] = value;
+        return this.triggerAttributeChanged(renderer, field, value, old, interp);
     }
 
     protected triggerAttributeChanged(

@@ -79,9 +79,7 @@ export class Polygon extends BaseShape {
     }
 
     setPoints(points: Array<[number, number]>): this {
-        const old = this.points;
-        this.points = points;
-        return this.triggerAttributeChanged(this.renderer, "points", points, old, Interp.pointsInterp);
+        return this.change("points", points, Interp.pointsInterp);
     }
 
     onPointsChanged(listener: (vn: Array<[number, number]>, vo: Array<[number, number]>) => void) {

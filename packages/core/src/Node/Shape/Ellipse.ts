@@ -102,9 +102,7 @@ export class Ellipse extends BaseShape {
     }
 
     setCx(cx: number): this {
-        const old = this.cx;
-        this.cx = cx;
-        return this.triggerAttributeChanged(this.renderer, "cx", cx, old, Interp.numberInterp);
+        return this.change("cx", cx, Interp.numberInterp);
     }
 
     onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -136,9 +134,7 @@ export class Ellipse extends BaseShape {
     }
 
     setCy(cy: number): this {
-        const old = this.cy;
-        this.cy = cy;
-        return this.triggerAttributeChanged(this.renderer, "cy", cy, old, Interp.numberInterp);
+        return this.change("cy", cy, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
@@ -177,9 +173,7 @@ export class Ellipse extends BaseShape {
     }
 
     setRx(rx: number): this {
-        const old = this.rx;
-        this.rx = rx;
-        return this.triggerAttributeChanged(this.renderer, "rx", rx, old, Interp.numberInterp);
+        return this.change("rx", rx, Interp.numberInterp);
     }
 
     onRxChanged(listener: (vn: number, vo: number) => void) {
@@ -195,9 +189,7 @@ export class Ellipse extends BaseShape {
     }
 
     setRy(ry: number): this {
-        const old = this.ry;
-        this.ry = ry;
-        return this.triggerAttributeChanged(this.renderer, "ry", ry, old, Interp.numberInterp);
+        return this.change("ry", ry, Interp.numberInterp);
     }
 
     onRyChanged(listener: (vn: number, vo: number) => void) {

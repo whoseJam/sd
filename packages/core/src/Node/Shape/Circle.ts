@@ -77,9 +77,7 @@ export class Circle extends BaseShape {
     }
 
     setCx(cx: number): this {
-        const oldCx = this.cx;
-        this.cx = cx;
-        return this.triggerAttributeChanged(this.renderer, "cx", cx, oldCx, Interp.numberInterp);
+        return this.change("cx", cx, Interp.numberInterp);
     }
 
     onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -111,9 +109,7 @@ export class Circle extends BaseShape {
     }
 
     setCy(cy: number): this {
-        const oldCy = this.cy;
-        this.cy = cy;
-        return this.triggerAttributeChanged(this.renderer, "cy", cy, oldCy, Interp.numberInterp);
+        return this.change("cy", cy, Interp.numberInterp);
     }
 
     onCyChanged(listener: (vn: number, vo: number) => void) {
@@ -156,9 +152,7 @@ export class Circle extends BaseShape {
     }
 
     setR(r: number): this {
-        const oldR = this.r;
-        this.r = r;
-        return this.triggerAttributeChanged(this.renderer, "r", r, oldR, Interp.numberInterp);
+        return this.change("r", r, Interp.numberInterp);
     }
 
     setRadius(r: number): this {

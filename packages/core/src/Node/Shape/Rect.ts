@@ -87,9 +87,7 @@ export class Rect extends BaseShape {
     }
 
     setX(x: number): this {
-        const old = this.x;
-        this.x = x;
-        return this.triggerAttributeChanged(this.renderer, "x", x, old, Interp.numberInterp);
+        return this.change("x", x, Interp.numberInterp);
     }
 
     onXChanged(listener: (vn: number, vo: number) => void) {
@@ -105,9 +103,7 @@ export class Rect extends BaseShape {
     }
 
     setY(y: number): this {
-        const old = this.y;
-        this.y = y;
-        return this.triggerAttributeChanged(this.renderer, "y", y, old, Interp.numberInterp);
+        return this.change("y", y, Interp.numberInterp);
     }
 
     onYChanged(listener: (vn: number, vo: number) => void) {
@@ -123,9 +119,7 @@ export class Rect extends BaseShape {
     }
 
     setWidth(width: number) {
-        const old = this.width;
-        this.width = width;
-        return this.triggerAttributeChanged(this.renderer, "width", width, old, Interp.numberInterp);
+        return this.change("width", width, Interp.numberInterp);
     }
 
     onWidthChanged(listener: (vn: number, vo: number) => void): this {
@@ -141,12 +135,10 @@ export class Rect extends BaseShape {
     }
 
     // SVG y depends on height (svg_y = -(y + height)); a height change must
-    // re-fire the y attribute so renderAttribute reads the new height at every
+    // re-fire the y attribute so renderAttribute reads the new height every
     // tick and the math-y anchor stays put.
     setHeight(height: number) {
-        const oldHeight = this.height;
-        this.height = height;
-        this.triggerAttributeChanged(this.renderer, "height", height, oldHeight, Interp.numberInterp);
+        this.change("height", height, Interp.numberInterp);
         return this.triggerAttributeChanged(this.renderer, "y", this.y, this.y, Interp.numberInterp);
     }
 
@@ -186,9 +178,7 @@ export class Rect extends BaseShape {
     }
 
     setRx(rx: number): this {
-        const old = this.rx;
-        this.rx = rx;
-        return this.triggerAttributeChanged(this.renderer, "rx", rx, old, Interp.numberInterp);
+        return this.change("rx", rx, Interp.numberInterp);
     }
 
     onRxChanged(listener: (vn: number, vo: number) => void): this {
@@ -204,9 +194,7 @@ export class Rect extends BaseShape {
     }
 
     setRy(ry: number): this {
-        const old = this.ry;
-        this.ry = ry;
-        return this.triggerAttributeChanged(this.renderer, "ry", ry, old, Interp.numberInterp);
+        return this.change("ry", ry, Interp.numberInterp);
     }
 
     onRyChanged(listener: (vn: number, vo: number) => void): this {

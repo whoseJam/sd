@@ -54,28 +54,26 @@ export function processMapping(mapping: TextMapping): TextMappingArray {
 export type TextConfigDictionary = { [key: string]: any };
 
 export abstract class BaseText extends SDSVGNode {
-    _: SDSVGNode["_"] & {
-        x: number;
-        y: number;
-    };
+    protected x: number = 0;
+    protected y: number = 0;
 
     renderAttribute(renderer: RenderNode, key: string, value: any) {
         if (key === "y") return renderer.setAttribute("y", -(value + (this.getHeight() || 0)));
         super.renderAttribute(renderer, key, value);
     }
 
-    // SVG y attribute depends on this.getHeight(); subclasses call this whenever
-    // their height changes (setFontSize, setText, etc.) to keep math y constant.
+    // SVG y depends on this.getHeight(); subclasses call this whenever their
+    // height changes (setFontSize, setText, ...) to keep math y put.
     protected refreshY(renderer: RenderNode = this.renderer) {
-        this.renderAttribute(renderer, "y", this._.y);
+        this.renderAttribute(renderer, "y", this.y);
     }
 
     getX(): number {
-        return this._.x;
+        return this.x;
     }
 
     setX(x: number): this {
-        return this.triggerAttributeChanged(this.renderer, "x", x, this._.x, Interp.numberInterp);
+        return this.change("x", x, Interp.numberInterp);
     }
 
     onXChanged(listener: (vn: number, vo: number) => void) {
@@ -106,11 +104,11 @@ export abstract class BaseText extends SDSVGNode {
     }
 
     getY(): number {
-        return this._.y;
+        return this.y;
     }
 
     setY(y: number): this {
-        return this.triggerAttributeChanged(this.renderer, "y", y, this._.y, Interp.numberInterp);
+        return this.change("y", y, Interp.numberInterp);
     }
 
     onYChanged(listener: (vn: number, vo: number) => void) {
