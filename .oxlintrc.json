@@ -26,7 +26,6 @@
     {
       "files": ["**/*.js", "**/*.ts", "**/*.tsx", "**/*.mjs", "**/*.cjs"],
       "rules": {
-        "no-shadow": "error",
         "no-unused-vars": "warn"
       }
     }
