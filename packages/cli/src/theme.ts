@@ -1,16 +1,17 @@
-const gulp = require("gulp");
-const path = require("path");
-const sass = require("gulp-sass")(require("sass"));
-const autoprefixer = require("gulp-autoprefixer");
-const cleanCSS = require("gulp-clean-css");
+import gulp from "gulp";
+import autoprefixer from "gulp-autoprefixer";
+import cleanCSS from "gulp-clean-css";
+import gulpSassFactory from "gulp-sass";
+import path from "node:path";
+import sassCompiler from "sass";
 
-/**
- * Compile all theme css file to the target folder.
- * @param {string} targetFolder The folder to hold the output.
- * @returns {NodeJS.ReadWriteStream}
- */
-module.exports = function (targetFolder) {
-  const themePath = path.join(__dirname, "../../reveal/src/css/theme");
+const sass = gulpSassFactory(sassCompiler);
+
+export default function theme(targetFolder: string): NodeJS.ReadWriteStream {
+  const themePath = path.join(
+    import.meta.dirname,
+    "../../reveal/src/css/theme",
+  );
   const sourcePath = path.join(themePath, "source/**/*.scss");
   return gulp
     .src(sourcePath)
@@ -30,4 +31,4 @@ module.exports = function (targetFolder) {
     )
     .pipe(cleanCSS({ compatibility: "ie8", keepSpecialComments: 1 }))
     .pipe(gulp.dest(targetFolder));
-};
+}

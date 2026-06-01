@@ -1,22 +1,22 @@
-const gulp = require("gulp");
-const ts = require("gulp-typescript");
-const path = require("path");
+import colors from "colors-console";
+import gulp from "gulp";
+import ts from "gulp-typescript";
+import path from "node:path";
 
-const parser = require("./parser");
-const utils = require("./utils");
+import { parseInput } from "./parser";
+import { validateJSFile } from "./utils";
 
-function create() {
-  const project = ts.createProject("tsconfig.json");
-  return project;
+function create(): ts.Project {
+  return ts.createProject("tsconfig.json");
 }
 
-function task(source) {
+export function task(source: string): NodeJS.ReadWriteStream {
   source = source.replaceAll("\\", "/");
-  utils.validateJSFile(source);
+  validateJSFile(source);
   const project = create();
   return gulp.src(source).pipe(
     project({
-      error: (error, typescript) => {
+      error: (error) => {
         const diagnostic = error.diagnostic;
         if (diagnostic.file) {
           const { line, character } =
@@ -32,12 +32,13 @@ function task(source) {
   );
 }
 
-function launch(selfLaunch = false) {
-  if (require.main !== module && selfLaunch) return;
-  if (require.main === module)
-    global["projectRoot"] = path.resolve(__dirname, "..", "..", "..");
-  parser.parseInput();
-  const sourceFilePath = global["i"];
+export function launch(selfLaunch = false): NodeJS.ReadWriteStream | undefined {
+  if (!import.meta.main && selfLaunch) return;
+  if (import.meta.main) {
+    global.projectRoot = path.resolve(import.meta.dirname, "..", "..", "..");
+  }
+  parseInput();
+  const sourceFilePath = global.i;
   if (!sourceFilePath) {
     console.log(colors("red", "[Error] Please provide the source file path."));
     console.log(colors("cyan", "Usage: type -i <source file path>"));
@@ -45,8 +46,3 @@ function launch(selfLaunch = false) {
   }
   return task(sourceFilePath);
 }
-
-module.exports = {
-  task,
-  launch,
-};

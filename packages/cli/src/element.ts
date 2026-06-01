@@ -1,22 +1,21 @@
-const gulp = require("gulp");
-const path = require("path");
-const TerserPlugin = require("terser-webpack-plugin");
-const webpack = require("webpack-stream");
+import gulp from "gulp";
+import TerserPlugin from "terser-webpack-plugin";
+import webpack from "webpack-stream";
 
-module.exports = function (targetFolder) {
+export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
     .src(["./packages/element/src/SDElement.ts"])
     .pipe(webpack(getConfiguration()))
-    .on("error", function (err) {
+    .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);
       this.emit("end");
     })
     .pipe(gulp.dest(targetFolder));
-};
+}
 
 function getConfiguration() {
-  const isDevelopment = global["d"] || false;
-  const isWatch = global["w"] || false;
+  const isDevelopment = global.d ? true : false;
+  const isWatch = global.w ? true : false;
   const mode = isDevelopment ? "development" : "production";
   return {
     mode,
@@ -64,7 +63,10 @@ function getConfiguration() {
         }),
       ],
     },
-    cache: { type: "filesystem", buildDependencies: { config: [__filename] } },
+    cache: {
+      type: "filesystem" as const,
+      buildDependencies: { config: [import.meta.filename] },
+    },
     resolve: { extensions: [".ts", ".js"] },
     stats: isDevelopment ? "minimal" : "normal",
   };

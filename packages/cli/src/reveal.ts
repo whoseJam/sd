@@ -1,27 +1,16 @@
-const gulp = require("gulp");
-const webpack = require("webpack-stream");
+import gulp from "gulp";
+import webpack from "webpack-stream";
 
-const utils = require("./utils");
-
-/**
- * Compile myreveal.js to the target folder.
- * @param {string} targetFolder The folder to hold the output.
- * @returns {NodeJS.ReadWriteStream}
- */
-module.exports = function (targetFolder) {
-  const config = getConfiguration();
-  return (
-    gulp
-      // webpack stream
-      .src("./packages/reveal/src/Reveal.ts")
-      .pipe(webpack(config))
-      .pipe(gulp.dest(targetFolder))
-  );
-};
+export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
+  return gulp
+    .src("./packages/reveal/src/Reveal.ts")
+    .pipe(webpack(getConfiguration()))
+    .pipe(gulp.dest(targetFolder));
+}
 
 function getConfiguration() {
-  const mode = global["d"] ? "development" : "production";
-  const watch = global["w"] ? true : false;
+  const mode = global.d ? "development" : "production";
+  const watch = global.w ? true : false;
   return {
     mode,
     watch,

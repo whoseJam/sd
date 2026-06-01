@@ -9,10 +9,10 @@
     "url": ""
   },
   "bin": {
-    "sd-animation": "./packages/cli/src/animation.js",
-    "sd-animationGroup": "./packages/cli/src/animationGroup.js",
-    "sd-config": "./packages/cli/src/config.js",
-    "sd-ppt": "./packages/cli/src/ppt.js"
+    "sd-animation": "./packages/cli/src/animation.ts",
+    "sd-animationGroup": "./packages/cli/src/animationGroup.ts",
+    "sd-config": "./packages/cli/src/config.ts",
+    "sd-ppt": "./packages/cli/src/ppt.ts"
   },
   "browser": {
     "fs": false,
@@ -27,6 +27,10 @@
   },
   "devDependencies": {
     "@svgdotjs/svg.js": "^3.2.0",
+    "@swc/core": "^1.15.40",
+    "@swc/register": "^0.1.10",
+    "@types/bun": "^1.3.14",
+    "@types/node": "^25.9.1",
     "eslint-plugin-perfectionist": "^5.9.0",
     "gulp": "^5.0.0",
     "oxfmt": "^0.41.0",
