@@ -57,25 +57,14 @@ export class Line extends BasePath {
 
     this.attributes = {
       ...this.attributes,
-      x1: args?.x1 ?? 0,
-      y1: args?.y1 ?? 0,
-      x2: args?.x2 ?? 40,
-      y2: args?.y2 ?? 40,
-    };
-
-    this.createSVGNode("line", {
-      x1: this.attributes.x1,
-      y1: this.attributes.y1,
-      x2: this.attributes.x2,
-      y2: this.attributes.y2,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
       scale: args?.scale ?? [1, 1],
       opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.none,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.none)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.black)),
       fillOpacity: args?.fillOpacity ?? 0,
-      stroke: args?.stroke ?? C.black,
       strokeOpacity: args?.strokeOpacity ?? 1,
       strokeWidth: args?.strokeWidth ?? 1,
       strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
@@ -84,6 +73,13 @@ export class Line extends BasePath {
       ),
       strokeLineCap: args?.strokeLineCap ?? "butt",
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      x1: args?.x1 ?? 0,
+      y1: args?.y1 ?? 0,
+      x2: args?.x2 ?? 40,
+      y2: args?.y2 ?? 40,
+    };
+
+    this.createSVGNode("line", {
       filter: Filter.toURLString(args?.filter),
     });
 

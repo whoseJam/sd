@@ -55,19 +55,14 @@ export class Polyline extends BasePath {
 
     this.attributes = {
       ...this.attributes,
-      points: args?.points ?? [],
-    };
-
-    this.createSVGNode("polyline", {
-      points: this.attributes.points,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
       scale: args?.scale ?? [1, 1],
       opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.none,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.none)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.black)),
       fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.black,
       strokeOpacity: args?.strokeOpacity ?? 1,
       strokeWidth: args?.strokeWidth ?? 1,
       strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
@@ -76,6 +71,10 @@ export class Polyline extends BasePath {
       ),
       strokeLineCap: args?.strokeLineCap ?? "butt",
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      points: args?.points ?? [],
+    };
+
+    this.createSVGNode("polyline", {
       filter: Filter.toURLString(args?.filter),
     });
 

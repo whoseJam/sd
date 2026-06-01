@@ -57,6 +57,22 @@ export class Path extends BasePath {
     const d = args?.d ?? "";
     this.attributes = {
       ...this.attributes,
+      transformOrigin: args?.transformOrigin ?? ["center", "center"],
+      translate: args?.translate ?? [0, 0],
+      rotate: args?.rotate ?? 0,
+      scale: args?.scale ?? [1, 1],
+      opacity: args?.opacity ?? 1,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.none)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.black)),
+      fillOpacity: args?.fillOpacity ?? 1,
+      strokeOpacity: args?.strokeOpacity ?? 1,
+      strokeWidth: args?.strokeWidth ?? 1,
+      strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
+      strokeDashArray: SDSVGNode.toStrokeDashArray(
+        args?.strokeDashArray ?? args?.strokeDasharray,
+      ),
+      strokeLineCap: args?.strokeLineCap ?? "butt",
+      strokeLineJoin: args?.strokeLineJoin ?? "miter",
       d,
     };
     const box = PathEngine.toBox(d);
@@ -66,23 +82,6 @@ export class Path extends BasePath {
     this.height = box.height ?? 0;
 
     this.createSVGNode("path", {
-      d: this.attributes.d,
-      transformOrigin: args?.transformOrigin ?? ["center", "center"],
-      translate: args?.translate ?? [0, 0],
-      rotate: args?.rotate ?? 0,
-      scale: args?.scale ?? [1, 1],
-      opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.none,
-      fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.black,
-      strokeOpacity: args?.strokeOpacity ?? 1,
-      strokeWidth: args?.strokeWidth ?? 1,
-      strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
-      strokeDashArray: SDSVGNode.toStrokeDashArray(
-        args?.strokeDashArray ?? args?.strokeDasharray,
-      ),
-      strokeLineCap: args?.strokeLineCap ?? "butt",
-      strokeLineJoin: args?.strokeLineJoin ?? "miter",
       filter: Filter.toURLString(args?.filter),
     });
 
