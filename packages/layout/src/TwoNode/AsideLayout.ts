@@ -1,4 +1,4 @@
-import type { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@sd/core";
 
 type Align =
   | "tl"

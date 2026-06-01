@@ -1,9 +1,9 @@
-import type { SDNode } from "@/Node/SDNode";
-import type { Path } from "@/sd";
+import type { SDNode } from "@sd/core";
+import type { Path } from "@sd/core";
 
-import { Vector as V } from "@/Math/Vector";
-import { PathPen } from "@/Node/Path/PathPen";
-import { trim } from "@/Utility/Trim";
+import { Vector as V } from "@sd/core";
+import { PathPen } from "@sd/core";
+import { trim } from "@sd/core";
 
 interface CurveLayoutArgs {
   source: [number, number];

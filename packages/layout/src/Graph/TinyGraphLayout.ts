@@ -1,4 +1,4 @@
-import type { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@sd/core";
 
 /**
  * Layout function for arranging a small number of nodes (1-6) in predefined patterns.

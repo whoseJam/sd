@@ -1,4 +1,4 @@
-import type { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@sd/core";
 
 /**
  * Layout function for arranging nodes in a bipartite graph pattern.

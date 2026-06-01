@@ -1,4 +1,4 @@
-import type { SDNode } from "@/Node/SDNode";
+import type { SDNode } from "@sd/core";
 
 type Align = "y" | "cy" | "my";
 type Justify = "x" | "cx" | "mx";

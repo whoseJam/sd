@@ -1,4 +1,5 @@
-import type { SDNode, SDNodeWithRadius } from "@/Node/SDNode";
+import type { SDNode, SDNodeWithRadius } from "@sd/core";
+
 import type { Circle } from "@/Node/Shape/Circle";
 
 /**

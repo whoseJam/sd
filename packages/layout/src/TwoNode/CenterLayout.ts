@@ -1,4 +1,4 @@
-import type { SDNode, SDNodeWithRadius } from "@/Node/SDNode";
+import type { SDNode, SDNodeWithRadius } from "@sd/core";
 
 interface CenterContentFitLayoutParam {
   rate?: number;
