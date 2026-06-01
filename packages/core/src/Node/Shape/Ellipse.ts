@@ -50,21 +50,10 @@ export class Ellipse extends BaseShape {
 
     this.attributes = {
       ...this.attributes,
-      cx: args?.cx ?? 20,
-      cy: args?.cy ?? 20,
-      rx: args?.rx ?? 20,
-      ry: args?.ry ?? 20,
-    };
-
-    this.renderer = this.createSVGNode("ellipse", {
-      rx: this.attributes.rx,
-      ry: this.attributes.ry,
-      cx: this.attributes.cx,
-      cy: this.attributes.cy,
       opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.black,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.black)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.none)),
       fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.none,
       strokeOpacity: args?.strokeOpacity ?? 1,
       strokeWidth: args?.strokeWidth ?? 1,
       strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
@@ -73,6 +62,13 @@ export class Ellipse extends BaseShape {
       ),
       strokeLineCap: args?.strokeLineCap ?? "butt",
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      cx: args?.cx ?? 20,
+      cy: args?.cy ?? 20,
+      rx: args?.rx ?? 20,
+      ry: args?.ry ?? 20,
+    };
+
+    this.renderer = this.createSVGNode("ellipse", {
       filter: Filter.toURLString(args?.filter) ?? "",
     });
 

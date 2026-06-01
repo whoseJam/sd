@@ -58,6 +58,18 @@ export class Rect extends BaseShape {
 
     this.attributes = {
       ...this.attributes,
+      opacity: args?.opacity ?? 1,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.black)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.none)),
+      fillOpacity: args?.fillOpacity ?? 1,
+      strokeOpacity: args?.strokeOpacity ?? 1,
+      strokeWidth: args?.strokeWidth ?? 1,
+      strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
+      strokeDashArray: SDSVGNode.toStrokeDashArray(
+        args?.strokeDashArray ?? args?.strokeDasharray,
+      ),
+      strokeLineCap: args?.strokeLineCap ?? "butt",
+      strokeLineJoin: args?.strokeLineJoin ?? "miter",
       x: args?.x ?? 0,
       y: args?.y ?? 0,
       width: args?.width ?? 40,
@@ -67,24 +79,6 @@ export class Rect extends BaseShape {
     };
 
     this.createSVGNode("rect", {
-      x: this.attributes.x,
-      y: this.attributes.y,
-      width: this.attributes.width,
-      height: this.attributes.height,
-      rx: this.attributes.rx,
-      ry: this.attributes.ry,
-      opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.black,
-      fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.none,
-      strokeOpacity: args?.strokeOpacity ?? 1,
-      strokeWidth: args?.strokeWidth ?? 1,
-      strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
-      strokeDashArray: SDSVGNode.toStrokeDashArray(
-        args?.strokeDashArray ?? args?.strokeDasharray,
-      ),
-      strokeLineCap: args?.strokeLineCap ?? "butt",
-      strokeLineJoin: args?.strokeLineJoin ?? "miter",
       filter: Filter.toURLString(args?.filter),
     });
 

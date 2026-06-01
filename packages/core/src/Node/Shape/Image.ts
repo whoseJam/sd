@@ -34,6 +34,7 @@ export class Image extends BaseShape {
 
     this.attributes = {
       ...this.attributes,
+      opacity: args?.opacity ?? 1,
       x: args?.x ?? 0,
       y: args?.y ?? 0,
       width: args?.width ?? 40,
@@ -42,12 +43,6 @@ export class Image extends BaseShape {
     };
 
     this.renderer = this.createSVGNode("image", {
-      x: this.attributes.x,
-      y: this.attributes.y,
-      width: this.attributes.width,
-      height: this.attributes.height,
-      src: this.attributes.src,
-      opacity: args?.opacity ?? 1,
       preserveAspectRatio: "xMidYMid meet",
     });
 

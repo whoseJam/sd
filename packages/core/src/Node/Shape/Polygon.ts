@@ -50,16 +50,11 @@ export class Polygon extends BaseShape {
 
     this.attributes = {
       ...this.attributes,
-      points: Polygon.toPoints(args?.points),
-    };
-
-    this.renderer = this.createSVGNode("polygon", {
-      points: this.attributes.points,
       transformOrigin: ["center", "center"],
       opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.black,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.black)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.none)),
       fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.none,
       strokeOpacity: args?.strokeOpacity ?? 1,
       strokeWidth: args?.strokeWidth ?? 1,
       strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
@@ -68,6 +63,10 @@ export class Polygon extends BaseShape {
       ),
       strokeLineCap: args?.strokeLineCap ?? "butt",
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      points: Polygon.toPoints(args?.points),
+    };
+
+    this.renderer = this.createSVGNode("polygon", {
       filter: Filter.toURLString(args?.filter),
     });
 
