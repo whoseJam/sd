@@ -480,12 +480,81 @@ export class PathEngine {
     }
     return cubics;
   }
+  // Convert both paths to all-cubic form and align them to the same
+  // number of cubic segments so caller can lerp them operator-by-
+  // operator. Alignment splits the longest cubic in the shorter array
+  // at t=0.5 using De Casteljau, repeating until the counts match.
   static toCubics(
     path1: string | PathOpers,
     path2: string | PathOpers,
   ): [PathOpers, PathOpers] {
-    // @ts-ignore
-    return Snap.path.toCubic(path1, path2);
+    const a = this.toCubic(path1);
+    const b = this.toCubic(path2);
+    while (a.length < b.length && PathEngine.splitLongestCubic(a)) {}
+    while (b.length < a.length && PathEngine.splitLongestCubic(b)) {}
+    return [a, b];
+  }
+
+  // Find the cubic with the longest chord and replace it with its two
+  // De Casteljau halves at t=0.5. Returns false if there are no cubics
+  // to split (path is just [M]) so the caller's while-loop terminates.
+  private static splitLongestCubic(path: PathOpers): boolean {
+    let bestIdx = -1;
+    let bestLen = -1;
+    let prevX = path[0][1] as number;
+    let prevY = path[0][2] as number;
+    for (let i = 1; i < path.length; i++) {
+      const op = path[i];
+      if (op[0] !== "C") {
+        prevX = op[op.length - 2] as number;
+        prevY = op[op.length - 1] as number;
+        continue;
+      }
+      const ex = op[5] as number;
+      const ey = op[6] as number;
+      const dx = ex - prevX;
+      const dy = ey - prevY;
+      const len = dx * dx + dy * dy;
+      if (len > bestLen) {
+        bestLen = len;
+        bestIdx = i;
+      }
+      prevX = ex;
+      prevY = ey;
+    }
+    if (bestIdx < 0) return false;
+    let px = path[0][1] as number;
+    let py = path[0][2] as number;
+    for (let i = 1; i < bestIdx; i++) {
+      px = path[i][path[i].length - 2] as number;
+      py = path[i][path[i].length - 1] as number;
+    }
+    const op = path[bestIdx];
+    const c1x = op[1] as number;
+    const c1y = op[2] as number;
+    const c2x = op[3] as number;
+    const c2y = op[4] as number;
+    const x = op[5] as number;
+    const y = op[6] as number;
+    const q0x = (px + c1x) / 2;
+    const q0y = (py + c1y) / 2;
+    const q1x = (c1x + c2x) / 2;
+    const q1y = (c1y + c2y) / 2;
+    const q2x = (c2x + x) / 2;
+    const q2y = (c2y + y) / 2;
+    const r0x = (q0x + q1x) / 2;
+    const r0y = (q0y + q1y) / 2;
+    const r1x = (q1x + q2x) / 2;
+    const r1y = (q1y + q2y) / 2;
+    const s0x = (r0x + r1x) / 2;
+    const s0y = (r0y + r1y) / 2;
+    path.splice(
+      bestIdx,
+      1,
+      ["C", q0x, q0y, r0x, r0y, s0x, s0y],
+      ["C", r1x, r1y, q2x, q2y, x, y],
+    );
+    return true;
   }
   static toString(operators: PathOpers): string {
     let ans = "";

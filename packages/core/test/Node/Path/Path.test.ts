@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type { SDNode } from "@/Node/SDNode";
@@ -12,16 +10,10 @@ import { PathEngine } from "@/Node/Path/PathEngine";
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
 
-// Path needs three things at runtime that the default test env doesn't
-// provide:
-//   1. Snap as a global (PathEngine.flipY / toBox call Snap.parsePathString)
-//   2. Root.svg (PathEngine.init parents its pathSVG under it)
-//   3. PathEngine.init (creates the off-screen <path> used for bbox)
+// Path needs Root.svg (PathEngine.init parents its bbox-measuring
+// off-screen <path> under it) and PathEngine.init itself. Path parsing
+// is fully in-house now (no Snap), so no external library to load.
 beforeAll(() => {
-  if (!(globalThis as any).Snap) {
-    const snapPath = path.resolve(__dirname, "../../../../assets/snap.svg.js");
-    new Function(fs.readFileSync(snapPath, "utf8")).call(globalThis);
-  }
   if (!Root.svg) Root.init();
   if (!(PathEngine as any).pathSVG) PathEngine.init();
 });

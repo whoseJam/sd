@@ -33,9 +33,9 @@ module.exports = {
   },
   /**
    * Mirror packages/assets/ into `<dest>/vendor/` so that local builds can
-   * load every external dependency (snap.svg, dagre, MathJax2/3, themes,
-   * font-awesome, customcontrols, fonts) from the same origin as the deck
-   * itself — no whosejam.site or any other CDN required.
+   * load every external dependency (dagre, MathJax2/3, themes, font-awesome,
+   * customcontrols, fonts) from the same origin as the deck itself — no
+   * whosejam.site or any other CDN required.
    */
   copyVendorAssets(projectRoot, dest) {
     const src = path.join(projectRoot, "packages", "assets");
