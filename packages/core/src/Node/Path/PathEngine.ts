@@ -1,5 +1,6 @@
-import { Root, svg } from "@/Interact/Root";
 import type { SDBox, SDNode } from "@/Node/SDNode";
+
+import { Root, svg } from "@/Interact/Root";
 import { RenderNode } from "@/Renderer/RenderNode";
 
 export type PathCode =

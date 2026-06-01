@@ -1,6 +1,6 @@
+const colors = require("colors-console");
 const fs = require("fs");
 const path = require("path");
-const colors = require("colors-console");
 
 let parsed = false;
 let config = undefined;

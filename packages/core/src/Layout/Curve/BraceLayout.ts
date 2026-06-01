@@ -1,7 +1,8 @@
-import { Vector as V } from "@/Math/Vector";
 import type { Path } from "@/Node/Path/Path";
-import { PathPen } from "@/Node/Path/PathPen";
 import type { SDNode } from "@/Node/SDNode";
+
+import { Vector as V } from "@/Math/Vector";
+import { PathPen } from "@/Node/Path/PathPen";
 import { trim } from "@/Utility/Trim";
 
 interface BraceLayoutArgs {

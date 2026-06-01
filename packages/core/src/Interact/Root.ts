@@ -1,7 +1,8 @@
-import { Window } from "@/Animate/Window";
 import type { SDBox } from "@/Node/SDNode";
-import { RenderNode } from "@/Renderer/RenderNode";
+
+import { Window } from "@/Animate/Window";
 import { Group } from "@/Node/Other/Group";
+import { RenderNode } from "@/Renderer/RenderNode";
 
 /**
  * Gets the svg canvas.

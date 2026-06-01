@@ -1,10 +1,11 @@
-import type { SubtextView, TextView } from "@/Node/Text/TextEngine/TextView";
-import { getTextPaths, getTextPaths2 } from "@/Node/Text/TextEngine/Path";
-import { Animate as A } from "@/Animate/Animate";
-import { RenderNode } from "@/Renderer/RenderNode";
 import type { Text } from "@/Node/Text/Text";
+import type { SubtextView, TextView } from "@/Node/Text/TextEngine/TextView";
+
 import { Action } from "@/Animate/Action";
+import { Animate as A } from "@/Animate/Animate";
 import { lazyInterp } from "@/Animate/Interp";
+import { getTextPaths, getTextPaths2 } from "@/Node/Text/TextEngine/Path";
+import { RenderNode } from "@/Renderer/RenderNode";
 
 export function typewritterProcess() {
   return function (

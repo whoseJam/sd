@@ -1,6 +1,7 @@
+import type { RenderNode } from "@/Renderer/RenderNode";
+
 import { SDNode } from "@/Node/SDNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
-import type { RenderNode } from "@/Renderer/RenderNode";
 
 export class Group extends SDSVGNode {
   protected nodes: Array<SDNode> = [];

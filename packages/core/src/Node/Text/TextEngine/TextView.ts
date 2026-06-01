@@ -1,8 +1,9 @@
-import { Animate as A } from "@/Animate/Animate";
+import type { BaseText } from "@/Node/Text/BaseText";
 import type { Text } from "@/Node/Text/Text";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
-import type { BaseText } from "@/Node/Text/BaseText";
+
+import { Animate as A } from "@/Animate/Animate";
 
 type SDColorOrDefault = SDColor | "default";
 type NumberOrDefault = number | "default";

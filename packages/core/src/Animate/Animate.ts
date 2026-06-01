@@ -1,9 +1,10 @@
 import type { Action } from "@/Animate/Action";
+import type { RenderNode } from "@/Renderer/RenderNode";
+import type { SDNode } from "@/sd";
+
 import { ActionList } from "@/Animate/ActionList";
 import { Window } from "@/Animate/Window";
 import { Status as S } from "@/Interact/Status";
-import type { RenderNode } from "@/Renderer/RenderNode";
-import type { SDNode } from "@/sd";
 import { Dom } from "@/Utility/Dom";
 
 let checkWaterMarkTick = 0;

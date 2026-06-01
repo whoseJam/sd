@@ -1,5 +1,5 @@
-import { SDSVGNode } from "@/Node/SDSVGNode";
 import { Percent } from "@/Node/SDNode";
+import { SDSVGNode } from "@/Node/SDSVGNode";
 
 export class BaseFilter extends SDSVGNode {
   /* model fields:

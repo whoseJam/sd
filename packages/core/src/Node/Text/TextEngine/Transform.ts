@@ -1,16 +1,17 @@
-import { match } from "@/Node/Text/TextEngine/Mapping";
 import type { BaseText, TextMapping } from "@/Node/Text/BaseText";
-import { processMapping } from "@/Node/Text/BaseText";
 import type {
   PathStyle,
   SubtextView,
   TextView,
 } from "@/Node/Text/TextEngine/TextView";
+
+import { Action } from "@/Animate/Action";
+import { Animate as A } from "@/Animate/Animate";
+import { Interp, lazyInterp } from "@/Animate/Interp";
+import { processMapping } from "@/Node/Text/BaseText";
+import { match } from "@/Node/Text/TextEngine/Mapping";
 import { getPaths } from "@/Node/Text/TextEngine/Path";
 import { RenderNode } from "@/Renderer/RenderNode";
-import { Action } from "@/Animate/Action";
-import { Interp, lazyInterp } from "@/Animate/Interp";
-import { Animate as A } from "@/Animate/Animate";
 
 export function transformProcess(mapping: TextMapping) {
   return function (source: TextView, target: TextView) {

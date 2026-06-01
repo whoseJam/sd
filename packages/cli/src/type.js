@@ -1,8 +1,9 @@
-const ts = require("gulp-typescript");
 const gulp = require("gulp");
+const ts = require("gulp-typescript");
 const path = require("path");
-const utils = require("./utils");
+
 const parser = require("./parser");
+const utils = require("./utils");
 
 function create() {
   const project = ts.createProject("tsconfig.json");

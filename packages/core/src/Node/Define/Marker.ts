@@ -1,6 +1,7 @@
+import type { SDBox } from "@/Node/SDNode";
+
 import { SDSVGNode } from "@/Node/SDSVGNode";
 import { RenderNode } from "@/Renderer/RenderNode";
-import type { SDBox } from "@/Node/SDNode";
 
 export class Marker extends SDSVGNode {
   /* model fields:

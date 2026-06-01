@@ -1,8 +1,9 @@
+import type { SDRuntime } from "@/Runtime";
+import type { SDAllColor, SDHEXColor, SDRGBAColor } from "@/Utility/Color";
+
 import { Interp } from "@/Animate/Interp";
 import { SDNode } from "@/Node/SDNode";
 import { RenderNode } from "@/Renderer/RenderNode";
-import type { SDRuntime } from "@/Runtime";
-import type { SDAllColor, SDHEXColor, SDRGBAColor } from "@/Utility/Color";
 import { Color as C } from "@/Utility/Color";
 
 export type StrokeLineCap = "butt" | "round" | "square";

@@ -1,18 +1,19 @@
-import type { TextMapping } from "@/Node/Text/BaseText";
-import { BaseText } from "@/Node/Text/BaseText";
 import type { Group } from "@/Node/Other/Group";
-import { RenderNode } from "@/Renderer/RenderNode";
-import { PathStyle, createTextView } from "@/Node/Text/TextEngine/TextView";
-import { MathManager } from "@/Node/Text/TextEngine/Mathjax";
+import type { TextMapping } from "@/Node/Text/BaseText";
+import type { SDAllColor, SDColor } from "@/Utility/Color";
+
+import { Interp } from "@/Animate/Interp";
+import { BaseText } from "@/Node/Text/BaseText";
 import { buildAnimation } from "@/Node/Text/TextEngine/Animation";
+import { matchSubtext } from "@/Node/Text/TextEngine/Mapping";
+import { MathManager } from "@/Node/Text/TextEngine/Mathjax";
+import { PathStyle, createTextView } from "@/Node/Text/TextEngine/TextView";
 import {
   transformPostProcess,
   transformProcess,
 } from "@/Node/Text/TextEngine/Transform";
-import { Interp } from "@/Animate/Interp";
-import type { SDAllColor, SDColor } from "@/Utility/Color";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { Color as C } from "@/Utility/Color";
-import { matchSubtext } from "@/Node/Text/TextEngine/Mapping";
 
 export class Math extends BaseText {
   protected string: string = "";

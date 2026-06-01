@@ -1,7 +1,8 @@
+import type { Group } from "@/Node/Other/Group";
+
 import { Interp } from "@/Animate/Interp";
 import { SDHTMLNode } from "@/Node/SDHTMLNode";
 import { RenderNode } from "@/Renderer/RenderNode";
-import type { Group } from "@/Node/Other/Group";
 
 class CaptionObject extends RenderNode {
   caption: Caption;

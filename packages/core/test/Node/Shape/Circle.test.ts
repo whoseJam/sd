@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { Circle } from "@/Node/Shape/Circle";
+
 import type { SDNode } from "@/Node/SDNode";
+
+import { Circle } from "@/Node/Shape/Circle";
 
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);

@@ -1,6 +1,7 @@
+import type { RenderNode } from "@/Renderer/RenderNode";
+
 import { Interp } from "@/Animate/Interp";
 import { SDSVGNode } from "@/Node/SDSVGNode";
-import type { RenderNode } from "@/Renderer/RenderNode";
 
 type TextMappingSubtextItem = [string, string];
 type TextMappingObjectSubtextItem = [BaseText, string, string];

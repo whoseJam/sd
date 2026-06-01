@@ -1,4 +1,5 @@
 import { SDNode } from "@/Node/SDNode";
+
 import { Color } from "./Color";
 
 export class Check {

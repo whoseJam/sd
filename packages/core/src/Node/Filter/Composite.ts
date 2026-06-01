@@ -1,6 +1,7 @@
-import { TwoInputFilter } from "@/Node/Filter/TwoInputFilter";
 import type { Filter } from "@/Node/Filter/Filter";
+
 import { Interp } from "@/Animate/Interp";
+import { TwoInputFilter } from "@/Node/Filter/TwoInputFilter";
 import { Percent } from "@/Node/SDNode";
 
 type Operator =

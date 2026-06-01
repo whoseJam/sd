@@ -1,19 +1,20 @@
-import { Action } from "@/Animate/Action";
-import { Animate } from "@/Animate/Animate";
-import { Context } from "@/Animate/Context";
 import type {
   InterpCreator,
   InterpFunction,
   InterpObject,
   LazyInterpFunction,
 } from "@/Animate/Interp";
-import { Interp, isInterpCreator } from "@/Animate/Interp";
 import type { SDEasingFunction } from "@/Math/EasingFunction";
-import { EasingFunction as T } from "@/Math/EasingFunction";
-import type { RenderNode } from "@/Renderer/RenderNode";
-import type { Group } from "@/Node/Other/Group";
 import type { Filter } from "@/Node/Filter/Filter";
+import type { Group } from "@/Node/Other/Group";
+import type { RenderNode } from "@/Renderer/RenderNode";
+
+import { Action } from "@/Animate/Action";
+import { Animate } from "@/Animate/Animate";
+import { Context } from "@/Animate/Context";
+import { Interp, isInterpCreator } from "@/Animate/Interp";
 import { Window } from "@/Animate/Window";
+import { EasingFunction as T } from "@/Math/EasingFunction";
 
 export type Percent = `${number}%`;
 export type NumberOrPercent = number | Percent;

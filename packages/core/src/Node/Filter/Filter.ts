@@ -1,11 +1,12 @@
-import type { Percent } from "@/Node/SDNode";
-import { SDNode } from "@/Node/SDNode";
 import type { Group } from "@/Node/Other/Group";
+import type { Percent } from "@/Node/SDNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { URLString } from "@/Utility/String";
-import { SDString } from "@/Utility/String";
-import { BaseFilter } from "@/Node/Filter/BaseFilter";
+
 import { Interp } from "@/Animate/Interp";
+import { BaseFilter } from "@/Node/Filter/BaseFilter";
+import { SDNode } from "@/Node/SDNode";
+import { SDString } from "@/Utility/String";
 
 export type SDFilter = Filter | string | URLString;
 

@@ -1,8 +1,9 @@
+import type { Group } from "@/Node/Other/Group";
+import type { SDNodeAttributes } from "@/Node/SDNode";
+import type { RenderNode } from "@/Renderer/RenderNode";
+
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
-import type { Group } from "@/Node/Other/Group";
-import type { RenderNode } from "@/Renderer/RenderNode";
-import type { SDNodeAttributes } from "@/Node/SDNode";
 
 export type ImageAttributes = SDNodeAttributes & {
   x: number;

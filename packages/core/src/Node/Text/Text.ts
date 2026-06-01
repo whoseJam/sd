@@ -1,6 +1,17 @@
+import type { SDFilter } from "@/Node/Filter/Filter";
+import type { Group } from "@/Node/Other/Group";
+import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { TextMapping } from "@/Node/Text/BaseText";
+import type { SDColor } from "@/Utility/Color";
+
+import { Interp } from "@/Animate/Interp";
+import { Filter } from "@/Node/Filter/Filter";
+import { SDSVGNode } from "@/Node/SDSVGNode";
 import { BaseText } from "@/Node/Text/BaseText";
 import { buildAnimation } from "@/Node/Text/TextEngine/Animation";
+import { matchSubtext } from "@/Node/Text/TextEngine/Mapping";
+import { FontManager } from "@/Node/Text/TextEngine/Opentype";
+import { createTextView, PathStyle } from "@/Node/Text/TextEngine/TextView";
 import {
   transformProcess,
   transformPostProcess,
@@ -9,17 +20,8 @@ import {
   typewritterProcess,
   typewritterPostProcess,
 } from "@/Node/Text/TextEngine/Typewritter";
-import type { SDColor } from "@/Utility/Color";
-import { matchSubtext } from "@/Node/Text/TextEngine/Mapping";
-import { createTextView, PathStyle } from "@/Node/Text/TextEngine/TextView";
 import { Color as C } from "@/Utility/Color";
-import { FontManager } from "@/Node/Text/TextEngine/Opentype";
-import type { Group } from "@/Node/Other/Group";
-import { Interp } from "@/Animate/Interp";
-import type { SDFilter } from "@/Node/Filter/Filter";
-import { Filter } from "@/Node/Filter/Filter";
-import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
-import { SDSVGNode } from "@/Node/SDSVGNode";
+
 import type { TransformOrigin } from "../SDNode";
 
 export class Text extends BaseText {

@@ -1,14 +1,15 @@
 const gulp = require("gulp");
-const sd = require("./packages/cli/src/sd");
-const type = require("./packages/cli/src/type");
+
 const animation = require("./packages/cli/src/animation");
 const animationGroup = require("./packages/cli/src/animationGroup");
 const element = require("./packages/cli/src/element");
+const parser = require("./packages/cli/src/parser");
 const ppt = require("./packages/cli/src/ppt");
 const reveal = require("./packages/cli/src/reveal");
 const revealPlugin = require("./packages/cli/src/revealPlugin");
+const sd = require("./packages/cli/src/sd");
 const theme = require("./packages/cli/src/theme");
-const parser = require("./packages/cli/src/parser");
+const type = require("./packages/cli/src/type");
 
 global["projectRoot"] = __dirname.replaceAll("\\", "/");
 

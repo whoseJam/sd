@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-const gulp = require("gulp");
-const path = require("path");
-const utils = require("./utils");
-const parser = require("./parser");
 const colors = require("colors-console");
-const webpack = require("webpack-stream");
+const gulp = require("gulp");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack-stream");
+
+const parser = require("./parser");
+const utils = require("./utils");
 
 function truncateAtStackTrace(errorMessage) {
   const index = errorMessage.indexOf("    at");

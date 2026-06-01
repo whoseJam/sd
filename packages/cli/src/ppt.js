@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
-const w = require("webpack");
+const colors = require("colors-console");
 const fs = require("fs");
 const gulp = require("gulp");
-const path = require("path");
-const utils = require("./utils");
-const parser = require("./parser");
-const webpack = require("webpack-stream");
-const animation = require("./animation");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const colors = require("colors-console");
+const path = require("path");
+const w = require("webpack");
+const webpack = require("webpack-stream");
+
+const animation = require("./animation");
+const parser = require("./parser");
+const utils = require("./utils");
 const eventListener = {};
 
 defineEventListener("cpp", {

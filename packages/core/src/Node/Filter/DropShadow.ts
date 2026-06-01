@@ -1,10 +1,11 @@
-import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
-import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
 import type { Filter } from "@/Node/Filter/Filter";
-import { Interp } from "@/Animate/Interp";
+import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
 import type { SDColor } from "@/Utility/Color";
-import { SDAllColor, Color as C } from "@/Utility/Color";
+
+import { Interp } from "@/Animate/Interp";
+import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
 import { Percent } from "@/Node/SDNode";
+import { SDAllColor, Color as C } from "@/Utility/Color";
 
 export class DropShadow extends OneInputFilter {
   /* model fields:

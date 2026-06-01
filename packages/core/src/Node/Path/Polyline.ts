@@ -1,15 +1,16 @@
-import { BasePath } from "@/Node/Path/BasePath";
-import { PolylineEngine } from "@/Node/Path/PolylineEngine";
+import type { SDFilter } from "@/Node/Filter/Filter";
+import type { Group } from "@/Node/Other/Group";
+import type { TransformOrigin } from "@/Node/SDNode";
+import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
-import { Color as C } from "@/Utility/Color";
-import type { SDFilter } from "@/Node/Filter/Filter";
-import { Filter } from "@/Node/Filter/Filter";
-import type { Group } from "@/Node/Other/Group";
-import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
-import { SDSVGNode } from "@/Node/SDSVGNode";
+
 import { Interp } from "@/Animate/Interp";
-import type { TransformOrigin } from "@/Node/SDNode";
+import { Filter } from "@/Node/Filter/Filter";
+import { BasePath } from "@/Node/Path/BasePath";
+import { PolylineEngine } from "@/Node/Path/PolylineEngine";
+import { SDSVGNode } from "@/Node/SDSVGNode";
+import { Color as C } from "@/Utility/Color";
 
 export class Polyline extends BasePath {
   protected points: Array<[number, number]> = [];

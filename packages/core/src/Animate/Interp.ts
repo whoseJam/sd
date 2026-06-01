@@ -1,5 +1,6 @@
-import { Action } from "@/Animate/Action";
 import type { PathOper, PathOpers } from "@/Node/Path/PathEngine";
+
+import { Action } from "@/Animate/Action";
 import { PathEngine } from "@/Node/Path/PathEngine";
 import { Color } from "@/Utility/Color";
 

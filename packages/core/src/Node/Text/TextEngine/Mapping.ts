@@ -3,6 +3,7 @@ import type {
   TextMappingLocation,
 } from "@/Node/Text/BaseText";
 import type { TextView } from "@/Node/Text/TextEngine/TextView";
+
 import { SubtextView } from "@/Node/Text/TextEngine/TextView";
 import { make1d } from "@/Utility/Base";
 

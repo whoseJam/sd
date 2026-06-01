@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
+const colors = require("colors-console");
 const fs = require("fs");
 const gulp = require("gulp");
 const path = require("path");
-const utils = require("./utils");
-const parser = require("./parser");
+
 const animation = require("./animation");
-const colors = require("colors-console");
+const parser = require("./parser");
+const utils = require("./utils");
 const eventListener = {};
 
 defineEventListener("js", {

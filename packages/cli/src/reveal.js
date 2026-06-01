@@ -1,6 +1,7 @@
 const gulp = require("gulp");
-const utils = require("./utils");
 const webpack = require("webpack-stream");
+
+const utils = require("./utils");
 
 /**
  * Compile myreveal.js to the target folder.

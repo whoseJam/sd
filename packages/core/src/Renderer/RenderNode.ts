@@ -1,12 +1,13 @@
+import type { SDNode } from "@/Node/SDNode";
+
 import { Action } from "@/Animate/Action";
 import { Animate } from "@/Animate/Animate";
+import { Window } from "@/Animate/Window";
 import { EasingFunction as T } from "@/Math/EasingFunction";
-import type { SDNode } from "@/Node/SDNode";
 import { isStyleKey, setAttribute } from "@/Renderer/Attribute";
 import { HTML, HTML_INNERHTML_SET } from "@/Renderer/HTML";
 import { SVG } from "@/Renderer/SVG";
 import { Dom } from "@/Utility/Dom";
-import { Window } from "@/Animate/Window";
 
 function parseText(text: string) {
   let ans = "";

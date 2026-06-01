@@ -1,7 +1,7 @@
 const gulp = require("gulp");
 const path = require("path");
-const webpack = require("webpack-stream");
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require("webpack-stream");
 
 module.exports = function (targetFolder) {
   return gulp

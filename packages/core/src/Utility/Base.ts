@@ -1,3 +1,4 @@
+import { Animate as A } from "@/Animate/Animate";
 import {
   FIRST_INTER_STAGE,
   LAST_INTER_STAGE,
@@ -5,7 +6,6 @@ import {
   pause,
   Window,
 } from "@/Animate/Window";
-import { Animate as A } from "@/Animate/Animate";
 
 let initFinished: boolean = true;
 

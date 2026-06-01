@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { Action } from "@/Animate/Action";
 import { Interp, lazyInterp } from "@/Animate/Interp";
 import { Window } from "@/Animate/Window";

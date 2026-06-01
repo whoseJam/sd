@@ -1,8 +1,8 @@
-const path = require("path");
 const gulp = require("gulp");
+const path = require("path");
 const sass = require("gulp-sass")(require("sass"));
-const cleanCSS = require("gulp-clean-css");
 const autoprefixer = require("gulp-autoprefixer");
+const cleanCSS = require("gulp-clean-css");
 
 /**
  * Compile all theme css file to the target folder.

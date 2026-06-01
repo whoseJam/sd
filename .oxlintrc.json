@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "jsPlugins": ["eslint-plugin-perfectionist"],
   "categories": {
     "correctness": "off"
   },
@@ -15,7 +16,12 @@
     "packages/reveal/src/plugin/HighlightEngine.js",
     "ppt/**"
   ],
-  "rules": {},
+  "rules": {
+    "perfectionist/sort-imports": [
+      "error",
+      { "type": "natural", "order": "asc" }
+    ]
+  },
   "overrides": [
     {
       "files": ["**/*.ts", "**/*.tsx"],

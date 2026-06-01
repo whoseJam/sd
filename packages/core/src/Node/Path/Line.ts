@@ -1,14 +1,16 @@
-import { Interp } from "@/Animate/Interp";
-import { Vector as V } from "@/Math/Vector";
-import { BasePath } from "@/Node/Path/BasePath";
+import type { SDFilter } from "@/Node/Filter/Filter";
 import type { Group } from "@/Node/Other/Group";
+import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
-import { Color as C } from "@/Utility/Color";
-import type { SDFilter } from "@/Node/Filter/Filter";
+
+import { Interp } from "@/Animate/Interp";
+import { Vector as V } from "@/Math/Vector";
 import { Filter } from "@/Node/Filter/Filter";
-import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
+import { BasePath } from "@/Node/Path/BasePath";
 import { SDSVGNode } from "@/Node/SDSVGNode";
+import { Color as C } from "@/Utility/Color";
+
 import type { TransformOrigin } from "../SDNode";
 
 export class Line extends BasePath {

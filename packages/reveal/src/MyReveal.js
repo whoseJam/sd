@@ -2,6 +2,7 @@ const plugins = [];
 
 import Reveal from "reveal.js";
 import "@sd/element";
+
 import "./plugin/Chalkboard";
 import Codeblock from "./plugin/Codeblock";
 import Highlight from "./plugin/HighlightEngine";

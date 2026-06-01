@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@svgdotjs/svg.js": "^3.2.0",
+    "eslint-plugin-perfectionist": "^5.9.0",
     "gulp": "^5.0.0",
     "oxfmt": "^0.41.0",
     "oxlint": "^1.58.0",

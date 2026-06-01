@@ -1,7 +1,8 @@
-import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
-import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
 import type { Filter } from "@/Node/Filter/Filter";
+import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
+
 import { Interp } from "@/Animate/Interp";
+import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
 
 export class GaussianBlur extends OneInputFilter {
   /* model fields:

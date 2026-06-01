@@ -1,10 +1,11 @@
-import { Animate as A } from "@/Animate/Animate";
-import { Text } from "@/Node/Text/Text";
-import { Math } from "@/Node/Text/Math";
-import { PathView } from "@/Node/Text/TextEngine/TextView";
-import { FontManager } from "@/Node/Text/TextEngine/Opentype";
 import type { BaseText } from "@/Node/Text/BaseText";
+
+import { Animate as A } from "@/Animate/Animate";
+import { Math } from "@/Node/Text/Math";
+import { Text } from "@/Node/Text/Text";
 import { MathManager } from "@/Node/Text/TextEngine/Mathjax";
+import { FontManager } from "@/Node/Text/TextEngine/Opentype";
+import { PathView } from "@/Node/Text/TextEngine/TextView";
 
 export function getPaths(text: BaseText, t: number): Array<PathView> {
   if (text instanceof Text) return getTextPaths(text, t);

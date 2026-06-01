@@ -1,7 +1,9 @@
+import opentype from "opentype.js";
+
+import type { Text } from "@/Node/Text/Text";
+
 import { Root } from "@/Interact/Root";
 import { RenderNode } from "@/Renderer/RenderNode";
-import type { Text } from "@/Node/Text/Text";
-import opentype from "opentype.js";
 
 export class FontManager {
   private static textSVG: RenderNode;

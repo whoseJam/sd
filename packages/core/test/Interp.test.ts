@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+
+import { Action } from "@/Animate/Action";
 import {
   Interp,
   InterpObject,
@@ -6,7 +8,6 @@ import {
   isLazyInterpFunction,
   lazyInterp,
 } from "@/Animate/Interp";
-import { Action } from "@/Animate/Action";
 
 const mockTarget = () => ({ setAttribute: vi.fn() });
 

@@ -1,13 +1,14 @@
-import { Action } from "@/Animate/Action";
-import { Animate } from "@/Animate/Animate";
+import type { LazyInterpFunction } from "@/Animate/Interp";
+import type { BaseText } from "@/Node/Text/BaseText";
 import type {
   PathStyle,
   SubtextView,
   TextView,
 } from "@/Node/Text/TextEngine/TextView";
+
+import { Action } from "@/Animate/Action";
+import { Animate } from "@/Animate/Animate";
 import { createTextView } from "@/Node/Text/TextEngine/TextView";
-import type { LazyInterpFunction } from "@/Animate/Interp";
-import type { BaseText } from "@/Node/Text/BaseText";
 
 export function buildAnimation(
   text: BaseText,

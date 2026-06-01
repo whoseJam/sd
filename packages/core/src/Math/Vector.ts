@@ -1,6 +1,7 @@
+import { BooleanOperations, Polygon as PolygonLogic } from "@flatten-js/core";
+
 import { svg } from "@/Interact/Root";
 import { Path } from "@/Node/Path/Path";
-import { BooleanOperations, Polygon as PolygonLogic } from "@flatten-js/core";
 
 function ddcmp(x) {
   if (Math.abs(x) > 1e-2) return 1;

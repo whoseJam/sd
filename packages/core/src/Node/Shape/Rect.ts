@@ -1,14 +1,15 @@
-import { BaseShape } from "@/Node/Shape/BaseShape";
+import type { SDFilter } from "@/Node/Filter/Filter";
+import type { Group } from "@/Node/Other/Group";
+import type { SDNodeAttributes } from "@/Node/SDNode";
+import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
-import { Color as C } from "@/Utility/Color";
+
 import { Interp } from "@/Animate/Interp";
-import type { Group } from "@/Node/Other/Group";
-import type { SDFilter } from "@/Node/Filter/Filter";
 import { Filter } from "@/Node/Filter/Filter";
-import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
-import type { SDNodeAttributes } from "@/Node/SDNode";
+import { BaseShape } from "@/Node/Shape/BaseShape";
+import { Color as C } from "@/Utility/Color";
 
 export type RectAttributes = SDNodeAttributes & {
   x: number;

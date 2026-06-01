@@ -1,9 +1,10 @@
 import type { InterpFunction, LazyInterpFunction } from "@/Animate/Interp";
-import { InterpObject, isLazyInterpFunction } from "@/Animate/Interp";
-import { Window } from "@/Animate/Window";
 import type { SDEasingFunction } from "@/Math/EasingFunction";
 import type { SDNode } from "@/Node/SDNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
+
+import { InterpObject, isLazyInterpFunction } from "@/Animate/Interp";
+import { Window } from "@/Animate/Window";
 
 export class Action {
   static stopFlag = 1 << 0;

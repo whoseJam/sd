@@ -1,10 +1,11 @@
-import { RenderNode } from "@/Renderer/RenderNode";
-import { Root } from "@/Interact/Root";
 import type { PathStyle } from "@/Node/Text/TextEngine/TextView";
-import { PathView } from "@/Node/Text/TextEngine/TextView";
-import { Dom } from "@/Utility/Dom";
+
+import { Root } from "@/Interact/Root";
 import { PathPen } from "@/Node/Path/PathPen";
+import { PathView } from "@/Node/Text/TextEngine/TextView";
+import { RenderNode } from "@/Renderer/RenderNode";
 import { Color as C } from "@/Utility/Color";
+import { Dom } from "@/Utility/Dom";
 
 export class MathManager {
   private static mathSVG: RenderNode;

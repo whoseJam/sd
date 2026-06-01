@@ -1,6 +1,8 @@
-import { mapTo } from "@/Math/Math";
-import type { SDNode } from "@/Node/SDNode";
 import { layout as DAGLayoutEngine, graphlib as DAGLib } from "dagre";
+
+import type { SDNode } from "@/Node/SDNode";
+
+import { mapTo } from "@/Math/Math";
 
 type Align = "UL" | "UR" | "DL" | "DR" | "C";
 type Direction = "TB" | "BT" | "LR" | "RL";

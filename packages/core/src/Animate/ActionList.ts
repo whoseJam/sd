@@ -1,8 +1,9 @@
+import type { RenderNode } from "@/Renderer/RenderNode";
+
 import { Action } from "@/Animate/Action";
 import { Window } from "@/Animate/Window";
 import { SDNode } from "@/Node/SDNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
-import type { RenderNode } from "@/Renderer/RenderNode";
 
 // the animatedKey which will impact the shape (boundingBox) of an element
 const SIZE_RELATED_KEY = new Set([

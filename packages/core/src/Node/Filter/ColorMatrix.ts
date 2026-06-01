@@ -1,8 +1,9 @@
+import type { Filter } from "@/Node/Filter/Filter";
 import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
+
+import { Interp } from "@/Animate/Interp";
 import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
 import { Percent } from "@/Node/SDNode";
-import type { Filter } from "@/Node/Filter/Filter";
-import { Interp } from "@/Animate/Interp";
 
 type ColorMatrixType = "saturate" | "hueRotate" | "luminanceToAlpha" | "matrix";
 

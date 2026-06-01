@@ -1,7 +1,8 @@
+import type { SDNode } from "@/Node/SDNode";
+
 import { Status } from "@/Interact/Status";
 import { BaseControl } from "@/Node/Control/BaseControl";
 import { Dom } from "@/Utility/Dom";
-import type { SDNode } from "@/Node/SDNode";
 
 export class Slider extends BaseControl {
   /* model fields:

@@ -1,7 +1,8 @@
+import type { SDNode } from "@/Node/SDNode";
+
 import { Interp } from "@/Animate/Interp";
 import { BaseControl } from "@/Node/Control/BaseControl";
 import { Color as C } from "@/Utility/Color";
-import type { SDNode } from "@/Node/SDNode";
 
 export class Button extends BaseControl {
   /* model fields:
