@@ -5,11 +5,14 @@ import type { SDNode } from "@/Node/SDNode";
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
 
-// 这里测构造期 DOM（math→SVG 翻转）+ 后续 mutation 的模型 / listener 契约。
-// mutation→DOM 那一层（forceToFinish 后断言 DOM）暂时跳过：正确做法是
-// 走 Animate 时间线再 flush，但 createSVGNode 在构造期对已转 accessor 字段
-// 触发 setter 推了 renderer 未赋值的 bogus Action，flush 时会崩。等
-// createSVGNode 把"模型初始化"从"DOM 绘制"里拆出来之后再补这层。
+// Covers construction-time DOM (math→SVG flip) and the model/listener
+// contract of subsequent mutations. The mutation→DOM tier (assert DOM
+// after Animate.forceToFinish) is deliberately skipped: the correct
+// approach is to drive the Animate timeline and flush it, but
+// createSVGNode currently fires accessor setters during construction
+// before this.renderer is assigned, queuing bogus Actions that crash
+// on flush. Add that tier once createSVGNode separates model init from
+// DOM paint.
 describe("Circle", () => {
   describe("construction", () => {
     it("flips cy on the DOM but keeps math cy on the model", () => {

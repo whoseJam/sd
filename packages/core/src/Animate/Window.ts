@@ -14,11 +14,13 @@ export class Window {
   static RATE = 1;
   static ACTION_TICK = 0;
   static ACTION_DELAY = 0;
-  // 专门给 Base.loopUpdate 的优化标志。loopUpdate 里用户每帧自己算新状态，
-  // 这时 triggerAttributeChanged 没必要再 push Action 走 Interp 插值——
-  // 既不对（下一帧又被覆盖）也浪费。loopUpdate 在回调前后 toggle 这个 flag，
-  // 让 setter 的写改走 renderAttribute 直接落 DOM。
-  // 不要把这个 flag 当通用"同步写 DOM"开关用。
+  // Internal optimization flag for Base.loopUpdate. In loopUpdate the user
+  // computes fresh state on every frame, so triggerAttributeChanged should
+  // not push an Action onto the timeline — the interpolation would be
+  // both wrong (next frame overwrites it) and wasted work. loopUpdate
+  // toggles this around its callback so setters write DOM directly via
+  // renderAttribute instead of queuing Actions.
+  // Do not treat this as a generic "write DOM synchronously" switch.
   static SHOULD_INTERP = true;
   static CURRENT_FRAME = 0;
   static MAXIMUM_FRAME = 0;
