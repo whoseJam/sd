@@ -1,33 +1,35 @@
 // ./xxxx/yyyy.html
-function getLocation(path) {
+function getLocation(path: string): string {
   path = path.replace("\\", "/");
   const folders = path.split("/").slice(0, -1);
   return folders.join("/");
 }
 
-export function getLocationFromAncestor(element) {
-  while (element.parentNode && element.parentNode.getAttribute) {
-    const parent = element.parentNode;
-    if (parent.id === "slide-host") return undefined;
-    if (parent.getAttribute("location")) return parent.getAttribute("location");
-    element = parent;
+export function getLocationFromAncestor(element: Element): string | undefined {
+  let node: Node | null = element.parentNode;
+  while (node && node instanceof Element) {
+    if (node.id === "slide-host") return undefined;
+    const loc = node.getAttribute("location");
+    if (loc) return loc;
+    node = node.parentNode;
   }
   return undefined;
 }
 
-function loadFromURL(element, url, allowSecondTry = true) {
-  let xhttp = new XMLHttpRequest();
+function loadFromURL(
+  element: Element,
+  url: string,
+  allowSecondTry = true,
+): void {
+  const xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState !== 4) return;
     if (this.status === 200) {
       const parser = new DOMParser();
-      const htmlString = this.responseText;
-      const doc = parser.parseFromString(htmlString, "text/html");
+      const doc = parser.parseFromString(this.responseText, "text/html");
       const body = doc.documentElement.children[1];
       const parent = element.parentNode;
-      if (!parent) {
-        return;
-      }
+      if (!parent) return;
       while (body.children.length > 0) {
         const child = body.children[body.children.length - 1];
         child.setAttribute("location", getLocation(url));
@@ -44,32 +46,33 @@ function loadFromURL(element, url, allowSecondTry = true) {
       }
     }
     console.warn(`File ${url} Not Found`);
-    const parent = element.parentNode;
-    parent.removeChild(element);
+    element.parentNode?.removeChild(element);
     findIncludeHTMLRequest();
   };
   xhttp.open("GET", url, true);
   xhttp.send();
 }
 
-function findIncludeHTMLRequest() {
+let pendingCallback: (() => void) | null = null;
+
+function findIncludeHTMLRequest(): void {
   const elements = document.getElementsByTagName("*");
   for (let i = 0; i < elements.length; i++) {
     const element = elements[i];
-    const file = element.getAttribute("include-html")
-      ? element.getAttribute("include-html")
-      : element.getAttribute("w3-include-html");
+    const file =
+      element.getAttribute("include-html") ??
+      element.getAttribute("w3-include-html");
     if (!file) continue;
     loadFromURL(element, file);
     return;
   }
-  if (global.callback) {
-    global.callback();
-    delete global["callback"];
+  if (pendingCallback) {
+    pendingCallback();
+    pendingCallback = null;
   }
 }
 
-export default function includeHTML(callback) {
-  global.callback = callback;
+export default function includeHTML(callback: () => void): void {
+  pendingCallback = callback;
   findIncludeHTMLRequest();
 }

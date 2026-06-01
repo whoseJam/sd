@@ -1,5 +1,4 @@
-import includeHTML from "@sd/reveal/Inject";
-import "@sd/reveal/plugin/Chalkboard.css";
+import includeHTML from "@sd/reveal/Include";
 import "@sd/reveal/plugin/reset.css";
 import "@sd/reveal/plugin/reveal.css";
 

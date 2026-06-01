@@ -14,7 +14,8 @@
 <head>
     <meta charset="UTF-8">
     <title>&lt;sd-animation&gt; demo</title>
-    <script type="module" src="../src/SDAnimationElement.js"></script>
+    <!-- Run `gulp element -o packages/element/demo` first to produce sd-element.js next to this file. -->
+    <script src="./sd-element.js"></script>
     <style>
         body { margin: 0; font-family: sans-serif; padding: 24px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -26,7 +27,7 @@
     <div class="grid">
         <div class="cell"><sd-animation src="./foo.html"></sd-animation></div>
         <div class="cell"><sd-animation src="./bar.html"></sd-animation></div>
-        <div class="cell"><sd-animation src="./baz.html" lazy></sd-animation></div>
+        <div class="cell"><sd-animation src="./baz.html"></sd-animation></div>
         <div class="cell"><sd-animation src="./foo.html" viewbox="0 0 1200 600"></sd-animation></div>
     </div>
 </body>

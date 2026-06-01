@@ -1,19 +1,19 @@
+import type { RevealApi, RevealPlugin } from "../types";
+
 import { ReplaceElement } from "./Util";
 
-export default function Codeblock() {
+export default function Codeblock(): RevealPlugin {
   return { id: "codeblock", init };
 }
 
-function init(reveal) {
+function init(reveal: RevealApi): void {
   const elements = document.getElementsByTagName("codeblock");
   if (elements.length === 0) return;
 
-  const element = elements[0];
-  const parent = element.parentNode;
+  const element = elements[0] as HTMLElement;
   const script = element.querySelector("script");
   const fontSize = element.style.fontSize;
-  let lang = element.getAttribute("lang");
-  if (!lang) lang = "cpp";
+  const lang = element.getAttribute("lang") || "cpp";
   const pre = document.createElement("pre");
   const code = document.createElement("code");
   pre.className = element.className;
@@ -22,9 +22,9 @@ function init(reveal) {
   code.setAttribute("class", lang);
   if (fontSize) code.style.fontSize = fontSize;
   pre.append(code);
-  code.append(script);
+  if (script) code.append(script);
 
-  ReplaceElement(parent, element, pre);
+  ReplaceElement(element, pre);
 
   init(reveal);
 }

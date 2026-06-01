@@ -4,9 +4,9 @@
   "private": true,
   "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
   "license": "ISC",
-  "main": "src/MyReveal.js",
+  "main": "src/Reveal.ts",
   "exports": {
-    ".": "./src/MyReveal.js",
+    ".": "./src/Reveal.ts",
     "./*": "./src/*"
   },
   "dependencies": {

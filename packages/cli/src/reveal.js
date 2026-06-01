@@ -13,7 +13,7 @@ module.exports = function (targetFolder) {
   return (
     gulp
       // webpack stream
-      .src("./packages/reveal/src/MyReveal.js")
+      .src("./packages/reveal/src/Reveal.ts")
       .pipe(webpack(config))
       .pipe(gulp.dest(targetFolder))
   );
@@ -35,13 +35,31 @@ function getConfiguration() {
     module: {
       rules: [
         {
-          test: /.js$/,
+          test: /\.js$/,
+          use: { loader: "babel-loader" },
+        },
+        {
+          test: /\.ts$/,
           use: {
-            loader: "babel-loader",
+            loader: "ts-loader",
+            options: {
+              compilerOptions: {
+                allowJs: true,
+                target: "ES6",
+                module: "ESNext",
+                moduleResolution: "Node",
+                strict: false,
+                skipLibCheck: true,
+              },
+              transpileOnly: true,
+            },
           },
         },
         { test: /\.css$/, use: ["style-loader", "css-loader"] },
       ],
+    },
+    resolve: {
+      extensions: [".ts", ".js"],
     },
     performance: {
       hints: false,

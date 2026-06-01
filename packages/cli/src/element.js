@@ -5,7 +5,7 @@ const webpack = require("webpack-stream");
 
 module.exports = function (targetFolder) {
   return gulp
-    .src(["./packages/element/src/SDAnimationElement.js"])
+    .src(["./packages/element/src/SDElement.ts"])
     .pipe(webpack(getConfiguration()))
     .on("error", function (err) {
       console.error("Webpack compilation error:", err.message);
@@ -30,9 +30,23 @@ function getConfiguration() {
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(ts|js)$/,
           exclude: /node_modules/,
-          use: { loader: "babel-loader" },
+          use: {
+            loader: "ts-loader",
+            options: {
+              compilerOptions: {
+                allowJs: true,
+                target: "ES6",
+                module: "ESNext",
+                moduleResolution: "Node",
+                strict: false,
+                skipLibCheck: true,
+                sourceMap: isDevelopment,
+              },
+              transpileOnly: true,
+            },
+          },
         },
       ],
     },
@@ -51,7 +65,7 @@ function getConfiguration() {
       ],
     },
     cache: { type: "filesystem", buildDependencies: { config: [__filename] } },
-    resolve: { extensions: [".js"] },
+    resolve: { extensions: [".ts", ".js"] },
     stats: isDevelopment ? "minimal" : "normal",
   };
 }
