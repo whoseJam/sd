@@ -483,7 +483,10 @@ export abstract class SDNode {
     interp?: InterpObject | InterpFunction | LazyInterpFunction | InterpCreator,
   ): this {
     (this.attributes as this["attributes"])[key] = vn;
-    if (interp && Window.SHOULD_INTERP) {
+    // No render target = no animation. Happens during construction when a
+    // setter runs before createSVGNode has assigned this.renderer. Just
+    // update the model and fire listeners — there's nothing to paint.
+    if (interp && Window.SHOULD_INTERP && object) {
       const interp_ = isInterpCreator(interp) ? interp(object, key) : interp;
       Animate.push(
         new Action(

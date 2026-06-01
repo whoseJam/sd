@@ -14,6 +14,12 @@ export class Window {
   static RATE = 1;
   static ACTION_TICK = 0;
   static ACTION_DELAY = 0;
+  // 全局开关：state mutation 是不是走动画时间线。
+  //   true  → triggerAttributeChanged 把变化推成 Action 入队，下一帧 Interp
+  //           插值；setter 的写不立刻见 DOM。这是默认。
+  //   false → 跳过时间线，直接 renderAttribute 写 DOM。Base.loopUpdate 里
+  //           的 per-frame 回调用这个，因为每帧都是用户自己算的新状态，
+  //           再 interp 一遍既不对也是浪费。
   static SHOULD_INTERP = true;
   static CURRENT_FRAME = 0;
   static MAXIMUM_FRAME = 0;
