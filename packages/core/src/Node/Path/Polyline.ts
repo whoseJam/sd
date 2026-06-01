@@ -1,6 +1,7 @@
 import type { SDFilter } from "@/Node/Filter/Filter";
 import type { Group } from "@/Node/Other/Group";
-import type { SDNodeAttributes, TransformOrigin } from "@/Node/SDNode";
+import type { TransformOrigin } from "@/Node/SDNode";
+import type { SDSVGNodeAttributes } from "@/Node/SDSVGNode";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
@@ -12,7 +13,7 @@ import { PolylineEngine } from "@/Node/Path/PolylineEngine";
 import { SDSVGNode } from "@/Node/SDSVGNode";
 import { Color as C } from "@/Utility/Color";
 
-export type PolylineAttributes = SDNodeAttributes & {
+export type PolylineAttributes = SDSVGNodeAttributes & {
   points: Array<[number, number]>;
 };
 

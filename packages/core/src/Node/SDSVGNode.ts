@@ -1,3 +1,4 @@
+import type { SDNodeAttributes } from "@/Node/SDNode";
 import type { SDRuntime } from "@/Runtime";
 import type { SDAllColor, SDHEXColor, SDRGBAColor } from "@/Utility/Color";
 
@@ -9,63 +10,111 @@ import { Color as C } from "@/Utility/Color";
 export type StrokeLineCap = "butt" | "round" | "square";
 export type StrokeLineJoin = "miter" | "round" | "bevel";
 
+export type SDSVGNodeAttributes = SDNodeAttributes & {
+  fill: SDRGBAColor;
+  stroke: SDRGBAColor;
+  fillOpacity: number;
+  strokeOpacity: number;
+  strokeWidth: number;
+  strokeDashOffset: number;
+  strokeDashArray: Array<number>;
+  strokeLineCap: StrokeLineCap;
+  strokeLineJoin: StrokeLineJoin;
+};
+
 export abstract class SDSVGNode extends SDNode {
-  protected fill: SDRGBAColor;
-  protected stroke: SDRGBAColor;
-  protected fillOpacity: number = 1;
-  protected strokeOpacity: number = 1;
-  protected strokeWidth: number = 1;
-  protected strokeDashOffset: number = 0;
-  protected strokeDashArray: Array<number> = [];
-  protected strokeLineCap: StrokeLineCap = "butt";
-  protected strokeLineJoin: StrokeLineJoin = "miter";
+  declare attributes: SDSVGNodeAttributes;
 
   constructor(parent?: SDNode | RenderNode | SDRuntime) {
     super(parent);
+    this.attributes = {
+      ...this.attributes,
+      fill: C.toRGBA(C.black),
+      stroke: C.toRGBA(C.none),
+      fillOpacity: 1,
+      strokeOpacity: 1,
+      strokeWidth: 1,
+      strokeDashOffset: 0,
+      strokeDashArray: [],
+      strokeLineCap: "butt",
+      strokeLineJoin: "miter",
+    };
+  }
+
+  get fill(): SDRGBAColor {
+    return this.attributes.fill;
+  }
+
+  set fill(v: SDRGBAColor) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "fill",
+      v,
+      this.attributes.fill,
+      Interp.colorInterp,
+    );
   }
 
   getFill(): SDHEXColor {
-    return C.toHEX(this.fill);
+    return C.toHEX(this.attributes.fill);
   }
 
-  setFill(fill: SDAllColor) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "fill",
-      C.toRGBA(C.toFill(fill)),
-      this.fill,
-      Interp.colorInterp,
-    );
+  setFill(fill: SDAllColor): this {
+    this.fill = C.toRGBA(C.toFill(fill));
+    return this;
   }
 
-  onFillChanged(listener: (vn: any, vo: any) => void) {
+  onFillChanged(listener: (vn: SDRGBAColor, vo: SDRGBAColor) => void) {
     return this.onAttributeChanged("fill", listener);
   }
 
-  offFillChanged(listener: (vn: any, vo: any) => void) {
+  offFillChanged(listener: (vn: SDRGBAColor, vo: SDRGBAColor) => void) {
     return this.offAttributeChanged("fill", listener);
   }
 
-  getStroke(): SDHEXColor {
-    return C.toHEX(this.stroke);
+  get stroke(): SDRGBAColor {
+    return this.attributes.stroke;
   }
 
-  setStroke(stroke: SDAllColor): this {
-    return this.triggerAttributeChanged(
+  set stroke(v: SDRGBAColor) {
+    this.triggerAttributeChanged(
       this.renderer,
       "stroke",
-      C.toRGBA(C.toStroke(stroke)),
-      this.stroke,
+      v,
+      this.attributes.stroke,
       Interp.colorInterp,
     );
   }
 
-  onStrokeChanged(listener: (vn: any, vo: any) => void) {
+  getStroke(): SDHEXColor {
+    return C.toHEX(this.attributes.stroke);
+  }
+
+  setStroke(stroke: SDAllColor): this {
+    this.stroke = C.toRGBA(C.toStroke(stroke));
+    return this;
+  }
+
+  onStrokeChanged(listener: (vn: SDRGBAColor, vo: SDRGBAColor) => void) {
     return this.onAttributeChanged("stroke", listener);
   }
 
-  offStrokeChanged(listener: (vn: any, vo: any) => void) {
+  offStrokeChanged(listener: (vn: SDRGBAColor, vo: SDRGBAColor) => void) {
     return this.offAttributeChanged("stroke", listener);
+  }
+
+  get fillOpacity(): number {
+    return this.attributes.fillOpacity;
+  }
+
+  set fillOpacity(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "fillOpacity",
+      v,
+      this.attributes.fillOpacity,
+      Interp.numberInterp,
+    );
   }
 
   getFillOpacity(): number {
@@ -73,13 +122,8 @@ export abstract class SDSVGNode extends SDNode {
   }
 
   setFillOpacity(opacity: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "fillOpacity",
-      opacity,
-      this.fillOpacity,
-      Interp.numberInterp,
-    );
+    this.fillOpacity = opacity;
+    return this;
   }
 
   onFillOpacityChanged(listener: (vn: number, vo: number) => void) {
@@ -90,18 +134,27 @@ export abstract class SDSVGNode extends SDNode {
     return this.offAttributeChanged("fillOpacity", listener);
   }
 
+  get strokeOpacity(): number {
+    return this.attributes.strokeOpacity;
+  }
+
+  set strokeOpacity(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "strokeOpacity",
+      v,
+      this.attributes.strokeOpacity,
+      Interp.numberInterp,
+    );
+  }
+
   getStrokeOpacity(): number {
     return this.strokeOpacity;
   }
 
   setStrokeOpacity(opacity: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "strokeOpacity",
-      opacity,
-      this.strokeOpacity,
-      Interp.numberInterp,
-    );
+    this.strokeOpacity = opacity;
+    return this;
   }
 
   onStrokeOpacityChanged(listener: (vn: number, vo: number) => void) {
@@ -112,18 +165,27 @@ export abstract class SDSVGNode extends SDNode {
     return this.offAttributeChanged("strokeOpacity", listener);
   }
 
+  get strokeWidth(): number {
+    return this.attributes.strokeWidth;
+  }
+
+  set strokeWidth(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "strokeWidth",
+      v,
+      this.attributes.strokeWidth,
+      Interp.numberInterp,
+    );
+  }
+
   getStrokeWidth(): number {
     return this.strokeWidth;
   }
 
   setStrokeWidth(width: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "strokeWidth",
-      width,
-      this.strokeWidth,
-      Interp.numberInterp,
-    );
+    this.strokeWidth = width;
+    return this;
   }
 
   onStrokeWidthChanged(listener: (vn: number, vo: number) => void) {
@@ -134,18 +196,27 @@ export abstract class SDSVGNode extends SDNode {
     return this.offAttributeChanged("strokeWidth", listener);
   }
 
+  get strokeDashOffset(): number {
+    return this.attributes.strokeDashOffset;
+  }
+
+  set strokeDashOffset(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "strokeDashOffset",
+      v,
+      this.attributes.strokeDashOffset,
+      Interp.numberInterp,
+    );
+  }
+
   getStrokeDashOffset(): number {
     return this.strokeDashOffset;
   }
 
   setStrokeDashOffset(offset: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "strokeDashOffset",
-      offset,
-      this.strokeDashOffset,
-      Interp.numberInterp,
-    );
+    this.strokeDashOffset = offset;
+    return this;
   }
 
   onStrokeDashOffsetChanged(listener: (vn: number, vo: number) => void) {
@@ -156,18 +227,27 @@ export abstract class SDSVGNode extends SDNode {
     return this.offAttributeChanged("strokeDashOffset", listener);
   }
 
+  get strokeDashArray(): Array<number> {
+    return this.attributes.strokeDashArray;
+  }
+
+  set strokeDashArray(v: Array<number>) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "strokeDashArray",
+      v,
+      this.attributes.strokeDashArray,
+      Interp.arrayInterp,
+    );
+  }
+
   getStrokeDashArray(): Array<number> {
     return this.strokeDashArray;
   }
 
   setStrokeDashArray(array: string | number | Array<number>): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "strokeDashArray",
-      SDSVGNode.toStrokeDashArray(array),
-      this.strokeDashArray,
-      Interp.arrayInterp,
-    );
+    this.strokeDashArray = SDSVGNode.toStrokeDashArray(array);
+    return this;
   }
 
   onStrokeDashArrayChanged(
@@ -182,30 +262,53 @@ export abstract class SDSVGNode extends SDNode {
     return this.offAttributeChanged("strokeDashArray", listener);
   }
 
-  getStrokeLineCap(): StrokeLineCap {
-    return this.strokeLineCap;
+  get strokeLineCap(): StrokeLineCap {
+    return this.attributes.strokeLineCap;
   }
 
-  setStrokeLineCap(lineCap: StrokeLineCap) {
-    return this.triggerAttributeChanged(
+  set strokeLineCap(v: StrokeLineCap) {
+    this.triggerAttributeChanged(
       this.renderer,
       "strokeLineCap",
-      lineCap,
-      this.strokeLineCap,
+      v,
+      this.attributes.strokeLineCap,
       Interp.stringInterp,
     );
   }
 
+  getStrokeLineCap(): StrokeLineCap {
+    return this.strokeLineCap;
+  }
+
+  setStrokeLineCap(lineCap: StrokeLineCap): this {
+    this.strokeLineCap = lineCap;
+    return this;
+  }
+
   onStrokeLineCapChanged(
     listener: (vn: StrokeLineCap, vo: StrokeLineCap) => void,
-  ): this {
+  ) {
     return this.onAttributeChanged("strokeLineCap", listener);
   }
 
   offStrokeLineCapChanged(
     listener: (vn: StrokeLineCap, vo: StrokeLineCap) => void,
-  ): this {
+  ) {
     return this.offAttributeChanged("strokeLineCap", listener);
+  }
+
+  get strokeLineJoin(): StrokeLineJoin {
+    return this.attributes.strokeLineJoin;
+  }
+
+  set strokeLineJoin(v: StrokeLineJoin) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "strokeLineJoin",
+      v,
+      this.attributes.strokeLineJoin,
+      Interp.stringInterp,
+    );
   }
 
   getStrokeLineJoin(): StrokeLineJoin {
@@ -213,36 +316,41 @@ export abstract class SDSVGNode extends SDNode {
   }
 
   setStrokeLineJoin(lineJoin: StrokeLineJoin): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "strokeLineJoin",
-      lineJoin,
-      this.strokeLineJoin,
-      Interp.stringInterp,
-    );
+    this.strokeLineJoin = lineJoin;
+    return this;
   }
 
   onStrokeLineJoinChanged(
     listener: (vn: StrokeLineJoin, vo: StrokeLineJoin) => void,
-  ): this {
+  ) {
     return this.onAttributeChanged("strokeLineJoin", listener);
   }
 
   offStrokeLineJoinChanged(
     listener: (vn: StrokeLineJoin, vo: StrokeLineJoin) => void,
-  ): this {
+  ) {
     return this.offAttributeChanged("strokeLineJoin", listener);
   }
 
+  // Paints initial DOM. Reactive attributes (already populated by the
+  // subclass constructor on this.attributes) go first; then any DOM-only
+  // extras the subclass needs to paint ("text-anchor", "preserveAspectRatio",
+  // filter url, etc.). Crucially, this does NOT write the model — it never
+  // touches `this` outside of `this.renderer`. Subclass constructors are
+  // fully responsible for populating this.attributes before calling this.
   protected createSVGNode(
     label: string,
-    attributes: Record<string, any> = {},
+    extras: Record<string, unknown> = {},
   ): RenderNode {
-    Object.assign(this, attributes);
     const object = RenderNode.createRenderNode(this, undefined, label);
     this.renderer = object;
-    for (const key in attributes)
-      this.renderAttribute(object, key, attributes[key]);
+    const attrs = this.attributes as this["attributes"];
+    for (const key of Object.keys(attrs) as Array<
+      keyof this["attributes"] & string
+    >) {
+      this.renderAttribute(object, key, attrs[key]);
+    }
+    for (const key in extras) this.renderAttribute(object, key, extras[key]);
     return object;
   }
 

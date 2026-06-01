@@ -1,11 +1,11 @@
 import type { Group } from "@/Node/Other/Group";
-import type { SDNodeAttributes } from "@/Node/SDNode";
+import type { SDSVGNodeAttributes } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 
 import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
 
-export type ImageAttributes = SDNodeAttributes & {
+export type ImageAttributes = SDSVGNodeAttributes & {
   x: number;
   y: number;
   width: number;

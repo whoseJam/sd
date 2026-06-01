@@ -1,7 +1,7 @@
 import type { SDFilter } from "@/Node/Filter/Filter";
 import type { Group } from "@/Node/Other/Group";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
-import type { TextMapping } from "@/Node/Text/BaseText";
+import type { BaseTextAttributes, TextMapping } from "@/Node/Text/BaseText";
 import type { SDColor } from "@/Utility/Color";
 
 import { Interp } from "@/Animate/Interp";
@@ -24,14 +24,20 @@ import { Color as C } from "@/Utility/Color";
 
 import type { TransformOrigin } from "../SDNode";
 
+export type TextAttributes = BaseTextAttributes & {
+  text: string;
+  html: string;
+  fontSize: number;
+  fontFamily: string;
+  subtextStyles: Array<PathStyle>;
+};
+
+// width / height are caches recomputed from FontManager.boundingBox after
+// any text / fontFamily / fontSize change, so they stay as direct fields.
 export class Text extends BaseText {
-  protected text: string = "";
-  protected html: string = "";
+  declare attributes: TextAttributes;
   protected width: number = 0;
   protected height: number = 0;
-  protected fontSize: number = 20;
-  protected fontFamily: string = "Times New Roman";
-  protected subtextStyles: Array<PathStyle> = [];
 
   constructor(args?: {
     targetNode?: Group;
@@ -89,14 +95,14 @@ export class Text extends BaseText {
       "dominant-baseline": "text-before-edge",
     });
 
-    const styles = generateDefaultStyles(this.getText());
+    const styles = generateDefaultStyles(this.attributes.text);
     const box = FontManager.boundingBox(
-      this.getText(),
-      this.getFontFamily(),
-      this.getFontSize(),
+      this.attributes.text,
+      this.attributes.fontFamily,
+      this.attributes.fontSize,
     );
-    this.subtextStyles = styles;
-    this.html = parseToHTML(styles, this.getText());
+    this.attributes.subtextStyles = styles;
+    this.attributes.html = parseToHTML(styles, this.attributes.text);
     this.width = box.width;
     this.height = box.height;
     this.refreshY();
@@ -109,13 +115,25 @@ export class Text extends BaseText {
     args?.targetNode?.appendChild(this);
   }
 
+  // Plain pass-through accessor. The full mutation API is setFontSize(),
+  // which recomputes width / height via FontManager and refreshes y. We
+  // can't have `set fontSize` go through setFontSize because Object.assign
+  // in createSVGNode would fire it before this.renderer is ready.
+  get fontSize(): number {
+    return this.attributes.fontSize;
+  }
+
+  set fontSize(v: number) {
+    this.attributes.fontSize = v;
+  }
+
   getFontSize(): number {
     return this.fontSize;
   }
 
   setFontSize(size: number): this {
-    if (this.getFontSize() > 1e-1) {
-      const k = size / this.getFontSize();
+    if (this.attributes.fontSize > 1e-1) {
+      const k = size / this.attributes.fontSize;
       this.width *= k;
       this.height *= k;
     } else {
@@ -124,13 +142,14 @@ export class Text extends BaseText {
       this.height = box.height;
     }
     this.refreshY();
-    return this.triggerAttributeChanged(
+    this.triggerAttributeChanged(
       this.renderer,
       "fontSize",
       size,
-      this.fontSize,
+      this.attributes.fontSize,
       Interp.numberInterp,
     );
+    return this;
   }
 
   onFontSizeChanged(listener: (vn: number, vo: number) => void) {
@@ -149,21 +168,29 @@ export class Text extends BaseText {
     return this.height;
   }
 
+  // Read-only sugar. Use setText() to mutate — it rebuilds subtextStyles
+  // / html / width / height via FontManager + buildAnimation; the setter
+  // form would fire during construction-time Object.assign and run that
+  // heavy path before this.renderer / this.parent are set up.
+  get text(): string {
+    return this.attributes.text;
+  }
+
   getText(): string {
     return this.text;
   }
 
   setText(text: string | number, mapping?: TextMapping): this {
     const text_ = String(text);
-    if (this.getText() === text_) return this;
+    if (this.attributes.text === text_) return this;
     const box = FontManager.boundingBox(
       text_,
-      this.getFontFamily(),
-      this.getFontSize(),
+      this.attributes.fontFamily,
+      this.attributes.fontSize,
     );
     const styles = buildAnimation(
       this,
-      { text: this.getText(), styles: this.subtextStyles },
+      { text: this.attributes.text, styles: this.attributes.subtextStyles },
       { text: text_ },
       transformProcess(mapping),
       transformPostProcess(this, this.parent.getRootRenderNode()),
@@ -177,21 +204,21 @@ export class Text extends BaseText {
       undefined,
       "text",
       text_,
-      this.text,
+      this.attributes.text,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",
       styles,
-      this.subtextStyles,
+      this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       this.renderer,
       "html",
       html,
-      this.html,
+      this.attributes.html,
       Interp.stringBlankInMiddleInterp,
     );
     return this;
@@ -205,23 +232,33 @@ export class Text extends BaseText {
     return this.offAttributeChanged("text", listener);
   }
 
+  // Read-only sugar. Use setFontFamily() to mutate — same reason as
+  // text / fontSize.
+  get fontFamily(): string {
+    return this.attributes.fontFamily;
+  }
+
   getFontFamily() {
     return this.fontFamily;
   }
 
-  setFontFamily(family: string) {
+  setFontFamily(family: string): this {
     if (family !== "Times New Roman" && family !== "Arial")
       throw new Error(`Font family ${family} is not supported in all platform`);
-    const box = FontManager.boundingBox(this.text, family, this.getFontSize());
+    const box = FontManager.boundingBox(
+      this.attributes.text,
+      family,
+      this.attributes.fontSize,
+    );
     const styles = buildAnimation(
       this,
-      { text: this.getText() },
-      { text: this.getText() },
+      { text: this.attributes.text },
+      { text: this.attributes.text },
       transformProcess([]),
       transformPostProcess(this, this.parent.getRootRenderNode()),
       "*",
     );
-    const html = parseToHTML(styles, this.getText());
+    const html = parseToHTML(styles, this.attributes.text);
     this.width = box.width;
     this.height = box.height;
     this.refreshY();
@@ -229,21 +266,21 @@ export class Text extends BaseText {
       undefined,
       "subtextStyles",
       styles,
-      this.subtextStyles,
+      this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       this.renderer,
       "html",
       html,
-      this.html,
+      this.attributes.html,
       Interp.stringBlankInMiddleInterp,
     );
     this.triggerAttributeChanged(
       this.renderer,
       "fontFamily",
       family,
-      this.fontFamily,
+      this.attributes.fontFamily,
       Interp.stringInterp,
     );
     return this;
@@ -261,12 +298,12 @@ export class Text extends BaseText {
     const text_ = String(text);
     const box = FontManager.boundingBox(
       text_,
-      this.getFontFamily(),
-      this.getFontSize(),
+      this.attributes.fontFamily,
+      this.attributes.fontSize,
     );
     const styles = buildAnimation(
       this,
-      { text: this.getText(), styles: this.subtextStyles },
+      { text: this.attributes.text, styles: this.attributes.subtextStyles },
       { text: text_ },
       typewritterProcess(),
       typewritterPostProcess(this, this.parent.getRootRenderNode()),
@@ -280,63 +317,63 @@ export class Text extends BaseText {
       undefined,
       "text",
       text_,
-      this.text,
+      this.attributes.text,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",
       styles,
-      this.subtextStyles,
+      this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       this.renderer,
       "html",
       html,
-      this.html,
+      this.attributes.html,
       Interp.stringBlankInMiddleInterp,
     );
     return this;
   }
 
   setSubtextFill(subtext: string | number, color: SDColor, i: number = 0) {
-    const textView = createTextView(this.text, {});
+    const textView = createTextView(this.attributes.text, {});
     const subtextView = matchSubtext(textView, String(subtext));
-    const newStyles = this.subtextStyles.map((style: PathStyle) =>
+    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );
     subtextView.__iterate((i) => (newStyles[i].fill = color));
     buildAnimation(
       this,
-      { text: this.getText() },
-      { text: this.getText() },
+      { text: this.attributes.text },
+      { text: this.attributes.text },
       transformProcess([]),
       transformPostProcess(this, this.parent.getRootRenderNode()),
       "*",
     );
-    this.subtextStyles = newStyles;
-    this.html = parseToHTML.call(this);
+    this.attributes.subtextStyles = newStyles;
+    this.attributes.html = parseToHTML.call(this);
     return this;
   }
 
   setSubtextStroke(subtext: string | number, color: SDColor, i: number = 0) {
-    const textView = createTextView(this.text, {});
+    const textView = createTextView(this.attributes.text, {});
     const subtextView = matchSubtext(textView, String(subtext));
-    const newStyles = this.subtextStyles.map((style: PathStyle) =>
+    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );
     subtextView.__iterate((i) => (newStyles[i].stroke = color));
     buildAnimation(
       this,
-      { text: this.getText() },
-      { text: this.getText() },
+      { text: this.attributes.text },
+      { text: this.attributes.text },
       transformProcess([]),
       transformPostProcess(this, this.parent.getRootRenderNode()),
       "*",
     );
-    this.subtextStyles = newStyles;
-    this.html = parseToHTML.call(this);
+    this.attributes.subtextStyles = newStyles;
+    this.attributes.html = parseToHTML.call(this);
     return this;
   }
 
@@ -345,22 +382,22 @@ export class Text extends BaseText {
     width: number,
     i: number = 0,
   ) {
-    const textView = createTextView(this.text, {});
+    const textView = createTextView(this.attributes.text, {});
     const subtextView = matchSubtext(textView, String(subtext));
-    const newStyles = this.subtextStyles.map((style: PathStyle) =>
+    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );
     subtextView.__iterate((i) => (newStyles[i].strokeWidth = width));
     buildAnimation(
       this,
-      { text: this.getText() },
-      { text: this.getText() },
+      { text: this.attributes.text },
+      { text: this.attributes.text },
       transformProcess([]),
       transformPostProcess(this, this.parent.getRootRenderNode()),
       "*",
     );
-    this.subtextStyles = newStyles;
-    this.html = parseToHTML.call(this);
+    this.attributes.subtextStyles = newStyles;
+    this.attributes.html = parseToHTML.call(this);
     return this;
   }
 }

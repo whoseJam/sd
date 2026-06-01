@@ -1,5 +1,6 @@
 import type { Group } from "@/Node/Other/Group";
-import type { Percent, SDNodeAttributes } from "@/Node/SDNode";
+import type { Percent } from "@/Node/SDNode";
+import type { SDSVGNodeAttributes } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { URLString } from "@/Utility/String";
 
@@ -10,7 +11,7 @@ import { SDString } from "@/Utility/String";
 
 export type SDFilter = Filter | string | URLString;
 
-export type FilterAttributes = SDNodeAttributes & {
+export type FilterAttributes = SDSVGNodeAttributes & {
   id: string;
   x: Percent;
   y: Percent;

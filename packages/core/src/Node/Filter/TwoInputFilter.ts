@@ -1,11 +1,11 @@
-import type { SDNodeAttributes } from "@/Node/SDNode";
+import type { SDSVGNodeAttributes } from "@/Node/SDSVGNode";
 
 import { Interp } from "@/Animate/Interp";
 import { BaseFilter } from "@/Node/Filter/BaseFilter";
 
 export type ColorInterpolationFilters = "sRGB" | "linearRGB";
 
-export type TwoInputFilterAttributes = SDNodeAttributes & {
+export type TwoInputFilterAttributes = SDSVGNodeAttributes & {
   in: string;
   in2: string;
   result: string;

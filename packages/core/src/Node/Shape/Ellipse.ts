@@ -1,6 +1,6 @@
 import type { SDFilter } from "@/Node/Filter/Filter";
 import type { Group } from "@/Node/Other/Group";
-import type { SDNodeAttributes } from "@/Node/SDNode";
+import type { SDSVGNodeAttributes } from "@/Node/SDSVGNode";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
@@ -11,7 +11,7 @@ import { SDSVGNode } from "@/Node/SDSVGNode";
 import { BaseShape } from "@/Node/Shape/BaseShape";
 import { Color as C } from "@/Utility/Color";
 
-export type EllipseAttributes = SDNodeAttributes & {
+export type EllipseAttributes = SDSVGNodeAttributes & {
   cx: number;
   cy: number;
   rx: number;

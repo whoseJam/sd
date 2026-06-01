@@ -1,3 +1,4 @@
+import type { SDSVGNodeAttributes } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 
 import { Interp } from "@/Animate/Interp";
@@ -69,9 +70,13 @@ export function processMapping(mapping: TextMapping): TextMappingArray {
 
 export type TextConfigDictionary = { [key: string]: any };
 
+export type BaseTextAttributes = SDSVGNodeAttributes & {
+  x: number;
+  y: number;
+};
+
 export abstract class BaseText extends SDSVGNode {
-  protected x: number = 0;
-  protected y: number = 0;
+  declare attributes: BaseTextAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y")
@@ -82,7 +87,21 @@ export abstract class BaseText extends SDSVGNode {
   // SVG y depends on this.getHeight(); subclasses call this whenever their
   // height changes (setFontSize, setText, ...) to keep math y put.
   protected refreshY(renderer: RenderNode = this.renderer) {
-    this.renderAttribute(renderer, "y", this.y);
+    this.renderAttribute(renderer, "y", this.attributes.y);
+  }
+
+  get x(): number {
+    return this.attributes.x;
+  }
+
+  set x(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "x",
+      v,
+      this.attributes.x,
+      Interp.numberInterp,
+    );
   }
 
   getX(): number {
@@ -90,13 +109,8 @@ export abstract class BaseText extends SDSVGNode {
   }
 
   setX(x: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "x",
-      x,
-      this.x,
-      Interp.numberInterp,
-    );
+    this.x = x;
+    return this;
   }
 
   onXChanged(listener: (vn: number, vo: number) => void) {
@@ -126,18 +140,27 @@ export abstract class BaseText extends SDSVGNode {
     return this.setX(mx - this.getWidth());
   }
 
+  get y(): number {
+    return this.attributes.y;
+  }
+
+  set y(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "y",
+      v,
+      this.attributes.y,
+      Interp.numberInterp,
+    );
+  }
+
   getY(): number {
     return this.y;
   }
 
   setY(y: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "y",
-      y,
-      this.y,
-      Interp.numberInterp,
-    );
+    this.y = y;
+    return this;
   }
 
   onYChanged(listener: (vn: number, vo: number) => void) {

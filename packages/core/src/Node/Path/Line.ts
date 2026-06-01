@@ -11,9 +11,10 @@ import { BasePath } from "@/Node/Path/BasePath";
 import { SDSVGNode } from "@/Node/SDSVGNode";
 import { Color as C } from "@/Utility/Color";
 
-import type { SDNodeAttributes, TransformOrigin } from "../SDNode";
+import type { TransformOrigin } from "../SDNode";
+import type { SDSVGNodeAttributes } from "../SDSVGNode";
 
-export type LineAttributes = SDNodeAttributes & {
+export type LineAttributes = SDSVGNodeAttributes & {
   x1: number;
   y1: number;
   x2: number;
