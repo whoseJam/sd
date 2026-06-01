@@ -11,13 +11,17 @@ import { BasePath } from "@/Node/Path/BasePath";
 import { SDSVGNode } from "@/Node/SDSVGNode";
 import { Color as C } from "@/Utility/Color";
 
-import type { TransformOrigin } from "../SDNode";
+import type { SDNodeAttributes, TransformOrigin } from "../SDNode";
+
+export type LineAttributes = SDNodeAttributes & {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+};
 
 export class Line extends BasePath {
-  protected x1: number = 0;
-  protected y1: number = 0;
-  protected x2: number = 40;
-  protected y2: number = 40;
+  declare attributes: LineAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y1" || key === "y2") return renderer.setAttribute(key, -value);
@@ -50,16 +54,19 @@ export class Line extends BasePath {
   }) {
     super();
 
-    this.x1 = args?.x1 ?? 0;
-    this.y1 = args?.y1 ?? 0;
-    this.x2 = args?.x2 ?? 40;
-    this.y2 = args?.y2 ?? 40;
+    this.attributes = {
+      ...this.attributes,
+      x1: args?.x1 ?? 0,
+      y1: args?.y1 ?? 0,
+      x2: args?.x2 ?? 40,
+      y2: args?.y2 ?? 40,
+    };
 
     this.createSVGNode("line", {
-      x1: this.x1,
-      y1: this.y1,
-      x2: this.x2,
-      y2: this.y2,
+      x1: this.attributes.x1,
+      y1: this.attributes.y1,
+      x2: this.attributes.x2,
+      y2: this.attributes.y2,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
@@ -106,18 +113,27 @@ export class Line extends BasePath {
     return this.getMaxY() - this.getY();
   }
 
+  get x1(): number {
+    return this.attributes.x1;
+  }
+
+  set x1(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "x1",
+      v,
+      this.attributes.x1,
+      Interp.numberInterp,
+    );
+  }
+
   getX1(): number {
     return this.x1;
   }
 
   setX1(x1: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "x1",
-      x1,
-      this.x1,
-      Interp.numberInterp,
-    );
+    this.x1 = x1;
+    return this;
   }
 
   onX1Changed(listener: (vn: number, vo: number) => void): this {
@@ -128,18 +144,27 @@ export class Line extends BasePath {
     return this.offAttributeChanged("x1", listener);
   }
 
+  get x2(): number {
+    return this.attributes.x2;
+  }
+
+  set x2(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "x2",
+      v,
+      this.attributes.x2,
+      Interp.numberInterp,
+    );
+  }
+
   getX2(): number {
     return this.x2;
   }
 
   setX2(x2: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "x2",
-      x2,
-      this.x2,
-      Interp.numberInterp,
-    );
+    this.x2 = x2;
+    return this;
   }
 
   onX2Changed(listener: (vn: number, vo: number) => void): this {
@@ -150,18 +175,27 @@ export class Line extends BasePath {
     return this.offAttributeChanged("x2", listener);
   }
 
+  get y1(): number {
+    return this.attributes.y1;
+  }
+
+  set y1(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "y1",
+      v,
+      this.attributes.y1,
+      Interp.numberInterp,
+    );
+  }
+
   getY1(): number {
     return this.y1;
   }
 
-  setY1(y1: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "y1",
-      y1,
-      this.y1,
-      Interp.numberInterp,
-    );
+  setY1(y1: number): this {
+    this.y1 = y1;
+    return this;
   }
 
   onY1Changed(listener: (vn: number, vo: number) => void): this {
@@ -172,18 +206,27 @@ export class Line extends BasePath {
     return this.offAttributeChanged("y1", listener);
   }
 
+  get y2(): number {
+    return this.attributes.y2;
+  }
+
+  set y2(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "y2",
+      v,
+      this.attributes.y2,
+      Interp.numberInterp,
+    );
+  }
+
   getY2(): number {
     return this.y2;
   }
 
   setY2(y2: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "y2",
-      y2,
-      this.y2,
-      Interp.numberInterp,
-    );
+    this.y2 = y2;
+    return this;
   }
 
   onY2Changed(listener: (vn: number, vo: number) => void): this {
