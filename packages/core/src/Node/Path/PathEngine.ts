@@ -85,9 +85,70 @@ export class PathEngine {
     });
     return this.toString(operators);
   }
+  // SVG path parameter counts per command letter (0 for Z which closes
+  // the subpath without parameters).
+  private static PARAM_COUNT: Record<PathCode, number> = {
+    M: 2,
+    m: 2,
+    L: 2,
+    l: 2,
+    H: 1,
+    h: 1,
+    V: 1,
+    v: 1,
+    C: 6,
+    c: 6,
+    S: 4,
+    s: 4,
+    Q: 4,
+    q: 4,
+    T: 2,
+    t: 2,
+    A: 7,
+    a: 7,
+    Z: 0,
+    z: 0,
+  };
+  // SVG path tokenizer: emit each command letter or each signed number
+  // separately. Numbers can use decimal-only forms (".5"), trailing-dot
+  // forms ("5.") and scientific notation, and a "-" / "+" may follow the
+  // previous number with no separator (e.g. "10-20" = 10, -20).
+  private static readonly TOKEN_RE =
+    /([MmLlHhVvCcSsQqTtAaZz])|([+-]?(?:\d+\.\d*|\.\d+|\d+)(?:[eE][+-]?\d+)?)/g;
   static toOpers(d: string): PathOpers {
-    // @ts-ignore
-    return Snap.parsePathString(d);
+    if (!d) return [];
+    const tokens: Array<string> = [];
+    PathEngine.TOKEN_RE.lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = PathEngine.TOKEN_RE.exec(d)) !== null) {
+      tokens.push(match[1] ?? match[2]);
+    }
+    const operators: PathOpers = [];
+    let i = 0;
+    let lastCmd: PathCode | undefined;
+    while (i < tokens.length) {
+      let cmd: PathCode;
+      if (/[A-Za-z]/.test(tokens[i])) {
+        cmd = tokens[i] as PathCode;
+        i++;
+      } else if (lastCmd !== undefined) {
+        // Implicit continuation: after a command emits its operator, more
+        // numbers default to the same command letter — except M/m which
+        // continue as L/l (per SVG spec).
+        cmd = lastCmd === "M" ? "L" : lastCmd === "m" ? "l" : lastCmd;
+      } else {
+        throw new Error(`unexpected number "${tokens[i]}" at start of path`);
+      }
+      const n = PathEngine.PARAM_COUNT[cmd];
+      const params: Array<number> = [];
+      for (let j = 0; j < n; j++) {
+        params.push(parseFloat(tokens[i + j]));
+      }
+      i += n;
+      operators.push([cmd, ...params] as PathOper);
+      lastCmd = cmd;
+    }
+    return operators;
   }
   static toCubic(path: string | PathOpers): PathOpers {
     // @ts-ignore
