@@ -1,16 +1,19 @@
 import type { Filter } from "@/Node/Filter/Filter";
-import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
+import type {
+  ColorInterpolationFilters,
+  OneInputFilterAttributes,
+} from "@/Node/Filter/OneInputFilter";
 
 import { Interp } from "@/Animate/Interp";
 import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
-import { Percent } from "@/Node/SDNode";
+
+export type OffsetAttributes = OneInputFilterAttributes & {
+  dx: number;
+  dy: number;
+};
 
 export class Offset extends OneInputFilter {
-  /* model fields:
-
-        dx: number;
-        dy: number;
-        */
+  declare attributes: OffsetAttributes;
 
   constructor(args?: {
     targetNode?: Filter;
@@ -22,27 +25,45 @@ export class Offset extends OneInputFilter {
   }) {
     super();
 
-    this.renderer = this.createSVGNode("feOffset", {
+    this.attributes = {
+      ...this.attributes,
       in: args?.in ?? "SourceGraphic",
       result: args?.result ?? "",
       colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
       dx: args?.dx ?? 0,
       dy: args?.dy ?? 0,
+    };
+
+    this.renderer = this.createSVGNode("feOffset", {
+      in: this.attributes.in,
+      result: this.attributes.result,
+      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
+      dx: this.attributes.dx,
+      dy: this.attributes.dy,
     });
+  }
+
+  get dx(): number {
+    return this.attributes.dx;
+  }
+
+  set dx(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "dx",
+      v,
+      this.attributes.dx,
+      Interp.numberInterp,
+    );
   }
 
   getDx() {
     return this.dx;
   }
 
-  setDx(dx: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "dx",
-      dx,
-      this.dx,
-      Interp.numberInterp,
-    );
+  setDx(dx: number): this {
+    this.dx = dx;
+    return this;
   }
 
   onDxChanged(listener: (vn: number, vo: number) => void) {
@@ -53,18 +74,27 @@ export class Offset extends OneInputFilter {
     return this.offAttributeChanged("dx", listener);
   }
 
+  get dy(): number {
+    return this.attributes.dy;
+  }
+
+  set dy(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "dy",
+      v,
+      this.attributes.dy,
+      Interp.numberInterp,
+    );
+  }
+
   getDy() {
     return this.dy;
   }
 
-  setDy(dy: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "dy",
-      dy,
-      this.dy,
-      Interp.numberInterp,
-    );
+  setDy(dy: number): this {
+    this.dy = dy;
+    return this;
   }
 
   onDyChanged(listener: (vn: number, vo: number) => void) {
