@@ -1,6 +1,6 @@
 import type { SDFilter } from "@/Node/Filter/Filter";
 import type { Group } from "@/Node/Other/Group";
-import type { TransformOrigin } from "@/Node/SDNode";
+import type { SDNodeAttributes, TransformOrigin } from "@/Node/SDNode";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
@@ -12,8 +12,14 @@ import { PathEngine } from "@/Node/Path/PathEngine";
 import { SDSVGNode } from "@/Node/SDSVGNode";
 import { Color as C } from "@/Utility/Color";
 
+export type PathAttributes = SDNodeAttributes & {
+  d: string;
+};
+
+// x / y / width / height are bbox values derived from d; cached after
+// each `d` update so the public getters stay O(1).
 export class Path extends BasePath {
-  protected d: string = "";
+  declare attributes: PathAttributes;
   protected x: number = 0;
   protected y: number = 0;
   protected width: number = 0;
@@ -47,15 +53,19 @@ export class Path extends BasePath {
   }) {
     super();
 
-    this.d = args?.d ?? "";
-    const box = PathEngine.toBox(this.d);
+    const d = args?.d ?? "";
+    this.attributes = {
+      ...this.attributes,
+      d,
+    };
+    const box = PathEngine.toBox(d);
     this.x = box.x ?? 0;
     this.y = box.y ?? 0;
     this.width = box.width ?? 0;
     this.height = box.height ?? 0;
 
     this.createSVGNode("path", {
-      d: this.d,
+      d: this.attributes.d,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
@@ -111,24 +121,26 @@ export class Path extends BasePath {
     return PathEngine.getTotalLength(PathEngine.flipY(this.d));
   }
 
+  get d(): string {
+    return this.attributes.d;
+  }
+
+  set d(v: string) {
+    const old = this.attributes.d;
+    const box = PathEngine.toBox(v);
+    this.x = box.x ?? 0;
+    this.y = box.y ?? 0;
+    this.width = box.width ?? 0;
+    this.height = box.height ?? 0;
+    this.triggerAttributeChanged(this.renderer, "d", v, old, Interp.pathInterp);
+  }
+
   getD(): string {
     return this.d;
   }
 
   setD(d: string): this {
-    const old = this.d;
     this.d = d;
-    const box = PathEngine.toBox(d);
-    this.x = box.x ?? 0;
-    this.y = box.y ?? 0;
-    this.width = box.width ?? 0;
-    this.height = box.height ?? 0;
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "d",
-      d,
-      old,
-      Interp.pathInterp,
-    );
+    return this;
   }
 }
