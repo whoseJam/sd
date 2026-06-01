@@ -69,42 +69,45 @@ export class Text extends BaseText {
   }) {
     super();
 
-    this.renderer = this.createSVGNode("text", {
-      text: args?.text ?? "",
-      x: args?.x ?? 0,
-      y: args?.y ?? 0,
-      fontSize: args?.fontSize ?? 20,
-      fontWeight: args?.fontWeight,
-      fontFamily: args?.fontFamily ?? "Times New Roman",
+    const text = args?.text ?? "";
+    const fontFamily = args?.fontFamily ?? "Times New Roman";
+    const fontSize = args?.fontSize ?? 20;
+    const styles = generateDefaultStyles(text);
+    const box = FontManager.boundingBox(text, fontFamily, fontSize);
+
+    this.attributes = {
+      ...this.attributes,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
       scale: args?.scale ?? [1, 1],
       opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.black,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.black)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.black)),
       fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.black,
       strokeOpacity: args?.strokeOpacity ?? 1,
       strokeWidth: args?.strokeWidth ?? 0,
       strokeDashOffset: args?.strokeDashOffset ?? 0,
       strokeDashArray: SDSVGNode.toStrokeDashArray(args?.strokeDashArray),
       strokeLineCap: args?.strokeLineCap ?? "butt",
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      x: args?.x ?? 0,
+      y: args?.y ?? 0,
+      text,
+      fontFamily,
+      fontSize,
+      subtextStyles: styles,
+      html: parseToHTML(styles, text),
+    };
+    this.width = box.width;
+    this.height = box.height;
+
+    this.renderer = this.createSVGNode("text", {
+      fontWeight: args?.fontWeight,
       filter: Filter.toURLString(args?.filter),
       "text-anchor": "start",
       "dominant-baseline": "text-before-edge",
     });
-
-    const styles = generateDefaultStyles(this.attributes.text);
-    const box = FontManager.boundingBox(
-      this.attributes.text,
-      this.attributes.fontFamily,
-      this.attributes.fontSize,
-    );
-    this.attributes.subtextStyles = styles;
-    this.attributes.html = parseToHTML(styles, this.attributes.text);
-    this.width = box.width;
-    this.height = box.height;
     this.refreshY();
 
     if (args?.cx !== undefined) this.setCx(args.cx);
@@ -115,16 +118,12 @@ export class Text extends BaseText {
     args?.targetNode?.appendChild(this);
   }
 
-  // Plain pass-through accessor. The full mutation API is setFontSize(),
-  // which recomputes width / height via FontManager and refreshes y. We
-  // can't have `set fontSize` go through setFontSize because Object.assign
-  // in createSVGNode would fire it before this.renderer is ready.
   get fontSize(): number {
     return this.attributes.fontSize;
   }
 
   set fontSize(v: number) {
-    this.attributes.fontSize = v;
+    this.setFontSize(v);
   }
 
   getFontSize(): number {
@@ -168,12 +167,12 @@ export class Text extends BaseText {
     return this.height;
   }
 
-  // Read-only sugar. Use setText() to mutate — it rebuilds subtextStyles
-  // / html / width / height via FontManager + buildAnimation; the setter
-  // form would fire during construction-time Object.assign and run that
-  // heavy path before this.renderer / this.parent are set up.
   get text(): string {
     return this.attributes.text;
+  }
+
+  set text(v: string) {
+    this.setText(v);
   }
 
   getText(): string {
@@ -232,10 +231,12 @@ export class Text extends BaseText {
     return this.offAttributeChanged("text", listener);
   }
 
-  // Read-only sugar. Use setFontFamily() to mutate — same reason as
-  // text / fontSize.
   get fontFamily(): string {
     return this.attributes.fontFamily;
+  }
+
+  set fontFamily(v: string) {
+    this.setFontFamily(v);
   }
 
   getFontFamily() {

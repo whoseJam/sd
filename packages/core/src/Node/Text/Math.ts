@@ -1,8 +1,9 @@
 import type { Group } from "@/Node/Other/Group";
-import type { TextMapping } from "@/Node/Text/BaseText";
+import type { BaseTextAttributes, TextMapping } from "@/Node/Text/BaseText";
 import type { SDAllColor, SDColor } from "@/Utility/Color";
 
 import { Interp } from "@/Animate/Interp";
+import { SDSVGNode } from "@/Node/SDSVGNode";
 import { BaseText } from "@/Node/Text/BaseText";
 import { buildAnimation } from "@/Node/Text/TextEngine/Animation";
 import { matchSubtext } from "@/Node/Text/TextEngine/Mapping";
@@ -15,14 +16,20 @@ import {
 import { RenderNode } from "@/Renderer/RenderNode";
 import { Color as C } from "@/Utility/Color";
 
+export type MathAttributes = BaseTextAttributes & {
+  string: string;
+  text: Array<string>;
+  html: RenderNode | undefined;
+  fontSize: number;
+  subtextStyles: Array<PathStyle>;
+};
+
+// width / height are caches rebuilt by MathManager.boundingBox whenever
+// the math html re-renders. They stay as direct fields, same as Text.
 export class Math extends BaseText {
-  protected string: string = "";
-  protected text: Array<string> = [];
-  html: RenderNode | undefined = undefined;
+  declare attributes: MathAttributes;
   protected width: number = 0;
   protected height: number = 0;
-  protected fontSize: number = 20;
-  protected subtextStyles: Array<PathStyle> = [];
 
   constructor(args?: {
     targetNode?: Group;
@@ -43,32 +50,37 @@ export class Math extends BaseText {
   }) {
     super();
 
-    this.renderer = this.createSVGNode("g", {
-      fill: args?.fill ?? C.black,
-      stroke: args?.stroke ?? C.black,
-    });
+    const string = args?.text ?? "";
 
-    this.x = args?.x ?? 0;
-    this.y = args?.y ?? 0;
-    this.opacity = args?.opacity ?? 1;
-    this.string = args?.text ?? "";
-    this.fontSize = args?.fontSize ?? 20;
-    this.strokeWidth = args?.strokeWidth ?? 1;
-    this.strokeDashOffset = args?.strokeDashOffset ?? 0;
-    this.strokeDashArray = (typeof args?.strokeDashArray === "number"
-      ? [args.strokeDashArray]
-      : args?.strokeDashArray) ?? [1, 0];
+    this.attributes = {
+      ...this.attributes,
+      opacity: args?.opacity ?? 1,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.black)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.black)),
+      strokeWidth: args?.strokeWidth ?? 1,
+      strokeDashOffset: args?.strokeDashOffset ?? 0,
+      strokeDashArray: SDSVGNode.toStrokeDashArray(args?.strokeDashArray),
+      x: args?.x ?? 0,
+      y: args?.y ?? 0,
+      string,
+      text: [],
+      html: undefined,
+      fontSize: args?.fontSize ?? 20,
+      subtextStyles: [],
+    };
 
-    if (this.getText() !== "") {
-      const [html, text, styles] = parseToHTML(this, this.getText());
-      const box = MathManager.boundingBox(this.getY(), html);
+    this.renderer = this.createSVGNode("g");
+
+    if (string !== "") {
+      const [html, text, styles] = parseToHTML(this, string);
+      const box = MathManager.boundingBox(this.attributes.y, html);
       this.getRootRenderNode().__append(html);
-      this.text = text;
-      this.subtextStyles = styles;
-      this.html = html;
+      this.attributes.text = text;
+      this.attributes.subtextStyles = styles;
+      this.attributes.html = html;
       this.width = box.width;
       this.height = box.height;
-      this.refreshY(this.html);
+      this.refreshY(html);
     }
 
     if (args?.cx !== undefined) this.setCx(args.cx);
@@ -79,44 +91,47 @@ export class Math extends BaseText {
     args?.targetNode?.appendChild(this);
   }
 
+  // Math overrides x / y / fill / stroke to write to the inner math
+  // RenderNode (this.attributes.html) rather than the outer <g>, because
+  // MathJax positions the glyphs on the inner element.
   setX(x: number): this {
-    return this.triggerAttributeChanged(
-      this.html,
+    this.triggerAttributeChanged(
+      this.attributes.html,
       "x",
       x,
-      this.x,
+      this.attributes.x,
       Interp.numberInterp,
     );
+    return this;
   }
 
   setY(y: number): this {
-    return this.triggerAttributeChanged(
-      this.html,
+    this.triggerAttributeChanged(
+      this.attributes.html,
       "y",
       y,
-      this.y,
+      this.attributes.y,
       Interp.numberInterp,
     );
+    return this;
   }
 
-  setFill(fill: SDAllColor) {
-    return this.triggerAttributeChanged(
-      this.html,
-      "fill",
-      fill,
-      this.getFill(),
-      Interp.colorInterp,
-    );
+  setFill(fill: SDAllColor): this {
+    this.fill = C.toRGBA(C.toFill(fill));
+    return this;
   }
 
-  setStroke(stroke: SDAllColor) {
-    return this.triggerAttributeChanged(
-      this.html,
-      "stroke",
-      stroke,
-      this.getStroke(),
-      Interp.colorInterp,
-    );
+  setStroke(stroke: SDAllColor): this {
+    this.stroke = C.toRGBA(C.toStroke(stroke));
+    return this;
+  }
+
+  get fontSize(): number {
+    return this.attributes.fontSize;
+  }
+
+  set fontSize(v: number) {
+    this.setFontSize(v);
   }
 
   getFontSize(): number {
@@ -124,23 +139,27 @@ export class Math extends BaseText {
   }
 
   setFontSize(size: number): this {
-    if (this.getFontSize() > 1e-1) {
-      const k = size / this.getFontSize();
+    if (this.attributes.fontSize > 1e-1) {
+      const k = size / this.attributes.fontSize;
       this.width *= k;
       this.height *= k;
     } else {
-      const box = MathManager.boundingBox(this.getY(), this.html);
+      const box = MathManager.boundingBox(
+        this.attributes.y,
+        this.attributes.html,
+      );
       this.width = box.width;
       this.height = box.height;
     }
-    this.refreshY(this.html);
-    return this.triggerAttributeChanged(
-      this.html,
+    this.refreshY(this.attributes.html);
+    this.triggerAttributeChanged(
+      this.attributes.html,
       "fontSize",
       size,
-      this.fontSize,
+      this.attributes.fontSize,
       Interp.numberInterp,
     );
+    return this;
   }
 
   onFontSizeChanged(listener: (vn: number, vo: number) => void) {
@@ -159,17 +178,21 @@ export class Math extends BaseText {
     return this.height;
   }
 
+  get text(): Array<string> {
+    return this.attributes.text;
+  }
+
   getText(): string {
-    return this.string;
+    return this.attributes.string;
   }
 
   setText(text: string | number, mapping?: TextMapping): this {
-    if (this.getText() === String(text)) return this;
-    const [html, text_, _] = parseToHTML(this, String(text));
-    const box = MathManager.boundingBox(this.getY(), html);
+    if (this.attributes.string === String(text)) return this;
+    const [html, text_] = parseToHTML(this, String(text));
+    const box = MathManager.boundingBox(this.attributes.y, html);
     const styles = buildAnimation(
       this,
-      { text: this.text, styles: this.subtextStyles },
+      { text: this.attributes.text, styles: this.attributes.subtextStyles },
       { text: text_ },
       transformProcess(mapping),
       transformPostProcess(this, this.getRootRenderNode()),
@@ -183,28 +206,28 @@ export class Math extends BaseText {
       undefined,
       "string",
       String(text),
-      this.string,
+      this.attributes.string,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       undefined,
       "text",
       text_,
-      this.text,
+      this.attributes.text,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",
       styles,
-      this.subtextStyles,
+      this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       this.renderer,
       "html",
       html,
-      this.html,
+      this.attributes.html,
       Interp.childBlankInMiddleInterp,
     );
     return this;
@@ -223,34 +246,34 @@ export class Math extends BaseText {
     color: SDColor,
     i: number = 0,
   ): this {
-    const textView = createTextView(this.text, {});
+    const textView = createTextView(this.attributes.text, {});
     const text = parseToHTML(this, String(subtext))[1];
     const subtextView = matchSubtext(textView, text);
-    const newStyles = this.subtextStyles.map((style: PathStyle) =>
+    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );
     subtextView.__iterate((i) => (newStyles[i].fill = color));
     buildAnimation(
       this,
-      { text: this.text },
-      { text: this.text },
+      { text: this.attributes.text },
+      { text: this.attributes.text },
       transformProcess([]),
       transformPostProcess(this, this.getRootRenderNode()),
       "*",
     );
-    const html = parseToHTML(this, this.string, newStyles)[0];
+    const html = parseToHTML(this, this.attributes.string, newStyles)[0];
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",
       newStyles,
-      this.subtextStyles,
+      this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       this.renderer,
       "html",
       html,
-      this.html,
+      this.attributes.html,
       Interp.childBlankInMiddleInterp,
     );
     return this;
