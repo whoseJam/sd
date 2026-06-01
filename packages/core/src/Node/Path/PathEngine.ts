@@ -102,7 +102,10 @@ export class PathEngine {
   }
   static toString(operators: PathOpers): string {
     let ans = "";
-    for (const operator of operators) ans += operator.join(" ");
+    for (const operator of operators) {
+      ans += operator[0];
+      ans += operator.slice(1).join(",");
+    }
     return ans;
   }
   static updatePath(

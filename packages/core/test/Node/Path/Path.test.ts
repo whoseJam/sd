@@ -37,7 +37,7 @@ describe("Path", () => {
     it("flips y in d when painting the DOM", () => {
       const p = new Path({ d: "M 0 10 L 20 30" });
       // PathEngine.flipY rewrites absolute y-coords to negative.
-      expect(attr(p, "d")).toBe("M 0 -10L 20 -30");
+      expect(attr(p, "d")).toBe("M0,-10L20,-30");
     });
   });
 
@@ -71,7 +71,7 @@ describe("Path", () => {
       const p = new Path({ d: "M 0 0 L 0 0" });
       p.d = "M 0 10 L 20 30";
       Animate.forceToFinish();
-      expect(attr(p, "d")).toBe("M 0 -10L 20 -30");
+      expect(attr(p, "d")).toBe("M0,-10L20,-30");
     });
   });
 });
