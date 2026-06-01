@@ -8,12 +8,17 @@ import type { SDFilter } from "@/Node/Filter/Filter";
 import { Filter } from "@/Node/Filter/Filter";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
+import type { SDNodeAttributes } from "@/Node/SDNode";
+
+export type EllipseAttributes = SDNodeAttributes & {
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+};
 
 export class Ellipse extends BaseShape {
-  protected cx: number = 20;
-  protected cy: number = 20;
-  protected rx: number = 20;
-  protected ry: number = 20;
+  declare attributes: EllipseAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "cy") return renderer.setAttribute("cy", -value);
@@ -42,16 +47,19 @@ export class Ellipse extends BaseShape {
   }) {
     super();
 
-    this.cx = args?.cx ?? 20;
-    this.cy = args?.cy ?? 20;
-    this.rx = args?.rx ?? 20;
-    this.ry = args?.ry ?? 20;
+    this.attributes = {
+      ...this.attributes,
+      cx: args?.cx ?? 20,
+      cy: args?.cy ?? 20,
+      rx: args?.rx ?? 20,
+      ry: args?.ry ?? 20,
+    };
 
     this.renderer = this.createSVGNode("ellipse", {
-      rx: this.rx,
-      ry: this.ry,
-      cx: this.cx,
-      cy: this.cy,
+      rx: this.attributes.rx,
+      ry: this.attributes.ry,
+      cx: this.attributes.cx,
+      cy: this.attributes.cy,
       opacity: args?.opacity ?? 1,
       fill: args?.fill ?? C.black,
       fillOpacity: args?.fillOpacity ?? 1,
@@ -102,18 +110,27 @@ export class Ellipse extends BaseShape {
     return this.setRy(height / 2);
   }
 
+  get cx(): number {
+    return this.attributes.cx;
+  }
+
+  set cx(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "cx",
+      v,
+      this.attributes.cx,
+      Interp.numberInterp,
+    );
+  }
+
   getCx(): number {
     return this.cx;
   }
 
   setCx(cx: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "cx",
-      cx,
-      this.cx,
-      Interp.numberInterp,
-    );
+    this.cx = cx;
+    return this;
   }
 
   onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -140,18 +157,27 @@ export class Ellipse extends BaseShape {
     return this.offCxChanged(listener);
   }
 
+  get cy(): number {
+    return this.attributes.cy;
+  }
+
+  set cy(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "cy",
+      v,
+      this.attributes.cy,
+      Interp.numberInterp,
+    );
+  }
+
   getCy(): number {
     return this.cy;
   }
 
   setCy(cy: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "cy",
-      cy,
-      this.cy,
-      Interp.numberInterp,
-    );
+    this.cy = cy;
+    return this;
   }
 
   onCyChanged(listener: (vn: number, vo: number) => void) {
@@ -185,18 +211,27 @@ export class Ellipse extends BaseShape {
     return this.setCenterX(cx).setCenterY(cy);
   }
 
+  get rx(): number {
+    return this.attributes.rx;
+  }
+
+  set rx(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "rx",
+      v,
+      this.attributes.rx,
+      Interp.numberInterp,
+    );
+  }
+
   getRx(): number {
     return this.rx;
   }
 
   setRx(rx: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "rx",
-      rx,
-      this.rx,
-      Interp.numberInterp,
-    );
+    this.rx = rx;
+    return this;
   }
 
   onRxChanged(listener: (vn: number, vo: number) => void) {
@@ -207,18 +242,27 @@ export class Ellipse extends BaseShape {
     return this.offAttributeChanged("rx", listener);
   }
 
+  get ry(): number {
+    return this.attributes.ry;
+  }
+
+  set ry(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "ry",
+      v,
+      this.attributes.ry,
+      Interp.numberInterp,
+    );
+  }
+
   getRy(): number {
     return this.ry;
   }
 
   setRy(ry: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "ry",
-      ry,
-      this.ry,
-      Interp.numberInterp,
-    );
+    this.ry = ry;
+    return this;
   }
 
   onRyChanged(listener: (vn: number, vo: number) => void) {
