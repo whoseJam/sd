@@ -237,16 +237,7 @@ export abstract class SDSVGNode extends SDNode {
     label: string,
     attributes: Record<string, any> = {},
   ): RenderNode {
-    // Initial values bypass the animation pipeline: reactive keys go
-    // straight into this.attributes (no setter, no Action queued), and
-    // anything else lands as a direct instance field. The DOM paint
-    // happens below from the same bag.
-    const model = this.attributes as Record<string, unknown>;
-    const self = this as unknown as Record<string, unknown>;
-    for (const key in attributes) {
-      if (key in model) model[key] = attributes[key];
-      else self[key] = attributes[key];
-    }
+    Object.assign(this, attributes);
     const object = RenderNode.createRenderNode(this, undefined, label);
     this.renderer = object;
     for (const key in attributes)

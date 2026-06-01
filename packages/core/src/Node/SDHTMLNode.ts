@@ -12,15 +12,7 @@ export abstract class SDHTMLNode extends SDNode {
     label: string,
     attributes: Record<string, any> = {},
   ): [RenderNode, RenderNode] {
-    // Initial values bypass the animation pipeline: reactive keys go
-    // straight into this.attributes (no setter, no Action queued), and
-    // anything else lands as a direct instance field.
-    const model = this.attributes as Record<string, unknown>;
-    const self = this as unknown as Record<string, unknown>;
-    for (const key in attributes) {
-      if (key in model) model[key] = attributes[key];
-      else self[key] = attributes[key];
-    }
+    Object.assign(this, attributes);
     const foreign = RenderNode.createRenderNode(
       this,
       undefined,
