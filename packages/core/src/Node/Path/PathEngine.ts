@@ -150,9 +150,335 @@ export class PathEngine {
     }
     return operators;
   }
+  // Convert any SVG path into an equivalent sequence of absolute
+  // commands containing only M (subpath start) and C (cubic Bezier).
+  // The Z/z command is expanded into a C that draws back to the most
+  // recent subpath start. Arcs are approximated with cubic Beziers per
+  // the SVG implementation notes (≤ π/2 per cubic).
   static toCubic(path: string | PathOpers): PathOpers {
-    // @ts-ignore
-    return Snap.path.toCubic(path);
+    const ops = typeof path === "string" ? this.toOpers(path) : path;
+    const out: PathOpers = [];
+    let cx = 0;
+    let cy = 0;
+    let sx = 0;
+    let sy = 0;
+    let prevCubicC2x: number | undefined;
+    let prevCubicC2y: number | undefined;
+    let prevQuadC1x: number | undefined;
+    let prevQuadC1y: number | undefined;
+    const pushLine = (nx: number, ny: number) => {
+      out.push(["C", cx, cy, nx, ny, nx, ny]);
+    };
+    for (const op of ops) {
+      const code = op[0];
+      const args = op.slice(1) as number[];
+      let nx = cx;
+      let ny = cy;
+      switch (code) {
+        case "M":
+          nx = args[0];
+          ny = args[1];
+          out.push(["M", nx, ny]);
+          sx = nx;
+          sy = ny;
+          break;
+        case "m":
+          nx = cx + args[0];
+          ny = cy + args[1];
+          out.push(["M", nx, ny]);
+          sx = nx;
+          sy = ny;
+          break;
+        case "L":
+          nx = args[0];
+          ny = args[1];
+          pushLine(nx, ny);
+          break;
+        case "l":
+          nx = cx + args[0];
+          ny = cy + args[1];
+          pushLine(nx, ny);
+          break;
+        case "H":
+          nx = args[0];
+          pushLine(nx, ny);
+          break;
+        case "h":
+          nx = cx + args[0];
+          pushLine(nx, ny);
+          break;
+        case "V":
+          ny = args[0];
+          pushLine(nx, ny);
+          break;
+        case "v":
+          ny = cy + args[0];
+          pushLine(nx, ny);
+          break;
+        case "C": {
+          const c1x = args[0];
+          const c1y = args[1];
+          const c2x = args[2];
+          const c2y = args[3];
+          nx = args[4];
+          ny = args[5];
+          out.push(["C", c1x, c1y, c2x, c2y, nx, ny]);
+          prevCubicC2x = c2x;
+          prevCubicC2y = c2y;
+          break;
+        }
+        case "c": {
+          const c1x = cx + args[0];
+          const c1y = cy + args[1];
+          const c2x = cx + args[2];
+          const c2y = cy + args[3];
+          nx = cx + args[4];
+          ny = cy + args[5];
+          out.push(["C", c1x, c1y, c2x, c2y, nx, ny]);
+          prevCubicC2x = c2x;
+          prevCubicC2y = c2y;
+          break;
+        }
+        case "S": {
+          const c1x = prevCubicC2x !== undefined ? 2 * cx - prevCubicC2x : cx;
+          const c1y = prevCubicC2y !== undefined ? 2 * cy - prevCubicC2y : cy;
+          const c2x = args[0];
+          const c2y = args[1];
+          nx = args[2];
+          ny = args[3];
+          out.push(["C", c1x, c1y, c2x, c2y, nx, ny]);
+          prevCubicC2x = c2x;
+          prevCubicC2y = c2y;
+          break;
+        }
+        case "s": {
+          const c1x = prevCubicC2x !== undefined ? 2 * cx - prevCubicC2x : cx;
+          const c1y = prevCubicC2y !== undefined ? 2 * cy - prevCubicC2y : cy;
+          const c2x = cx + args[0];
+          const c2y = cy + args[1];
+          nx = cx + args[2];
+          ny = cy + args[3];
+          out.push(["C", c1x, c1y, c2x, c2y, nx, ny]);
+          prevCubicC2x = c2x;
+          prevCubicC2y = c2y;
+          break;
+        }
+        case "Q": {
+          const qx = args[0];
+          const qy = args[1];
+          nx = args[2];
+          ny = args[3];
+          out.push(...PathEngine.quadToCubic(cx, cy, qx, qy, nx, ny));
+          prevQuadC1x = qx;
+          prevQuadC1y = qy;
+          break;
+        }
+        case "q": {
+          const qx = cx + args[0];
+          const qy = cy + args[1];
+          nx = cx + args[2];
+          ny = cy + args[3];
+          out.push(...PathEngine.quadToCubic(cx, cy, qx, qy, nx, ny));
+          prevQuadC1x = qx;
+          prevQuadC1y = qy;
+          break;
+        }
+        case "T": {
+          const qx = prevQuadC1x !== undefined ? 2 * cx - prevQuadC1x : cx;
+          const qy = prevQuadC1y !== undefined ? 2 * cy - prevQuadC1y : cy;
+          nx = args[0];
+          ny = args[1];
+          out.push(...PathEngine.quadToCubic(cx, cy, qx, qy, nx, ny));
+          prevQuadC1x = qx;
+          prevQuadC1y = qy;
+          break;
+        }
+        case "t": {
+          const qx = prevQuadC1x !== undefined ? 2 * cx - prevQuadC1x : cx;
+          const qy = prevQuadC1y !== undefined ? 2 * cy - prevQuadC1y : cy;
+          nx = cx + args[0];
+          ny = cy + args[1];
+          out.push(...PathEngine.quadToCubic(cx, cy, qx, qy, nx, ny));
+          prevQuadC1x = qx;
+          prevQuadC1y = qy;
+          break;
+        }
+        case "A": {
+          nx = args[5];
+          ny = args[6];
+          out.push(
+            ...PathEngine.arcToCubics(
+              cx,
+              cy,
+              nx,
+              ny,
+              args[0],
+              args[1],
+              args[2],
+              args[3] !== 0,
+              args[4] !== 0,
+            ),
+          );
+          break;
+        }
+        case "a": {
+          nx = cx + args[5];
+          ny = cy + args[6];
+          out.push(
+            ...PathEngine.arcToCubics(
+              cx,
+              cy,
+              nx,
+              ny,
+              args[0],
+              args[1],
+              args[2],
+              args[3] !== 0,
+              args[4] !== 0,
+            ),
+          );
+          break;
+        }
+        case "Z":
+        case "z":
+          nx = sx;
+          ny = sy;
+          pushLine(nx, ny);
+          break;
+      }
+      if (code !== "C" && code !== "c" && code !== "S" && code !== "s") {
+        prevCubicC2x = undefined;
+        prevCubicC2y = undefined;
+      }
+      if (code !== "Q" && code !== "q" && code !== "T" && code !== "t") {
+        prevQuadC1x = undefined;
+        prevQuadC1y = undefined;
+      }
+      cx = nx;
+      cy = ny;
+    }
+    return out;
+  }
+
+  // Quadratic → Cubic Bezier exact conversion. The two cubic control
+  // points sit 1/3 of the way from each endpoint toward the quadratic
+  // control point.
+  private static quadToCubic(
+    x0: number,
+    y0: number,
+    qx: number,
+    qy: number,
+    x1: number,
+    y1: number,
+  ): PathOpers {
+    const c1x = x0 + (2 / 3) * (qx - x0);
+    const c1y = y0 + (2 / 3) * (qy - y0);
+    const c2x = x1 + (2 / 3) * (qx - x1);
+    const c2y = y1 + (2 / 3) * (qy - y1);
+    return [["C", c1x, c1y, c2x, c2y, x1, y1]];
+  }
+
+  // SVG arc → cubic Bezier approximation. Algorithm from the W3C
+  // implementation notes (Appendix B): endpoint → center parameter-
+  // ization, then split sweep into pieces of ≤ π/2 and emit one cubic
+  // per piece.
+  private static arcToCubics(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    rx: number,
+    ry: number,
+    xAxisRotationDeg: number,
+    largeArc: boolean,
+    sweep: boolean,
+  ): PathOpers {
+    rx = Math.abs(rx);
+    ry = Math.abs(ry);
+    if (rx === 0 || ry === 0) return [["C", x1, y1, x2, y2, x2, y2]];
+    const phi = (xAxisRotationDeg * Math.PI) / 180;
+    const cosPhi = Math.cos(phi);
+    const sinPhi = Math.sin(phi);
+    // Step 1: transform to local coords
+    const dx = (x1 - x2) / 2;
+    const dy = (y1 - y2) / 2;
+    const x1p = cosPhi * dx + sinPhi * dy;
+    const y1p = -sinPhi * dx + cosPhi * dy;
+    // Correct out-of-range radii
+    const lambda = (x1p * x1p) / (rx * rx) + (y1p * y1p) / (ry * ry);
+    if (lambda > 1) {
+      const s = Math.sqrt(lambda);
+      rx *= s;
+      ry *= s;
+    }
+    // Step 2: center in local coords
+    const sign = largeArc === sweep ? -1 : 1;
+    const num = rx * rx * ry * ry - rx * rx * y1p * y1p - ry * ry * x1p * x1p;
+    const den = rx * rx * y1p * y1p + ry * ry * x1p * x1p;
+    const factor = sign * Math.sqrt(Math.max(0, num / den));
+    const cxp = (factor * rx * y1p) / ry;
+    const cyp = (-factor * ry * x1p) / rx;
+    // Step 3: center in original coords
+    const cxArc = cosPhi * cxp - sinPhi * cyp + (x1 + x2) / 2;
+    const cyArc = sinPhi * cxp + cosPhi * cyp + (y1 + y2) / 2;
+    // Step 4: angles
+    const angle = (ux: number, uy: number, vx: number, vy: number) => {
+      const dot = ux * vx + uy * vy;
+      const len = Math.sqrt(ux * ux + uy * uy) * Math.sqrt(vx * vx + vy * vy);
+      const a = Math.acos(Math.min(1, Math.max(-1, dot / len)));
+      return ux * vy - uy * vx < 0 ? -a : a;
+    };
+    const theta1 = angle(1, 0, (x1p - cxp) / rx, (y1p - cyp) / ry);
+    let dTheta = angle(
+      (x1p - cxp) / rx,
+      (y1p - cyp) / ry,
+      (-x1p - cxp) / rx,
+      (-y1p - cyp) / ry,
+    );
+    if (!sweep && dTheta > 0) dTheta -= 2 * Math.PI;
+    if (sweep && dTheta < 0) dTheta += 2 * Math.PI;
+    // Split into pieces of ≤ π/2
+    const pieces = Math.max(1, Math.ceil(Math.abs(dTheta) / (Math.PI / 2)));
+    const deltaPiece = dTheta / pieces;
+    const t =
+      ((4 / 3) * Math.tan(deltaPiece / 4)) /
+      Math.max(1e-12, Math.abs(Math.tan(deltaPiece / 4)) * 1);
+    // Tangent factor for the cubic Bezier approximation of a circular
+    // arc piece of angular span deltaPiece on a unit circle.
+    const alpha = (Math.sin(deltaPiece) * (Math.sqrt(4 + 3 * t * t) - 1)) / 3;
+    const cubics: PathOpers = [];
+    let theta = theta1;
+    let prevX = x1;
+    let prevY = y1;
+    let prevTangentX =
+      cosPhi * (-rx * Math.sin(theta)) - sinPhi * (ry * Math.cos(theta));
+    let prevTangentY =
+      sinPhi * (-rx * Math.sin(theta)) + cosPhi * (ry * Math.cos(theta));
+    for (let i = 1; i <= pieces; i++) {
+      theta = theta1 + i * deltaPiece;
+      const xLocal = rx * Math.cos(theta);
+      const yLocal = ry * Math.sin(theta);
+      const xWorld = cosPhi * xLocal - sinPhi * yLocal + cxArc;
+      const yWorld = sinPhi * xLocal + cosPhi * yLocal + cyArc;
+      const tangentXLocal = -rx * Math.sin(theta);
+      const tangentYLocal = ry * Math.cos(theta);
+      const tangentXWorld = cosPhi * tangentXLocal - sinPhi * tangentYLocal;
+      const tangentYWorld = sinPhi * tangentXLocal + cosPhi * tangentYLocal;
+      cubics.push([
+        "C",
+        prevX + alpha * prevTangentX,
+        prevY + alpha * prevTangentY,
+        xWorld - alpha * tangentXWorld,
+        yWorld - alpha * tangentYWorld,
+        xWorld,
+        yWorld,
+      ]);
+      prevX = xWorld;
+      prevY = yWorld;
+      prevTangentX = tangentXWorld;
+      prevTangentY = tangentYWorld;
+    }
+    return cubics;
   }
   static toCubics(
     path1: string | PathOpers,
