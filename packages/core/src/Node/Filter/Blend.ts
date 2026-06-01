@@ -1,10 +1,10 @@
 import type { Filter } from "@/Node/Filter/Filter";
+import type { TwoInputFilterAttributes } from "@/Node/Filter/TwoInputFilter";
 
 import { Interp } from "@/Animate/Interp";
 import { TwoInputFilter } from "@/Node/Filter/TwoInputFilter";
-import { Percent } from "@/Node/SDNode";
 
-type Mode =
+export type BlendMode =
   | "normal"
   | "multiply"
   | "screen"
@@ -17,49 +17,68 @@ type Mode =
   | "difference"
   | "exclusion";
 
-export class Blend extends TwoInputFilter {
-  /* model fields:
+export type BlendAttributes = TwoInputFilterAttributes & {
+  mode: BlendMode;
+};
 
-        mode: Mode;
-        */
+export class Blend extends TwoInputFilter {
+  declare attributes: BlendAttributes;
 
   constructor(args?: {
     targetNode?: Filter;
     in?: string;
     in2?: string;
     result?: string;
-    mode?: Mode;
+    mode?: BlendMode;
   }) {
     super();
 
-    this.renderer = this.createSVGNode("feBlend", {
+    this.attributes = {
+      ...this.attributes,
       in: args?.in ?? "SourceGraphic",
       in2: args?.in2 ?? "SourceGraphic",
+      result: args?.result ?? "",
+      colorInterpolationFilters: "sRGB",
       mode: args?.mode ?? "normal",
+    };
+
+    this.renderer = this.createSVGNode("feBlend", {
+      in: this.attributes.in,
+      in2: this.attributes.in2,
+      mode: this.attributes.mode,
     });
 
     args?.targetNode?.append(this);
+  }
+
+  get mode(): BlendMode {
+    return this.attributes.mode;
+  }
+
+  set mode(v: BlendMode) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "mode",
+      v,
+      this.attributes.mode,
+      Interp.stringInterp,
+    );
   }
 
   getMode() {
     return this.mode;
   }
 
-  setMode(mode: string) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "mode",
-      mode,
-      this.mode,
-      Interp.stringInterp,
-    );
+  setMode(mode: BlendMode): this {
+    this.mode = mode;
+    return this;
   }
 
-  onModeChanged(listener: (vn: string, vo: string) => void) {
+  onModeChanged(listener: (vn: BlendMode, vo: BlendMode) => void) {
     return this.onAttributeChanged("mode", listener);
   }
 
-  offModeChanged(listener: (vn: string, vo: string) => void) {
+  offModeChanged(listener: (vn: BlendMode, vo: BlendMode) => void) {
     return this.offAttributeChanged("mode", listener);
   }
 }
