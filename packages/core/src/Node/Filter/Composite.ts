@@ -50,15 +50,7 @@ export class Composite extends TwoInputFilter {
       k4: args?.k4 ?? 0,
     };
 
-    this.renderer = this.createSVGNode("feComposite", {
-      in: this.attributes.in,
-      in2: this.attributes.in2,
-      operator: this.attributes.operator,
-      k1: this.attributes.k1,
-      k2: this.attributes.k2,
-      k3: this.attributes.k3,
-      k4: this.attributes.k4,
-    });
+    this.renderer = this.createSVGNode("feComposite");
 
     args?.targetNode?.append(this);
   }

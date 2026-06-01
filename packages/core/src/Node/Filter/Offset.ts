@@ -34,13 +34,7 @@ export class Offset extends OneInputFilter {
       dy: args?.dy ?? 0,
     };
 
-    this.renderer = this.createSVGNode("feOffset", {
-      in: this.attributes.in,
-      result: this.attributes.result,
-      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
-      dx: this.attributes.dx,
-      dy: this.attributes.dy,
-    });
+    this.renderer = this.createSVGNode("feOffset");
   }
 
   get dx(): number {

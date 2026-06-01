@@ -50,16 +50,7 @@ export class DropShadow extends OneInputFilter {
       floodOpacity: args?.floodOpacity ?? 1,
     };
 
-    this.renderer = this.createSVGNode("feDropShadow", {
-      in: this.attributes.in,
-      result: this.attributes.result,
-      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
-      stdDeviation: this.attributes.stdDeviation,
-      dx: this.attributes.dx,
-      dy: this.attributes.dy,
-      floodColor: this.attributes.floodColor,
-      floodOpacity: this.attributes.floodOpacity,
-    });
+    this.renderer = this.createSVGNode("feDropShadow");
 
     args?.targetNode?.append(this);
   }

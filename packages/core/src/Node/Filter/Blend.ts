@@ -42,11 +42,7 @@ export class Blend extends TwoInputFilter {
       mode: args?.mode ?? "normal",
     };
 
-    this.renderer = this.createSVGNode("feBlend", {
-      in: this.attributes.in,
-      in2: this.attributes.in2,
-      mode: this.attributes.mode,
-    });
+    this.renderer = this.createSVGNode("feBlend");
 
     args?.targetNode?.append(this);
   }

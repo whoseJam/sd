@@ -36,12 +36,7 @@ export class GaussianBlur extends OneInputFilter {
       stdDeviation,
     };
 
-    this.renderer = this.createSVGNode("feGaussianBlur", {
-      in: this.attributes.in,
-      result: this.attributes.result,
-      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
-      stdDeviation: this.attributes.stdDeviation,
-    });
+    this.renderer = this.createSVGNode("feGaussianBlur");
 
     args?.targetNode?.append(this);
   }

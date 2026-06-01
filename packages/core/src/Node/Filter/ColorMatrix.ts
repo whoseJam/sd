@@ -42,13 +42,7 @@ export class ColorMatrix extends OneInputFilter {
       ],
     };
 
-    this.renderer = this.createSVGNode("feColorMatrix", {
-      in: this.attributes.in,
-      result: this.attributes.result,
-      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
-      type: this.attributes.type,
-      values: this.attributes.values,
-    });
+    this.renderer = this.createSVGNode("feColorMatrix");
 
     args?.targetNode?.append(this);
   }

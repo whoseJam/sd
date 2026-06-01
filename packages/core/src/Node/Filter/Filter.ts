@@ -41,13 +41,7 @@ export class Filter extends BaseFilter {
       height: args?.height ?? "120%",
     };
 
-    this.renderer = this.createSVGNode("filter", {
-      id: this.attributes.id,
-      x: this.attributes.x,
-      y: this.attributes.y,
-      width: this.attributes.width,
-      height: this.attributes.height,
-    });
+    this.renderer = this.createSVGNode("filter");
 
     args?.targetNode?.append(this);
   }
