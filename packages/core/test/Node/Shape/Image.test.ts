@@ -2,14 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import type { SDNode } from "@/Node/SDNode";
 
+import { Animate } from "@/Animate/Animate";
 import { Image } from "@/Node/Shape/Image";
 
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
-
-// Covers construction-time DOM (math→SVG flip with the y = -(y + height)
-// rule, mirroring Rect) and the model/listener contract of mutations.
-// mutation→DOM tier deferred — see Circle.test.ts.
 describe("Image", () => {
   describe("construction", () => {
     it("flips top-left y the same way Rect does", () => {
@@ -52,6 +49,13 @@ describe("Image", () => {
       expect(i.attributes.y).toBe(25);
       expect(seen).toEqual([[25, 0]]);
     });
+
+    it("setter flips DOM y to -(y + height) after animation flush", () => {
+      const i = new Image({ y: 0, height: 40 });
+      i.y = 25;
+      Animate.forceToFinish();
+      expect(attr(i, "y")).toBe(String(-(25 + 40)));
+    });
   });
 
   describe("width", () => {
@@ -81,6 +85,14 @@ describe("Image", () => {
       expect(i.attributes.height).toBe(70);
       expect(heightSeen).toEqual([[70, 40]]);
       expect(ySeen).toEqual([[10, 10]]);
+    });
+
+    it("DOM y recomputes with new height after flush", () => {
+      const i = new Image({ y: 10, height: 40 });
+      i.height = 70;
+      Animate.forceToFinish();
+      expect(attr(i, "height")).toBe("70");
+      expect(attr(i, "y")).toBe(String(-(10 + 70)));
     });
   });
 

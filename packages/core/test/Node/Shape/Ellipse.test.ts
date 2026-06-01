@@ -2,14 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import type { SDNode } from "@/Node/SDNode";
 
+import { Animate } from "@/Animate/Animate";
 import { Ellipse } from "@/Node/Shape/Ellipse";
 
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
-
-// Covers construction-time DOM (math→SVG flip) and the model/listener
-// contract of subsequent mutations. mutation→DOM tier deferred until
-// createSVGNode separates model init from DOM paint — see Circle.test.ts.
 describe("Ellipse", () => {
   describe("construction", () => {
     it("flips cy on the DOM but keeps math cy on the model", () => {
@@ -54,6 +51,13 @@ describe("Ellipse", () => {
 
       expect(e.attributes.cy).toBe(30);
       expect(seen).toEqual([[30, 0]]);
+    });
+
+    it("setter flips DOM cy sign after animation flush", () => {
+      const e = new Ellipse({ cy: 0 });
+      e.cy = 30;
+      Animate.forceToFinish();
+      expect(attr(e, "cy")).toBe("-30");
     });
   });
 
