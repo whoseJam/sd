@@ -1,14 +1,18 @@
 import type { Filter } from "@/Node/Filter/Filter";
-import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
+import type {
+  ColorInterpolationFilters,
+  OneInputFilterAttributes,
+} from "@/Node/Filter/OneInputFilter";
 
 import { Interp } from "@/Animate/Interp";
 import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
 
-export class GaussianBlur extends OneInputFilter {
-  /* model fields:
+export type GaussianBlurAttributes = OneInputFilterAttributes & {
+  stdDeviation: [number, number];
+};
 
-        stdDeviation: [number, number];
-        */
+export class GaussianBlur extends OneInputFilter {
+  declare attributes: GaussianBlurAttributes;
 
   constructor(args?: {
     targetNode?: Filter;
@@ -19,31 +23,50 @@ export class GaussianBlur extends OneInputFilter {
   }) {
     super();
 
-    if (typeof args?.stdDeviation === "number")
-      args.stdDeviation = [args.stdDeviation, args.stdDeviation];
-    this.renderer = this.createSVGNode("feGaussianBlur", {
+    const stdDeviation: [number, number] =
+      typeof args?.stdDeviation === "number"
+        ? [args.stdDeviation, args.stdDeviation]
+        : (args?.stdDeviation ?? [0, 0]);
+
+    this.attributes = {
+      ...this.attributes,
       in: args?.in ?? "SourceGraphic",
       result: args?.result ?? "",
       colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
-      stdDeviation: args?.stdDeviation ?? [0, 0],
+      stdDeviation,
+    };
+
+    this.renderer = this.createSVGNode("feGaussianBlur", {
+      in: this.attributes.in,
+      result: this.attributes.result,
+      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
+      stdDeviation: this.attributes.stdDeviation,
     });
 
     args?.targetNode?.append(this);
+  }
+
+  get stdDeviation(): [number, number] {
+    return this.attributes.stdDeviation;
+  }
+
+  set stdDeviation(v: [number, number]) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "stdDeviation",
+      v,
+      this.attributes.stdDeviation,
+      Interp.vectorInterp,
+    );
   }
 
   getStdDeviation() {
     return this.stdDeviation;
   }
 
-  setStdDeviation(std: number | [number, number]) {
-    if (typeof std === "number") std = [std, std];
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "stdDeviation",
-      std,
-      this.stdDeviation,
-      Interp.vectorInterp,
-    );
+  setStdDeviation(std: number | [number, number]): this {
+    this.stdDeviation = typeof std === "number" ? [std, std] : std;
+    return this;
   }
 
   onStdDeviationChanged(
