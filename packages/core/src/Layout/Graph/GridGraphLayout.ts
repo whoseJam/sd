@@ -28,9 +28,9 @@ import type { SDNode } from "@/Node/SDNode";
  * @example
  * // Create a 3×3 grid with nodes at specific positions
  * const pos = {
- *   [node1.id]: { x: 0, y: 0 },  // Top-left
- *   [node2.id]: { x: 1, y: 1 },  // Center
- *   [node3.id]: { x: 2, y: 2 }   // Bottom-right
+ *   [node1.nodeId]: { x: 0, y: 0 },  // Top-left
+ *   [node2.nodeId]: { x: 1, y: 1 },  // Center
+ *   [node3.nodeId]: { x: 2, y: 2 }   // Bottom-right
  * };
  * GridGraphLayout([node1, node2, node3], links, {
  *   x: 0,
@@ -40,7 +40,7 @@ import type { SDNode } from "@/Node/SDNode";
  *   n: 3,
  *   m: 3,
  *   pos: pos,
- *   getNodeId: (node) => node.id,
+ *   getNodeId: (node) => node.nodeId,
  *   getLinkSourceId: (link) => link.source,
  *   getLinkTargetId: (link) => link.target
  * });
@@ -49,10 +49,10 @@ import type { SDNode } from "@/Node/SDNode";
  * @example
  * // Create a 2×4 grid
  * const pos = {
- *   [node1.id]: { x: 0, y: 0 },
- *   [node2.id]: { x: 0, y: 1 },
- *   [node3.id]: { x: 1, y: 2 },
- *   [node4.id]: { x: 1, y: 3 }
+ *   [node1.nodeId]: { x: 0, y: 0 },
+ *   [node2.nodeId]: { x: 0, y: 1 },
+ *   [node3.nodeId]: { x: 1, y: 2 },
+ *   [node4.nodeId]: { x: 1, y: 3 }
  * };
  * GridGraphLayout([node1, node2, node3, node4], links, {
  *   x: 100,
@@ -62,7 +62,7 @@ import type { SDNode } from "@/Node/SDNode";
  *   n: 2,
  *   m: 4,
  *   pos: pos,
- *   getNodeId: (node) => node.id,
+ *   getNodeId: (node) => node.nodeId,
  *   getLinkSourceId: (link) => link.source,
  *   getLinkTargetId: (link) => link.target
  * });

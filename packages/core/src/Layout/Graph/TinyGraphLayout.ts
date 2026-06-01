@@ -33,7 +33,7 @@ import type { SDNode } from "@/Node/SDNode";
  *   y: 100,
  *   width: 300,
  *   height: 300,
- *   getNodeId: (node) => node.id,
+ *   getNodeId: (node) => node.nodeId,
  *   getLinkSourceId: (link) => link.source,
  *   getLinkTargetId: (link) => link.target
  * });
@@ -46,7 +46,7 @@ import type { SDNode } from "@/Node/SDNode";
  *   y: 0,
  *   width: 400,
  *   height: 400,
- *   getNodeId: (node) => node.id,
+ *   getNodeId: (node) => node.nodeId,
  *   getLinkSourceId: (link) => link.source,
  *   getLinkTargetId: (link) => link.target
  * });

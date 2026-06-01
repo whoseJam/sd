@@ -63,7 +63,7 @@ export interface DAGLink {
  *   height: 300,
  *   direction: "TB",
  *   align: "C",
- *   getNodeId: (node) => node.id,
+ *   getNodeId: (node) => node.nodeId,
  *   getLinkSourceId: (link) => link.source,
  *   getLinkTargetId: (link) => link.target
  * });

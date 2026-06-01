@@ -1,5 +1,5 @@
 import type { Group } from "@/Node/Other/Group";
-import type { Percent } from "@/Node/SDNode";
+import type { Percent, SDNodeAttributes } from "@/Node/SDNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { URLString } from "@/Utility/String";
 
@@ -10,11 +10,16 @@ import { SDString } from "@/Utility/String";
 
 export type SDFilter = Filter | string | URLString;
 
-export class Filter extends BaseFilter {
-  /* model fields:
+export type FilterAttributes = SDNodeAttributes & {
+  id: string;
+  x: Percent;
+  y: Percent;
+  width: Percent;
+  height: Percent;
+};
 
-        id: string;
-        */
+export class Filter extends BaseFilter {
+  declare attributes: FilterAttributes;
 
   constructor(args?: {
     targetNode?: Group;
@@ -26,12 +31,21 @@ export class Filter extends BaseFilter {
   }) {
     super();
 
-    this.renderer = this.createSVGNode("filter", {
+    this.attributes = {
+      ...this.attributes,
       id: args?.id ?? "",
       x: args?.x ?? "-10%",
       y: args?.y ?? "-10%",
       width: args?.width ?? "120%",
       height: args?.height ?? "120%",
+    };
+
+    this.renderer = this.createSVGNode("filter", {
+      id: this.attributes.id,
+      x: this.attributes.x,
+      y: this.attributes.y,
+      width: this.attributes.width,
+      height: this.attributes.height,
     });
 
     args?.targetNode?.append(this);
@@ -46,7 +60,6 @@ export class Filter extends BaseFilter {
   }
 
   appendChild(child: SDNode | RenderNode) {
-    child.parent = this;
     if (child instanceof SDNode) {
       this.getRootRenderNode().appendChild(child.getRootRenderNode());
       child.parent = this;
@@ -65,44 +78,89 @@ export class Filter extends BaseFilter {
     return this;
   }
 
-  getId() {
-    return this.id;
+  get id(): string {
+    return this.attributes.id;
   }
 
-  setId(id: string) {
-    return this.triggerAttributeChanged(
+  set id(v: string) {
+    this.triggerAttributeChanged(
       this.renderer,
       "id",
-      id,
-      this.id,
+      v,
+      this.attributes.id,
       Interp.stringInterp,
     );
   }
 
-  setX(x: Percent) {
-    return this.triggerAttributeChanged(this.renderer, "x", x, this.x);
+  getId() {
+    return this.id;
   }
 
-  setY(y: Percent) {
-    return this.triggerAttributeChanged(this.renderer, "y", y, this.y);
+  setId(id: string): this {
+    this.id = id;
+    return this;
   }
 
-  setWidth(width: Percent) {
-    return this.triggerAttributeChanged(
+  get x(): Percent {
+    return this.attributes.x;
+  }
+
+  set x(v: Percent) {
+    this.triggerAttributeChanged(this.renderer, "x", v, this.attributes.x);
+  }
+
+  setX(x: Percent): this {
+    this.x = x;
+    return this;
+  }
+
+  get y(): Percent {
+    return this.attributes.y;
+  }
+
+  set y(v: Percent) {
+    this.triggerAttributeChanged(this.renderer, "y", v, this.attributes.y);
+  }
+
+  setY(y: Percent): this {
+    this.y = y;
+    return this;
+  }
+
+  get width(): Percent {
+    return this.attributes.width;
+  }
+
+  set width(v: Percent) {
+    this.triggerAttributeChanged(
       this.renderer,
       "width",
-      width,
-      this.width,
+      v,
+      this.attributes.width,
     );
   }
 
-  setHeight(height: Percent) {
-    return this.triggerAttributeChanged(
+  setWidth(width: Percent): this {
+    this.width = width;
+    return this;
+  }
+
+  get height(): Percent {
+    return this.attributes.height;
+  }
+
+  set height(v: Percent) {
+    this.triggerAttributeChanged(
       this.renderer,
       "height",
-      height,
-      this.height,
+      v,
+      this.attributes.height,
     );
+  }
+
+  setHeight(height: Percent): this {
+    this.height = height;
+    return this;
   }
 
   static toURLString(filter: SDFilter) {

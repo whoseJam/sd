@@ -117,7 +117,7 @@ export class Action {
     if (!this.is(Action.stopFlag)) this.tick(this.r + 5);
   }
   toString() {
-    return `[${this.l}, ${this.r}] animatedKey=${this.animatedKey} source=${this.source} target=${this.target} id=${this.entity.id} frame=${this.frame}`;
+    return `[${this.l}, ${this.r}] animatedKey=${this.animatedKey} source=${this.source} target=${this.target} nodeId=${this.entity.nodeId} frame=${this.frame}`;
   }
   is(flag: number) {
     return (this.flag & flag) != 0;

@@ -28,11 +28,11 @@ import type { SDNode } from "@/Node/SDNode";
  * @example
  * // Create a bipartite graph with 3 nodes on top and 2 on bottom
  * const no = {
- *   [node1.id]: 0,
- *   [node2.id]: 0,
- *   [node3.id]: 0,
- *   [node4.id]: 1,
- *   [node5.id]: 1
+ *   [node1.nodeId]: 0,
+ *   [node2.nodeId]: 0,
+ *   [node3.nodeId]: 0,
+ *   [node4.nodeId]: 1,
+ *   [node5.nodeId]: 1
  * };
  * BipartiteGraphLayout([node1, node2, node3, node4, node5], links, {
  *   x: 0,
@@ -40,7 +40,7 @@ import type { SDNode } from "@/Node/SDNode";
  *   width: 600,
  *   height: 250,
  *   no: no,
- *   getNodeId: (node) => node.id,
+ *   getNodeId: (node) => node.nodeId,
  *   getLinkSourceId: (link) => link.source,
  *   getLinkTargetId: (link) => link.target
  * });

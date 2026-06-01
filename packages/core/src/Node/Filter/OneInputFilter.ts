@@ -1,28 +1,40 @@
+import type { SDNodeAttributes } from "@/Node/SDNode";
+
 import { Interp } from "@/Animate/Interp";
 import { BaseFilter } from "@/Node/Filter/BaseFilter";
 
 export type ColorInterpolationFilters = "sRGB" | "linearRGB";
 
-export class OneInputFilter extends BaseFilter {
-  /* model fields:
+export type OneInputFilterAttributes = SDNodeAttributes & {
+  in: string;
+  result: string;
+  colorInterpolationFilters: ColorInterpolationFilters;
+};
 
-        in: string;
-        result: string;
-        colorInterpolationFilters: ColorInterpolationFilters;
-        */
+export class OneInputFilter extends BaseFilter {
+  declare attributes: OneInputFilterAttributes;
+
+  get in(): string {
+    return this.attributes.in;
+  }
+
+  set in(v: string) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "in",
+      v,
+      this.attributes.in,
+      Interp.stringInterp,
+    );
+  }
 
   getIn() {
     return this.in;
   }
 
-  setIn(input: string) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "in",
-      input,
-      this.in,
-      Interp.stringInterp,
-    );
+  setIn(input: string): this {
+    this.in = input;
+    return this;
   }
 
   onInChanged(listener: (vn: string, vo: string) => void) {
@@ -33,18 +45,27 @@ export class OneInputFilter extends BaseFilter {
     return this.offAttributeChanged("in", listener);
   }
 
+  get result(): string {
+    return this.attributes.result;
+  }
+
+  set result(v: string) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "result",
+      v,
+      this.attributes.result,
+      Interp.stringInterp,
+    );
+  }
+
   getResult() {
     return this.result;
   }
 
-  setResult(result: string) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "result",
-      result,
-      this.result,
-      Interp.stringInterp,
-    );
+  setResult(result: string): this {
+    this.result = result;
+    return this;
   }
 
   onResultChanged(listener: (vn: string, vo: string) => void) {
@@ -55,18 +76,27 @@ export class OneInputFilter extends BaseFilter {
     return this.offAttributeChanged("result", listener);
   }
 
+  get colorInterpolationFilters(): ColorInterpolationFilters {
+    return this.attributes.colorInterpolationFilters;
+  }
+
+  set colorInterpolationFilters(v: ColorInterpolationFilters) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "colorInterpolationFilters",
+      v,
+      this.attributes.colorInterpolationFilters,
+      Interp.stringInterp,
+    );
+  }
+
   getColorInterpolationFilters() {
     return this.colorInterpolationFilters;
   }
 
-  setColorInterpolationFilters(color: ColorInterpolationFilters) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "colorInterpolationFilters",
-      color,
-      this.colorInterpolationFilters,
-      Interp.stringInterp,
-    );
+  setColorInterpolationFilters(color: ColorInterpolationFilters): this {
+    this.colorInterpolationFilters = color;
+    return this;
   }
 
   onColorInterpolationFiltersChanged(

@@ -47,7 +47,7 @@ export type SDNodeAttributes = {
 };
 
 export abstract class SDNode {
-  id: number;
+  nodeId: number;
   // Engine state — typed first-class fields, not part of the dynamic _ bag.
   // Public for now because sibling SDNode subclasses (Group, Filter) and
   // free functions (ActionList.visible, text engines) read/write these
@@ -73,7 +73,7 @@ export abstract class SDNode {
   private listeners: { [key: string]: Array<AttributeListener> };
   static NODE_ID = 0;
   constructor() {
-    this.id = ++SDNode.NODE_ID;
+    this.nodeId = ++SDNode.NODE_ID;
     this.listeners = {};
   }
 

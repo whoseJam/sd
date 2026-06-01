@@ -1,28 +1,23 @@
-import { Percent } from "@/Node/SDNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
 
+// Filter primitives don't position themselves in user math space; only
+// the top-level Filter does, via its own x / y / width / height. The
+// getX/getY/getWidth/getHeight here only exist to satisfy the abstracts
+// inherited from SDNode and are never read off a primitive.
 export class BaseFilter extends SDSVGNode {
-  /* model fields:
-
-        x: Percent;
-        y: Percent;
-        width: Percent;
-        height: Percent;
-        */
-
   getX() {
-    return this.x as any;
+    return 0;
   }
 
   getY() {
-    return this.y as any;
+    return 0;
   }
 
   getWidth() {
-    return this.width as any;
+    return 0;
   }
 
   getHeight() {
-    return this.height as any;
+    return 0;
   }
 }
