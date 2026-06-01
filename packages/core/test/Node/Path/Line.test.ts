@@ -2,14 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import type { SDNode } from "@/Node/SDNode";
 
+import { Animate } from "@/Animate/Animate";
 import { Line } from "@/Node/Path/Line";
 
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
-
-// Covers construction-time DOM (math→SVG y flip on y1 / y2) and the
-// model/listener contract of mutations. mutation→DOM tier deferred —
-// see Circle.test.ts.
 describe("Line", () => {
   describe("construction", () => {
     it("flips y1 and y2 independently", () => {
@@ -54,6 +51,13 @@ describe("Line", () => {
 
       expect(l.attributes.y1).toBe(25);
       expect(seen).toEqual([[25, 0]]);
+    });
+
+    it("setter flips DOM y1 sign after animation flush", () => {
+      const l = new Line({ y1: 0 });
+      l.y1 = 25;
+      Animate.forceToFinish();
+      expect(attr(l, "y1")).toBe("-25");
     });
   });
 

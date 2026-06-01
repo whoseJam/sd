@@ -2,19 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import type { SDNode } from "@/Node/SDNode";
 
+import { Animate } from "@/Animate/Animate";
 import { Circle } from "@/Node/Shape/Circle";
 
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
-
-// Covers construction-time DOM (math→SVG flip) and the model/listener
-// contract of subsequent mutations. The mutation→DOM tier (assert DOM
-// after Animate.forceToFinish) is deliberately skipped: the correct
-// approach is to drive the Animate timeline and flush it, but
-// createSVGNode currently fires accessor setters during construction
-// before this.renderer is assigned, queuing bogus Actions that crash
-// on flush. Add that tier once createSVGNode separates model init from
-// DOM paint.
 describe("Circle", () => {
   describe("construction", () => {
     it("flips cy on the DOM but keeps math cy on the model", () => {
@@ -47,6 +39,13 @@ describe("Circle", () => {
       expect(a.attributes.cx).toBe(b.attributes.cx);
       expect(a.cx).toBe(b.cx);
     });
+
+    it("setter writes DOM after animation flush", () => {
+      const c = new Circle({ cx: 0 });
+      c.cx = 42;
+      Animate.forceToFinish();
+      expect(attr(c, "cx")).toBe("42");
+    });
   });
 
   describe("cy", () => {
@@ -59,6 +58,13 @@ describe("Circle", () => {
 
       expect(c.attributes.cy).toBe(30);
       expect(seen).toEqual([[30, 0]]);
+    });
+
+    it("setter flips DOM cy sign after animation flush", () => {
+      const c = new Circle({ cy: 0 });
+      c.cy = 30;
+      Animate.forceToFinish();
+      expect(attr(c, "cy")).toBe("-30");
     });
   });
 
