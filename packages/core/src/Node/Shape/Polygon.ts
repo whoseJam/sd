@@ -9,9 +9,14 @@ import type { SDFilter } from "@/Node/Filter/Filter";
 import { Filter } from "@/Node/Filter/Filter";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
+import type { SDNodeAttributes } from "@/Node/SDNode";
+
+export type PolygonAttributes = SDNodeAttributes & {
+  points: Array<[number, number]>;
+};
 
 export class Polygon extends BaseShape {
-  protected points: Array<[number, number]> = [];
+  declare attributes: PolygonAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "points") {
@@ -42,10 +47,13 @@ export class Polygon extends BaseShape {
   }) {
     super();
 
-    this.points = Polygon.toPoints(args?.points);
+    this.attributes = {
+      ...this.attributes,
+      points: Polygon.toPoints(args?.points),
+    };
 
     this.renderer = this.createSVGNode("polygon", {
-      points: this.points,
+      points: this.attributes.points,
       transformOrigin: ["center", "center"],
       opacity: args?.opacity ?? 1,
       fill: args?.fill ?? C.black,
@@ -63,6 +71,20 @@ export class Polygon extends BaseShape {
     });
 
     args?.targetNode?.appendChild(this);
+  }
+
+  get points(): Array<[number, number]> {
+    return this.attributes.points;
+  }
+
+  set points(v: Array<[number, number]>) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "points",
+      v,
+      this.attributes.points,
+      Interp.pointsInterp,
+    );
   }
 
   getX() {
@@ -86,13 +108,8 @@ export class Polygon extends BaseShape {
   }
 
   setPoints(points: Array<[number, number]>): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "points",
-      points,
-      this.points,
-      Interp.pointsInterp,
-    );
+    this.points = points;
+    return this;
   }
 
   onPointsChanged(
