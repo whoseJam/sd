@@ -55,23 +55,14 @@ export class Circle extends BaseShape {
 
     this.attributes = {
       ...this.attributes,
-      cx: args?.cx ?? args?.centerX ?? 0,
-      cy: args?.cy ?? args?.centerY ?? 0,
-      r: args?.r ?? 20,
-    };
-
-    this.renderer = this.createSVGNode("circle", {
-      cx: this.attributes.cx,
-      cy: this.attributes.cy,
-      r: this.attributes.r,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
       scale: args?.scale ?? [1, 1],
       opacity: args?.opacity ?? 1,
-      fill: args?.fill ?? C.black,
+      fill: C.toRGBA(C.toFill(args?.fill ?? C.black)),
+      stroke: C.toRGBA(C.toStroke(args?.stroke ?? C.none)),
       fillOpacity: args?.fillOpacity ?? 1,
-      stroke: args?.stroke ?? C.none,
       strokeOpacity: args?.strokeOpacity ?? 1,
       strokeWidth: args?.strokeWidth ?? 1,
       strokeDashOffset: args?.strokeDashOffset ?? args?.strokeDashoffset ?? 0,
@@ -80,6 +71,12 @@ export class Circle extends BaseShape {
       ),
       strokeLineCap: args?.strokeLineCap ?? "butt",
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
+      cx: args?.cx ?? args?.centerX ?? 0,
+      cy: args?.cy ?? args?.centerY ?? 0,
+      r: args?.r ?? 20,
+    };
+
+    this.renderer = this.createSVGNode("circle", {
       filter: Filter.toURLString(args?.filter),
     });
 

@@ -43,7 +43,7 @@ export type SDNodeAttributes = {
   scale: [number, number];
   rotate: number;
   translate: [number, number];
-  transformOrigin: [NumberOrPercent, NumberOrPercent];
+  transformOrigin: TransformOrigin;
 };
 
 export abstract class SDNode {
@@ -291,11 +291,11 @@ export abstract class SDNode {
     return this.offAttributeChanged("translate", listener);
   }
 
-  get transformOrigin(): [NumberOrPercent, NumberOrPercent] {
+  get transformOrigin(): TransformOrigin {
     return this.attributes.transformOrigin;
   }
 
-  set transformOrigin(v: [NumberOrPercent, NumberOrPercent]) {
+  set transformOrigin(v: TransformOrigin) {
     this.triggerAttributeChanged(
       this.getRootRenderNode(),
       "transformOrigin",
@@ -305,14 +305,14 @@ export abstract class SDNode {
   }
 
   setTransformOrigin(x: XLocation, y: YLocation): this;
-  setTransformOrigin(origin: [XLocation, YLocation]): this;
-  setTransformOrigin(x: XLocation | [XLocation, YLocation], y?: YLocation) {
+  setTransformOrigin(origin: TransformOrigin): this;
+  setTransformOrigin(x: XLocation | TransformOrigin, y?: YLocation) {
     if (Array.isArray(x)) return this.setTransformOrigin(x[0], x[1]);
-    this.transformOrigin = [x, y] as [NumberOrPercent, NumberOrPercent];
+    this.transformOrigin = [x, y];
     return this;
   }
 
-  getTransformOrigin(): [NumberOrPercent, NumberOrPercent] {
+  getTransformOrigin(): TransformOrigin {
     return this.transformOrigin;
   }
 
