@@ -2,13 +2,18 @@ import { Interp } from "@/Animate/Interp";
 import { BaseShape } from "@/Node/Shape/BaseShape";
 import type { Group } from "@/Node/Other/Group";
 import type { RenderNode } from "@/Renderer/RenderNode";
+import type { SDNodeAttributes } from "@/Node/SDNode";
+
+export type ImageAttributes = SDNodeAttributes & {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  src: string;
+};
 
 export class Image extends BaseShape {
-  protected x: number = 0;
-  protected y: number = 0;
-  protected width: number = 40;
-  protected height: number = 40;
-  protected src: string = "";
+  declare attributes: ImageAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y") return renderer.setAttribute("y", -(value + this.height));
@@ -26,18 +31,21 @@ export class Image extends BaseShape {
   }) {
     super();
 
-    this.x = args?.x ?? 0;
-    this.y = args?.y ?? 0;
-    this.width = args?.width ?? 40;
-    this.height = args?.height ?? 40;
-    this.src = args?.src ?? "";
+    this.attributes = {
+      ...this.attributes,
+      x: args?.x ?? 0,
+      y: args?.y ?? 0,
+      width: args?.width ?? 40,
+      height: args?.height ?? 40,
+      src: args?.src ?? "",
+    };
 
     this.renderer = this.createSVGNode("image", {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-      src: this.src,
+      x: this.attributes.x,
+      y: this.attributes.y,
+      width: this.attributes.width,
+      height: this.attributes.height,
+      src: this.attributes.src,
       opacity: args?.opacity ?? 1,
       preserveAspectRatio: "xMidYMid meet",
     });
@@ -45,18 +53,27 @@ export class Image extends BaseShape {
     args?.targetNode?.appendChild(this.renderer);
   }
 
+  get x(): number {
+    return this.attributes.x;
+  }
+
+  set x(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "x",
+      v,
+      this.attributes.x,
+      Interp.numberInterp,
+    );
+  }
+
   getX(): number {
     return this.x;
   }
 
   setX(x: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "x",
-      x,
-      this.x,
-      Interp.numberInterp,
-    );
+    this.x = x;
+    return this;
   }
 
   onXChanged(listener: (vn: number, vo: number) => void) {
@@ -67,18 +84,27 @@ export class Image extends BaseShape {
     return this.offAttributeChanged("x", listener);
   }
 
+  get y(): number {
+    return this.attributes.y;
+  }
+
+  set y(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "y",
+      v,
+      this.attributes.y,
+      Interp.numberInterp,
+    );
+  }
+
   getY(): number {
     return this.y;
   }
 
   setY(y: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "y",
-      y,
-      this.y,
-      Interp.numberInterp,
-    );
+    this.y = y;
+    return this;
   }
 
   onYChanged(listener: (vn: number, vo: number) => void) {
@@ -89,18 +115,27 @@ export class Image extends BaseShape {
     return this.offAttributeChanged("y", listener);
   }
 
+  get width(): number {
+    return this.attributes.width;
+  }
+
+  set width(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "width",
+      v,
+      this.attributes.width,
+      Interp.numberInterp,
+    );
+  }
+
   getWidth(): number {
     return this.width;
   }
 
   setWidth(width: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "width",
-      width,
-      this.width,
-      Interp.numberInterp,
-    );
+    this.width = width;
+    return this;
   }
 
   onWidthChanged(listener: (vn: number, vo: number) => void) {
@@ -111,27 +146,36 @@ export class Image extends BaseShape {
     return this.offAttributeChanged("width", listener);
   }
 
-  getHeight(): number {
-    return this.height;
+  get height(): number {
+    return this.attributes.height;
   }
 
   // SVG y depends on height (svg_y = -(y + height)); a height change must
   // re-fire the y attribute so renderAttribute reads the new height.
-  setHeight(height: number): this {
+  set height(v: number) {
     this.triggerAttributeChanged(
       this.renderer,
       "height",
-      height,
-      this.height,
+      v,
+      this.attributes.height,
       Interp.numberInterp,
     );
-    return this.triggerAttributeChanged(
+    this.triggerAttributeChanged(
       this.renderer,
       "y",
-      this.y,
-      this.y,
+      this.attributes.y,
+      this.attributes.y,
       Interp.numberInterp,
     );
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
+  setHeight(height: number): this {
+    this.height = height;
+    return this;
   }
 
   onHeightChanged(listener: (vn: number, vo: number) => void) {
@@ -142,12 +186,21 @@ export class Image extends BaseShape {
     return this.offAttributeChanged("height", listener);
   }
 
+  get src(): string {
+    return this.attributes.src;
+  }
+
+  set src(v: string) {
+    this.triggerAttributeChanged(this.renderer, "src", v, this.attributes.src);
+  }
+
   getSrc(): string {
     return this.src;
   }
 
   setSrc(src: string): this {
-    return this.triggerAttributeChanged(this.renderer, "src", src, this.src);
+    this.src = src;
+    return this;
   }
 
   onSrcChanged(listener: (vn: string, vo: string) => void) {
