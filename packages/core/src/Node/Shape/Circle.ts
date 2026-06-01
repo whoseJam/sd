@@ -8,12 +8,16 @@ import type { SDFilter } from "@/Node/Filter/Filter";
 import { Filter } from "@/Node/Filter/Filter";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
-import type { TransformOrigin } from "@/Node/SDNode";
+import type { SDNodeAttributes, TransformOrigin } from "@/Node/SDNode";
+
+export type CircleAttributes = SDNodeAttributes & {
+  cx: number;
+  cy: number;
+  r: number;
+};
 
 export class Circle extends BaseShape {
-  protected cx: number = 0;
-  protected cy: number = 0;
-  protected r: number = 20;
+  declare attributes: CircleAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "cy") return renderer.setAttribute("cy", -value);
@@ -47,14 +51,17 @@ export class Circle extends BaseShape {
   }) {
     super();
 
-    this.cx = args?.cx ?? args?.centerX ?? 0;
-    this.cy = args?.cy ?? args?.centerY ?? 0;
-    this.r = args?.r ?? 20;
+    this.attributes = {
+      ...this.attributes,
+      cx: args?.cx ?? args?.centerX ?? 0,
+      cy: args?.cy ?? args?.centerY ?? 0,
+      r: args?.r ?? 20,
+    };
 
     this.renderer = this.createSVGNode("circle", {
-      cx: this.cx,
-      cy: this.cy,
-      r: this.r,
+      cx: this.attributes.cx,
+      cy: this.attributes.cy,
+      r: this.attributes.r,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
@@ -77,18 +84,27 @@ export class Circle extends BaseShape {
     args?.targetNode?.appendChild(this);
   }
 
+  get cx(): number {
+    return this.attributes.cx;
+  }
+
+  set cx(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "cx",
+      v,
+      this.attributes.cx,
+      Interp.numberInterp,
+    );
+  }
+
   getCx(): number {
     return this.cx;
   }
 
   setCx(cx: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "cx",
-      cx,
-      this.cx,
-      Interp.numberInterp,
-    );
+    this.cx = cx;
+    return this;
   }
 
   onCxChanged(listener: (vn: number, vo: number) => void) {
@@ -115,18 +131,27 @@ export class Circle extends BaseShape {
     return this.offCxChanged(listener);
   }
 
+  get cy(): number {
+    return this.attributes.cy;
+  }
+
+  set cy(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "cy",
+      v,
+      this.attributes.cy,
+      Interp.numberInterp,
+    );
+  }
+
   getCy(): number {
     return this.cy;
   }
 
   setCy(cy: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "cy",
-      cy,
-      this.cy,
-      Interp.numberInterp,
-    );
+    this.cy = cy;
+    return this;
   }
 
   onCyChanged(listener: (vn: number, vo: number) => void) {
@@ -160,6 +185,20 @@ export class Circle extends BaseShape {
     return this.setCenterX(cx).setCenterY(cy);
   }
 
+  get r(): number {
+    return this.attributes.r;
+  }
+
+  set r(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "r",
+      v,
+      this.attributes.r,
+      Interp.numberInterp,
+    );
+  }
+
   getR(): number {
     return this.r;
   }
@@ -169,13 +208,8 @@ export class Circle extends BaseShape {
   }
 
   setR(r: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "r",
-      r,
-      this.r,
-      Interp.numberInterp,
-    );
+    this.r = r;
+    return this;
   }
 
   setRadius(r: number): this {

@@ -32,6 +32,19 @@ export type SDBox = {
 
 type AttributeListener = (vn: any, vo: any) => void;
 
+// Reactive attribute shape. Each reactive field is stored on `this.attributes`
+// (not as a direct instance field) and exposed via getter/setter pairs.
+// Subclasses widen this type via `declare attributes: SDNodeAttributes & { ... }`
+// so their own reactive fields (cx, cy, r, x, y, d, text, ...) become
+// first-class typed keys for triggerAttributeChanged / on*Changed.
+export type SDNodeAttributes = {
+  opacity: number;
+  scale: [number, number];
+  rotate: number;
+  translate: [number, number];
+  transformOrigin: [NumberOrPercent, NumberOrPercent];
+};
+
 export abstract class SDNode {
   id: number;
   // Engine state — typed first-class fields, not part of the dynamic _ bag.
@@ -49,14 +62,13 @@ export abstract class SDNode {
   subAnimates: Array<Context> = [];
   timingFunction: SDEasingFunction | undefined = undefined;
   ready: boolean = false;
-  protected opacity: number = 1;
-  protected scale: [number, number] = [1, 1];
-  protected rotate: number = 0;
-  protected translate: [number, number] = [0, 0];
-  protected transformOrigin: [NumberOrPercent, NumberOrPercent] = [
-    "50%",
-    "50%",
-  ];
+  attributes: SDNodeAttributes = {
+    opacity: 1,
+    scale: [1, 1],
+    rotate: 0,
+    translate: [0, 0],
+    transformOrigin: ["50%", "50%"],
+  };
   private listeners: { [key: string]: Array<AttributeListener> };
   static NODE_ID = 0;
   constructor() {
@@ -137,18 +149,27 @@ export abstract class SDNode {
     renderer.setAttribute(key, value);
   }
 
+  get opacity(): number {
+    return this.attributes.opacity;
+  }
+
+  set opacity(v: number) {
+    this.triggerAttributeChanged(
+      this.getRootRenderNode(),
+      "opacity",
+      v,
+      this.attributes.opacity,
+      Interp.numberInterp,
+    );
+  }
+
   getOpacity(): number {
     return this.opacity;
   }
 
   setOpacity(opacity: number): this {
-    return this.triggerAttributeChanged(
-      this.getRootRenderNode(),
-      "opacity",
-      opacity,
-      this.opacity,
-      Interp.numberInterp,
-    );
+    this.opacity = opacity;
+    return this;
   }
 
   onOpacityChanged(listener: (vn: number, vo: number) => void): this {
@@ -164,19 +185,28 @@ export abstract class SDNode {
   abstract getWidth(): number;
   abstract getHeight(): number;
 
+  get scale(): [number, number] {
+    return this.attributes.scale;
+  }
+
+  set scale(v: [number, number]) {
+    this.triggerAttributeChanged(
+      this.getRootRenderNode(),
+      "scale",
+      v,
+      this.attributes.scale,
+      Interp.arrayInterp,
+    );
+  }
+
   setScale(scale: number): this;
   setScale(sx: number, sy: number): this;
   setScale(s: [number, number]): this;
   setScale(sx: number | [number, number], sy?: number): this {
     if (Array.isArray(sx)) return this.setScale(sx[0], sx[1]);
     if (sy === undefined) return this.setScale(sx, sx);
-    return this.triggerAttributeChanged(
-      this.getRootRenderNode(),
-      "scale",
-      [sx, sy],
-      this.scale,
-      Interp.arrayInterp,
-    );
+    this.scale = [sx, sy];
+    return this;
   }
 
   getScale(): [number, number] {
@@ -195,14 +225,23 @@ export abstract class SDNode {
     return this.offAttributeChanged("scale", listener);
   }
 
-  setRotate(rotate: number): this {
-    return this.triggerAttributeChanged(
+  get rotate(): number {
+    return this.attributes.rotate;
+  }
+
+  set rotate(v: number) {
+    this.triggerAttributeChanged(
       this.getRootRenderNode(),
       "rotate",
-      rotate,
-      this.rotate,
+      v,
+      this.attributes.rotate,
       Interp.numberInterp,
     );
+  }
+
+  setRotate(rotate: number): this {
+    this.rotate = rotate;
+    return this;
   }
 
   setRotation(rotation: number): this {
@@ -217,17 +256,26 @@ export abstract class SDNode {
     return this.offAttributeChanged("rotate", listener);
   }
 
+  get translate(): [number, number] {
+    return this.attributes.translate;
+  }
+
+  set translate(v: [number, number]) {
+    this.triggerAttributeChanged(
+      this.getRootRenderNode(),
+      "translate",
+      v,
+      this.attributes.translate,
+      Interp.arrayInterp,
+    );
+  }
+
   setTranslate(dx: number, dy: number): this;
   setTranslate(d: [number, number]): this;
   setTranslate(dx: number | [number, number], dy?: number): this {
     if (Array.isArray(dx)) return this.setTranslate(dx[0], dx[1]);
-    return this.triggerAttributeChanged(
-      this.getRootRenderNode(),
-      "translate",
-      [dx, dy],
-      this.translate,
-      Interp.arrayInterp,
-    );
+    this.translate = [dx, dy];
+    return this;
   }
 
   onTranslateChanged(
@@ -242,16 +290,25 @@ export abstract class SDNode {
     return this.offAttributeChanged("translate", listener);
   }
 
+  get transformOrigin(): [NumberOrPercent, NumberOrPercent] {
+    return this.attributes.transformOrigin;
+  }
+
+  set transformOrigin(v: [NumberOrPercent, NumberOrPercent]) {
+    this.triggerAttributeChanged(
+      this.getRootRenderNode(),
+      "transformOrigin",
+      v,
+      this.attributes.transformOrigin,
+    );
+  }
+
   setTransformOrigin(x: XLocation, y: YLocation): this;
   setTransformOrigin(origin: [XLocation, YLocation]): this;
   setTransformOrigin(x: XLocation | [XLocation, YLocation], y?: YLocation) {
     if (Array.isArray(x)) return this.setTransformOrigin(x[0], x[1]);
-    return this.triggerAttributeChanged(
-      this.getRootRenderNode(),
-      "transformOrigin",
-      [x, y] as [NumberOrPercent, NumberOrPercent],
-      this.transformOrigin,
-    );
+    this.transformOrigin = [x, y] as [NumberOrPercent, NumberOrPercent];
+    return this;
   }
 
   getTransformOrigin(): [NumberOrPercent, NumberOrPercent] {
@@ -416,18 +473,18 @@ export abstract class SDNode {
     return this;
   }
 
-  protected triggerAttributeChanged<K extends keyof this>(
+  protected triggerAttributeChanged<
+    K extends keyof this["attributes"] & string,
+  >(
     object: RenderNode | undefined,
     key: K,
-    vn: this[K],
-    vo: this[K],
+    vn: this["attributes"][K],
+    vo: this["attributes"][K],
     interp?: InterpObject | InterpFunction | LazyInterpFunction | InterpCreator,
   ): this {
-    this[key] = vn;
+    (this.attributes as this["attributes"])[key] = vn;
     if (interp && Window.SHOULD_INTERP) {
-      const interp_ = isInterpCreator(interp)
-        ? interp(object, key as string)
-        : interp;
+      const interp_ = isInterpCreator(interp) ? interp(object, key) : interp;
       Animate.push(
         new Action(
           this.delay(),
@@ -437,11 +494,11 @@ export abstract class SDNode {
           interp_,
           this.timingFunction,
           this,
-          key as string,
+          key,
         ),
       );
-    } else if (object) this.renderAttribute(object, key as string, vn);
-    this.listeners[key as string]?.forEach((listener) => listener(vn, vo));
+    } else if (object) this.renderAttribute(object, key, vn);
+    this.listeners[key]?.forEach((listener) => listener(vn, vo));
     return this;
   }
 
