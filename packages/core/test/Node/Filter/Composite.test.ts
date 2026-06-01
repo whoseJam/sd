@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { Animate } from "@/Animate/Animate";
 import { Composite } from "@/Node/Filter/Composite";
+
+const el = (n: Composite) => (n as any).renderer.element() as SVGElement;
+const attr = (n: Composite, k: string) => el(n).getAttribute(k);
 
 describe("Composite", () => {
   describe("operator", () => {
@@ -41,5 +45,14 @@ describe("Composite", () => {
       expect(c.attributes.k3).toBe(2);
       expect(c.attributes.k4).toBe(3);
     });
+  });
+
+  it("operator / k* setters write DOM after animation flush", () => {
+    const c = new Composite({ operator: "over", k1: 0 });
+    c.operator = "arithmetic";
+    c.k1 = 0.5;
+    Animate.forceToFinish();
+    expect(attr(c, "operator")).toBe("arithmetic");
+    expect(attr(c, "k1")).toBe("0.5");
   });
 });

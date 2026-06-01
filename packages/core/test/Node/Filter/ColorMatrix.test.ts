@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { Animate } from "@/Animate/Animate";
 import { ColorMatrix } from "@/Node/Filter/ColorMatrix";
+
+const el = (n: ColorMatrix) => (n as any).renderer.element() as SVGElement;
+const attr = (n: ColorMatrix, k: string) => el(n).getAttribute(k);
 
 describe("ColorMatrix", () => {
   describe("construction", () => {
@@ -44,6 +48,13 @@ describe("ColorMatrix", () => {
       a.values = 0.3;
       b.setValues(0.3);
       expect(a.attributes.values).toBe(b.attributes.values);
+    });
+
+    it("setter writes DOM values after animation flush", () => {
+      const c = new ColorMatrix({ type: "saturate", values: 1 });
+      c.values = 0.5;
+      Animate.forceToFinish();
+      expect(attr(c, "values")).toBe("0.5");
     });
   });
 });

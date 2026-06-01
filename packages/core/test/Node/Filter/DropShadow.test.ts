@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
+import { Animate } from "@/Animate/Animate";
 import { DropShadow } from "@/Node/Filter/DropShadow";
 import { Color as C } from "@/Utility/Color";
+
+const el = (n: DropShadow) => (n as any).renderer.element() as SVGElement;
+const attr = (n: DropShadow, k: string) => el(n).getAttribute(k);
 
 // Filter primitives don't position in user math space, so there's no
 // math→SVG flip to assert. Tests cover construction defaults + the
@@ -45,6 +49,13 @@ describe("DropShadow", () => {
       a.dx = 4;
       b.setDx(4);
       expect(a.attributes.dx).toBe(b.attributes.dx);
+    });
+
+    it("setter writes DOM dx after animation flush", () => {
+      const d = new DropShadow({ dx: 0 });
+      d.dx = 7;
+      Animate.forceToFinish();
+      expect(attr(d, "dx")).toBe("7");
     });
   });
 

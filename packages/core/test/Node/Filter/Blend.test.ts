@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { Animate } from "@/Animate/Animate";
 import { Blend } from "@/Node/Filter/Blend";
+
+const el = (n: Blend) => (n as any).renderer.element() as SVGElement;
+const attr = (n: Blend, k: string) => el(n).getAttribute(k);
 
 describe("Blend", () => {
   describe("mode", () => {
@@ -23,6 +27,13 @@ describe("Blend", () => {
       a.mode = "screen";
       b.setMode("screen");
       expect(a.attributes.mode).toBe(b.attributes.mode);
+    });
+
+    it("setter writes DOM mode after animation flush", () => {
+      const b = new Blend({ mode: "normal" });
+      b.mode = "multiply";
+      Animate.forceToFinish();
+      expect(attr(b, "mode")).toBe("multiply");
     });
   });
 });

@@ -2,14 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import type { SDNode } from "@/Node/SDNode";
 
+import { Animate } from "@/Animate/Animate";
 import { Polyline } from "@/Node/Path/Polyline";
 
 const el = (n: SDNode) => (n as any).renderer.element() as SVGElement;
 const attr = (n: SDNode, k: string) => el(n).getAttribute(k);
-
-// Covers construction-time DOM (per-point math→SVG y flip) and the
-// model/listener contract of mutations. mutation→DOM tier deferred —
-// see Circle.test.ts.
 describe("Polyline", () => {
   describe("construction", () => {
     it("flips y on each point", () => {
@@ -70,6 +67,21 @@ describe("Polyline", () => {
       a.points = next;
       b.setPoints(next);
       expect(a.attributes.points).toEqual(b.attributes.points);
+    });
+
+    it("setter flips y per-point on DOM after animation flush", () => {
+      const p = new Polyline({
+        points: [
+          [0, 0],
+          [10, 0],
+        ],
+      });
+      p.points = [
+        [0, 5],
+        [10, 15],
+      ];
+      Animate.forceToFinish();
+      expect(attr(p, "points")).toBe("0,-5,10,-15");
     });
   });
 });

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { Animate } from "@/Animate/Animate";
 import { GaussianBlur } from "@/Node/Filter/GaussianBlur";
+
+const el = (n: GaussianBlur) => (n as any).renderer.element() as SVGElement;
+const attr = (n: GaussianBlur, k: string) => el(n).getAttribute(k);
 
 describe("GaussianBlur", () => {
   describe("construction", () => {
@@ -36,6 +40,13 @@ describe("GaussianBlur", () => {
       const g = new GaussianBlur({ stdDeviation: [1, 1] });
       g.setStdDeviation(9);
       expect(g.attributes.stdDeviation).toEqual([9, 9]);
+    });
+
+    it("setter writes DOM stdDeviation after animation flush", () => {
+      const g = new GaussianBlur({ stdDeviation: [1, 1] });
+      g.stdDeviation = [4, 6];
+      Animate.forceToFinish();
+      expect(attr(g, "stdDeviation")).toBe("4,6");
     });
   });
 });
