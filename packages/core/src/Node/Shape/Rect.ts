@@ -8,14 +8,19 @@ import type { SDFilter } from "@/Node/Filter/Filter";
 import { Filter } from "@/Node/Filter/Filter";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import { SDSVGNode } from "@/Node/SDSVGNode";
+import type { SDNodeAttributes } from "@/Node/SDNode";
+
+export type RectAttributes = SDNodeAttributes & {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rx: number;
+  ry: number;
+};
 
 export class Rect extends BaseShape {
-  protected x: number = 0;
-  protected y: number = 0;
-  protected width: number = 40;
-  protected height: number = 40;
-  protected rx: number = 0;
-  protected ry: number = 0;
+  declare attributes: RectAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y") return renderer.setAttribute("y", -(value + this.height));
@@ -50,20 +55,23 @@ export class Rect extends BaseShape {
   }) {
     super();
 
-    this.x = args?.x ?? 0;
-    this.y = args?.y ?? 0;
-    this.width = args?.width ?? 40;
-    this.height = args?.height ?? 40;
-    this.rx = args?.rx ?? 0;
-    this.ry = args?.ry ?? 0;
+    this.attributes = {
+      ...this.attributes,
+      x: args?.x ?? 0,
+      y: args?.y ?? 0,
+      width: args?.width ?? 40,
+      height: args?.height ?? 40,
+      rx: args?.rx ?? 0,
+      ry: args?.ry ?? 0,
+    };
 
     this.createSVGNode("rect", {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-      rx: this.rx,
-      ry: this.ry,
+      x: this.attributes.x,
+      y: this.attributes.y,
+      width: this.attributes.width,
+      height: this.attributes.height,
+      rx: this.attributes.rx,
+      ry: this.attributes.ry,
       opacity: args?.opacity ?? 1,
       fill: args?.fill ?? C.black,
       fillOpacity: args?.fillOpacity ?? 1,
@@ -87,18 +95,27 @@ export class Rect extends BaseShape {
     args?.targetNode?.appendChild(this);
   }
 
+  get x(): number {
+    return this.attributes.x;
+  }
+
+  set x(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "x",
+      v,
+      this.attributes.x,
+      Interp.numberInterp,
+    );
+  }
+
   getX(): number {
     return this.x;
   }
 
   setX(x: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "x",
-      x,
-      this.x,
-      Interp.numberInterp,
-    );
+    this.x = x;
+    return this;
   }
 
   onXChanged(listener: (vn: number, vo: number) => void) {
@@ -109,18 +126,27 @@ export class Rect extends BaseShape {
     return this.offAttributeChanged("x", listener);
   }
 
+  get y(): number {
+    return this.attributes.y;
+  }
+
+  set y(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "y",
+      v,
+      this.attributes.y,
+      Interp.numberInterp,
+    );
+  }
+
   getY(): number {
     return this.y;
   }
 
   setY(y: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "y",
-      y,
-      this.y,
-      Interp.numberInterp,
-    );
+    this.y = y;
+    return this;
   }
 
   onYChanged(listener: (vn: number, vo: number) => void) {
@@ -131,18 +157,27 @@ export class Rect extends BaseShape {
     return this.offAttributeChanged("y", listener);
   }
 
+  get width(): number {
+    return this.attributes.width;
+  }
+
+  set width(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "width",
+      v,
+      this.attributes.width,
+      Interp.numberInterp,
+    );
+  }
+
   getWidth(): number {
     return this.width;
   }
 
-  setWidth(width: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "width",
-      width,
-      this.width,
-      Interp.numberInterp,
-    );
+  setWidth(width: number): this {
+    this.width = width;
+    return this;
   }
 
   onWidthChanged(listener: (vn: number, vo: number) => void): this {
@@ -153,28 +188,37 @@ export class Rect extends BaseShape {
     return this.offAttributeChanged("width", listener);
   }
 
-  getHeight(): number {
-    return this.height;
+  get height(): number {
+    return this.attributes.height;
   }
 
   // SVG y depends on height (svg_y = -(y + height)); a height change must
   // re-fire the y attribute so renderAttribute reads the new height every
   // tick and the math-y anchor stays put.
-  setHeight(height: number) {
+  set height(v: number) {
     this.triggerAttributeChanged(
       this.renderer,
       "height",
-      height,
-      this.height,
+      v,
+      this.attributes.height,
       Interp.numberInterp,
     );
-    return this.triggerAttributeChanged(
+    this.triggerAttributeChanged(
       this.renderer,
       "y",
-      this.y,
-      this.y,
+      this.attributes.y,
+      this.attributes.y,
       Interp.numberInterp,
     );
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
+  setHeight(height: number): this {
+    this.height = height;
+    return this;
   }
 
   onHeightChanged(listener: (vn: number, vo: number) => void): this {
@@ -208,18 +252,27 @@ export class Rect extends BaseShape {
     return this.setCenterX(cx).setCenterY(cy);
   }
 
+  get rx(): number {
+    return this.attributes.rx;
+  }
+
+  set rx(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "rx",
+      v,
+      this.attributes.rx,
+      Interp.numberInterp,
+    );
+  }
+
   getRx(): number {
     return this.rx;
   }
 
   setRx(rx: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "rx",
-      rx,
-      this.rx,
-      Interp.numberInterp,
-    );
+    this.rx = rx;
+    return this;
   }
 
   onRxChanged(listener: (vn: number, vo: number) => void): this {
@@ -230,18 +283,27 @@ export class Rect extends BaseShape {
     return this.offAttributeChanged("rx", listener);
   }
 
+  get ry(): number {
+    return this.attributes.ry;
+  }
+
+  set ry(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "ry",
+      v,
+      this.attributes.ry,
+      Interp.numberInterp,
+    );
+  }
+
   getRy(): number {
     return this.ry;
   }
 
   setRy(ry: number): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "ry",
-      ry,
-      this.ry,
-      Interp.numberInterp,
-    );
+    this.ry = ry;
+    return this;
   }
 
   onRyChanged(listener: (vn: number, vo: number) => void): this {
