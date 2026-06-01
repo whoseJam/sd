@@ -1,21 +1,24 @@
 import type { Filter } from "@/Node/Filter/Filter";
-import type { ColorInterpolationFilters } from "@/Node/Filter/OneInputFilter";
-import type { SDColor } from "@/Utility/Color";
+import type {
+  ColorInterpolationFilters,
+  OneInputFilterAttributes,
+} from "@/Node/Filter/OneInputFilter";
+import type { SDColor, SDRGBAColor } from "@/Utility/Color";
 
 import { Interp } from "@/Animate/Interp";
 import { OneInputFilter } from "@/Node/Filter/OneInputFilter";
-import { Percent } from "@/Node/SDNode";
-import { SDAllColor, Color as C } from "@/Utility/Color";
+import { Color as C } from "@/Utility/Color";
+
+export type DropShadowAttributes = OneInputFilterAttributes & {
+  stdDeviation: [number, number];
+  dx: number;
+  dy: number;
+  floodColor: SDRGBAColor;
+  floodOpacity: number;
+};
 
 export class DropShadow extends OneInputFilter {
-  /* model fields:
-
-        stdDeviation: number | [number, number];
-        dx: number;
-        dy: number;
-        floodColor: SDAllColor;
-        floodOpacity: number;
-        */
+  declare attributes: DropShadowAttributes;
 
   constructor(args?: {
     targetNode?: Filter;
@@ -30,56 +33,93 @@ export class DropShadow extends OneInputFilter {
   }) {
     super();
 
-    if (typeof args?.stdDeviation === "number")
-      args.stdDeviation = [args.stdDeviation, args.stdDeviation];
-    this.renderer = this.createSVGNode("feDropShadow", {
+    const stdDeviation: [number, number] =
+      typeof args?.stdDeviation === "number"
+        ? [args.stdDeviation, args.stdDeviation]
+        : (args?.stdDeviation ?? [0, 0]);
+
+    this.attributes = {
+      ...this.attributes,
       in: args?.in ?? "SourceGraphic",
       result: args?.result ?? "",
       colorInterpolationFilters: args?.colorInterpolationFilters ?? "sRGB",
-      stdDeviation: args?.stdDeviation ?? [0, 0],
+      stdDeviation,
       dx: args?.dx ?? 0,
       dy: args?.dy ?? 0,
-      floodColor: args?.floodColor ?? C.black,
+      floodColor: C.toRGBA(args?.floodColor ?? C.black),
       floodOpacity: args?.floodOpacity ?? 1,
+    };
+
+    this.renderer = this.createSVGNode("feDropShadow", {
+      in: this.attributes.in,
+      result: this.attributes.result,
+      colorInterpolationFilters: this.attributes.colorInterpolationFilters,
+      stdDeviation: this.attributes.stdDeviation,
+      dx: this.attributes.dx,
+      dy: this.attributes.dy,
+      floodColor: this.attributes.floodColor,
+      floodOpacity: this.attributes.floodOpacity,
     });
 
     args?.targetNode?.append(this);
+  }
+
+  get stdDeviation(): [number, number] {
+    return this.attributes.stdDeviation;
+  }
+
+  set stdDeviation(v: [number, number]) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "stdDeviation",
+      v,
+      this.attributes.stdDeviation,
+      Interp.vectorInterp,
+    );
   }
 
   getStdDeviation() {
     return this.stdDeviation;
   }
 
-  setStdDeviation(std: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "stdDeviation",
-      std,
-      this.stdDeviation,
-      Interp.vectorInterp,
-    );
+  setStdDeviation(std: number | [number, number]): this {
+    this.stdDeviation = typeof std === "number" ? [std, std] : std;
+    return this;
   }
 
-  onStdDeviationChanged(listener: (vn: number, vo: number) => void) {
+  onStdDeviationChanged(
+    listener: (vn: [number, number], vo: [number, number]) => void,
+  ) {
     return this.onAttributeChanged("stdDeviation", listener);
   }
 
-  offStdDeviationChanged(listener: (vn: number, vo: number) => void) {
+  offStdDeviationChanged(
+    listener: (vn: [number, number], vo: [number, number]) => void,
+  ) {
     return this.offAttributeChanged("stdDeviation", listener);
+  }
+
+  get dx(): number {
+    return this.attributes.dx;
+  }
+
+  set dx(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "dx",
+      v,
+      this.attributes.dx,
+      Interp.numberInterp,
+    );
   }
 
   getDx() {
     return this.dx;
   }
 
-  setDx(dx: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "dx",
-      dx,
-      this.dx,
-      Interp.numberInterp,
-    );
+  setDx(dx: number): this {
+    this.dx = dx;
+    return this;
   }
 
   onDxChanged(listener: (vn: number, vo: number) => void) {
@@ -90,18 +130,27 @@ export class DropShadow extends OneInputFilter {
     return this.offAttributeChanged("dx", listener);
   }
 
+  get dy(): number {
+    return this.attributes.dy;
+  }
+
+  set dy(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "dy",
+      v,
+      this.attributes.dy,
+      Interp.numberInterp,
+    );
+  }
+
   getDy() {
     return this.dy;
   }
 
-  setDy(dy: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "dy",
-      dy,
-      this.dy,
-      Interp.numberInterp,
-    );
+  setDy(dy: number): this {
+    this.dy = dy;
+    return this;
   }
 
   onDyChanged(listener: (vn: number, vo: number) => void) {
@@ -112,40 +161,58 @@ export class DropShadow extends OneInputFilter {
     return this.offAttributeChanged("dy", listener);
   }
 
-  getFloodColor() {
-    return this.floodColor;
+  get floodColor(): SDRGBAColor {
+    return this.attributes.floodColor;
   }
 
-  setFloodColor(color: SDColor) {
-    return this.triggerAttributeChanged(
+  set floodColor(v: SDRGBAColor) {
+    this.triggerAttributeChanged(
       this.renderer,
       "floodColor",
-      color,
-      this.floodColor,
+      v,
+      this.attributes.floodColor,
       Interp.colorInterp,
     );
   }
 
-  onFloodColorChanged(listener: (vn: SDColor, vo: SDColor) => void) {
+  getFloodColor() {
+    return this.floodColor;
+  }
+
+  setFloodColor(color: SDColor): this {
+    this.floodColor = C.toRGBA(color);
+    return this;
+  }
+
+  onFloodColorChanged(listener: (vn: SDRGBAColor, vo: SDRGBAColor) => void) {
     return this.onAttributeChanged("floodColor", listener);
   }
 
-  offFloodColorChanged(listener: (vn: SDColor, vo: SDColor) => void) {
+  offFloodColorChanged(listener: (vn: SDRGBAColor, vo: SDRGBAColor) => void) {
     return this.offAttributeChanged("floodColor", listener);
+  }
+
+  get floodOpacity(): number {
+    return this.attributes.floodOpacity;
+  }
+
+  set floodOpacity(v: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "floodOpacity",
+      v,
+      this.attributes.floodOpacity,
+      Interp.numberInterp,
+    );
   }
 
   getFloodOpacity() {
     return this.floodOpacity;
   }
 
-  setFloodOpacity(opacity: number) {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "floodOpacity",
-      opacity,
-      this.floodOpacity,
-      Interp.numberInterp,
-    );
+  setFloodOpacity(opacity: number): this {
+    this.floodOpacity = opacity;
+    return this;
   }
 
   onFloodOpacityChanged(listener: (vn: number, vo: number) => void) {
