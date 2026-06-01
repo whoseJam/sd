@@ -1,6 +1,6 @@
 import type { SDFilter } from "@/Node/Filter/Filter";
 import type { Group } from "@/Node/Other/Group";
-import type { TransformOrigin } from "@/Node/SDNode";
+import type { SDNodeAttributes, TransformOrigin } from "@/Node/SDNode";
 import type { StrokeLineCap, StrokeLineJoin } from "@/Node/SDSVGNode";
 import type { RenderNode } from "@/Renderer/RenderNode";
 import type { SDColor } from "@/Utility/Color";
@@ -12,8 +12,12 @@ import { PolylineEngine } from "@/Node/Path/PolylineEngine";
 import { SDSVGNode } from "@/Node/SDSVGNode";
 import { Color as C } from "@/Utility/Color";
 
+export type PolylineAttributes = SDNodeAttributes & {
+  points: Array<[number, number]>;
+};
+
 export class Polyline extends BasePath {
-  protected points: Array<[number, number]> = [];
+  declare attributes: PolylineAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "points") {
@@ -48,10 +52,13 @@ export class Polyline extends BasePath {
   }) {
     super();
 
-    this.points = args?.points ?? [];
+    this.attributes = {
+      ...this.attributes,
+      points: args?.points ?? [],
+    };
 
     this.createSVGNode("polyline", {
-      points: this.points,
+      points: this.attributes.points,
       transformOrigin: args?.transformOrigin ?? ["center", "center"],
       translate: args?.translate ?? [0, 0],
       rotate: args?.rotate ?? 0,
@@ -102,18 +109,27 @@ export class Polyline extends BasePath {
     return PolylineEngine.getTotalLength(this.points);
   }
 
+  get points(): Array<[number, number]> {
+    return this.attributes.points;
+  }
+
+  set points(v: Array<[number, number]>) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "points",
+      v,
+      this.attributes.points,
+      Interp.pointsInterp,
+    );
+  }
+
   getPoints(): Array<[number, number]> {
     return this.points;
   }
 
   setPoints(points: Array<[number, number]>): this {
-    return this.triggerAttributeChanged(
-      this.renderer,
-      "points",
-      points,
-      this.points,
-      Interp.pointsInterp,
-    );
+    this.points = points;
+    return this;
   }
 
   onPointsChanged(
