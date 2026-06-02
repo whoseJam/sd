@@ -1,4 +1,5 @@
 import type { PathOper, PathOpers } from "@/node/path/path-engine";
+import type { SDColor } from "@/utility/color";
 
 import { Action } from "@/animate/action";
 import { PathEngine } from "@/node/path/path-engine";
@@ -19,6 +20,14 @@ export type LazyInterpFunction = ((
 export type InterpCreator = ((object: any, key: string) => InterpObject) & {
   [INTERP_CREATOR]: true;
 };
+// Phantom-typed wrapper. The __source / __target fields exist only at
+// the type level so `pushAction` can infer from/to types from the
+// interp argument — passing fill: 5 with colorInterp becomes a TS error
+// instead of a runtime crash inside Color.toRGBA.
+export type InterpKind<TSource, TTarget = TSource> = InterpCreator & {
+  readonly __source?: TSource;
+  readonly __target?: TTarget;
+};
 type InitFunction = (this: Action) => void;
 type BeforeInterpFunction = (this: Action) => void;
 type AfterInterpFunction = (this: Action) => void;
@@ -34,16 +43,27 @@ function setter(
   };
 }
 
-function interpCreator(
+function interpCreator<S = any, T = S>(
   fn: (object: any, key: string) => InterpObject,
-): InterpCreator {
-  return Object.assign(fn, { [INTERP_CREATOR]: true as const });
+): InterpKind<S, T> {
+  return Object.assign(fn, { [INTERP_CREATOR]: true as const }) as InterpKind<
+    S,
+    T
+  >;
 }
 
-export function lazyInterp(
-  fn: (l: number, r: number, source: any, target: any) => void,
-): LazyInterpFunction {
-  return Object.assign(fn, { [LAZY_INTERP]: true as const });
+export type LazyInterpKind<TSource, TTarget = TSource> = LazyInterpFunction & {
+  readonly __source?: TSource;
+  readonly __target?: TTarget;
+};
+
+export function lazyInterp<S = any, T = S>(
+  fn: (l: number, r: number, source: S, target: T) => void,
+): LazyInterpKind<S, T> {
+  return Object.assign(fn, { [LAZY_INTERP]: true as const }) as LazyInterpKind<
+    S,
+    T
+  >;
 }
 
 export const isInterpCreator = (x: unknown): x is InterpCreator =>
@@ -92,11 +112,11 @@ export class InterpObject {
 const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t;
 
 export class Interp {
-  static emptyInterp = interpCreator(
+  static emptyInterp = interpCreator<unknown>(
     (object, key) => new InterpObject(function (t: number) {}),
   );
 
-  static exLengthInterp = interpCreator((object, key) => {
+  static exLengthInterp = interpCreator<string>((object, key) => {
     const set = setter(object, key);
     const parse = (value: string) => +value.slice(0, -2);
     return new InterpObject(function (t) {
@@ -107,21 +127,21 @@ export class Interp {
     });
   });
 
-  static numberInterp = interpCreator((object, key) => {
+  static numberInterp = interpCreator<number>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       set.call(this, lerp(this.source, this.target, t));
     });
   });
 
-  static pixelInterp = interpCreator((object, key) => {
+  static pixelInterp = interpCreator<number>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       set.call(this, `${lerp(this.source, this.target, t)}px`);
     });
   });
 
-  static colorInterp = interpCreator((object, key) => {
+  static colorInterp = interpCreator<SDColor>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this._source;
@@ -138,7 +158,7 @@ export class Interp {
     });
   });
 
-  static stringInterp = interpCreator((object, key) => {
+  static stringInterp = interpCreator<string>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       if (!this.reverse && t === 1) set.call(this, this.target);
@@ -146,7 +166,7 @@ export class Interp {
     });
   });
 
-  static stringBlankInMiddleInterp = interpCreator((object, key) => {
+  static stringBlankInMiddleInterp = interpCreator<string>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       if (t === 0) set.call(this, " ");
@@ -154,14 +174,14 @@ export class Interp {
     });
   });
 
-  static childBlankInMiddleInterp = interpCreator((object, key) => {
+  static childBlankInMiddleInterp = interpCreator<unknown>((object, key) => {
     return new InterpObject(function (t) {
       if (t === 0 && this.source) object.__removeChild(this.source);
       if (t === 1 && this.target) object.__append(this.target);
     });
   });
 
-  static arrayInterp = interpCreator((object, key) => {
+  static arrayInterp = interpCreator<number | Array<number>>((object, key) => {
     const set = setter(object, key);
     const toArr = (value: Array<number> | number) =>
       typeof value === "number" ? [value] : value;
@@ -178,7 +198,7 @@ export class Interp {
     });
   });
 
-  static vectorInterp = interpCreator((object, key) => {
+  static vectorInterp = interpCreator<[number, number]>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this.source;
@@ -187,7 +207,7 @@ export class Interp {
     });
   });
 
-  static matrixInterp = interpCreator((object, key) => {
+  static matrixInterp = interpCreator<DOMMatrix | SVGMatrix>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this.source;
@@ -200,7 +220,12 @@ export class Interp {
     });
   });
 
-  static boxInterp = interpCreator((object, key) => {
+  static boxInterp = interpCreator<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this.source;
@@ -212,7 +237,7 @@ export class Interp {
     });
   });
 
-  static translateInterp = interpCreator((object, key) => {
+  static translateInterp = interpCreator<[number, number]>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this.source;
@@ -224,7 +249,7 @@ export class Interp {
     });
   });
 
-  static pathInterp = interpCreator((object, key) => {
+  static pathInterp = interpCreator<string>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this._source;
@@ -249,23 +274,25 @@ export class Interp {
       });
   });
 
-  static pointsInterp = interpCreator((object, key) => {
-    const set = setter(object, key);
-    const pad = (value: Array<[number, number]>, length: number) => {
-      while (value.length < length) value.push(value[value.length - 1]);
-      return value;
-    };
-    return new InterpObject(function (t) {
-      const A = this._source;
-      const B = this._target;
-      const ans = [];
-      for (let i = 0; i < A.length; i++)
-        ans.push([lerp(A[i][0], B[i][0], t), lerp(A[i][1], B[i][1], t)]);
-      set.call(this, ans);
-    }).onInit(function () {
-      const length = Math.max(this.source.length, this.target.length);
-      this._source = pad(this.source, length);
-      this._target = pad(this.target, length);
-    });
-  });
+  static pointsInterp = interpCreator<Array<[number, number]>>(
+    (object, key) => {
+      const set = setter(object, key);
+      const pad = (value: Array<[number, number]>, length: number) => {
+        while (value.length < length) value.push(value[value.length - 1]);
+        return value;
+      };
+      return new InterpObject(function (t) {
+        const A = this._source;
+        const B = this._target;
+        const ans = [];
+        for (let i = 0; i < A.length; i++)
+          ans.push([lerp(A[i][0], B[i][0], t), lerp(A[i][1], B[i][1], t)]);
+        set.call(this, ans);
+      }).onInit(function () {
+        const length = Math.max(this.source.length, this.target.length);
+        this._source = pad(this.source, length);
+        this._target = pad(this.target, length);
+      });
+    },
+  );
 }

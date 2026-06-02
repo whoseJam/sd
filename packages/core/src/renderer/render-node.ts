@@ -1,7 +1,6 @@
 import type { SDNode } from "@/node/node";
 
-import { Action } from "@/animate/action";
-import { Animate } from "@/animate/animate";
+import { pushLifecycle } from "@/animate/animate";
 import { Window } from "@/animate/window";
 import { EasingFunction as T } from "@/math/easing-function";
 import { isStyleKey, setAttribute } from "@/renderer/attribute";
@@ -146,18 +145,16 @@ export class RenderNode {
       }
     }
     element.targetLayer = target;
-    Animate.push(
-      new Action(
-        l,
-        r,
-        source,
-        target,
-        structure,
-        T.linear,
-        element,
-        "layer(append)",
-      ),
-    );
+    pushLifecycle({
+      entity: element,
+      key: "layer(append)",
+      l,
+      r,
+      from: source,
+      to: target,
+      callback: structure,
+      timing: T.linear,
+    });
     return this;
   }
 
@@ -178,18 +175,16 @@ export class RenderNode {
       }
     }
     element.targetLayer = target;
-    Animate.push(
-      new Action(
-        l,
-        r,
-        source,
-        target,
-        structure,
-        T.linear,
-        element,
-        "layer(appendChild)",
-      ),
-    );
+    pushLifecycle({
+      entity: element,
+      key: "layer(appendChild)",
+      l,
+      r,
+      from: source,
+      to: target,
+      callback: structure,
+      timing: T.linear,
+    });
     return this;
   }
 
@@ -211,18 +206,16 @@ export class RenderNode {
       }
     }
     element.targetLayer = target;
-    Animate.push(
-      new Action(
-        l,
-        r,
-        source,
-        target,
-        structure,
-        T.linear,
-        element,
-        "layer(insertBefore)",
-      ),
-    );
+    pushLifecycle({
+      entity: element,
+      key: "layer(insertBefore)",
+      l,
+      r,
+      from: source,
+      to: target,
+      callback: structure,
+      timing: T.linear,
+    });
     return this;
   }
 
@@ -241,18 +234,16 @@ export class RenderNode {
       if (!this.reverse && t === 1) element.__remove();
       else if (this.reverse && t === 0) this.target.__appendChild(element);
     }
-    Animate.push(
-      new Action(
-        l,
-        r,
-        source,
-        target,
-        structure,
-        T.linear,
-        element,
-        "layer(remove)",
-      ),
-    );
+    pushLifecycle({
+      entity: element,
+      key: "layer(remove)",
+      l,
+      r,
+      from: source,
+      to: target,
+      callback: structure,
+      timing: T.linear,
+    });
     return this;
   }
 

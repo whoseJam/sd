@@ -1,7 +1,12 @@
-import type { Action } from "@/animate/action";
+import type {
+  InterpFunction,
+  InterpKind,
+  LazyInterpKind,
+} from "@/animate/interp";
 import type { RenderNode } from "@/renderer/render-node";
 import type { SDNode } from "@/sd";
 
+import { Action } from "@/animate/action";
 import { ActionList } from "@/animate/action-list";
 import { Window } from "@/animate/window";
 import { Status as S } from "@/interact/status";
@@ -131,3 +136,96 @@ export class Animate {
 
 if (typeof requestAnimationFrame !== "undefined")
   requestAnimationFrame(Animate.animationRequest);
+
+// Sole entry point for creating + enqueuing an animation action. `from`
+// and `to` are inferred from `interp` so colorInterp + from: 5 is a TS
+// error rather than a runtime crash. Direct `new Action(...)` callers
+// remain valid during the migration but should be replaced over time.
+interface PushActionOptions<I extends InterpKind<unknown, unknown>> {
+  entity: SDNode | RenderNode;
+  key: string;
+  l: number;
+  r: number;
+  from: NonNullable<I["__source"]>;
+  to: NonNullable<I["__target"]>;
+  interp: I;
+  timing: (t: number) => number;
+}
+
+export function pushAction<I extends InterpKind<unknown, unknown>>(
+  options: PushActionOptions<I>,
+): void {
+  Animate.push(
+    new Action(
+      options.l,
+      options.r,
+      options.from,
+      options.to,
+      options.interp(options.entity, options.key),
+      options.timing,
+      options.entity,
+      options.key,
+    ),
+  );
+}
+
+// Sibling of pushAction for lazy interps — the interp is the callback
+// itself (evaluated by the scheduler at endpoint), and source/target
+// types are still tied to the interp via the LazyInterpKind phantoms.
+interface PushLazyActionOptions<I extends LazyInterpKind<unknown, unknown>> {
+  entity: SDNode | RenderNode;
+  key: string;
+  l: number;
+  r: number;
+  from: NonNullable<I["__source"]>;
+  to: NonNullable<I["__target"]>;
+  interp: I;
+  timing: (t: number) => number;
+}
+
+export function pushLazyAction<I extends LazyInterpKind<unknown, unknown>>(
+  options: PushLazyActionOptions<I>,
+): void {
+  Animate.push(
+    new Action(
+      options.l,
+      options.r,
+      options.from,
+      options.to,
+      options.interp,
+      options.timing,
+      options.entity,
+      options.key,
+    ),
+  );
+}
+
+// Structural / mount actions: not animating an attribute, just running
+// a callback at endpoints to mutate the render tree (append, insert,
+// remove). from/to are RenderNode refs the callback reads via
+// `this.target` / `this.source`.
+interface PushLifecycleOptions {
+  entity: SDNode | RenderNode;
+  key: string;
+  l: number;
+  r: number;
+  from: RenderNode | undefined;
+  to: RenderNode | undefined;
+  callback: InterpFunction;
+  timing: (t: number) => number;
+}
+
+export function pushLifecycle(options: PushLifecycleOptions): void {
+  Animate.push(
+    new Action(
+      options.l,
+      options.r,
+      options.from,
+      options.to,
+      options.callback,
+      options.timing,
+      options.entity,
+      options.key,
+    ),
+  );
+}

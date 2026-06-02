@@ -1,4 +1,4 @@
-import type { LazyInterpFunction } from "@/animate/interp";
+import type { LazyInterpKind } from "@/animate/interp";
 import type { BaseText } from "@/node/text/base-text";
 import type {
   PathStyle,
@@ -6,8 +6,7 @@ import type {
   TextView,
 } from "@/node/text/text-engine/text-view";
 
-import { Action } from "@/animate/action";
-import { Animate } from "@/animate/animate";
+import { pushLazyAction } from "@/animate/animate";
 import { createTextView } from "@/node/text/text-engine/text-view";
 
 export function buildAnimation(
@@ -18,7 +17,7 @@ export function buildAnimation(
     sourceView: TextView,
     targetView: TextView,
   ) => Array<[SubtextView, SubtextView]>,
-  postProcess: LazyInterpFunction,
+  postProcess: LazyInterpKind<Array<SubtextView>>,
   animatedKey: string,
 ) {
   const sourceView = createTextView(source.text, { styles: source.styles });
@@ -26,17 +25,15 @@ export function buildAnimation(
   const mappings = process(sourceView, targetView);
   const l = text.delay();
   const r = text.delay() + text.duration();
-  Animate.push(
-    new Action(
-      l,
-      r,
-      mappings.map((mapping) => mapping[0]),
-      mappings.map((mapping) => mapping[1]),
-      postProcess,
-      text.timingFunction,
-      text,
-      "text:" + animatedKey,
-    ),
-  );
+  pushLazyAction({
+    entity: text,
+    key: "text:" + animatedKey,
+    l,
+    r,
+    from: mappings.map((mapping) => mapping[0]),
+    to: mappings.map((mapping) => mapping[1]),
+    interp: postProcess,
+    timing: text.timingFunction,
+  });
   return targetView.styles;
 }

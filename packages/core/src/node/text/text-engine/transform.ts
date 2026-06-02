@@ -4,9 +4,9 @@ import type {
   SubtextView,
   TextView,
 } from "@/node/text/text-engine/text-view";
+import type { SDColor } from "@/utility/color";
 
-import { Action } from "@/animate/action";
-import { Animate as A } from "@/animate/animate";
+import { Animate as A, pushAction } from "@/animate/animate";
 import { Interp, lazyInterp } from "@/animate/interp";
 import { processMapping } from "@/node/text/base-text";
 import { mapSubtextsBetweenViews } from "@/node/text/text-engine/mapping";
@@ -27,31 +27,7 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
     target: Array<SubtextView>,
   ) {
     if (l === r) return;
-    const createAction = (
-      character: RenderNode,
-      source: any,
-      target: any,
-      interp: any,
-      animatedKey: string,
-    ) => {
-      if (animatedKey === "transform") {
-        const sourceMatrix = source as SVGMatrix;
-        const targetMatrix = target as SVGMatrix;
-        if (sourceMatrix.toString() === targetMatrix.toString()) return;
-      }
-      A.push(
-        new Action(
-          l,
-          r,
-          source,
-          target,
-          interp(character, animatedKey),
-          this.timingFunction,
-          character,
-          animatedKey,
-        ),
-      );
-    };
+    const timing = this.timingFunction;
 
     const sourcePaths = getPaths(text, l);
     const targetPaths = getPaths(text, r);
@@ -90,13 +66,16 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         opacityTo: number,
       ) => {
         node.setAttribute("d", d);
-        createAction(
-          node,
-          opacityFrom,
-          opacityTo,
-          Interp.numberInterp,
-          "opacity",
-        );
+        pushAction({
+          entity: node,
+          key: "opacity",
+          l,
+          r,
+          from: opacityFrom,
+          to: opacityTo,
+          interp: Interp.numberInterp,
+          timing,
+        });
       };
       const makePath = () =>
         RenderNode.createRenderNodeWithoutAction(undefined, group, "path");
@@ -138,37 +117,60 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         const character = makePath();
         character.setAttribute("d", source.d);
         character.setAttribute("transform", source.transform);
-        createAction(character, source.d, target.d, Interp.pathInterp, "d");
-        createAction(
-          character,
-          source.transform,
-          target.transform,
-          Interp.matrixInterp,
-          "transform",
-        );
+        pushAction({
+          entity: character,
+          key: "d",
+          l,
+          r,
+          from: source.d,
+          to: target.d,
+          interp: Interp.pathInterp,
+          timing,
+        });
+        if (source.transform.toString() !== target.transform.toString()) {
+          pushAction({
+            entity: character,
+            key: "transform",
+            l,
+            r,
+            from: source.transform,
+            to: target.transform,
+            interp: Interp.matrixInterp,
+            timing,
+          });
+        }
         const sourceStyle = sourceStyles[sourceIndex].styleAt(text, l);
         const targetStyle = targetStyles[targetIndex].styleAt(text, r);
-        createAction(
-          character,
-          sourceStyle.fill,
-          targetStyle.fill,
-          Interp.colorInterp,
-          "fill",
-        );
-        createAction(
-          character,
-          sourceStyle.stroke,
-          targetStyle.stroke,
-          Interp.colorInterp,
-          "stroke",
-        );
-        createAction(
-          character,
-          sourceStyle.strokeWidth,
-          targetStyle.strokeWidth,
-          Interp.numberInterp,
-          "stroke-width",
-        );
+        pushAction({
+          entity: character,
+          key: "fill",
+          l,
+          r,
+          from: sourceStyle.fill as SDColor,
+          to: targetStyle.fill as SDColor,
+          interp: Interp.colorInterp,
+          timing,
+        });
+        pushAction({
+          entity: character,
+          key: "stroke",
+          l,
+          r,
+          from: sourceStyle.stroke as SDColor,
+          to: targetStyle.stroke as SDColor,
+          interp: Interp.colorInterp,
+          timing,
+        });
+        pushAction({
+          entity: character,
+          key: "stroke-width",
+          l,
+          r,
+          from: sourceStyle.strokeWidth as number,
+          to: targetStyle.strokeWidth as number,
+          interp: Interp.numberInterp,
+          timing,
+        });
       }
       group.__animate(r, r).remove();
     }
