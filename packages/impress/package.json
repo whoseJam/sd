@@ -1,0 +1,16 @@
+{
+  "name": "@sd/impress",
+  "version": "0.0.1",
+  "private": true,
+  "description": "impress.js host: 3D step-based deck",
+  "license": "ISC",
+  "main": "src/host.ts",
+  "exports": {
+    ".": "./src/host.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@sd/element": "workspace:*",
+    "impress.js": "^1.1.0"
+  }
+}

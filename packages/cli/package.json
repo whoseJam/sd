@@ -5,8 +5,10 @@
   "description": "Build tasks and CLI entry points (sd-animation, sd-animationGroup, sd-ppt, sd-config)",
   "license": "ISC",
   "dependencies": {
+    "@sd/impress": "workspace:*",
     "@sd/plain": "workspace:*",
-    "@sd/reveal": "workspace:*"
+    "@sd/reveal": "workspace:*",
+    "@sd/webslides": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",

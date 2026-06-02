@@ -43,12 +43,18 @@ importers:
 
   packages/cli:
     dependencies:
+      '@sd/impress':
+        specifier: workspace:*
+        version: link:../impress
       '@sd/plain':
         specifier: workspace:*
         version: link:../plain
       '@sd/reveal':
         specifier: workspace:*
         version: link:../reveal
+      '@sd/webslides':
+        specifier: workspace:*
+        version: link:../webslides
     devDependencies:
       '@babel/core':
         specifier: ^7.24.9
@@ -144,6 +150,15 @@ importers:
 
   packages/element: {}
 
+  packages/impress:
+    dependencies:
+      '@sd/element':
+        specifier: workspace:*
+        version: link:../element
+      impress.js:
+        specifier: ^1.1.0
+        version: 1.1.0
+
   packages/layout:
     dependencies:
       '@sd/core':
@@ -170,6 +185,15 @@ importers:
       reveal.js:
         specifier: ^5.1.0
         version: 5.2.1
+
+  packages/webslides:
+    dependencies:
+      '@sd/element':
+        specifier: workspace:*
+        version: link:../element
+      webslides:
+        specifier: ^1.5.0
+        version: 1.5.0
 
 packages:
 
@@ -2413,6 +2437,9 @@ packages:
   immutable@5.1.6:
     resolution: {integrity: sha512-q1swsS8K7L8usSHuOqF2TAoCCkonYz0SG38wLAggaa4Wml70zixIvt2ql4coQ2C2B3hTjltJry4r6bULwgAXLQ==}
 
+  impress.js@1.1.0:
+    resolution: {integrity: sha512-APQNnZx1M8RBe9vHdNAiAbIz4MaL0UDqIj0BDJOeFLqI/529/lGMmiz0m/c82xC08tBq8n9JzpMNoDykq0Zckg==}
+
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
@@ -3645,6 +3672,9 @@ packages:
     peerDependenciesMeta:
       webpack-cli:
         optional: true
+
+  webslides@1.5.0:
+    resolution: {integrity: sha512-2P7SGPfaS2hd1oeHcJOc7uu8fi2ZdDWY0HDhemeCNgKeBrFljCpczHfPfVyUufQCPocx8r1K8pG5lAVEPupWZA==}
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -6051,6 +6081,8 @@ snapshots:
 
   immutable@5.1.6: {}
 
+  impress.js@1.1.0: {}
+
   imurmurhash@0.1.4: {}
 
   inflight@1.0.6:
@@ -7264,6 +7296,8 @@ snapshots:
       - lightningcss
       - postcss
       - uglify-js
+
+  webslides@1.5.0: {}
 
   whatwg-mimetype@3.0.0: {}
 

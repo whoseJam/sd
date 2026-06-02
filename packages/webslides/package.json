@@ -1,0 +1,16 @@
+{
+  "name": "@sd/webslides",
+  "version": "0.0.1",
+  "private": true,
+  "description": "WebSlides host: section-based deck with built-in transitions",
+  "license": "ISC",
+  "main": "src/host.ts",
+  "exports": {
+    ".": "./src/host.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@sd/element": "workspace:*",
+    "webslides": "^1.5.0"
+  }
+}
