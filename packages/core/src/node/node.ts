@@ -472,13 +472,13 @@ export abstract class SDNode {
     return this.disappear();
   }
 
-  protected onAttributeChanged(key: string, listener: AttributeListener) {
+  onAttributeChanged(key: string, listener: AttributeListener) {
     if (!this.listeners[key]) this.listeners[key] = [];
     this.listeners[key].push(listener);
     return this;
   }
 
-  protected offAttributeChanged(key: string, listener: AttributeListener) {
+  offAttributeChanged(key: string, listener: AttributeListener) {
     const index = this.listeners[key].indexOf(listener);
     if (index !== -1) this.listeners[key].splice(index, 1);
     return this;
