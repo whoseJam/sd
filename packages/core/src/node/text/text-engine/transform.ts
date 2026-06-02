@@ -180,7 +180,7 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
 function alignCharacterSequence(
   sourceCount: number,
   targetCount: number,
-): Array<[number, number]> {
+): Array<[number | undefined, number | undefined]> {
   const mapping: Array<[number, number]> = [];
   if (sourceCount < targetCount) {
     const count = targetCount - sourceCount;
@@ -221,7 +221,7 @@ function alignCharacterSequence(
     const count = sourceCount - targetCount;
     const gap = Math.floor(targetCount / count);
     if (targetCount === 0) {
-      for (let i = 0; i < targetCount; i++) mapping.push([i, undefined]);
+      for (let i = 0; i < sourceCount; i++) mapping.push([i, undefined]);
       return mapping;
     }
     if (gap > 0) {
