@@ -109,29 +109,29 @@ export class SubtextView {
   }
   getStyle() {
     if (!this.textView.styles) return new PathStyle({});
-    if (this.__first() === undefined) return new PathStyle({});
-    return this.textView.styles[this.__first()];
+    if (this.first() === undefined) return new PathStyle({});
+    return this.textView.styles[this.first()];
   }
   getStyleAt(text: Text, t: number) {
     return this.getStyle().styleAt(text, t);
   }
   setStyle(style: PathStyle) {
     if (!this.textView.styles) return;
-    this.__iterate((i) => {
+    this.iterate((i) => {
       this.textView.styles[i] = style;
     });
   }
   count(): number {
     let count = 0;
-    this.__iterate(() => count++);
+    this.iterate(() => count++);
     return count;
   }
-  __iterate(callback: (position: number) => void) {
+  iterate(callback: (position: number) => void) {
     if (this.positions)
       for (const position of this.positions.values()) callback(position);
     else for (let i = this.l; i <= this.r; i++) callback(i);
   }
-  __first() {
+  private first() {
     if (this.positions) {
       const position = this.positions.values().next();
       return position.value;

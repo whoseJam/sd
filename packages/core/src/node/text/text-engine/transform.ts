@@ -52,9 +52,9 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
       // absolute positions before looking into sourcePaths / sourceStyles,
       // both of which are keyed by absolute char index.
       const sourcePositions: number[] = [];
-      sourceSubtext.__iterate((p) => sourcePositions.push(p));
+      sourceSubtext.iterate((p) => sourcePositions.push(p));
       const targetPositions: number[] = [];
-      targetSubtext.__iterate((p) => targetPositions.push(p));
+      targetSubtext.iterate((p) => targetPositions.push(p));
       const mapping = alignCharacterSequence(
         sourcePositions.length,
         targetPositions.length,

@@ -339,7 +339,7 @@ export class Text extends BaseText {
     const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );
-    subtextView.__iterate((j) => mutate(newStyles[j]));
+    subtextView.iterate((j) => mutate(newStyles[j]));
     buildAnimation(
       this,
       { text: this.attributes.text },

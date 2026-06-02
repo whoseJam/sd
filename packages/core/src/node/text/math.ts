@@ -269,7 +269,7 @@ export class Math extends BaseText {
     const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );
-    subtextView.__iterate((i) => (newStyles[i].fill = color));
+    subtextView.iterate((i) => (newStyles[i].fill = color));
     buildAnimation(
       this,
       { text: this.attributes.text },
