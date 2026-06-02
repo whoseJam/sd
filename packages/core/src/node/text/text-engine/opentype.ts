@@ -60,7 +60,7 @@ export class FontManager {
     const ascender = font.ascender;
     const descender = font.descender;
     const scale = fontSize / font.unitsPerEm;
-    const height = (ascender - descender) * scale; // when getting text height, use ascender - descender
+    const height = (ascender - descender) * scale;
     const width = getTextWidth(this.fonts[fontFamily], text, fontSize);
     return { width, height };
   }
@@ -76,7 +76,7 @@ export class FontManager {
     const ascender = font.ascender;
     const descender = font.descender;
     const scale = size / font.unitsPerEm;
-    const height = (ascender + descender) * scale; // when getting text path, use ascender + descender
+    const height = (ascender + descender) * scale;
     const offset = -descender * scale;
     return Array.from(font.getPaths(text, x, y + height + offset, size));
   }
