@@ -27,7 +27,7 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
 }
 
 function getMathPaths(text: Math, t: number): Array<PathView> {
-  const html = A.getAttribute(text, "html", t, text.html);
+  const html = A.getAttribute(text, "html", t, text.attributes.html);
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
   const x = A.getAttribute(text, "x", t, text.getX());
   const y = A.getAttribute(text, "y", t, text.getY());
