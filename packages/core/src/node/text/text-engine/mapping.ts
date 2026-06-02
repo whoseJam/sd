@@ -7,7 +7,7 @@ import type { TextView } from "@/node/text/text-engine/text-view";
 import { SubtextView } from "@/node/text/text-engine/text-view";
 import { make1d } from "@/utility/base";
 
-function calculate(
+function locateUnmatchedSubtext(
   textView: TextView,
   deleted: Array<boolean>,
   pattern: TextMappingLocation,
@@ -53,7 +53,7 @@ export function matchSubtext(
   throw new Error("Subtext Not Found");
 }
 
-export function match(
+export function mapSubtextsBetweenViews(
   sourceView: TextView,
   targetView: TextView,
   mappings: TextMappingArray,
@@ -64,8 +64,16 @@ export function match(
   for (const mapping of mappings) {
     const source = mapping.source;
     const target = mapping.target;
-    const sourceSubtextView = calculate(sourceView, sourceDeleted, source);
-    const targetSubtextView = calculate(targetView, targetDeleted, target);
+    const sourceSubtextView = locateUnmatchedSubtext(
+      sourceView,
+      sourceDeleted,
+      source,
+    );
+    const targetSubtextView = locateUnmatchedSubtext(
+      targetView,
+      targetDeleted,
+      target,
+    );
     targetSubtextView.setStyle(sourceSubtextView.getStyle());
     matchings.push([sourceSubtextView, targetSubtextView]);
   }

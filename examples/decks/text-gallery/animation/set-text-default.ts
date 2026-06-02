@@ -18,8 +18,5 @@ async function Scene() {
     fontSize: 120,
   });
   await sd.pause();
-  t.startAnimate({ duration: 800 })
-    .setText("hello")
-    .setCenterX(0)
-    .endAnimate();
+  t.startAnimate({ duration: 800 }).setText("hello").setCenterX(0).endAnimate();
 }

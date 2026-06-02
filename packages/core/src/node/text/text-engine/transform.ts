@@ -9,13 +9,13 @@ import { Action } from "@/animate/action";
 import { Animate as A } from "@/animate/animate";
 import { Interp, lazyInterp } from "@/animate/interp";
 import { processMapping } from "@/node/text/base-text";
-import { match } from "@/node/text/text-engine/mapping";
+import { mapSubtextsBetweenViews } from "@/node/text/text-engine/mapping";
 import { getPaths } from "@/node/text/text-engine/path";
 import { RenderNode } from "@/renderer/render-node";
 
 export function transformProcess(mapping: TextMapping) {
   return function (source: TextView, target: TextView) {
-    return match(source, target, processMapping(mapping));
+    return mapSubtextsBetweenViews(source, target, processMapping(mapping));
   };
 }
 
@@ -71,15 +71,15 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
       );
       const group = RenderNode.createRenderNodeWithTime(targetLayer, l, l, "g");
       // SubtextView indices are positions within the FULL text (the
-      // subtext picks out a subset). buildMapping returns LOCAL indices
-      // into the subtext though; we translate them back to absolute
-      // positions before looking into sourcePaths / sourceStyles, both
-      // of which are keyed by absolute char index.
+      // subtext picks out a subset). alignCharacterSequence returns LOCAL
+      // indices into the subtext though; we translate them back to
+      // absolute positions before looking into sourcePaths / sourceStyles,
+      // both of which are keyed by absolute char index.
       const sourcePositions: number[] = [];
       sourceSubtext.__iterate((p) => sourcePositions.push(p));
       const targetPositions: number[] = [];
       targetSubtext.__iterate((p) => targetPositions.push(p));
-      const mapping = buildMapping(
+      const mapping = alignCharacterSequence(
         sourcePositions.length,
         targetPositions.length,
       );
@@ -90,7 +90,13 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         opacityTo: number,
       ) => {
         node.setAttribute("d", d);
-        createAction(node, opacityFrom, opacityTo, Interp.numberInterp, "opacity");
+        createAction(
+          node,
+          opacityFrom,
+          opacityTo,
+          Interp.numberInterp,
+          "opacity",
+        );
       };
       const makePath = () =>
         RenderNode.createRenderNodeWithoutAction(undefined, group, "path");
@@ -169,7 +175,7 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
   });
 }
 
-function buildMapping(
+function alignCharacterSequence(
   sourceCount: number,
   targetCount: number,
 ): Array<[number, number]> {

@@ -18,7 +18,13 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
   const x = A.getAttribute(text, "x", t, text.getLocalX());
   const y = A.getAttribute(text, "y", t, text.getLocalY());
-  const paths = FontManager.getTextPathsFromOpenType(content, family, size, x, y);
+  const paths = FontManager.getTextPathsFromOpenType(
+    content,
+    family,
+    size,
+    x,
+    y,
+  );
   return paths.map((path) => {
     const data = path.toPathData(4);
     if (data === "") return undefined;

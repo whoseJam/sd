@@ -310,7 +310,11 @@ export class Text extends BaseText {
   }
 
   setSubtextStroke(subtext: string | number, color: SDColor, i: number = 0) {
-    return this.applySubtextStyle(subtext, i, (style) => (style.stroke = color));
+    return this.applySubtextStyle(
+      subtext,
+      i,
+      (style) => (style.stroke = color),
+    );
   }
 
   setSubtextStrokeWidth(

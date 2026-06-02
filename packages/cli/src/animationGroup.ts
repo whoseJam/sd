@@ -22,8 +22,16 @@ const onAddEntry = (filePath: string, dest: string) => {
   gulp.task(filePath)();
 };
 
-defineEventListener("js", { onAdd: onAddEntry, onChange: () => {}, onUnlink: () => {} });
-defineEventListener("ts", { onAdd: onAddEntry, onChange: () => {}, onUnlink: () => {} });
+defineEventListener("js", {
+  onAdd: onAddEntry,
+  onChange: () => {},
+  onUnlink: () => {},
+});
+defineEventListener("ts", {
+  onAdd: onAddEntry,
+  onChange: () => {},
+  onUnlink: () => {},
+});
 
 export function task(source: string, targetFolder: string): void {
   global.source = source;
