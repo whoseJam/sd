@@ -61,7 +61,7 @@ export abstract class SDNode {
   delayMs: number = 0;
   durationMs: number = 0;
   subAnimates: Array<Context> = [];
-  timingFunction: SDEasingFunction | undefined = undefined;
+  timingFunction: ((t: number) => number) | undefined = undefined;
   ready: boolean = false;
   attributes: SDNodeAttributes = {
     opacity: 1,

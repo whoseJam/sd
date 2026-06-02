@@ -1,5 +1,4 @@
 import type { InterpFunction, LazyInterpFunction } from "@/animate/interp";
-import type { SDEasingFunction } from "@/math/easing-function";
 import type { SDNode } from "@/node/node";
 import type { RenderNode } from "@/renderer/render-node";
 
@@ -20,7 +19,7 @@ export class Action {
   _target: any;
   interp?: InterpObject;
   lazyInterp?: LazyInterpFunction;
-  timingFunction: SDEasingFunction;
+  timingFunction: (t: number) => number;
   entity: any;
   animatedKey: string;
   reverse: boolean;
@@ -33,7 +32,7 @@ export class Action {
     source: any,
     target: any,
     interp: InterpObject | InterpFunction | LazyInterpFunction,
-    timingFunction: SDEasingFunction,
+    timingFunction: (t: number) => number,
     entity: SDNode | RenderNode,
     animatedKey: string,
   ) {
