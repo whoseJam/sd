@@ -47,13 +47,15 @@ $overlayElementFgColor: 240, 240, 240;
 
 .reveal h1 {
   border-bottom: 1px solid #c8a97a;
-  display: inline-block;
+  display: block;
+  width: fit-content;
   padding-bottom: 0.25em;
 }
 
 .reveal h2 {
   border-bottom: 1px solid #c8a97a;
-  display: inline-block;
+  display: block;
+  width: fit-content;
   padding-bottom: 0.2em;
 }
 

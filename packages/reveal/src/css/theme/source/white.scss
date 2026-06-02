@@ -43,7 +43,8 @@ $overlayElementFgColor: 240, 240, 240;
 
 .reveal h2 {
   border-bottom: 2px solid #2563eb;
-  display: inline-block;
+  display: block;
+  width: fit-content;
   padding-bottom: 0.15em;
 }
 

@@ -1,11 +1,123 @@
 <section>
-    <h1>Hello</h1>
-    <p>A minimal sd deck — reveal.js host.</p>
+    <h1>Hello World</h1>
+    <p>Theme preview — sd + reveal.js</p>
 </section>
 
 <section>
-    <h2>Circle</h2>
+    <h2>Text &amp; Fragments</h2>
+    <p>This is body text. It should be readable and well-spaced.</p>
+    <p class="fragment">Fragments appear one by one.</p>
+    <p class="fragment">Each paragraph fades in on advance.</p>
+    <p class="fragment">
+        Inline <code>code</code> looks like this.
+        Links look like <a href="#">this</a>.
+    </p>
+</section>
+
+<section>
+    <h2>Lists</h2>
+    <ul>
+        <li>Unordered item one</li>
+        <li>Unordered item two
+            <ul>
+                <li>Nested item</li>
+                <li>Another nested item</li>
+            </ul>
+        </li>
+        <li class="fragment">Fragment list item</li>
+    </ul>
+    <ol style="margin-top: 1em;">
+        <li>Ordered first</li>
+        <li>Ordered second</li>
+        <li class="fragment">Ordered fragment</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Code Block</h2>
+    <codeblock>
+        <script type="text/template">
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    for (int i = 0; i < 10; i++)
+        cout << fibonacci(i) << " ";
+    return 0;
+}
+        </script>
+    </codeblock>
+</section>
+
+<section>
+    <h2>Code with Fragments</h2>
+    <codeblock>
+        <script type="text/template">
+// binary search
+int lo = 0, hi = n - 1;
+while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+}
+        </script>
+    </codeblock>
+    <p class="fragment">Time complexity: <strong>O(log n)</strong></p>
+</section>
+
+<section>
+    <h2>Quote Blocks</h2>
+    <p>Normal paragraph before the quote.</p>
+    <div class="quote">
+        <h3>Definition</h3>
+        <p>A <strong>recursive</strong> function calls itself with a smaller subproblem until reaching a base case.</p>
+    </div>
+    <p class="fragment">Quotes highlight key concepts.</p>
+</section>
+
+<section>
+    <h2>Quote + Code</h2>
+    <div class="quote">
+        <p>Each recursive call reduces <em>n</em> by 1. Base case: <em>n = 0</em>.</p>
+    </div>
+    <codeblock class="fragment">
+        <script type="text/template">
+void countDown(int n) {
+    if (n == 0) { cout << "Done!"; return; }
+    cout << n << " ";
+    countDown(n - 1);
+}
+        </script>
+    </codeblock>
+</section>
+
+<section>
+    <h2>Math Formulas</h2>
+    <p>Inline math: the sum $\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$</p>
+    <p class="fragment">Display math:</p>
+    <p class="fragment">$$T(n) = T(n-1) + O(1) \implies T(n) = O(n)$$</p>
+    <p class="fragment">$$T(n) = 2T\!\left(\frac{n}{2}\right) + O(n) \implies T(n) = O(n \log n)$$</p>
+</section>
+
+<section>
+    <h2>Bold, Italic, Strong</h2>
+    <p><strong>Strong text</strong> draws attention.</p>
+    <p><em>Italic text</em> adds emphasis.</p>
+    <p class="fragment"><b>Bold</b> vs <strong>strong</strong> — both look bold here.</p>
+    <p class="fragment">Mix of <strong>strong</strong> and <em>italic</em> and <code>inline code</code>.</p>
+</section>
+
+<section>
+    <h2>Animation</h2>
     <sd-animation src="../animation/circle.js"
-        style="width: 600px; height: 400px;"></sd-animation>
-    <p>A circle that grows.</p>
+        style="width: 600px; height: 360px; display: block; margin: 0 auto;"></sd-animation>
+    <p>An <code>&lt;sd-animation&gt;</code> embedded in a slide.</p>
+</section>
+
+<section>
+    <h1>End</h1>
+    <p>Switch themes with the selector ↘</p>
 </section>

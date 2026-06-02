@@ -12,6 +12,10 @@ $systemFontsMono:
   Lucida Console,
   monospace;
 $codeFont: "Fira Code", $systemFontsMono;
+$mainFont: Georgia, "Palatino Linotype", Palatino, serif;
+$headingFont: "Palatino Linotype", Palatino, Georgia, serif;
+$headingFontWeight: 700;
+$headingLetterSpacing: -0.01em;
 $mainColor: #2d1e0e;
 $headingColor: #3d2200;
 $headingTextShadow: none;
@@ -38,7 +42,8 @@ $overlayElementFgColor: 240, 240, 240;
 
 .reveal h2 {
   border-bottom: 1px solid #c2965a;
-  display: inline-block;
+  display: block;
+  width: fit-content;
   padding-bottom: 0.2em;
 }
 

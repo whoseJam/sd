@@ -1,7 +1,8 @@
-import { revealBase } from "./config";
 import "./plugin/reset.css";
 import "./plugin/reveal.css";
 import includeHTML from "./include";
+
+declare const DOMAIN: string;
 
 declare global {
   interface Window {
@@ -135,11 +136,10 @@ class ThemeManager {
   }
 
   applyNewTheme(themeName: string): void {
-    if (!revealBase) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.type = "text/css";
-    link.href = `${revealBase}/vendor/themes/${themeName}.css`;
+    link.href = `${DOMAIN}/vendor/themes/${themeName}.css`;
     link.dataset.theme = themeName;
     document.head.appendChild(link);
     const selector = document.querySelector<HTMLSelectElement>(
