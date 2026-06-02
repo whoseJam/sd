@@ -120,6 +120,39 @@ export abstract class BaseText extends BoxSVGNode {
     this.renderAttribute(renderer, "y", this.attributes.y);
   }
 
+  // Order: width, then height, then a y re-fire with source == target.
+  // Each tick updates attributes.{width,height} via the renderAttribute
+  // override; the trailing y re-fire reads the freshly-updated
+  // attributes.height to recompute DOM y so the (x,y) anchor stays put
+  // through the tween.
+  protected triggerSizeChange(
+    newWidth: number,
+    newHeight: number,
+    renderer: RenderNode | undefined = this.renderer,
+  ) {
+    this.triggerAttributeChanged(
+      renderer,
+      "width",
+      newWidth,
+      this.attributes.width,
+      Interp.numberInterp,
+    );
+    this.triggerAttributeChanged(
+      renderer,
+      "height",
+      newHeight,
+      this.attributes.height,
+      Interp.numberInterp,
+    );
+    this.triggerAttributeChanged(
+      renderer,
+      "y",
+      this.attributes.y,
+      this.attributes.y,
+      Interp.numberInterp,
+    );
+  }
+
   get x(): number {
     return this.attributes.x;
   }

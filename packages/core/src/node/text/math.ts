@@ -150,7 +150,7 @@ export class Math extends BaseText {
       newWidth = box.width;
       newHeight = box.height;
     }
-    this.triggerSizeChange(newWidth, newHeight);
+    this.triggerSizeChange(newWidth, newHeight, this.attributes.html);
     this.triggerAttributeChanged(
       this.attributes.html,
       "fontSize",
@@ -159,32 +159,6 @@ export class Math extends BaseText {
       Interp.numberInterp,
     );
     return this;
-  }
-
-  // Same shape as Text.triggerSizeChange — see that comment for the
-  // ordering rationale.
-  private triggerSizeChange(newWidth: number, newHeight: number) {
-    this.triggerAttributeChanged(
-      this.attributes.html,
-      "width",
-      newWidth,
-      this.attributes.width,
-      Interp.numberInterp,
-    );
-    this.triggerAttributeChanged(
-      this.attributes.html,
-      "height",
-      newHeight,
-      this.attributes.height,
-      Interp.numberInterp,
-    );
-    this.triggerAttributeChanged(
-      this.attributes.html,
-      "y",
-      this.attributes.y,
-      this.attributes.y,
-      Interp.numberInterp,
-    );
   }
 
   onFontSizeChanged(listener: (vn: number, vo: number) => void) {

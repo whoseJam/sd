@@ -144,35 +144,6 @@ export class Text extends BaseText {
     return this;
   }
 
-  // Order: width, then height, then a y re-fire with source == target.
-  // Each tick updates attributes.{width,height} via the BaseText
-  // renderAttribute override; the trailing y re-fire reads the freshly-
-  // updated attributes.height to recompute DOM y so the (x,y) anchor
-  // stays put through the tween.
-  private triggerSizeChange(newWidth: number, newHeight: number) {
-    this.triggerAttributeChanged(
-      this.renderer,
-      "width",
-      newWidth,
-      this.attributes.width,
-      Interp.numberInterp,
-    );
-    this.triggerAttributeChanged(
-      this.renderer,
-      "height",
-      newHeight,
-      this.attributes.height,
-      Interp.numberInterp,
-    );
-    this.triggerAttributeChanged(
-      this.renderer,
-      "y",
-      this.attributes.y,
-      this.attributes.y,
-      Interp.numberInterp,
-    );
-  }
-
   onFontSizeChanged(listener: (vn: number, vo: number) => void) {
     return this.onAttributeChanged("fontSize", listener);
   }
