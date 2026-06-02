@@ -70,7 +70,7 @@
 
 <section>
     <h2>set-text-insert</h2>
-    <p style="font-size:0.6em">Press space — "1234" → "1+2+3+4" with mapping <code>{1:"1", 2:"2", 3:"3", 4:"4"}</code>. Digits should stay put; "+" glyphs should grow in between.</p>
+    <p style="font-size:0.6em">Press space — "1234" → "1+2+3+4" with mapping <code>{1:"1", 2:"2", 3:"3", 4:"4"}</code>, chained with <code>.setCenterX(0)</code> so the whole string stays centered on the red dot. Digits travel from their 1234-slots to their 1+2+3+4-slots; "+" signs fade in between them.</p>
     <sd-animation src="../animation/set-text-insert.js"
         viewbox="-280 -80 560 160"
         style="margin: 0 auto; width: 1000px; height: 280px;"></sd-animation>

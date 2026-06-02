@@ -8,16 +8,17 @@ sd.main(Scene);
 async function Scene() {
   new sd.Circle({ targetNode: svg, cx: 0, cy: 0, r: 3, fill: C.red });
 
-  const t = new sd.Text({
+  const m = new sd.Math({
     targetNode: svg,
-    text: "1234",
+    text: "a+b",
     centerX: 0,
     centerY: 0,
     fontSize: 100,
   });
   await sd.pause();
-  t.startAnimate({ duration: 1200 })
-    .setText("1+2+3+4", { 1: "1", 2: "2", 3: "3", 4: "4" })
+  m.startAnimate({ duration: 1200 })
+    .setText("a-b")
     .setCenterX(0)
+    .setCenterY(0)
     .endAnimate();
 }

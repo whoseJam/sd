@@ -1,4 +1,3 @@
-import type { AABB } from "@/math/aabb";
 import type { Group } from "@/node/other/group";
 import type { BaseTextAttributes, TextMapping } from "@/node/text/base-text";
 import type { SDAllColor, SDColor } from "@/utility/color";
@@ -21,16 +20,11 @@ export type MathAttributes = BaseTextAttributes & {
   string: string;
   text: Array<string>;
   html: RenderNode | undefined;
-  fontSize: number;
   subtextStyles: Array<PathStyle>;
 };
 
-// width / height are caches rebuilt by MathManager.boundingBox whenever
-// the math html re-renders. They stay as direct fields, same as Text.
 export class Math extends BaseText {
   declare attributes: MathAttributes;
-  protected width: number = 0;
-  protected height: number = 0;
 
   constructor(args?: {
     targetNode?: Group;
@@ -63,6 +57,8 @@ export class Math extends BaseText {
       strokeDashArray: SDSVGNode.toStrokeDashArray(args?.strokeDashArray),
       x: args?.x ?? 0,
       y: args?.y ?? 0,
+      width: 0,
+      height: 0,
       string,
       text: [],
       html: undefined,
@@ -79,8 +75,8 @@ export class Math extends BaseText {
       this.attributes.text = text;
       this.attributes.subtextStyles = styles;
       this.attributes.html = html;
-      this.width = box.width;
-      this.height = box.height;
+      this.attributes.width = box.width;
+      this.attributes.height = box.height;
       this.refreshY(html);
     }
 
@@ -140,19 +136,21 @@ export class Math extends BaseText {
   }
 
   setFontSize(size: number): this {
+    let newWidth: number;
+    let newHeight: number;
     if (this.attributes.fontSize > 1e-1) {
       const k = size / this.attributes.fontSize;
-      this.width *= k;
-      this.height *= k;
+      newWidth = this.attributes.width * k;
+      newHeight = this.attributes.height * k;
     } else {
       const box = MathManager.boundingBox(
         this.attributes.y,
         this.attributes.html,
       );
-      this.width = box.width;
-      this.height = box.height;
+      newWidth = box.width;
+      newHeight = box.height;
     }
-    this.refreshY(this.attributes.html);
+    this.triggerSizeChange(newWidth, newHeight);
     this.triggerAttributeChanged(
       this.attributes.html,
       "fontSize",
@@ -163,21 +161,38 @@ export class Math extends BaseText {
     return this;
   }
 
+  // Same shape as Text.triggerSizeChange — see that comment for the
+  // ordering rationale.
+  private triggerSizeChange(newWidth: number, newHeight: number) {
+    this.triggerAttributeChanged(
+      this.attributes.html,
+      "width",
+      newWidth,
+      this.attributes.width,
+      Interp.numberInterp,
+    );
+    this.triggerAttributeChanged(
+      this.attributes.html,
+      "height",
+      newHeight,
+      this.attributes.height,
+      Interp.numberInterp,
+    );
+    this.triggerAttributeChanged(
+      this.attributes.html,
+      "y",
+      this.attributes.y,
+      this.attributes.y,
+      Interp.numberInterp,
+    );
+  }
+
   onFontSizeChanged(listener: (vn: number, vo: number) => void) {
     return this.onAttributeChanged("fontSize", listener);
   }
 
   offFontSizeChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("fontSize", listener);
-  }
-
-  getLocalBox(): AABB {
-    return {
-      x: this.attributes.x,
-      y: this.attributes.y,
-      width: this.width,
-      height: this.height,
-    };
   }
 
   get text(): Array<string> {
@@ -201,8 +216,7 @@ export class Math extends BaseText {
       "transform",
     );
     MathManager.applyStyles(html, styles);
-    this.width = box.width;
-    this.height = box.height;
+    this.triggerSizeChange(box.width, box.height);
     this.refreshY(html);
     this.triggerAttributeChanged(
       undefined,

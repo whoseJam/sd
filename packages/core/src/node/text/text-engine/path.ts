@@ -31,9 +31,19 @@ function getMathPaths(text: Math, t: number): Array<PathView> {
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
   const x = A.getAttribute(text, "x", t, text.getLocalX());
   const y = A.getAttribute(text, "y", t, text.getLocalY());
+  // BaseText.renderAttribute("y", ...) would flip using
+  // this.getLocalHeight() = this.height, which after Math.setText is
+  // already the TARGET height — applied to the source html that gives
+  // a wrong DOM y and renders source paths top-aligned to the target's
+  // frame. Compute height from THIS html's own bbox instead.
+  // MathManager.boundingBox's formula assumes html's DOM y equals its
+  // math y (unflipped); temporarily reset before the query, then write
+  // the correctly-flipped DOM y back.
   html.setAttribute("font-size", size);
-  text.renderAttribute(html, "x", x);
-  text.renderAttribute(html, "y", y);
+  html.setAttribute("x", x);
+  html.setAttribute("y", y);
+  const ownHeight = MathManager.boundingBox(y, html).height;
+  html.setAttribute("y", -(y + ownHeight));
   const paths = MathManager.getMathPaths(+html.getAttribute("y"), html);
   return paths;
 }

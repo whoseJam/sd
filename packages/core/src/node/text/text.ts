@@ -1,4 +1,3 @@
-import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { Group } from "@/node/other/group";
 import type { StrokeLineCap, StrokeLineJoin } from "@/node/svg-node";
@@ -24,17 +23,12 @@ import type { TransformOrigin } from "../node";
 export type TextAttributes = BaseTextAttributes & {
   text: string;
   html: string;
-  fontSize: number;
   fontFamily: string;
   subtextStyles: Array<PathStyle>;
 };
 
-// width / height are caches recomputed from FontManager.boundingBox after
-// any text / fontFamily / fontSize change, so they stay as direct fields.
 export class Text extends BaseText {
   declare attributes: TextAttributes;
-  protected width: number = 0;
-  protected height: number = 0;
 
   constructor(args?: {
     targetNode?: Group;
@@ -90,14 +84,14 @@ export class Text extends BaseText {
       strokeLineJoin: args?.strokeLineJoin ?? "miter",
       x: args?.x ?? 0,
       y: args?.y ?? 0,
+      width: box.width,
+      height: box.height,
       text,
       fontFamily,
       fontSize,
       subtextStyles: styles,
       html: parseToHTML(styles, text),
     };
-    this.width = box.width;
-    this.height = box.height;
 
     this.renderer = this.createSVGNode("text", {
       fontWeight: args?.fontWeight,
@@ -128,16 +122,18 @@ export class Text extends BaseText {
   }
 
   setFontSize(size: number): this {
+    let newWidth: number;
+    let newHeight: number;
     if (this.attributes.fontSize > 1e-1) {
       const k = size / this.attributes.fontSize;
-      this.width *= k;
-      this.height *= k;
+      newWidth = this.attributes.width * k;
+      newHeight = this.attributes.height * k;
     } else {
       const box = FontManager.boundingBox(this);
-      this.width = box.width;
-      this.height = box.height;
+      newWidth = box.width;
+      newHeight = box.height;
     }
-    this.refreshY();
+    this.triggerSizeChange(newWidth, newHeight);
     this.triggerAttributeChanged(
       this.renderer,
       "fontSize",
@@ -148,21 +144,41 @@ export class Text extends BaseText {
     return this;
   }
 
+  // Order: width, then height, then a y re-fire with source == target.
+  // Each tick updates attributes.{width,height} via the BaseText
+  // renderAttribute override; the trailing y re-fire reads the freshly-
+  // updated attributes.height to recompute DOM y so the (x,y) anchor
+  // stays put through the tween.
+  private triggerSizeChange(newWidth: number, newHeight: number) {
+    this.triggerAttributeChanged(
+      this.renderer,
+      "width",
+      newWidth,
+      this.attributes.width,
+      Interp.numberInterp,
+    );
+    this.triggerAttributeChanged(
+      this.renderer,
+      "height",
+      newHeight,
+      this.attributes.height,
+      Interp.numberInterp,
+    );
+    this.triggerAttributeChanged(
+      this.renderer,
+      "y",
+      this.attributes.y,
+      this.attributes.y,
+      Interp.numberInterp,
+    );
+  }
+
   onFontSizeChanged(listener: (vn: number, vo: number) => void) {
     return this.onAttributeChanged("fontSize", listener);
   }
 
   offFontSizeChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("fontSize", listener);
-  }
-
-  getLocalBox(): AABB {
-    return {
-      x: this.attributes.x,
-      y: this.attributes.y,
-      width: this.width,
-      height: this.height,
-    };
   }
 
   get text(): string {
@@ -194,9 +210,7 @@ export class Text extends BaseText {
       "transform",
     );
     const html = parseToHTML(styles, text_);
-    this.width = box.width;
-    this.height = box.height;
-    this.refreshY();
+    this.triggerSizeChange(box.width, box.height);
     this.triggerAttributeChanged(
       undefined,
       "text",
@@ -258,9 +272,7 @@ export class Text extends BaseText {
       "*",
     );
     const html = parseToHTML(styles, this.attributes.text);
-    this.width = box.width;
-    this.height = box.height;
-    this.refreshY();
+    this.triggerSizeChange(box.width, box.height);
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",

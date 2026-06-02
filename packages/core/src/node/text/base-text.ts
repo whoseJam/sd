@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDSVGNodeAttributes } from "@/node/svg-node";
 import type { RenderNode } from "@/renderer/render-node";
 
@@ -70,21 +71,49 @@ export function processMapping(mapping: TextMapping): TextMappingArray {
 
 export type TextConfigDictionary = { [key: string]: any };
 
+// width / height are first-class reactive attributes (not class fields)
+// so they participate in the animation system the same way x / y do.
+// setFontSize / setText / setFontFamily trigger width/height changes
+// alongside fontSize and a y re-fire; each tick's renderAttribute
+// writes the lerped value back into attributes so getLocalHeight()
+// reflects the current frame, and the y re-fire reads it to keep the
+// math (x,y) anchor put through the tween.
 export type BaseTextAttributes = SDSVGNodeAttributes & {
   x: number;
   y: number;
+  width: number;
+  height: number;
+  fontSize: number;
 };
 
 export abstract class BaseText extends BoxSVGNode {
   declare attributes: BaseTextAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
-    if (key === "y")
+    if (key === "y") {
       return renderer.setAttribute(
         "y",
         -(value + (this.getLocalHeight() || 0)),
       );
+    }
+    // width / height live in attributes only — no DOM mapping on the
+    // text/math element. Updating the attribute on every tick (rather
+    // than letting it sit at the synchronously-set target) is what
+    // makes the y re-fire see a current-frame height.
+    if (key === "width" || key === "height") {
+      (this.attributes as Record<string, unknown>)[key] = value;
+      return;
+    }
     super.renderAttribute(renderer, key, value);
+  }
+
+  getLocalBox(): AABB {
+    return {
+      x: this.attributes.x,
+      y: this.attributes.y,
+      width: this.attributes.width,
+      height: this.attributes.height,
+    };
   }
 
   // SVG y depends on this.getHeight(); subclasses call this whenever their

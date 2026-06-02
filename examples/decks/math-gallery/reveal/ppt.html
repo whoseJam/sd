@@ -1,0 +1,77 @@
+<section>
+    <h1>Math Gallery</h1>
+    <p>Visual walkthrough of <code>sd.Math</code> contracts.</p>
+    <p style="opacity:0.6;font-size:0.6em">→ / space to advance. Animated slides also use space to trigger. LaTeX is rendered through MathJax3.</p>
+</section>
+
+<section>
+    <h2>defaults</h2>
+    <p style="font-size:0.6em">Black <code>x^2 + y^2 = z^2</code> at center, fontSize 60. MathJax produces the glyphs; <code>sd.Math</code> wraps them.</p>
+    <sd-animation src="../animation/defaults.js"
+        viewbox="-250 -50 500 100"
+        style="margin: 0 auto; width: 900px; height: 200px;"></sd-animation>
+</section>
+
+<section>
+    <h2>font-size</h2>
+    <p style="font-size:0.6em">Same equation <code>x^2</code> at 30 / 60 / 120 px stacked top→bottom — each ~2× taller than the previous.</p>
+    <sd-animation src="../animation/font-size.js"
+        viewbox="-150 -180 300 360"
+        style="margin: 0 auto; width: 500px; height: 600px;"></sd-animation>
+</section>
+
+<section>
+    <h2>anchor</h2>
+    <p style="font-size:0.6em">Three red dots, three labels pinned by different anchor args. Same contract as <code>sd.Text</code>: <code>(x,y)</code> = bottom-left, <code>(cx,cy)</code> = middle-left, <code>(centerX,centerY)</code> = box center.</p>
+    <sd-animation src="../animation/anchor.js"
+        viewbox="-400 -80 1000 160"
+        style="margin: 0 auto; width: 1200px; height: 200px;"></sd-animation>
+</section>
+
+<section>
+    <h2>subtext-fill</h2>
+    <p style="font-size:0.6em">In <code>x^2 + 2x + 1</code>, color the first <code>x</code> red (i=0) and the second blue (i=1). Verifies that <code>setSubtextFill</code> matches MathJax-rendered glyphs, not the LaTeX source.</p>
+    <sd-animation src="../animation/subtext-fill.js"
+        viewbox="-280 -80 560 160"
+        style="margin: 0 auto; width: 900px; height: 260px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-default</h2>
+    <p style="font-size:0.6em">Press space — <code>x</code> → <code>x^2</code> with default mapping. The single source <code>x</code> is duplicated (buildMapping(1,2)) — one copy morphs to target <code>x</code>, another morphs to <code>²</code>.</p>
+    <sd-animation src="../animation/set-text-default.js"
+        viewbox="-200 -100 400 200"
+        style="margin: 0 auto; width: 700px; height: 320px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-equal-counts</h2>
+    <p style="font-size:0.6em">Press space — <code>a+b</code> → <code>a-b</code>, default mapping. Source/target have the same glyph count (3), so buildMapping pairs them 1-to-1: <code>a</code>→<code>a</code>, <code>+</code>→<code>-</code>, <code>b</code>→<code>b</code>. Cleanest default behavior. (Explicit string mappings on Math need an engine fix — patterns must match MathJax-rendered glyphs, not LaTeX source.)</p>
+    <sd-animation src="../animation/set-text-mapping.js"
+        viewbox="-200 -100 400 200"
+        style="margin: 0 auto; width: 700px; height: 320px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-font-size-animated</h2>
+    <p style="font-size:0.6em">Press space — fontSize 24 → 80 on <code>∫₀^∞ e^(-x²) dx</code>. Bottom-left corner stays glued to the red dot through the tween.</p>
+    <sd-animation src="../animation/set-font-size-animated.js"
+        viewbox="-320 -80 1700 320"
+        style="margin: 0 auto; width: 1500px; height: 340px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-center-and-font-size</h2>
+    <p style="font-size:0.6em">Press space — fontSize 30 → 100, chained with <code>.setCenterX(0).setCenterY(0)</code>. The box center should stay pinned to the red dot. (Suspected bug: Math may drift because <code>setX</code>/<code>setY</code> trigger on the inner html, decoupled from <code>this.attributes</code>.)</p>
+    <sd-animation src="../animation/set-center-and-font-size.js"
+        viewbox="-400 -150 800 300"
+        style="margin: 0 auto; width: 1200px; height: 460px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-pythagoras</h2>
+    <p style="font-size:0.6em">Press space — <code>a² + b²</code> → <code>c²</code>, default mapping. buildMapping(5, 2) distributes the 5 source glyphs across 2 target glyphs.</p>
+    <sd-animation src="../animation/set-text-pythagoras.js"
+        viewbox="-250 -100 500 200"
+        style="margin: 0 auto; width: 800px; height: 320px;"></sd-animation>
+</section>
