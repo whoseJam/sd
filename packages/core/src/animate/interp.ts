@@ -30,7 +30,6 @@ export type InterpKind<T> = InterpCreator & {
 type InitFunction = (this: Action) => void;
 type BeforeInterpFunction = (this: Action) => void;
 type AfterInterpFunction = (this: Action) => void;
-type Setter = (value: any) => void;
 type AttrTarget = { setAttribute(key: string, value: any): void };
 
 function setter(

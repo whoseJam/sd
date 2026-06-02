@@ -18,15 +18,6 @@ export function copyFolder(src: string, dest: string): void {
   }
 }
 
-export function copyFonts(src: string, dest: string): void {
-  const fonts = ["Consolas.ttf", "Arial.ttf", "Times New Roman.ttf"];
-  if (!fs.existsSync(dest)) fs.mkdirSync(dest);
-  for (const font of fonts) {
-    if (fs.existsSync(`${dest}/${font}`)) continue;
-    fs.copyFileSync(`${src}/${font}`, `${dest}/${font}`);
-  }
-}
-
 // Mirror packages/assets/ into `<dest>/vendor/` so local builds load every
 // external dep (dagre, MathJax2/3, themes, font-awesome, customcontrols, fonts)
 // from the same origin as the deck itself — no CDN required.
@@ -48,7 +39,7 @@ export function copyVendorAssets(projectRoot: string, dest: string): void {
       const sp = path.join(s, entry.name);
       const dp = path.join(d, entry.name);
       if (entry.isDirectory()) walk(sp, dp);
-      else fs.copyFileSync(sp, dp);
+      else if (!fs.existsSync(dp)) fs.copyFileSync(sp, dp);
     }
   };
   walk(src, vendorDir);

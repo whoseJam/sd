@@ -2,8 +2,10 @@ import colors from "colors-console";
 import fs from "node:fs";
 import path from "node:path";
 
+const DEFAULT_FONTS = ["Times New Roman", "Arial", "Consolas"];
+
 let parsed = false;
-let config: Record<string, string> | undefined;
+let config: Record<string, unknown> | undefined;
 
 const configHints: Record<string, string> = {
   animationOutputPath:
@@ -59,7 +61,7 @@ export function parseConfig(key: string): string {
       config = {};
     }
   }
-  if (!config || !config[key]) {
+  if (!config || config[key] === undefined) {
     console.log(
       colors(
         "red",
@@ -69,5 +71,24 @@ export function parseConfig(key: string): string {
     console.log(colors("cyan", configHints[key]));
     process.exit();
   }
-  return config[key];
+  return config[key] as string;
+}
+
+export function parseConfigFonts(): string[] {
+  if (config === undefined) {
+    const configPath = path.join(
+      import.meta.dirname,
+      "..",
+      "..",
+      "..",
+      "myconfig.json",
+    );
+    try {
+      config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    } catch {
+      config = {};
+    }
+  }
+  const fonts = config?.["fonts"];
+  return Array.isArray(fonts) ? (fonts as string[]) : DEFAULT_FONTS;
 }

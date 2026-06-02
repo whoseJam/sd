@@ -2,17 +2,31 @@ import opentype from "opentype.js";
 
 import type { Text } from "@/node/text/text";
 
+import { fontWhitelist } from "@/interact/config";
 import { Root } from "@/interact/root";
 import { RenderNode } from "@/renderer/render-node";
+
+interface FontData {
+  family: string;
+  blob(): Promise<Blob>;
+}
+
+declare global {
+  interface Window {
+    queryLocalFonts?: () => Promise<FontData[]>;
+  }
+}
 
 export class FontManager {
   private static textSVG: RenderNode;
   private static fonts: Record<string, opentype.Font> = {};
+  private static localFontsPromise: Promise<FontData[]> | null = null;
+  private static loadAllPromise: Promise<void> | null = null;
 
   static init() {
-    this.load("Consolas");
-    this.load("Times New Roman");
-    this.load("Arial");
+    if (window.queryLocalFonts) {
+      this.localFontsPromise = window.queryLocalFonts().catch(() => []);
+    }
     this.textSVG = RenderNode.createRenderNodeWithoutAction(
       undefined,
       Root.svg,
@@ -21,21 +35,29 @@ export class FontManager {
     this.textSVG.setAttribute("opacity", 0);
   }
 
-  private static load(family: string) {
-    const base =
-      typeof window !== "undefined"
-        ? (window as Window & { __SD_FONTS_URL__?: string }).__SD_FONTS_URL__
-        : undefined;
-    if (!base) return;
-    const url = `${base}/${family}.ttf`;
-    fetch(url)
-      .then((res) => res.arrayBuffer())
-      .then((buffer) => {
-        this.fonts[family] = opentype.parse(buffer);
-      })
-      .catch(() => {
-        /* network failure is silent; the font just won't be available */
-      });
+  static loadAll(): Promise<void> {
+    if (!this.loadAllPromise) {
+      this.loadAllPromise = this.doLoadAll();
+    }
+    return this.loadAllPromise;
+  }
+
+  private static async doLoadAll(): Promise<void> {
+    if (!this.localFontsPromise) return;
+    const all = await this.localFontsPromise;
+    await Promise.all(
+      fontWhitelist.map((family) => {
+        if (this.fonts[family]) return;
+        const match = all.find((f) => f.family === family);
+        if (!match) return;
+        return match
+          .blob()
+          .then((b) => b.arrayBuffer())
+          .then((buf) => {
+            this.fonts[family] = opentype.parse(buf);
+          });
+      }),
+    );
   }
 
   static fontExists(family: string) {

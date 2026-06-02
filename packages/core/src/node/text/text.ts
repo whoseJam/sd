@@ -227,8 +227,6 @@ export class Text extends BaseText {
   }
 
   setFontFamily(family: string): this {
-    if (family !== "Times New Roman" && family !== "Arial")
-      throw new Error(`Font family ${family} is not supported in all platform`);
     const box = FontManager.boundingBox(
       this.attributes.text,
       family,

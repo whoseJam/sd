@@ -1,11 +1,11 @@
 import includeHTML from "./include";
 import "./plugin/reset.css";
 import "./plugin/reveal.css";
+import { revealBase } from "./config";
 
 declare global {
   interface Window {
     MyRevealCallback?: () => void;
-    __SD_THEMES_URL__?: string;
   }
 }
 
@@ -135,12 +135,11 @@ class ThemeManager {
   }
 
   applyNewTheme(themeName: string): void {
-    const base = window.__SD_THEMES_URL__;
-    if (!base) return;
+    if (!revealBase) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.type = "text/css";
-    link.href = `${base}/${themeName}.css`;
+    link.href = `${revealBase}/vendor/themes/${themeName}.css`;
     link.dataset.theme = themeName;
     document.head.appendChild(link);
     const selector = document.querySelector<HTMLSelectElement>(

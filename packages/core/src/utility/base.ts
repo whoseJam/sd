@@ -6,6 +6,7 @@ import {
   pause,
   Window,
 } from "@/animate/window";
+import { FontManager } from "@/node/text/text-engine/opentype";
 
 let initFinished: boolean = true;
 
@@ -54,6 +55,7 @@ export async function main(
   A.forceToFinish();
   const fn = async (): Promise<void> => {
     if (initFinished) {
+      await FontManager.loadAll();
       await callback();
       await pause(LAST_MAIN_STAGE);
     } else {

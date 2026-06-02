@@ -1,4 +1,5 @@
 import type { RevealApi, RevealPlugin } from "../types";
+import { revealBase } from "../config";
 
 interface MathJaxGlobal {
   Hub: {
@@ -32,10 +33,7 @@ const DEFAULT_OPTIONS: MathJax2Options = {
     skipTags: ["script", "noscript", "style", "textarea", "pre"],
   },
   skipStartupTypeset: true,
-  mathjax:
-    typeof window !== "undefined"
-      ? (window as { __SD_MATHJAX2_URL__?: string }).__SD_MATHJAX2_URL__
-      : undefined,
+  mathjax: `${revealBase}/vendor/MathJax2/MathJax.js`,
 };
 
 // "TeX-AMS_SVG"  : Chinese Character Display Error

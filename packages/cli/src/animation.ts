@@ -6,7 +6,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "node:path";
 import webpack from "webpack-stream";
 
-import { parseConfig, parseInput } from "./parser";
+import { parseConfig, parseConfigFonts, parseInput } from "./parser";
 import { copyFile, copyVendorAssets, validateJSFile } from "./utils";
 
 function truncateAtStackTrace(errorMessage: string): string {
@@ -84,7 +84,7 @@ function getConfiguration(file: string, targetFolder: string) {
       minify: false,
       filename: `${file}.html`,
       scriptLoading: "blocking",
-      templateParameters: { base },
+      templateParameters: { base, fonts: parseConfigFonts().join(",") },
     }),
   ];
   return {
