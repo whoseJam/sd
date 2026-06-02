@@ -204,9 +204,9 @@ export class Color {
   }
 
   static doubleGradient(
-    start: string,
-    mid: string,
-    end: string,
+    start: SDColor,
+    mid: SDColor,
+    end: SDColor,
     l: number,
     m: number,
     r: number,
