@@ -24,8 +24,8 @@ export type SDSVGNodeAttributes = SDNodeAttributes & {
 export abstract class SDSVGNode extends SDNode {
   declare attributes: SDSVGNodeAttributes;
 
-  constructor(parent?: SDNode | RenderNode) {
-    super(parent);
+  constructor() {
+    super();
     this.attributes = {
       ...this.attributes,
       fill: C.toRGBA(C.black),
