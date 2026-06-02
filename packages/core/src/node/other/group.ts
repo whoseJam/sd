@@ -25,7 +25,6 @@ export class Group extends SDSVGNode {
   }
 
   appendChild(child: SDNode | RenderNode) {
-    child.parent = this;
     if (child instanceof SDNode) {
       this.getRootRenderNode().appendChild(child.getRootRenderNode());
       child.parent = this;
