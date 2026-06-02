@@ -16,8 +16,17 @@ function calculate(
     for (let i = 0; i < textView.text.length; i++) {
       let matched = true;
       for (let j = 0; j < pattern.length && matched; j++)
-        if (pattern[j] !== textView.text[i + j] || deleted[j]) matched = false;
-      if (matched) return new SubtextView(textView, i, i + pattern.length - 1);
+        // deleted is indexed by textView position (i + j), not by
+        // pattern position (j) — earlier code conflated the two.
+        if (pattern[j] !== textView.text[i + j] || deleted[i + j])
+          matched = false;
+      if (matched) {
+        // Mark the matched range so subsequent mappings cannot reuse
+        // the same chars and the trailing unmapped-union pass excludes
+        // them.
+        for (let j = 0; j < pattern.length; j++) deleted[i + j] = true;
+        return new SubtextView(textView, i, i + pattern.length - 1);
+      }
     }
   }
   console.warn(pattern);
@@ -58,7 +67,7 @@ export function match(
     const sourceSubtextView = calculate(sourceView, sourceDeleted, source);
     const targetSubtextView = calculate(targetView, targetDeleted, target);
     targetSubtextView.setStyle(sourceSubtextView.getStyle());
-    matchings.push(sourceSubtextView, targetSubtextView);
+    matchings.push([sourceSubtextView, targetSubtextView]);
   }
   const sourceSet = new Set<number>();
   const targetSet = new Set<number>();
