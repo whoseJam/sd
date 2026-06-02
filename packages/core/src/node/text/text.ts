@@ -193,28 +193,28 @@ export class Text extends BaseText {
     return this.text;
   }
 
-  setText(text: string | number, mapping?: TextMapping): this {
-    const text_ = String(text);
-    if (this.attributes.text === text_) return this;
+  setText(value: string | number, mapping?: TextMapping): this {
+    const text = String(value);
+    if (this.attributes.text === text) return this;
     const box = FontManager.boundingBox(
-      text_,
+      text,
       this.attributes.fontFamily,
       this.attributes.fontSize,
     );
     const styles = buildAnimation(
       this,
       { text: this.attributes.text, styles: this.attributes.subtextStyles },
-      { text: text_ },
+      { text },
       transformProcess(mapping),
       transformPostProcess(this, this.parent.getRootRenderNode()),
       "transform",
     );
-    const html = parseToHTML(styles, text_);
+    const html = parseToHTML(styles, text);
     this.triggerSizeChange(box.width, box.height);
     this.triggerAttributeChanged(
       undefined,
       "text",
-      text_,
+      text,
       this.attributes.text,
       Interp.emptyInterp,
     );
@@ -371,14 +371,13 @@ function generateDefaultStyles(text: string): Array<PathStyle> {
 }
 
 function parseToHTML(styles: Array<PathStyle>, text: string) {
-  const parseText = (text_: string | number) => {
+  const escape = (chunk: string) => {
     let ans = "";
-    const text = String(text_);
-    for (let i = 0; i < text.length; i++) {
-      if (text[i] === " ") ans += " ";
-      else if (text[i] === "<") ans += "&lt;";
-      else if (text[i] === ">") ans += "&gt;";
-      else ans += text[i];
+    for (let i = 0; i < chunk.length; i++) {
+      if (chunk[i] === " ") ans += " ";
+      else if (chunk[i] === "<") ans += "&lt;";
+      else if (chunk[i] === ">") ans += "&gt;";
+      else ans += chunk[i];
     }
     return ans;
   };
@@ -405,9 +404,9 @@ function parseToHTML(styles: Array<PathStyle>, text: string) {
         attribute = attribute + ` stroke-width='${styles[l].strokeWidth}'`;
       html =
         html + `<tspan ${attribute} alignment-baseline='text-before-edge'>`;
-      html = html + parseText(text.slice(l, r + 1));
+      html = html + escape(text.slice(l, r + 1));
       html = html + "</tspan>";
     }
-  } else html = parseText(text);
+  } else html = escape(text);
   return html;
 }

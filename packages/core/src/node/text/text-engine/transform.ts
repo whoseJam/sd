@@ -35,9 +35,9 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
       animatedKey: string,
     ) => {
       if (animatedKey === "transform") {
-        const source_ = source as SVGMatrix;
-        const target_ = target as SVGMatrix;
-        if (source_.toString() === target_.toString()) return;
+        const sourceMatrix = source as SVGMatrix;
+        const targetMatrix = target as SVGMatrix;
+        if (sourceMatrix.toString() === targetMatrix.toString()) return;
       }
       A.push(
         new Action(

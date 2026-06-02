@@ -42,25 +42,26 @@ export class FontManager {
     return this.fonts[family] !== undefined;
   }
 
-  static boundingBox(text: Text | string, family?: string, size?: number) {
-    const text_ = typeof text === "string" ? text : text.getText();
-    const family_ = typeof text === "string" ? family : text.getFontFamily();
-    const size_ = typeof text === "string" ? size : text.getFontSize();
+  static boundingBox(input: Text | string, family?: string, size?: number) {
+    const text = typeof input === "string" ? input : input.getText();
+    const fontFamily =
+      typeof input === "string" ? family : input.getFontFamily();
+    const fontSize = typeof input === "string" ? size : input.getFontSize();
     function includeChinese(str: string) {
       return /[\u4e00-\u9fa5]/.test(str);
     }
-    if (!this.fonts[family_] || includeChinese(text_)) {
-      this.textSVG.setAttribute("text", text_);
-      this.textSVG.setAttribute("font-size", size_);
-      this.textSVG.setAttribute("font-family", family_);
+    if (!this.fonts[fontFamily] || includeChinese(text)) {
+      this.textSVG.setAttribute("text", text);
+      this.textSVG.setAttribute("font-size", fontSize);
+      this.textSVG.setAttribute("font-family", fontFamily);
       return this.textSVG.elementAs<SVGTextElement>().getBBox();
     }
-    const font = this.fonts[family_];
+    const font = this.fonts[fontFamily];
     const ascender = font.ascender;
     const descender = font.descender;
-    const scale = size_ / font.unitsPerEm;
+    const scale = fontSize / font.unitsPerEm;
     const height = (ascender - descender) * scale; // when getting text height, use ascender - descender
-    const width = getTextWidth(this.fonts[family_], text_, size_);
+    const width = getTextWidth(this.fonts[fontFamily], text, fontSize);
     return { width, height };
   }
 

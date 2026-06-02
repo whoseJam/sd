@@ -51,8 +51,8 @@ export class MathManager {
       const [bbox, ibbox] = this.boundingBoxAndInnerBoundingBox(math);
       const view = svg.getAttribute("viewBox").split(" ");
       const [vx, vy, vw, vh] = [+view[0], +view[1], +view[2], +view[3]];
-      const x_ = +svg.getAttribute("x");
-      const y_ = +svg.getAttribute("y") + (bbox.y - y);
+      const svgX = +svg.getAttribute("x");
+      const svgY = +svg.getAttribute("y") + (bbox.y - y);
       const w = bbox.width * (vw / ibbox.width);
       const h = bbox.height * (vh / ibbox.height);
       return new DOMMatrix([
@@ -60,8 +60,8 @@ export class MathManager {
         0,
         0,
         h / vh,
-        x_ - (w / vw) * vx,
-        y_ - (h / vh) * vy,
+        svgX - (w / vw) * vx,
+        svgY - (h / vh) * vy,
       ]);
     };
     const extract = (current: SVGElement): string => {

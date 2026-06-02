@@ -203,14 +203,15 @@ export class Math extends BaseText {
     return this.attributes.string;
   }
 
-  setText(text: string | number, mapping?: TextMapping): this {
-    if (this.attributes.string === String(text)) return this;
-    const [html, text_] = parseToHTML(this, String(text));
+  setText(value: string | number, mapping?: TextMapping): this {
+    const latex = String(value);
+    if (this.attributes.string === latex) return this;
+    const [html, glyphs] = parseToHTML(this, latex);
     const box = MathManager.boundingBox(this.attributes.y, html);
     const styles = buildAnimation(
       this,
       { text: this.attributes.text, styles: this.attributes.subtextStyles },
-      { text: text_ },
+      { text: glyphs },
       transformProcess(mapping),
       transformPostProcess(this, this.getRootRenderNode()),
       "transform",
@@ -221,14 +222,14 @@ export class Math extends BaseText {
     this.triggerAttributeChanged(
       undefined,
       "string",
-      String(text),
+      latex,
       this.attributes.string,
       Interp.emptyInterp,
     );
     this.triggerAttributeChanged(
       undefined,
       "text",
-      text_,
+      glyphs,
       this.attributes.text,
       Interp.emptyInterp,
     );
