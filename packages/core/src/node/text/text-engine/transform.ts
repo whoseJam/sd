@@ -70,9 +70,18 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         r,
       );
       const group = RenderNode.createRenderNodeWithTime(targetLayer, l, l, "g");
+      // SubtextView indices are positions within the FULL text (the
+      // subtext picks out a subset). buildMapping returns LOCAL indices
+      // into the subtext though; we translate them back to absolute
+      // positions before looking into sourcePaths / sourceStyles, both
+      // of which are keyed by absolute char index.
+      const sourcePositions: number[] = [];
+      sourceSubtext.__iterate((p) => sourcePositions.push(p));
+      const targetPositions: number[] = [];
+      targetSubtext.__iterate((p) => targetPositions.push(p));
       const mapping = buildMapping(
-        sourceSubtext.count(),
-        targetSubtext.count(),
+        sourcePositions.length,
+        targetPositions.length,
       );
       const fadePath = (
         node: RenderNode,
@@ -85,9 +94,19 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
       };
       const makePath = () =>
         RenderNode.createRenderNodeWithoutAction(undefined, group, "path");
-      for (const [sourceIndex, targetIndex] of mapping) {
-        const source = sourcePaths[sourceIndex];
-        const target = targetPaths[targetIndex];
+      for (const [localSourceIndex, localTargetIndex] of mapping) {
+        const sourceIndex =
+          localSourceIndex === undefined
+            ? undefined
+            : sourcePositions[localSourceIndex];
+        const targetIndex =
+          localTargetIndex === undefined
+            ? undefined
+            : targetPositions[localTargetIndex];
+        const source =
+          sourceIndex === undefined ? undefined : sourcePaths[sourceIndex];
+        const target =
+          targetIndex === undefined ? undefined : targetPaths[targetIndex];
         if (sourceIndex === undefined) {
           if (target) fadePath(makePath(), target.d, 0, 1);
           continue;
@@ -156,7 +175,6 @@ function buildMapping(
 ): Array<[number, number]> {
   const mapping: Array<[number, number]> = [];
   if (sourceCount < targetCount) {
-    console.log("aaa");
     const count = targetCount - sourceCount;
     const gap = Math.floor(sourceCount / count);
     if (sourceCount === 0) {
