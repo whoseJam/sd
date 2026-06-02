@@ -80,7 +80,7 @@ function getConfiguration(file: string, targetFolder: string) {
         : ".";
   const plugins = [
     new HtmlWebpackPlugin({
-      template: `${global.projectRoot}/packages/cli/src/aniIndex.html`,
+      template: path.join(import.meta.dirname, "../../element/src/template.html"),
       inject: "body",
       inlineSource: ".(js)$",
       minify: false,

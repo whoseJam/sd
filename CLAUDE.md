@@ -81,18 +81,18 @@ gulp serve -p 8080
 
 - Each gulp task (`sd.js`, `reveal.js`, `element.js`, `animation.js`, `ppt.js`, `theme.js`, ...) wraps a webpack-stream pipeline.
 - `parser.js` holds CLI arg parsing and `myconfig.json` IO.
-- HTML templates `aniIndex.html` and `pptIndex.html` use a single `<%= base %>` placeholder (".") for self-contained local builds, or the `-d <domain>` value for remote deploys.
+- HTML templates use a single `<%= base %>` placeholder (".") for self-contained local builds, or the `-d <domain>` value for remote deploys. The animation iframe template lives in `packages/element/src/template.html`; each framework's deck template lives in its own package (`packages/reveal/src/template.html`, etc.).
 - The CLI bin scripts (`#!/usr/bin/env node` on `animation.js`, `ppt.js`, `animation-group.js`, `config.js`) are exposed via the root `package.json#bin` as `sd-animation` etc.
 
 ## Build Flow
 
 Animation bundles do NOT inline `@sd/core`. Instead:
 
-- `aniIndex.html` loads `sd.js` first (as global `sd`), then the per-animation bundle.
+- `packages/element/src/template.html` loads `sd.js` first (as global `sd`), then the per-animation bundle.
 - The per-animation webpack config marks `@/sd` and `slidew` as externals mapping to global `sd`.
 - This keeps each animation script tiny (~5-20 KB) and the shared engine cacheable.
 
-PPT bundles work the same way: `pptIndex.html` loads `sd.js` and `myreveal.js` globals; each slide's animation is a separate small bundle.
+PPT bundles work the same way: the framework's `template.html` loads `sd.js` and (for reveal) `myreveal.js` globals; each slide's animation is a separate small bundle.
 
 The `-l` flag tells the CLI to copy `dist/sd.js` (or `dist/myreveal.js`) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
