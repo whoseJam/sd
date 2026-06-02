@@ -14,17 +14,17 @@ $systemFontsMono:
   monospace;
 $codeFont: "Fira Code", $systemFontsMono;
 $backgroundColor: #fff;
-$mainColor: #222;
-$headingColor: #222;
+$mainColor: #1e293b;
+$headingColor: #0f172a;
 $mainFont: "Source Sans Pro", Helvetica, sans-serif;
 $headingFont: "Source Sans Pro", Helvetica, sans-serif;
 $headingTextShadow: none;
-$headingLetterSpacing: normal;
+$headingLetterSpacing: -0.02em;
 $headingTextTransform: none;
-$headingFontWeight: 600;
-$linkColor: #2a76dd;
+$headingFontWeight: 700;
+$linkColor: #2563eb;
 $linkColorHover: lighten($linkColor, 15%);
-$selectionBackgroundColor: lighten($linkColor, 25%);
+$selectionBackgroundColor: lighten($linkColor, 40%);
 
 $heading1Size: 2.5em;
 $heading2Size: 1.6em;
@@ -41,9 +41,31 @@ $overlayElementFgColor: 240, 240, 240;
 @import "../template/theme";
 // ---------------------------------------------
 
+.reveal h2 {
+  border-bottom: 2px solid #2563eb;
+  display: inline-block;
+  padding-bottom: 0.15em;
+}
+
+.reveal pre {
+  border-left: 3px solid #2563eb;
+  background: #f8fafc;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.reveal .quote {
+  border: none;
+  border-left: 3px solid #2563eb;
+  background: #eff6ff;
+  padding: 10px 16px;
+  border-radius: 0 4px 4px 0;
+}
+
 .hljs {
   color: #2f3337;
-  background: #f6f6f6;
+  background: #f1f5f9;
+  border-radius: 4px;
 }
 .hljs-subst {
   color: #2f3337;

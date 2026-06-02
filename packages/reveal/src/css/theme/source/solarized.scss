@@ -57,48 +57,67 @@ $selectionBackgroundColor: $magenta;
 $overlayElementBgColor: 0, 0, 0;
 $overlayElementFgColor: 240, 240, 240;
 
-// Background generator
-// @mixin bodyBackground() {
-//     @include radial-gradient( rgba($base3,1), rgba(lighten($base3, 20%),1) );
-// }
-
 // Theme template ------------------------------
 @import "../template/theme";
 // ---------------------------------------------
 
+.reveal h2 {
+  border-bottom: 2px solid #{$cyan};
+  display: inline-block;
+  padding-bottom: 0.15em;
+}
+
+.reveal .quote {
+  background: #{$base2};
+  border-left: 3px solid #{$cyan};
+  padding: 10px 16px;
+  border-radius: 0 4px 4px 0;
+}
+
+.reveal pre {
+  background: #{$base02};
+}
+
 .hljs {
-  color: #3e5915;
-  background: #f6f5b2;
+  background: #073642;
+  color: #839496;
 }
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-literal {
-  color: #005599;
+  color: #268bd2;
   font-weight: bold;
 }
 .hljs-subst {
-  color: #3e5915;
+  color: #839496;
 }
 .hljs-string,
+.hljs-addition,
+.hljs-link {
+  color: #2aa198;
+}
 .hljs-title,
 .hljs-section,
 .hljs-type,
 .hljs-symbol,
-.hljs-bullet,
 .hljs-attribute,
 .hljs-built_in,
-.hljs-addition,
 .hljs-variable,
 .hljs-template-tag,
-.hljs-template-variable,
-.hljs-link {
-  color: #2c009f;
+.hljs-template-variable {
+  color: #cb4b16;
+}
+.hljs-bullet {
+  color: #268bd2;
+}
+.hljs-number {
+  color: #d33682;
 }
 .hljs-comment,
 .hljs-quote,
 .hljs-deletion,
 .hljs-meta {
-  color: #e60415;
+  color: #586e75;
 }
 .hljs-keyword,
 .hljs-selector-tag,

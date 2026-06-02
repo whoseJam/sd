@@ -20,14 +20,15 @@ $systemFontsMono:
   monospace;
 $codeFont: "Fira Code", $systemFontsMono;
 $mainFont: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
-$mainColor: #000;
+$mainColor: #1a1208;
 $headingFont: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
-$headingColor: #383d3d;
+$headingColor: #2d1a00;
 $headingTextShadow: none;
 $headingTextTransform: none;
-$backgroundColor: #f0f1eb;
-$linkColor: #51483d;
-$linkColorHover: lighten($linkColor, 20%);
+$headingFontWeight: 700;
+$backgroundColor: #f7f5ef;
+$linkColor: #6b4226;
+$linkColorHover: #9b6840;
 $selectionBackgroundColor: #26351c;
 
 $overlayElementBgColor: 0, 0, 0;
@@ -44,12 +45,32 @@ $overlayElementFgColor: 240, 240, 240;
 @import "../template/theme";
 // ---------------------------------------------
 
+.reveal h1 {
+  border-bottom: 1px solid #c8a97a;
+  display: inline-block;
+  padding-bottom: 0.25em;
+}
+
+.reveal h2 {
+  border-bottom: 1px solid #c8a97a;
+  display: inline-block;
+  padding-bottom: 0.2em;
+}
+
+.reveal .quote {
+  background: #f0ece0;
+  border-left: 4px solid #6b4226;
+  padding: 12px 18px;
+  font-style: italic;
+  border-radius: 0 2px 2px 0;
+}
+
 .hljs {
-  color: #444;
-  background: #f0f0f0;
+  color: #2d1a00;
+  background: #f0ece0;
 }
 .hljs-subst {
-  color: #444;
+  color: #2d1a00;
 }
 .hljs-comment {
   color: #888888;

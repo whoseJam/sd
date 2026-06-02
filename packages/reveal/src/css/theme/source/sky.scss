@@ -25,11 +25,12 @@ $codeFont: "Fira Code", $systemFontsMono;
 $mainFont: "Open Sans", sans-serif;
 $mainColor: #333;
 $headingFont: "Quicksand", sans-serif;
-$headingColor: #333;
-$headingLetterSpacing: -0.08em;
+$headingColor: #1e3a5f;
+$headingLetterSpacing: -0.04em;
+$headingFontWeight: 700;
 $headingTextShadow: none;
 $backgroundColor: #f7fbfc;
-$linkColor: #3b759e;
+$linkColor: #0369a1;
 $linkColorHover: lighten($linkColor, 20%);
 $selectionBackgroundColor: #134674;
 
@@ -43,7 +44,7 @@ $overlayElementFgColor: 240, 240, 240;
 
 // Background generator
 @mixin bodyBackground() {
-  @include radial-gradient(#add9e4, #f7fbfc);
+  @include radial-gradient(#b8e0eb, #eef7fb);
 }
 
 // Change text colors against dark slide backgrounds
@@ -52,6 +53,25 @@ $overlayElementFgColor: 240, 240, 240;
 // Theme template ------------------------------
 @import "../template/theme";
 // ---------------------------------------------
+
+.reveal h2 {
+  border-bottom: 2px solid #0369a1;
+  display: inline-block;
+  padding-bottom: 0.15em;
+}
+
+.reveal .quote {
+  background: rgba(173, 216, 230, 0.25);
+  border-left: 3px solid #0369a1;
+  padding: 10px 16px;
+  border-radius: 0 4px 4px 0;
+}
+
+.reveal pre {
+  background: #1e2b3c;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.2);
+}
 
 .hljs {
   background: #2e3440;

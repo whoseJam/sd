@@ -12,32 +12,21 @@ $systemFontsMono:
   Lucida Console,
   monospace;
 $codeFont: "Fira Code", $systemFontsMono;
-$mainColor: #333;
-$headingColor: #333;
+$mainColor: #2d1e0e;
+$headingColor: #3d2200;
 $headingTextShadow: none;
-$backgroundColor: #f7f3de;
-$linkColor: #8b743d;
+$heading1TextShadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+$backgroundColor: #f4eed9;
+$linkColor: #92400e;
 $linkColorHover: lighten($linkColor, 20%);
 $selectionBackgroundColor: rgba(79, 64, 28, 0.99);
-$heading1TextShadow:
-  0 1px 0 #ccc,
-  0 2px 0 #c9c9c9,
-  0 3px 0 #bbb,
-  0 4px 0 #b9b9b9,
-  0 5px 0 #aaa,
-  0 6px 1px rgba(0, 0, 0, 0.1),
-  0 0 5px rgba(0, 0, 0, 0.1),
-  0 1px 3px rgba(0, 0, 0, 0.3),
-  0 3px 5px rgba(0, 0, 0, 0.2),
-  0 5px 10px rgba(0, 0, 0, 0.25),
-  0 20px 20px rgba(0, 0, 0, 0.15);
 
 $overlayElementBgColor: 0, 0, 0;
 $overlayElementFgColor: 240, 240, 240;
 
 // Background generator
 @mixin bodyBackground() {
-  @include radial-gradient(rgba(247, 242, 211, 1), rgba(255, 255, 255, 1));
+  @include radial-gradient(rgba(244, 238, 217, 1), rgba(255, 252, 240, 1));
 }
 
 // Change text colors against dark slide backgrounds
@@ -47,11 +36,25 @@ $overlayElementFgColor: 240, 240, 240;
 @import "../template/theme";
 // ---------------------------------------------
 
+.reveal h2 {
+  border-bottom: 1px solid #c2965a;
+  display: inline-block;
+  padding-bottom: 0.2em;
+}
+
+.reveal .quote {
+  background: #ede3c4;
+  border: 1px solid #c2965a;
+  border-left: 4px solid #92400e;
+  padding: 10px 14px;
+  border-radius: 2px;
+}
+
 .hljs {
   display: block;
   overflow-x: auto;
   padding: 0.5em;
-  background: #3f3f3f;
+  background: #2c2a20;
   color: #dcdcdc;
 }
 .hljs-keyword,

@@ -40,15 +40,15 @@ html * {
   rendering-intent: auto;
 }
 
-$background: #ebd9e8;
-$foreground: #d314da;
+$background: #282a36;
+$foreground: #f8f8f2;
 $selection: #44475a;
 $comment: #6272a4;
 $red: #ff5555;
-$orange: #cf6e06;
+$orange: #ffb86c;
 $yellow: #f1fa8c;
 $green: #50fa7b;
-$purple: #7431d2;
+$purple: #bd93f9;
 $cyan: #8be9fd;
 $pink: #ff79c6;
 
@@ -96,7 +96,6 @@ $codeFont: "Fira Code", $systemFontsMono;
   code {
     color: var(--r-inline-code-color);
   }
-  // Dracula colored list bullets and numbers
   ul,
   ol {
     li::marker {
@@ -105,8 +104,28 @@ $codeFont: "Fira Code", $systemFontsMono;
   }
 }
 
+.reveal h1 {
+  text-shadow: 0 0 20px rgba(189, 147, 249, 0.4);
+}
+
+.reveal .quote {
+  background: #44475a;
+  border: none;
+  border-left: 3px solid #bd93f9;
+  padding: 10px 16px;
+  border-radius: 0 4px 4px 0;
+  color: #f8f8f2;
+}
+
+.reveal pre {
+  background: #1e1f29;
+  border: 1px solid #44475a;
+  box-shadow: none;
+  border-radius: 4px;
+}
+
 .hljs {
-  background: #2d2b57;
+  background: #1e1f29;
   color: #e3dfff;
   font-weight: normal;
 }

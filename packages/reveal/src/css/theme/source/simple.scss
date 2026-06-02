@@ -25,13 +25,14 @@ $systemFontsMono:
   monospace;
 $codeFont: "Fira Code", $systemFontsMono;
 $mainFont: "Lato", sans-serif;
-$mainColor: #000;
+$mainColor: #111827;
 $headingFont: "News Cycle", Impact, sans-serif;
-$headingColor: #000;
+$headingColor: #111827;
 $headingTextShadow: none;
 $headingTextTransform: none;
+$headingFontWeight: 700;
 $backgroundColor: #fff;
-$linkColor: #00008b;
+$linkColor: #1d4ed8;
 $linkColorHover: lighten($linkColor, 20%);
 $selectionBackgroundColor: rgba(0, 0, 0, 0.99);
 
@@ -45,62 +46,79 @@ $overlayElementFgColor: 240, 240, 240;
 @import "../template/theme";
 // ---------------------------------------------
 
-.hljs {
-  background: #ffffdf; /* Half and Half (approx.) */
+.reveal h1 {
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
-.hljs, /* --- used for PureBASIC base color --- */
-.hljs-type,  /* --- used for PureBASIC Procedures return type --- */
-.hljs-function, /* --- used for wrapping PureBASIC Procedures definitions --- */
+.reveal h2 {
+  border-bottom: 3px solid #111827;
+  display: inline-block;
+  padding-bottom: 0.12em;
+}
+
+.reveal .quote {
+  background: #f9fafb;
+  border-left: 4px solid #111827;
+  padding: 10px 16px;
+  font-style: italic;
+}
+
+.hljs {
+  background: #f3f4f6;
+}
+
+.hljs,
+.hljs-type,
+.hljs-function,
 .hljs-name,
 .hljs-number,
 .hljs-attr,
 .hljs-params,
 .hljs-subst {
-  color: #000000; /* Black */
+  color: #111827;
 }
 
-.hljs-comment, /* --- used for PureBASIC Comments --- */
+.hljs-comment,
 .hljs-regexp,
 .hljs-section,
 .hljs-selector-pseudo,
 .hljs-addition {
-  color: #00aaaa; /* Persian Green (approx.) */
+  color: #1d4ed8;
 }
 
-.hljs-keyword, /* --- used for PureBASIC Keywords --- */
+.hljs-keyword,
 .hljs-class,
 .hljs-meta .hljs-keyword,
-
 .hljs-selector-class,
 .hljs-built_in {
-  color: #006666; /* Blue Stone (approx.) */
+  color: #1e40af;
   font-weight: bold;
 }
 
-.hljs-title, /* --- used for PureBASIC Procedures Names --- */
+.hljs-title,
 .hljs-tag,
 .hljs-variable,
 .hljs-code {
-  color: #006666; /* Blue Stone (approx.) */
+  color: #1e3a8a;
 }
 
-.hljs-string, /* --- used for PureBASIC Strings --- */
+.hljs-string,
 .hljs-selector-attr {
-  color: #0080ff; /* Azure Radiance (approx.) */
+  color: #1d4ed8;
 }
 
-.hljs-symbol, /* --- used for PureBASIC Constants --- */
+.hljs-symbol,
 .hljs-link,
 .hljs-deletion,
 .hljs-attribute {
-  color: #924b72; /* Cannon Pink (approx.) */
+  color: #4338ca;
 }
 
 .hljs-meta,
 .hljs-literal,
 .hljs-selector-id {
-  color: #924b72; /* Cannon Pink (approx.) */
+  color: #3730a3;
   font-weight: bold;
 }
 
