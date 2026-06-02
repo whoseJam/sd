@@ -1,17 +1,21 @@
-import type { SDNode } from "@/node/node";
+import type { Group } from "@/node/other/group";
 
 import { Interp } from "@/animate/interp";
-import { BaseControl } from "@/node/control/base-control";
+import {
+  BaseControl,
+  BaseControlAttributes,
+} from "@/node/control/base-control";
 import { Color as C } from "@/utility/color";
 
-export class Button extends BaseControl {
-  /* model fields:
+export type ButtonAttributes = BaseControlAttributes & {
+  text: string;
+};
 
-        text: string;
-        */
+export class Button extends BaseControl {
+  declare attributes: ButtonAttributes;
 
   constructor(args?: {
-    targetNode?: SDNode;
+    targetNode?: Group;
     x?: number;
     y?: number;
     width?: number;
@@ -20,14 +24,28 @@ export class Button extends BaseControl {
   }) {
     super();
 
+    const x = args?.x ?? 0;
+    const y = args?.y ?? 0;
+    const width = args?.width ?? 60;
+    const height = args?.height ?? 25;
+    const text = args?.text ?? "点击";
+    this.attributes = {
+      ...this.attributes,
+      x,
+      y,
+      width,
+      height,
+      text,
+    };
+
     const [foreign, renderer] = this.createHTMLNode("button", {
-      x: args?.x ?? 0,
-      y: args?.y ?? 0,
-      width: args?.width ?? 60,
-      height: args?.height ?? 25,
+      x,
+      y,
+      width,
+      height,
       fill: C.buttonGrey,
       stroke: C.darkButtonGrey,
-      text: args?.text ?? "点击",
+      text,
     });
 
     this.foreign = foreign;
@@ -36,25 +54,16 @@ export class Button extends BaseControl {
     args?.targetNode?.appendChild(this);
   }
 
-  /**
-   * Gets the text content of the button component.
-   * @returns The text content.
-   */
   getText(): string {
-    return this.text;
+    return this.attributes.text;
   }
 
-  /**
-   * Sets the text content of the button component.
-   * @param text - The text content to apply.
-   * @returns The current component instance for method chaining.
-   */
   setText(text: string): this {
     return this.triggerAttributeChanged(
       this.renderer,
       "text",
       text,
-      this.text,
+      this.attributes.text,
       Interp.stringInterp,
     );
   }

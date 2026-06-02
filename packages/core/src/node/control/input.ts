@@ -1,9 +1,18 @@
+import { Interp } from "@/animate/interp";
 import { Status } from "@/interact/status";
-import { BaseControl } from "@/node/control/base-control";
-import { Check } from "@/utility/check";
+import {
+  BaseControl,
+  BaseControlAttributes,
+} from "@/node/control/base-control";
 import { Dom } from "@/utility/dom";
 
+export type InputAttributes = BaseControlAttributes & {
+  value: string;
+};
+
 export class Input extends BaseControl {
+  declare attributes: InputAttributes;
+
   constructor(args?: {
     x?: number;
     y?: number;
@@ -12,37 +21,50 @@ export class Input extends BaseControl {
   }) {
     super();
 
-    const object = this.__createHTMLNode("input", {
-      x: args?.x ?? 0,
-      y: args?.y ?? 0,
-      width: args?.width ?? 120,
-      height: args?.height ?? 25,
+    const x = args?.x ?? 0;
+    const y = args?.y ?? 0;
+    const width = args?.width ?? 120;
+    const height = args?.height ?? 25;
+    this.attributes = {
+      ...this.attributes,
+      x,
+      y,
+      width,
+      height,
+      value: "",
+    };
+
+    const [foreign, renderer] = this.createHTMLNode("input", {
+      x,
+      y,
+      width,
+      height,
       value: "",
       type: "text",
     });
 
-    Dom.addEventListener(object.element(), "beforeinput", (event: Event) => {
+    this.foreign = foreign;
+    this.renderer = renderer;
+
+    Dom.addEventListener(renderer.element(), "beforeinput", (event: Event) => {
       if (!Status.isInteractable()) event.preventDefault();
     });
-    Dom.addEventListener(object.element(), "change", (event: Event) => {
-      // @ts-ignore
-      this.value(event.target.value);
+    Dom.addEventListener(renderer.element(), "change", (event: Event) => {
+      this.setValue((event.target as HTMLInputElement).value);
     });
   }
-  /**
-   * Gets the value of the input component.
-   * @returns The value.
-   */
+
   getValue(): string {
-    return this.vars.value;
+    return this.attributes.value;
   }
-  /**
-   * Sets the value of the input component.
-   * @param value - The value to apply.
-   * @returns The current component instance for method chaining.
-   */
+
   setValue(value: string | number): this {
-    this.vars.value = String(value);
-    return this;
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "value",
+      String(value),
+      this.attributes.value,
+      Interp.stringInterp,
+    );
   }
 }

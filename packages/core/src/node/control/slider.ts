@@ -1,19 +1,23 @@
-import type { SDNode } from "@/node/node";
+import type { Group } from "@/node/other/group";
 
 import { Status } from "@/interact/status";
-import { BaseControl } from "@/node/control/base-control";
+import {
+  BaseControl,
+  BaseControlAttributes,
+} from "@/node/control/base-control";
 import { Dom } from "@/utility/dom";
 
-export class Slider extends BaseControl {
-  /* model fields:
+export type SliderAttributes = BaseControlAttributes & {
+  min: number;
+  max: number;
+  value: number;
+};
 
-        min: number;
-        max: number;
-        value: number;
-        */
+export class Slider extends BaseControl {
+  declare attributes: SliderAttributes;
 
   constructor(args: {
-    targetNode?: SDNode;
+    targetNode?: Group;
     x?: number;
     y?: number;
     width?: number;
@@ -24,14 +28,32 @@ export class Slider extends BaseControl {
   }) {
     super();
 
+    const x = args?.x ?? 0;
+    const y = args?.y ?? 0;
+    const width = args?.width ?? 80;
+    const height = args?.height ?? 20;
+    const min = args?.min ?? 0;
+    const max = args?.max ?? 10;
+    const value = args?.value ?? 0;
+    this.attributes = {
+      ...this.attributes,
+      x,
+      y,
+      width,
+      height,
+      min,
+      max,
+      value,
+    };
+
     const [foreign, renderer] = this.createHTMLNode("input", {
-      x: args?.x ?? 0,
-      y: args?.y ?? 0,
-      width: args?.width ?? 80,
-      height: args?.height ?? 20,
-      min: args?.min ?? 0,
-      max: args?.max ?? 10,
-      value: args?.value ?? 0,
+      x,
+      y,
+      width,
+      height,
+      min,
+      max,
+      value,
       type: "range",
     });
 
@@ -45,76 +67,58 @@ export class Slider extends BaseControl {
       if (!Status.isInteractable()) e.preventDefault();
     });
     Dom.addEventListener(renderer.element(), "input", (e) => {
-      // @ts-ignore
-      this.setValue(+e.target.value);
+      this.setValue(+(e.target as HTMLInputElement).value);
     });
 
     args?.targetNode?.appendChild(this);
   }
 
-  /**
-   * Gets the maximum value of the slider component's range.
-   * @returns The maximum value of the range.
-   */
   getMax(): number {
-    return this.max;
+    return this.attributes.max;
   }
 
-  /**
-   * Sets the maximum value of the slider component's range. Defaults to `10`.
-   * @param max - The maximum value to apply.
-   * @returns The current component instance for method chaining.
-   */
-  setMax(max: number) {
+  setMax(max: number): this {
     if (this.getValue() > max) this.setValue(max);
-    return this.triggerAttributeChanged(this.renderer, "max", max, this.max);
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "max",
+      max,
+      this.attributes.max,
+    );
   }
 
-  /**
-   * Gets the minimum value of the slider component's range.
-   * @returns The minimum value of the range.
-   */
   getMin(): number {
-    return this.min;
+    return this.attributes.min;
   }
 
-  /**
-   * Sets the minimum value of the slider component's range. Defaults to `0`.
-   * @param min - The minimum value to apply.
-   * @returns The current component instance for method chaining.
-   */
-  setMin(min?: number) {
+  setMin(min: number): this {
     if (this.getValue() < min) this.setValue(min);
-    return this.triggerAttributeChanged(this.renderer, "min", min, this.min);
+    return this.triggerAttributeChanged(
+      this.renderer,
+      "min",
+      min,
+      this.attributes.min,
+    );
   }
 
-  /**
-   * Gets the value of the slider component.
-   * @returns The value.
-   */
   getValue(): number {
-    return this.value;
+    return this.attributes.value;
   }
 
-  /**
-   * Sets the vlaue of the slider component.
-   * @param value The value to apply.
-   * @returns The current component instance for method chaining.
-   */
-  setValue(value?: number) {
+  setValue(value: number): this {
     return this.triggerAttributeChanged(
       this.renderer,
       "value",
       value,
-      this.value,
+      this.attributes.value,
     );
   }
 
-  onValueChanged(listener: (vn: any, vo: any) => void) {
+  onValueChanged(listener: (vn: number, vo: number) => void) {
     return this.onAttributeChanged("value", listener);
   }
 
-  offValueChanged(listener: (vn: any, vo: any) => void) {
+  offValueChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("value", listener);
   }
 }

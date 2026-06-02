@@ -1,23 +1,20 @@
+import type { SDNodeAttributes } from "@/node/node";
+
 import { Interp } from "@/animate/interp";
 import { SDHTMLNode } from "@/node/html-node";
-import { RenderNode } from "@/renderer/render-node";
+
+export type BaseControlAttributes = SDNodeAttributes & {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
 export class BaseControl extends SDHTMLNode {
-  /* model fields:
-
-        foreign: RenderNode;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        */
-
-  constructor() {
-    super();
-  }
+  declare attributes: BaseControlAttributes;
 
   getX(): number {
-    return this.x;
+    return this.attributes.x;
   }
 
   setX(x: number): this {
@@ -25,13 +22,13 @@ export class BaseControl extends SDHTMLNode {
       this.foreign,
       "x",
       x,
-      this.x,
+      this.attributes.x,
       Interp.numberInterp,
     );
   }
 
   getY(): number {
-    return this.y;
+    return this.attributes.y;
   }
 
   setY(y: number): this {
@@ -39,13 +36,13 @@ export class BaseControl extends SDHTMLNode {
       this.foreign,
       "y",
       y,
-      this.y,
+      this.attributes.y,
       Interp.numberInterp,
     );
   }
 
   getWidth(): number {
-    return this.width;
+    return this.attributes.width;
   }
 
   setWidth(width: number): this {
@@ -53,13 +50,13 @@ export class BaseControl extends SDHTMLNode {
       this.foreign,
       "width",
       width,
-      this.width,
+      this.attributes.width,
       Interp.numberInterp,
     );
   }
 
   getHeight(): number {
-    return this.height;
+    return this.attributes.height;
   }
 
   setHeight(height: number): this {
@@ -67,7 +64,7 @@ export class BaseControl extends SDHTMLNode {
       this.foreign,
       "height",
       height,
-      this.height,
+      this.attributes.height,
       Interp.numberInterp,
     );
   }
