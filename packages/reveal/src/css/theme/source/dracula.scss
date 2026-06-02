@@ -8,21 +8,8 @@
 @import "../template/settings";
 // ---------------------------------------------
 
-// Include theme-specific fonts
-$systemFontsSansSerif:
-  -apple-system,
-  BlinkMacSystemFont,
-  avenir next,
-  avenir,
-  segoe ui,
-  helvetica neue,
-  helvetica,
-  Cantarell,
-  Ubuntu,
-  roboto,
-  noto,
-  arial,
-  sans-serif;
+@import url(https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap);
+
 $systemFontsMono:
   Menlo,
   Consolas,
@@ -64,7 +51,10 @@ $selectionBackgroundColor: $selection;
 $inlineCodeColor: $green;
 $listBulletColor: $cyan;
 
-$mainFont: $systemFontsSansSerif;
+$mainFont: "Fira Sans", sans-serif;
+$headingFont: "Fira Sans", sans-serif;
+$headingFontWeight: 700;
+$headingLetterSpacing: -0.02em;
 $codeFont: "Fira Code", $systemFontsMono;
 
 // Change text colors against light slide backgrounds
