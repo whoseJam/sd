@@ -3,7 +3,7 @@ import webpack from "webpack-stream";
 
 export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src("./packages/reveal/src/Reveal.ts")
+    .src("./packages/reveal/src/reveal.ts")
     .pipe(webpack(getConfiguration()))
     .pipe(gulp.dest(targetFolder));
 }

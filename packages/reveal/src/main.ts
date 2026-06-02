@@ -1,4 +1,4 @@
-import includeHTML from "./Include";
+import includeHTML from "./include";
 import "./plugin/reset.css";
 import "./plugin/reveal.css";
 

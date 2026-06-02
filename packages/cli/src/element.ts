@@ -4,7 +4,7 @@ import webpack from "webpack-stream";
 
 export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src(["./packages/element/src/SDElement.ts"])
+    .src(["./packages/element/src/element.ts"])
     .pipe(webpack(getConfiguration()))
     .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);

@@ -4,5 +4,5 @@
   "private": true,
   "description": "<sd-animation> custom element. Host page loads this once; embeds animations via <sd-animation src=...>.",
   "license": "ISC",
-  "main": "src/SDElement.ts"
+  "main": "src/element.ts"
 }

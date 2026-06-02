@@ -1,27 +1,27 @@
-import { ArrayLayout } from "@/Array/ArrayLayout";
-import { PileLayout } from "@/Array/PileLayout";
-import { StackLayout } from "@/Array/StackLayout";
-import { BezierLayout } from "@/Curve/BezierLayout";
-import { BraceLayout } from "@/Curve/BraceLayout";
-import { CurveLayout } from "@/Curve/CurveLayout";
-import { VHBezierLayout } from "@/Curve/VHBezierLayout";
-import { BipartiteGraphLayout } from "@/Graph/BipartiteGraphLayout";
-import { DAGLayout } from "@/Graph/DAGLayout";
-import { GridGraphLayout } from "@/Graph/GridGraphLayout";
-import { TinyGraphLayout } from "@/Graph/TinyGraphLayout";
-import { GridLayout } from "@/Grid/GridLayout";
-import { AsideLayout } from "@/TwoNode/AsideLayout";
+import { ArrayLayout } from "@/array/array-layout";
+import { PileLayout } from "@/array/pile-layout";
+import { StackLayout } from "@/array/stack-layout";
+import { BezierLayout } from "@/curve/bezier-layout";
+import { BraceLayout } from "@/curve/brace-layout";
+import { CurveLayout } from "@/curve/curve-layout";
+import { VHBezierLayout } from "@/curve/vh-bezier-layout";
+import { BipartiteGraphLayout } from "@/graph/bipartite-graph-layout";
+import { DAGLayout } from "@/graph/dag-layout";
+import { GridGraphLayout } from "@/graph/grid-graph-layout";
+import { TinyGraphLayout } from "@/graph/tiny-graph-layout";
+import { GridLayout } from "@/grid/grid-layout";
+import { AsideLayout } from "@/two-node/aside-layout";
 import {
   BackgroundLayout,
   CircleBackgroundLayout,
-} from "@/TwoNode/BackgroundLayout";
+} from "@/two-node/background-layout";
 import {
   CenterCircleContentFitLayout,
   CenterContentFitLayout,
   CenterEllipseContentFitLayout,
   CenterLayout,
   CenterRectContentFitLayout,
-} from "@/TwoNode/CenterLayout";
+} from "@/two-node/center-layout";
 
 const Layout = {
   ArrayLayout,

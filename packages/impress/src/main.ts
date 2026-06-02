@@ -1,7 +1,7 @@
 import "@sd/element";
 import "impress.js";
-
 import "impress.js/css/impress-common.css";
+
 import "./impress.css";
 
 declare global {
