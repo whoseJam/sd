@@ -1,10 +1,10 @@
+import Highlight from "@sd/assets/HighlightEngine.js";
 import Reveal from "reveal.js";
 import "@sd/element";
 
 import type { RevealPlugin } from "./types";
 
 import Codeblock from "./plugin/Codeblock";
-import Highlight from "./plugin/HighlightEngine";
 import Image from "./plugin/Image";
 import MathJax2 from "./plugin/MathJax2";
 import Picture from "./plugin/Picture";

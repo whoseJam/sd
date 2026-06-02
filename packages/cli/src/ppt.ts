@@ -4,6 +4,7 @@ import colors from "colors-console";
 import gulp from "gulp";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import w from "webpack";
 import webpack from "webpack-stream";
@@ -11,6 +12,13 @@ import webpack from "webpack-stream";
 import * as animation from "./animation";
 import { parseConfig, parseInput } from "./parser";
 import { copyVendorAssets } from "./utils";
+
+const require = createRequire(import.meta.url);
+
+interface PptHost {
+  template: string;
+  entry: string;
+}
 
 interface FileEventListener {
   onAdd: (filePath: string, destFolderPath: string) => void;
@@ -272,9 +280,11 @@ function getConfiguration() {
   // output is self-contained and loads everything from "./vendor/..." next to the
   // HTML. There is no implicit CDN fallback.
   const base = global.domain !== undefined ? global.domain : ".";
+  const framework = global.f || "reveal";
+  const host = require(`@sd/${framework}/host.ts`) as PptHost;
   const plugins = [
     new HtmlWebpackPlugin({
-      template: `${global.projectRoot}/packages/cli/src/pptIndex.html`,
+      template: host.template,
       inject: "body",
       inlineSource: ".(js)$",
       minify: false,
@@ -290,7 +300,7 @@ function getConfiguration() {
     mode,
     watch,
     plugins,
-    entry: `${global.projectRoot}/packages/cli/src/pptMain.js`,
+    entry: host.entry,
     module: {
       rules: [
         {

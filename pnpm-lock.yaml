@@ -152,6 +152,9 @@ importers:
 
   packages/reveal:
     dependencies:
+      '@sd/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@sd/element':
         specifier: workspace:*
         version: link:../element

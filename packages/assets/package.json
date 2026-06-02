@@ -3,5 +3,8 @@
     "version": "0.0.1",
     "private": true,
     "description": "Vendor scripts, CSS, fonts, themes (MathJax, snap.svg, dagre, font-awesome)",
-    "license": "ISC"
+    "license": "ISC",
+    "exports": {
+        "./*": "./*"
+    }
 }

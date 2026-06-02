@@ -1,6 +1,13 @@
-import includeHTML from "@sd/reveal/Include";
-import "@sd/reveal/plugin/reset.css";
-import "@sd/reveal/plugin/reveal.css";
+import includeHTML from "./Include";
+import "./plugin/reset.css";
+import "./plugin/reveal.css";
+
+declare global {
+  interface Window {
+    MyRevealCallback?: () => void;
+    __SD_THEMES_URL__?: string;
+  }
+}
 
 class ThemeManager {
   static AVAILABLE_THEMES = [
@@ -12,16 +19,20 @@ class ThemeManager {
     "solarized",
     "white",
   ];
+
+  private themeSelector: HTMLDivElement | null = null;
+
   constructor() {
-    this.themeSelector = null;
     this.initializeThemeSelector();
     this.setupEventListeners();
   }
-  initializeThemeSelector() {
+
+  initializeThemeSelector(): void {
     this.themeSelector = this.createThemeSelectorElement();
     document.body.appendChild(this.themeSelector);
   }
-  createThemeSelectorElement() {
+
+  createThemeSelectorElement(): HTMLDivElement {
     const selector = document.createElement("div");
     selector.id = "theme-selector";
     selector.style.cssText = this.getThemeSelectorStyles();
@@ -29,7 +40,8 @@ class ThemeManager {
     selector.appendChild(select);
     return selector;
   }
-  getThemeSelectorStyles() {
+
+  getThemeSelectorStyles(): string {
     return `
             position: fixed;
             top: 20px;
@@ -47,7 +59,8 @@ class ThemeManager {
             max-width: 90vw;
         `;
   }
-  createThemeDropdown() {
+
+  createThemeDropdown(): HTMLSelectElement {
     const select = document.createElement("select");
     select.style.cssText = this.getDropdownStyles();
     ThemeManager.AVAILABLE_THEMES.forEach((theme) => {
@@ -56,10 +69,13 @@ class ThemeManager {
       option.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
       select.appendChild(option);
     });
-    select.addEventListener("change", (e) => this.loadTheme(e.target.value));
+    select.addEventListener("change", (e) =>
+      this.loadTheme((e.target as HTMLSelectElement).value),
+    );
     return select;
   }
-  getDropdownStyles() {
+
+  getDropdownStyles(): string {
     return `
             appearance: none;
             width: 100%;
@@ -78,25 +94,29 @@ class ThemeManager {
             background-position: right 15px center;
         `;
   }
-  setupEventListeners() {
+
+  setupEventListeners(): void {
     document.addEventListener("keydown", (e) => {
       if (e.key === "t" || e.key === "T") {
         this.toggleThemeSelector();
       }
     });
   }
-  toggleThemeSelector() {
+
+  toggleThemeSelector(): void {
     if (!this.themeSelector) return;
     const isHidden = this.themeSelector.style.display === "none";
     this.themeSelector.style.display = isHidden ? "block" : "none";
     if (isHidden) {
       const currentTheme =
-        document.querySelector("link[data-theme]")?.dataset.theme || "beige";
+        document.querySelector<HTMLLinkElement>("link[data-theme]")?.dataset
+          .theme || "beige";
       const select = this.themeSelector.querySelector("select");
       if (select) select.value = currentTheme;
     }
   }
-  loadTheme(themeName) {
+
+  loadTheme(themeName: string): void {
     if (!ThemeManager.AVAILABLE_THEMES.includes(themeName)) {
       console.error(
         `Invalid Theme: ${themeName}. Available Themes: ${ThemeManager.AVAILABLE_THEMES.join(", ")}`,
@@ -106,13 +126,15 @@ class ThemeManager {
     this.removeExistingTheme();
     this.applyNewTheme(themeName);
   }
-  removeExistingTheme() {
+
+  removeExistingTheme(): void {
     const existingTheme = document.querySelector("link[data-theme]");
     if (existingTheme) {
       existingTheme.remove();
     }
   }
-  applyNewTheme(themeName) {
+
+  applyNewTheme(themeName: string): void {
     const base = window.__SD_THEMES_URL__;
     if (!base) return;
     const link = document.createElement("link");
@@ -121,13 +143,16 @@ class ThemeManager {
     link.href = `${base}/${themeName}.css`;
     link.dataset.theme = themeName;
     document.head.appendChild(link);
-    const selector = document.querySelector("#theme-selector select");
+    const selector = document.querySelector<HTMLSelectElement>(
+      "#theme-selector select",
+    );
     if (selector) selector.value = themeName;
   }
-  static initializeFromURL() {
+
+  static initializeFromURL(): void {
     const urlParams = new URLSearchParams(window.location.search);
     const theme = urlParams.get("theme") || "beige";
-    return new ThemeManager().loadTheme(theme);
+    new ThemeManager().loadTheme(theme);
   }
 }
 
@@ -136,4 +161,4 @@ window.addEventListener("load", () => {
   themeManager.loadTheme("beige");
 });
 
-includeHTML(window.MyRevealCallback);
+includeHTML(window.MyRevealCallback!);
