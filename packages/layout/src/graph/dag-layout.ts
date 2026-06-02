@@ -1,18 +1,10 @@
-import type { SDNode } from "@sd/core";
+import type { BoxNode } from "@sd/core";
 
 import { mapTo } from "@sd/core";
 import { layout as DAGLayoutEngine, graphlib as DAGLib } from "dagre";
 
 type Align = "UL" | "UR" | "DL" | "DR" | "C";
 type Direction = "TB" | "BT" | "LR" | "RL";
-
-/**
- * Interface for defining edges in the DAG.
- * This is a generic interface - the actual link object can have any structure.
- */
-export interface DAGLink {
-  [key: string]: any;
-}
 
 /**
  * Layout function for arranging nodes in a Directed Acyclic Graph (DAG) pattern.
@@ -92,9 +84,9 @@ export interface DAGLink {
  * });
 
  */
-export function DAGLayout(
-  nodes: SDNode[],
-  links: DAGLink[],
+export function DAGLayout<TLink>(
+  nodes: Array<BoxNode>,
+  links: Array<TLink>,
   args: {
     x: number;
     y: number;
@@ -102,9 +94,9 @@ export function DAGLayout(
     height: number;
     direction?: Direction;
     align?: Align;
-    getNodeId: (node: SDNode) => string | number;
-    getLinkSourceId: (link: DAGLink) => string | number;
-    getLinkTargetId: (link: DAGLink) => string | number;
+    getNodeId: (node: BoxNode) => string | number;
+    getLinkSourceId: (link: TLink) => string | number;
+    getLinkTargetId: (link: TLink) => string | number;
     nodeWidth?: number;
     nodeHeight?: number;
     rankSep?: number;
@@ -167,17 +159,16 @@ export function DAGLayout(
   const mapperX = mapTo(box.x, box.width, x, width);
   const mapperY = mapTo(box.y, box.height, y, height);
 
-  const position = (layout: any): [number, number] => {
+  const position = (layout: { x: number; y: number }): [number, number] => {
     return [mapperX(layout.x), mapperY(layout.y)];
   };
 
-  // Position each node
   for (const node of nodes) {
     const id = String(getNodeId(node));
     const layout = graph.node(id);
     if (layout) {
       const [cx, cy] = position(layout);
-      node.cx(cx).cy(cy);
+      node.setCx(cx).setCy(cy);
     }
   }
 }

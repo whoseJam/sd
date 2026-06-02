@@ -102,7 +102,7 @@ export function BraceLayout(path: Path, args: BraceLayoutArgs) {
   const pathString = pen.toString();
 
   // Set the path data
-  path.d(pathString);
+  path.setD(pathString);
 
   // Apply trimming if clippers are provided
   if (sourceClipper || targetClipper) {

@@ -89,7 +89,7 @@ export function VHBezierLayout(path: Path, args: VHBezierLayoutArgs) {
     .toString();
 
   // Set the path data
-  path.d(pathString);
+  path.setD(pathString);
 
   // Apply trimming if clippers are provided
   if (sourceClipper || targetClipper) {

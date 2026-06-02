@@ -1,7 +1,7 @@
 import type { SDNodeAttributes } from "@/node/node";
 
 import { Interp } from "@/animate/interp";
-import { SDHTMLNode } from "@/node/html-node";
+import { SizedBoxHTMLNode } from "@/node/box-node";
 
 export type BaseControlAttributes = SDNodeAttributes & {
   x: number;
@@ -10,7 +10,7 @@ export type BaseControlAttributes = SDNodeAttributes & {
   height: number;
 };
 
-export class BaseControl extends SDHTMLNode {
+export class BaseControl extends SizedBoxHTMLNode {
   declare attributes: BaseControlAttributes;
 
   getX(): number {

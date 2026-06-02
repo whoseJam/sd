@@ -142,10 +142,6 @@ export class Ellipse extends BaseShape {
     return this.getCx();
   }
 
-  setCenterX(cx: number): this {
-    return this.setCx(cx);
-  }
-
   onCenterXChanged(listener: (vn: number, vo: number) => void) {
     return this.onCxChanged(listener);
   }
@@ -189,23 +185,12 @@ export class Ellipse extends BaseShape {
     return this.getCy();
   }
 
-  setCenterY(cy: number): this {
-    return this.setCy(cy);
-  }
-
   onCenterYChanged(listener: (vn: number, vo: number) => void) {
     return this.onCyChanged(listener);
   }
 
   offCenterYChanged(listener: (vn: number, vo: number) => void) {
     return this.offCyChanged(listener);
-  }
-
-  setCenter(center: [number, number]): this;
-  setCenter(cx: number, cy: number): this;
-  setCenter(cx: number | [number, number], cy?: number) {
-    if (Array.isArray(cx)) return this.setCenter(cx[0], cx[1]);
-    return this.setCenterX(cx).setCenterY(cy);
   }
 
   get rx(): number {

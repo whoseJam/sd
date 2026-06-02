@@ -18,6 +18,7 @@ export { PathPen } from "@/node/path/path-pen";
 export { Polyline } from "@/node/path/polyline";
 export { SDNode } from "@/node/node";
 export type { SDNodeWithRadius } from "@/node/node";
+export type { BoxNode, SizedBoxNode } from "@/node/box-node";
 export { Circle } from "@/node/shape/circle";
 export { Ellipse } from "@/node/shape/ellipse";
 export { Image } from "@/node/shape/image";

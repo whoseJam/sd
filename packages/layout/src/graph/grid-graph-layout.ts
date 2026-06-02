@@ -1,4 +1,4 @@
-import type { SDNode } from "@sd/core";
+import type { BoxNode } from "@sd/core";
 
 /**
  * Layout function for arranging nodes in a grid pattern based on custom positions.
@@ -68,9 +68,9 @@ import type { SDNode } from "@sd/core";
  * });
 
  */
-export function GridGraphLayout(
-  nodes: SDNode[],
-  links: any[],
+export function GridGraphLayout<TLink>(
+  nodes: Array<BoxNode>,
+  links: Array<TLink>,
   args: {
     x: number;
     y: number;
@@ -79,30 +79,19 @@ export function GridGraphLayout(
     n: number;
     m: number;
     pos: { [key: string | number]: { x: number; y: number } };
-    getNodeId: (node: SDNode) => string | number;
-    getLinkSourceId: (link: any) => string | number;
-    getLinkTargetId: (link: any) => string | number;
+    getNodeId: (node: BoxNode) => string | number;
+    getLinkSourceId: (link: TLink) => string | number;
+    getLinkTargetId: (link: TLink) => string | number;
   },
 ) {
-  const {
-    x,
-    y,
-    width,
-    height,
-    n,
-    m,
-    pos,
-    getNodeId,
-    getLinkSourceId,
-    getLinkTargetId,
-  } = args;
+  const { x, y, width, height, n, m, pos, getNodeId } = args;
 
   const mx = x + width;
   const my = y + height;
   const w = (mx - x) / m;
   const h = (my - y) / n;
 
-  const position = (node: SDNode): [number, number] => {
+  const position = (node: BoxNode): [number, number] => {
     const nodeId = getNodeId(node);
     const nodePos = pos[nodeId];
     return [nodePos.y * w + x + w / 2, nodePos.x * h + y + h / 2];
@@ -110,6 +99,6 @@ export function GridGraphLayout(
 
   for (const node of nodes) {
     const [cx, cy] = position(node);
-    node.cx(cx).cy(cy);
+    node.setCx(cx).setCy(cy);
   }
 }

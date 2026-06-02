@@ -92,7 +92,7 @@ export function CurveLayout(path: Path, args: CurveLayoutArgs) {
   const pathString = new PathPen().MoveTo(v1).Quad(vc, v2).toString();
 
   // Set the path data
-  path.d(pathString);
+  path.setD(pathString);
 
   // Apply trimming if clippers are provided
   if (sourceClipper || targetClipper) {

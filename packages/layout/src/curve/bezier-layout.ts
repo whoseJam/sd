@@ -85,7 +85,7 @@ export function BezierLayout(path: Path, args: BezierLayoutArgs) {
     .toString();
 
   // Set the path data
-  path.d(pathString);
+  path.setD(pathString);
 
   // Apply trimming if clippers are provided
   if (sourceClipper || targetClipper) {

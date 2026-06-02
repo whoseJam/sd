@@ -2,7 +2,7 @@ import type { SDNodeAttributes } from "@/node/node";
 import type { Group } from "@/node/other/group";
 
 import { Interp } from "@/animate/interp";
-import { SDHTMLNode } from "@/node/html-node";
+import { SizedBoxHTMLNode } from "@/node/box-node";
 import { RenderNode } from "@/renderer/render-node";
 
 export type CaptionAttributes = SDNodeAttributes & {
@@ -85,7 +85,7 @@ class CaptionObject extends RenderNode {
   }
 }
 
-export class Caption extends SDHTMLNode {
+export class Caption extends SizedBoxHTMLNode {
   declare attributes: CaptionAttributes;
   caption!: CaptionObject;
 
@@ -221,22 +221,6 @@ export class Caption extends SDHTMLNode {
 
   offHeightChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("height", listener);
-  }
-
-  setCx(cx: number) {
-    return this.setX(this.getX() + cx - this.getCx());
-  }
-
-  setCenterX(cx: number) {
-    return this.setCx(cx);
-  }
-
-  setCy(cy: number) {
-    return this.setY(this.getY() + cy - this.getCy());
-  }
-
-  setCenterY(cy: number) {
-    return this.setCy(cy);
   }
 
   getTextOpacity() {

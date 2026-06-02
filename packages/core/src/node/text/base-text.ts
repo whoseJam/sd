@@ -2,7 +2,7 @@ import type { SDSVGNodeAttributes } from "@/node/svg-node";
 import type { RenderNode } from "@/renderer/render-node";
 
 import { Interp } from "@/animate/interp";
-import { SDSVGNode } from "@/node/svg-node";
+import { BoxSVGNode } from "@/node/box-node";
 
 type TextMappingSubtextItem = [string, string];
 type TextMappingObjectSubtextItem = [BaseText, string, string];
@@ -75,7 +75,7 @@ export type BaseTextAttributes = SDSVGNodeAttributes & {
   y: number;
 };
 
-export abstract class BaseText extends SDSVGNode {
+export abstract class BaseText extends BoxSVGNode {
   declare attributes: BaseTextAttributes;
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
@@ -121,25 +121,6 @@ export abstract class BaseText extends SDSVGNode {
     return this.offAttributeChanged("x", listener);
   }
 
-  setCenterX(cx: number): this {
-    return this.setX(cx - this.getWidth() / 2);
-  }
-
-  setCx(cx: number): this {
-    return this.setCenterX(cx);
-  }
-
-  setCenter(cx: number, cy: number): this;
-  setCenter(center: [number, number]): this;
-  setCenter(cx: number | [number, number], cy?: number): this {
-    if (Array.isArray(cx)) return this.setCenterX(cx[0]).setCenterY(cx[1]);
-    return this.setCenterX(cx).setCenterY(cy);
-  }
-
-  setMaxX(mx: number): this {
-    return this.setX(mx - this.getWidth());
-  }
-
   get y(): number {
     return this.attributes.y;
   }
@@ -171,15 +152,4 @@ export abstract class BaseText extends SDSVGNode {
     return this.offAttributeChanged("y", listener);
   }
 
-  setCenterY(cy: number): this {
-    return this.setY(cy - this.getHeight() / 2);
-  }
-
-  setCy(cy: number): this {
-    return this.setCenterY(cy);
-  }
-
-  setMaxY(my: number): this {
-    return this.setY(my - this.getHeight());
-  }
 }

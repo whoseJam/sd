@@ -224,29 +224,6 @@ export class Rect extends BaseShape {
     return this.offAttributeChanged("height", listener);
   }
 
-  setCenterX(cx: number) {
-    return this.setX(this.getX() + cx - this.getCenterX());
-  }
-
-  setCx(cx: number) {
-    return this.setCenterX(cx);
-  }
-
-  setCenterY(cy: number) {
-    return this.setY(this.getY() + cy - this.getCenterY());
-  }
-
-  setCy(cy: number) {
-    return this.setCenterY(cy);
-  }
-
-  setCenter(center: [number, number]): this;
-  setCenter(cx: number, cy: number): this;
-  setCenter(cx: number | [number, number], cy?: number) {
-    if (Array.isArray(cx)) return this.setCenter(cx[0], cx[1]);
-    return this.setCenterX(cx).setCenterY(cy);
-  }
-
   get rx(): number {
     return this.attributes.rx;
   }

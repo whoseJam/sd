@@ -1,4 +1,4 @@
-import type { SDNode } from "@sd/core";
+import type { BoxNode } from "@sd/core";
 
 type Align =
   | "tl"
@@ -19,42 +19,32 @@ interface AsideLayoutParam {
   gap?: number;
 }
 
-/**
- * This function positions the rhs node adjacent to the lhs node in one of 12 possible
- * positions around the lhs's perimeter, with a configurable gap.
- *
- * @param lhs - The reference node
- * @param rhs - The node to be positioned
- * @param args - Layout parameters
- * @param args.align - The alignment position (default: 'tc')
- * @param args.gap - The gap between the nodes (default: 5)
- */
-export function AsideLayout(lhs: SDNode, rhs: SDNode, args: AsideLayoutParam) {
+export function AsideLayout(lhs: BoxNode, rhs: BoxNode, args: AsideLayoutParam) {
   const { align = "tc", gap = 5 } = args;
   if (align === "tl") {
-    rhs.x(lhs.x()).my(lhs.y() - gap);
+    rhs.setX(lhs.getX()).setMy(lhs.getY() - gap);
   } else if (align === "tc") {
-    rhs.cx(lhs.cx()).my(lhs.y() - gap);
+    rhs.setCx(lhs.getCx()).setMy(lhs.getY() - gap);
   } else if (align === "tr") {
-    rhs.mx(lhs.mx()).my(lhs.y() - gap);
+    rhs.setMx(lhs.getMaxX()).setMy(lhs.getY() - gap);
   } else if (align === "lt") {
-    rhs.mx(lhs.x() - gap).y(lhs.y());
+    rhs.setMx(lhs.getX() - gap).setY(lhs.getY());
   } else if (align === "lc") {
-    rhs.mx(lhs.x() - gap).cy(lhs.cy());
+    rhs.setMx(lhs.getX() - gap).setCy(lhs.getCy());
   } else if (align === "lb") {
-    rhs.mx(lhs.x() - gap).my(lhs.my());
+    rhs.setMx(lhs.getX() - gap).setMy(lhs.getMaxY());
   } else if (align === "bl") {
-    rhs.x(lhs.x()).y(lhs.my() + gap);
+    rhs.setX(lhs.getX()).setY(lhs.getMaxY() + gap);
   } else if (align === "bc") {
-    rhs.cx(lhs.cx()).y(lhs.my() + gap);
+    rhs.setCx(lhs.getCx()).setY(lhs.getMaxY() + gap);
   } else if (align === "br") {
-    rhs.mx(lhs.mx()).y(lhs.my() + gap);
+    rhs.setMx(lhs.getMaxX()).setY(lhs.getMaxY() + gap);
   } else if (align === "rt") {
-    rhs.x(lhs.mx() + gap).y(lhs.y());
+    rhs.setX(lhs.getMaxX() + gap).setY(lhs.getY());
   } else if (align === "rc") {
-    rhs.x(lhs.mx() + gap).cy(lhs.cy());
+    rhs.setX(lhs.getMaxX() + gap).setCy(lhs.getCy());
   } else if (align === "rb") {
-    rhs.x(lhs.mx() + gap).my(lhs.my());
+    rhs.setX(lhs.getMaxX() + gap).setMy(lhs.getMaxY());
   } else {
     throw new Error(`Invalid align: ${align}`);
   }

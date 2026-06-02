@@ -1,6 +1,6 @@
-import { SDSVGNode } from "@/node/svg-node";
+import { SizedBoxSVGNode } from "@/node/box-node";
 
-export abstract class BaseShape extends SDSVGNode {
+export abstract class BaseShape extends SizedBoxSVGNode {
   createSVGNode(label: string, attributes?: { [key: string]: any }) {
     return super.createSVGNode(label, attributes ?? {});
   }
