@@ -11,10 +11,13 @@ import webpack from "webpack-stream";
 
 import * as animation from "./animation";
 import { parseConfig, parseInput } from "./parser";
+import { toOriginFile, toTargetFile, toTargetFolder, walk } from "./path-utils";
 import theme from "./theme";
 import { copyVendorAssets } from "./utils";
 
 const require = createRequire(import.meta.url);
+
+const VALID_FRAMEWORKS = ["reveal", "impress", "webslides"];
 
 interface PptHost {
   template: string;
@@ -23,7 +26,13 @@ interface PptHost {
 }
 
 function getHost(): PptHost {
-  const framework = global.framework || "reveal";
+  const framework = global.framework ?? "reveal";
+  if (!VALID_FRAMEWORKS.includes(framework)) {
+    console.log(
+      colors("red", `[Error] Unknown framework '${framework}'. Valid: ${VALID_FRAMEWORKS.join(", ")}`),
+    );
+    process.exit(1);
+  }
   return require(`@sd/${framework}/host.ts`) as PptHost;
 }
 
@@ -35,35 +44,43 @@ interface FileEventListener {
 
 const eventListener: Record<string, FileEventListener> = {};
 
-defineEventListener("cpp", {
+eventListener["cpp"] = {
   onAdd: (filePath) => copyCPPFile(filePath),
   onChange: (filePath) => copyCPPFile(filePath),
   onUnlink: cleanCPPFile,
-});
-defineEventListener("html|md|txt", {
-  onAdd: copyAsset,
-  onChange: copyAsset,
-  onUnlink: cleanFile,
-});
-defineEventListener("png|jpg|jpeg", {
-  onAdd: copyImage,
-  onChange: copyImage,
-  onUnlink: cleanFile,
-});
+};
+
+for (const s of ["html", "md", "txt"]) {
+  eventListener[s] = {
+    onAdd: copyAsset,
+    onChange: copyAsset,
+    onUnlink: cleanFile,
+  };
+}
+
+for (const s of ["png", "jpg", "jpeg"]) {
+  eventListener[s] = {
+    onAdd: copyImage,
+    onChange: copyImage,
+    onUnlink: cleanFile,
+  };
+}
+
 const onAddAnimation = (filePath: string, destFolderPath: string) => {
   gulp.task(filePath, () => animation.task(filePath, destFolderPath));
   gulp.task(filePath)();
 };
-defineEventListener("js", {
+
+eventListener["js"] = {
   onAdd: onAddAnimation,
   onChange: () => {},
   onUnlink: () => {},
-});
-defineEventListener("ts", {
+};
+eventListener["ts"] = {
   onAdd: onAddAnimation,
   onChange: () => {},
   onUnlink: () => {},
-});
+};
 
 export function task(
   source: string,
@@ -87,8 +104,7 @@ export function task(
   // entry's own wrapper dir so other entries' outputs survive. Shared content
   // (animation/, sd.js, vendor/) is re-emitted by walk + copy below anyway.
   const cleanRoot = entry === "." ? targetFolder : `${targetFolder}/${entry}`;
-  cleanAllFiles(cleanRoot);
-  cleanAllEmptyDirectories(cleanRoot);
+  cleanDir(cleanRoot);
   copyVendorAssets(global.projectRoot, targetFolder);
   if (!global.framework || global.framework === "reveal") {
     theme(path.join(targetFolder, "vendor", "themes"));
@@ -104,7 +120,7 @@ export function task(
       );
       return;
     }
-    eventListener[suffix].onAdd(pathToOriginFile(p), pathToTargetFolder(p));
+    eventListener[suffix].onAdd(toOriginFile(source, p), toTargetFolder(source, targetFolder, p));
   });
 
   if (global.w) {
@@ -122,8 +138,8 @@ export function task(
         return;
       }
       eventListener[suffix].onChange(
-        pathToOriginFile(p),
-        pathToTargetFolder(p),
+        toOriginFile(source, p),
+        toTargetFolder(source, targetFolder, p),
       );
     });
     watcher.on("add", function (p: string) {
@@ -138,7 +154,7 @@ export function task(
         );
         return;
       }
-      eventListener[suffix].onAdd(pathToOriginFile(p), pathToTargetFolder(p));
+      eventListener[suffix].onAdd(toOriginFile(source, p), toTargetFolder(source, targetFolder, p));
     });
     watcher.on("unlink", function (p: string) {
       p = p.replaceAll("\\", "/");
@@ -152,7 +168,7 @@ export function task(
         );
         return;
       }
-      eventListener[suffix].onUnlink(pathToTargetFile(p));
+      eventListener[suffix].onUnlink(toTargetFile(source, targetFolder, p));
     });
   }
 
@@ -190,38 +206,6 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   return task(source, pptOutputPath);
 }
 
-function relativePath(filePath: string): string {
-  const A = filePath.split("/");
-  const B = global.source.split("/");
-  let indexA = 0;
-  let indexB = 0;
-  while (indexA < A.length && A[indexA] === ".") indexA++;
-  while (indexB < B.length && B[indexB] === ".") indexB++;
-  while (indexA < A.length && indexB < B.length) {
-    if (A[indexA] !== B[indexB]) break;
-    indexA++;
-    indexB++;
-  }
-  return A.slice(indexA, A.length).join("/");
-}
-
-function relativePathWithoutFile(filePath: string): string {
-  const p = relativePath(filePath);
-  return p.split("/").slice(0, -1).join("/");
-}
-
-function pathToOriginFile(p: string): string {
-  return `${global.source}/${relativePath(p)}`;
-}
-
-function pathToTargetFile(p: string): string {
-  return `${global.targetFolder}/${relativePath(p)}`;
-}
-
-function pathToTargetFolder(p: string): string {
-  return `${global.targetFolder}/${relativePathWithoutFile(p)}`;
-}
-
 function copyAsset(
   srcPath: string,
   destFolderPath: string,
@@ -250,52 +234,14 @@ function cleanCPPFile(p: string): void {
   cleanFile(`${global.targetFolder}/std/${fileName}`);
 }
 
-function cleanAllFiles(p: string): void {
+function cleanDir(p: string, isRoot = true): void {
   if (!fs.existsSync(p)) return;
-  const files = fs.readdirSync(p);
-  for (const file of files) {
-    const filePath = `${p}/${file}`;
-    const stats = fs.statSync(filePath);
-    if (stats.isDirectory()) cleanAllFiles(filePath);
-    else fs.unlinkSync(filePath);
+  for (const entry of fs.readdirSync(p, { withFileTypes: true })) {
+    const full = `${p}/${entry.name}`;
+    if (entry.isDirectory()) cleanDir(full, false);
+    else fs.unlinkSync(full);
   }
-}
-
-function cleanAllEmptyDirectories(p: string, level = 0): void {
-  if (!fs.existsSync(p)) return;
-  const files = fs.readdirSync(p);
-  if (files.length > 0) {
-    let tempFile = 0;
-    for (const file of files) {
-      tempFile++;
-      cleanAllEmptyDirectories(`${p}/${file}`, 1);
-    }
-    if (tempFile === files.length && level !== 0) fs.rmdirSync(p);
-  } else if (level !== 0) {
-    fs.rmdirSync(p);
-  }
-}
-
-function walk(
-  directoryPath: string,
-  callback: (filePath: string) => void,
-): void {
-  const files = fs.readdirSync(directoryPath);
-  for (const file of files) {
-    const filePath = `${directoryPath}/${file}`;
-    const stats = fs.statSync(filePath);
-    if (stats.isFile()) callback(filePath);
-    else if (stats.isDirectory()) walk(filePath, callback);
-  }
-}
-
-function defineEventListener(
-  suffix: string,
-  listener: FileEventListener,
-): void {
-  for (const s of suffix.split("|")) {
-    eventListener[s] = listener;
-  }
+  if (!isRoot && fs.readdirSync(p).length === 0) fs.rmdirSync(p);
 }
 
 function getConfiguration() {

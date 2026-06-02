@@ -7,12 +7,24 @@ const DEFAULT_FONTS = ["Times New Roman", "Arial", "Consolas"];
 let parsed = false;
 let config: Record<string, unknown> | undefined;
 
+const CONFIG_PATH = path.join(import.meta.dirname, "..", "..", "..", "myconfig.json");
+
 const configHints: Record<string, string> = {
   animationOutputPath:
     "Default output path for animation (For example: C:/Users/xxx/Desktop/output)",
   pptOutputPath:
     "Default output path for PPT (For example: C:/Users/xxx/Desktop/output)",
 };
+
+function loadConfig(): void {
+  if (config !== undefined) return;
+  try {
+    config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+  } catch {
+    fs.writeFileSync(CONFIG_PATH, JSON.stringify({}, null, 4));
+    config = {};
+  }
+}
 
 export function parseInput(): void {
   if (parsed) return;
@@ -42,21 +54,7 @@ export function parseInput(): void {
 }
 
 export function parseConfig(key: string): string {
-  if (config === undefined) {
-    const configPath = path.join(
-      import.meta.dirname,
-      "..",
-      "..",
-      "..",
-      "myconfig.json",
-    );
-    try {
-      config = JSON.parse(fs.readFileSync(configPath, "utf8"));
-    } catch {
-      fs.writeFileSync(configPath, JSON.stringify({}, null, 4));
-      config = {};
-    }
-  }
+  loadConfig();
   if (!config || config[key] === undefined) {
     console.log(
       colors(
@@ -71,20 +69,7 @@ export function parseConfig(key: string): string {
 }
 
 export function parseConfigFonts(): string[] {
-  if (config === undefined) {
-    const configPath = path.join(
-      import.meta.dirname,
-      "..",
-      "..",
-      "..",
-      "myconfig.json",
-    );
-    try {
-      config = JSON.parse(fs.readFileSync(configPath, "utf8"));
-    } catch {
-      config = {};
-    }
-  }
+  loadConfig();
   const fonts = config?.["fonts"];
   return Array.isArray(fonts) ? (fonts as string[]) : DEFAULT_FONTS;
 }

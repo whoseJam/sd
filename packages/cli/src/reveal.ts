@@ -1,6 +1,8 @@
 import gulp from "gulp";
 import webpack from "webpack-stream";
 
+import { cssRule, tsLoaderRule } from "./webpack-base";
+
 export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
     .src("./packages/reveal/src/reveal.ts")
@@ -9,7 +11,8 @@ export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
 }
 
 function getConfiguration() {
-  const mode = global.d ? "development" : "production";
+  const isDev = global.d ? true : false;
+  const mode = isDev ? "development" : "production";
   const watch = global.w ? true : false;
   return {
     mode,
@@ -27,24 +30,8 @@ function getConfiguration() {
           test: /\.js$/,
           use: { loader: "babel-loader" },
         },
-        {
-          test: /\.ts$/,
-          use: {
-            loader: "ts-loader",
-            options: {
-              compilerOptions: {
-                allowJs: true,
-                target: "ES6",
-                module: "ESNext",
-                moduleResolution: "Node",
-                strict: false,
-                skipLibCheck: true,
-              },
-              transpileOnly: true,
-            },
-          },
-        },
-        { test: /\.css$/, use: ["style-loader", "css-loader"] },
+        tsLoaderRule(isDev),
+        cssRule,
       ],
     },
     resolve: {

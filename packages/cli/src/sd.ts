@@ -3,6 +3,8 @@ import path from "node:path";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
+import { cssRule, tsLoaderRule } from "./webpack-base";
+
 export default function sd(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
     .src(["./packages/core/src/sd.ts"])
@@ -29,35 +31,7 @@ function getConfiguration() {
       globalObject: "this",
     },
     module: {
-      rules: [
-        {
-          test: /\.(ts|tsx|js|jsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "ts-loader",
-            options: {
-              compilerOptions: {
-                allowJs: true,
-                jsx: "react",
-                esModuleInterop: true,
-                allowSyntheticDefaultImports: true,
-                target: "ES6",
-                module: "ESNext",
-                moduleResolution: "Node",
-                resolveJsonModule: true,
-                sourceMap: isDevelopment,
-                strict: false,
-                skipLibCheck: true,
-                allowDeclareFields: true,
-              },
-              transpileOnly: true,
-              experimentalFileCaching: true,
-              happyPackMode: false,
-            },
-          },
-        },
-        { test: /\.css$/, use: ["style-loader", "css-loader"] },
-      ],
+      rules: [tsLoaderRule(isDevelopment), cssRule],
     },
     performance: {
       hints: false,

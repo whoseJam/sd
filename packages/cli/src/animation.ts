@@ -8,6 +8,7 @@ import webpack from "webpack-stream";
 
 import { parseConfig, parseConfigFonts, parseInput } from "./parser";
 import { copyFile, copyVendorAssets, validateJSFile } from "./utils";
+import { cssRule, tsLoaderRule } from "./webpack-base";
 
 function truncateAtStackTrace(errorMessage: string): string {
   const index = errorMessage.indexOf("    at");
@@ -60,7 +61,8 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
 }
 
 function getConfiguration(file: string, targetFolder: string) {
-  const mode = "development";
+  const isDev = global.d ? true : false;
+  const mode = isDev ? "development" : "production";
   const watch = global.w ? true : false;
   // Asset base URL. Priority:
   //   1. -d <domain> — remote deploy, base is the absolute URL
@@ -95,34 +97,7 @@ function getConfiguration(file: string, targetFolder: string) {
     },
     plugins,
     module: {
-      rules: [
-        {
-          test: /\.(ts|tsx|js|jsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "ts-loader",
-            options: {
-              compilerOptions: {
-                allowJs: true,
-                jsx: "react",
-                esModuleInterop: true,
-                allowSyntheticDefaultImports: true,
-                target: "ES6",
-                module: "ESNext",
-                moduleResolution: "Node",
-                resolveJsonModule: true,
-                sourceMap: mode === "development",
-                strict: false,
-                skipLibCheck: true,
-                allowDeclareFields: true,
-              },
-              transpileOnly: true,
-              experimentalFileCaching: true,
-            },
-          },
-        },
-        { test: /\.css$/, use: ["style-loader", "css-loader"] },
-      ],
+      rules: [tsLoaderRule(isDev), cssRule],
     },
     performance: {
       hints: false,
