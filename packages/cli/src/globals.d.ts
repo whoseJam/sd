@@ -29,8 +29,8 @@ declare global {
   // -entry <relpath> (project-rooted ppt: which subdir is the deck entry)
   var entry: string | undefined;
 
-  // task self-flags
+  // set by `gulp sd` so ppt/animation/animation-group skip re-copying dist/sd.js
   var sd: boolean | undefined;
+  // set by `gulp reveal` so ppt skips re-copying dist/myreveal.js
   var reveal: boolean | undefined;
-  var theme: boolean | undefined;
 }

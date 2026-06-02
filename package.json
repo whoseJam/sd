@@ -10,7 +10,7 @@
   },
   "bin": {
     "sd-animation": "./packages/cli/src/animation.ts",
-    "sd-animationGroup": "./packages/cli/src/animationGroup.ts",
+    "sd-animation-group": "./packages/cli/src/animation-group.ts",
     "sd-config": "./packages/cli/src/config.ts",
     "sd-ppt": "./packages/cli/src/ppt.ts"
   },

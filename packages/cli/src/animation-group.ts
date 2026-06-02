@@ -93,7 +93,7 @@ export function launch(selfLaunch = true): void {
     console.log(
       colors(
         "cyan",
-        "Usage: animationGroup -i <source folder path> [-o <target folder path>]",
+        "Usage: animation-group -i <source folder path> [-o <target folder path>]",
       ),
     );
     process.exit();

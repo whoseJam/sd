@@ -1,0 +1,44 @@
+$main-font: 'Roboto', 'San Francisco', helvetica, arial, sans-serif;
+$heading-font: 'Maitree', times, serif;
+$code-font: 'Cousine', monospace;
+$main-color: #333;
+$heading-color: $main-color;
+$bg-color: #f7f9fb;
+$link-color: #2a76dd;
+
+html,
+body,
+input,
+select,
+textarea {
+  font-family: $main-font;
+  color: $main-color;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $heading-font;
+  color: $heading-color;
+}
+
+pre,
+code {
+  font-family: $code-font;
+}
+
+a {
+  color: $link-color;
+}
+
+#webslides > section {
+  background-color: $bg-color;
+}
+
+#webslides sd-animation {
+  display: block;
+  margin: 1rem auto;
+}

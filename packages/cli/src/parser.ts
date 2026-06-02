@@ -12,10 +12,6 @@ const configHints: Record<string, string> = {
     "Default output path for animation (For example: C:/Users/xxx/Desktop/output)",
   pptOutputPath:
     "Default output path for PPT (For example: C:/Users/xxx/Desktop/output)",
-  releaseOutputPath:
-    "Default output path for release package (For example: C:/Users/xxx/Desktop/release)",
-  ragOutputPath:
-    "Default output path for RAG text files (For example: C:/Users/xxx/Desktop/rag)",
 };
 
 export function parseInput(): void {

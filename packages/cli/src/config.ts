@@ -7,7 +7,6 @@ import path from "node:path";
 const configKeys = [
   "animationOutputPath",
   "pptOutputPath",
-  "releaseOutputPath",
 ];
 
 const configHints: Record<string, string> = {

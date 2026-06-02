@@ -11,6 +11,7 @@ import webpack from "webpack-stream";
 
 import * as animation from "./animation";
 import { parseConfig, parseInput } from "./parser";
+import theme from "./theme";
 import { copyVendorAssets } from "./utils";
 
 const require = createRequire(import.meta.url);
@@ -89,6 +90,9 @@ export function task(
   cleanAllFiles(cleanRoot);
   cleanAllEmptyDirectories(cleanRoot);
   copyVendorAssets(global.projectRoot, targetFolder);
+  if (!global.framework || global.framework === "reveal") {
+    theme(path.join(targetFolder, "vendor", "themes"));
+  }
   walk(source, (p: string) => {
     const suffix = p.split(".").slice(-1)[0];
     if (!eventListener[suffix] || !eventListener[suffix].onAdd) {
@@ -364,6 +368,10 @@ function getConfiguration() {
           },
         },
         { test: /\.css$/, use: ["style-loader", "css-loader"] },
+        {
+          test: /\.scss$/,
+          use: ["style-loader", "css-loader", "sass-loader"],
+        },
       ],
     },
     resolve: {

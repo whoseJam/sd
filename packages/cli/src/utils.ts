@@ -4,6 +4,7 @@ import path from "node:path";
 
 export function copyFile(src: string, dest: string): void {
   const name = path.basename(src);
+  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
   console.log("copy ", src, "to ", `${dest}/${name}`);
   fs.copyFileSync(src, `${dest}/${name}`);
 }
@@ -31,6 +32,7 @@ export function copyVendorAssets(projectRoot: string, dest: string): void {
     ".npmignore",
     ".gitignore",
     ".travis.yml",
+    "themes",
   ]);
   const walk = (s: string, d: string): void => {
     if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });

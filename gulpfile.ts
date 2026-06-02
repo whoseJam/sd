@@ -2,7 +2,7 @@ import gulp from "gulp";
 import { exec } from "node:child_process";
 
 import * as animation from "./packages/cli/src/animation";
-import * as animationGroup from "./packages/cli/src/animationGroup";
+import * as animationGroup from "./packages/cli/src/animation-group";
 import element from "./packages/cli/src/element";
 import * as parser from "./packages/cli/src/parser";
 import * as ppt from "./packages/cli/src/ppt";
@@ -28,7 +28,6 @@ gulp.task("reveal", () => {
 });
 
 gulp.task("theme", async () => {
-  global.theme = true;
   const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
   return theme(pptOutputPath);
 });
@@ -41,7 +40,7 @@ gulp.task("animation", () => {
   return animation.launch(false);
 });
 
-gulp.task("animationGroup", (done) => {
+gulp.task("animation-group", (done) => {
   animationGroup.launch(false);
   done();
 });

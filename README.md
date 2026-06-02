@@ -113,10 +113,10 @@ gulp ppt -i ./example/ppt/队列 -domain http://localhost:8081
 
 # 动画组任务
 
-使用 `animationGroup` 来生成一组动画，下面以动画组指代一组动画。这条命令的意义在于，当编写完大量动画后，可以用一条指令完成动画编译任务，而不需要重复多次使用 `animation` 指令。相关指令如下：
+使用 `animation-group` 来生成一组动画，下面以动画组指代一组动画。这条命令的意义在于，当编写完大量动画后，可以用一条指令完成动画编译任务，而不需要重复多次使用 `animation` 指令。相关指令如下：
 
 ```
-gulp animationGroup -i <动画组所在目录>
+gulp animation-group -i <动画组所在目录>
 ```
 
 ### 配置项
@@ -124,29 +124,29 @@ gulp animationGroup -i <动画组所在目录>
 - `-i`：指定动画组所在目录，这是必填项。
 
 ```shell
-gulp animationGroup -i ./example/animation
+gulp animation-group -i ./example/animation
 ```
 
 - `-o`：指定输出路径，如果没有指定，则使用 `animationOutputPath` 作为默认输出路径。
 
 ```shell
-gulp animationGroup -i ./example/animation -o ../output
+gulp animation-group -i ./example/animation -o ../output
 ```
 
 - `-w`：是否监听动画文件变动。默认不开启。开启监听后，此任务会变成长期任务，动画文件一旦改变，则输出会自动改变。这在编写动画文件、做调试的时候很有用。
 
 ```shell
-gulp animationGroup -i ./example/animation -w
+gulp animation-group -i ./example/animation -w
 ```
 
 - `-l`：使用本地的动画库。默认不使用，而是会从作者的网站上加载动画库，这样的好处是可以拉取到最新版的动画库，坏处是第一次加载略慢。使用本地的动画库则需要自己把动画库挂到 `localhost:8080` 上，通过 `http://localhost:8080/sd.js` 进行访问。
 
 ```shell
-gulp animationGroup -i ./example/animation -l
+gulp animation-group -i ./example/animation -l
 ```
 
 - `-domain`：有时候我们既不希望使用本地的动画库，也不希望使用作者网站上的动画库，而是希望自己指定动画库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
 
 ```shell
-gulp animationGroup -i ./example/animation -domain http://localhost:8081
+gulp animation-group -i ./example/animation -domain http://localhost:8081
 ```

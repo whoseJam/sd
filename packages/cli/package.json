@@ -2,12 +2,13 @@
   "name": "@sd/cli",
   "version": "0.0.1",
   "private": true,
-  "description": "Build tasks and CLI entry points (sd-animation, sd-animationGroup, sd-ppt, sd-config)",
+  "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-config)",
   "license": "ISC",
   "dependencies": {
     "@sd/impress": "workspace:*",
     "@sd/reveal": "workspace:*",
-    "@sd/webslides": "workspace:*"
+    "@sd/webslides": "workspace:*",
+    "sass-loader": "^17.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",
@@ -26,7 +27,7 @@
     "gulp-strip-comments": "^2.6.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "html-webpack-plugin": "^5.6.0",
-    "sass": "^1.77.6",
+    "sass": "^1.100.0",
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",

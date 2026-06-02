@@ -11,7 +11,7 @@ packages/
   core/      @sd/core     Rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)
   reveal/    @sd/reveal   reveal.js integration layer (plugins, MathJax, theme SCSS)
   element/   @sd/element  <sd-animation> custom element that wraps an iframe (host-side embedding)
-  cli/       @sd/cli      Build tasks + CLI entries (sd-animation, sd-animationGroup, sd-ppt, sd-config)
+  cli/       @sd/cli      Build tasks + CLI entries (sd-animation, sd-animation-group, sd-ppt, sd-config)
   assets/    @sd/assets   Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
 examples/
   animations/  Single-animation demo scripts (former unit/)
@@ -36,8 +36,8 @@ gulp animation -i <file> -w                           # watch mode
 gulp animation -i <file> -l                           # use local sd.js (assumes it's at pptOutputPath/sd.js)
 
 # Animation group: walk a directory and bundle each .js/.ts entry
-gulp animationGroup -i <directory> -o <output-dir>
-gulp animationGroup -i <directory> -w
+gulp animation-group -i <directory> -o <output-dir>
+gulp animation-group -i <directory> -w
 
 # Presentation: bundle a deck directory containing ppt.html and per-slide animation scripts
 gulp ppt -i <deck-dir> -o <output-dir>
@@ -82,7 +82,7 @@ gulp serve -p 8080
 - Each gulp task (`sd.js`, `reveal.js`, `element.js`, `animation.js`, `ppt.js`, `theme.js`, ...) wraps a webpack-stream pipeline.
 - `parser.js` holds CLI arg parsing and `myconfig.json` IO.
 - HTML templates `aniIndex.html` and `pptIndex.html` use a single `<%= base %>` placeholder (".") for self-contained local builds, or the `-d <domain>` value for remote deploys.
-- The CLI bin scripts (`#!/usr/bin/env node` on `animation.js`, `ppt.js`, `animationGroup.js`, `config.js`) are exposed via the root `package.json#bin` as `sd-animation` etc.
+- The CLI bin scripts (`#!/usr/bin/env node` on `animation.js`, `ppt.js`, `animation-group.js`, `config.js`) are exposed via the root `package.json#bin` as `sd-animation` etc.
 
 ## Build Flow
 

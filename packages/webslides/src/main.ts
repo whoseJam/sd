@@ -2,8 +2,7 @@ import "@sd/element";
 import "webslides";
 import "webslides/static/css/webslides.css";
 import "webslides/static/css/svg-icons.css";
-
-import "./webslides.css";
+import "./webslides.scss";
 
 declare global {
   interface Window {
