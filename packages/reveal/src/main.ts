@@ -1,7 +1,7 @@
-import includeHTML from "./include";
+import { revealBase } from "./config";
 import "./plugin/reset.css";
 import "./plugin/reveal.css";
-import { revealBase } from "./config";
+import includeHTML from "./include";
 
 declare global {
   interface Window {

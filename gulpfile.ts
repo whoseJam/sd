@@ -1,6 +1,6 @@
 import gulp from "gulp";
-import fs from "node:fs";
 import { exec } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 
 import * as animation from "./packages/cli/src/animation";
@@ -59,13 +59,10 @@ gulp.task("ppt", () => {
 gulp.task("serve", (done) => {
   const port = global.p || "8080";
   const root = global.o ?? parser.parseConfig("pptOutputPath");
-  exec(
-    `live-server --cors --port=${port} "${root}"`,
-    function (error) {
-      if (error) console.log(error);
-      done();
-    },
-  );
+  exec(`live-server --cors --port=${port} "${root}"`, function (error) {
+    if (error) console.log(error);
+    done();
+  });
 });
 
 function streamDone(stream: NodeJS.ReadWriteStream): Promise<void> {

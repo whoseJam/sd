@@ -1,4 +1,5 @@
 import type { RevealApi, RevealPlugin } from "../types";
+
 import { revealBase } from "../config";
 
 interface MathJaxGlobal {

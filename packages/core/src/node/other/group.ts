@@ -41,7 +41,8 @@ export class Group extends SDSVGNode {
 
   insertBefore(child: SDNode | RenderNode, referenced: SDNode | RenderNode) {
     if (child instanceof SDNode) child.parent = this;
-    const childNode = child instanceof SDNode ? child.getRootRenderNode() : child;
+    const childNode =
+      child instanceof SDNode ? child.getRootRenderNode() : child;
     const referencedNode =
       referenced instanceof SDNode
         ? referenced.getRootRenderNode()

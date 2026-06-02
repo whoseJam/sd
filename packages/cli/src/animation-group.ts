@@ -22,7 +22,12 @@ export function task(source: string, targetFolder: string): Promise<void> {
   walk(source, (p: string) => {
     const suffix = p.split(".").slice(-1)[0];
     if (suffix !== "js" && suffix !== "ts") return;
-    promises.push(onAddEntry(toOriginFile(source, p), toTargetFolder(source, targetFolder, p)));
+    promises.push(
+      onAddEntry(
+        toOriginFile(source, p),
+        toTargetFolder(source, targetFolder, p),
+      ),
+    );
   });
 
   if (global.w) {
@@ -31,7 +36,10 @@ export function task(source: string, targetFolder: string): Promise<void> {
       p = p.replaceAll("\\", "/");
       const suffix = p.split(".").slice(-1)[0];
       if (suffix !== "js" && suffix !== "ts") return;
-      onAddEntry(toOriginFile(source, p), toTargetFolder(source, targetFolder, p));
+      onAddEntry(
+        toOriginFile(source, p),
+        toTargetFolder(source, targetFolder, p),
+      );
     });
   }
 

@@ -26,6 +26,12 @@ export function tsLoaderRule(isDev: boolean) {
   };
 }
 
-export const cssRule = { test: /\.css$/, use: ["style-loader", "css-loader"] } as const;
-export const scssRule = { test: /\.scss$/, use: ["style-loader", "css-loader", "sass-loader"] } as const;
+export const cssRule = {
+  test: /\.css$/,
+  use: ["style-loader", "css-loader"],
+} as const;
+export const scssRule = {
+  test: /\.scss$/,
+  use: ["style-loader", "css-loader", "sass-loader"],
+} as const;
 export const perfHints = { hints: false } as const;

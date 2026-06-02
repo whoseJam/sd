@@ -7,7 +7,13 @@ const DEFAULT_FONTS = ["Times New Roman", "Arial", "Consolas"];
 let parsed = false;
 let config: Record<string, unknown> | undefined;
 
-const CONFIG_PATH = path.join(import.meta.dirname, "..", "..", "..", "myconfig.json");
+const CONFIG_PATH = path.join(
+  import.meta.dirname,
+  "..",
+  "..",
+  "..",
+  "myconfig.json",
+);
 
 const configHints: Record<string, string> = {
   animationOutputPath:

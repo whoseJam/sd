@@ -4,10 +4,7 @@ import colors from "colors-console";
 import fs from "node:fs";
 import path from "node:path";
 
-const configKeys = [
-  "animationOutputPath",
-  "pptOutputPath",
-];
+const configKeys = ["animationOutputPath", "pptOutputPath"];
 
 const configHints: Record<string, string> = {
   animationOutputPath:

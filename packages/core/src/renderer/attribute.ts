@@ -210,14 +210,16 @@ export function setAttribute(
   const aliasKey = attribute.aliasKey;
   if (isStyleKey(type, aliasKey)) {
     if (serialized !== undefined) typedElement.style[aliasKey] = serialized;
-    else if (attribute.default) typedElement.style[aliasKey] = attribute.default;
+    else if (attribute.default)
+      typedElement.style[aliasKey] = attribute.default;
     else typedElement.style.removeProperty(aliasKey);
     if (aliasKey === "transform-origin") {
       typedElement.style["transform-box"] = "fill-box";
     }
   } else {
     if (serialized !== undefined) element.setAttribute(aliasKey, serialized);
-    else if (attribute.default) element.setAttribute(aliasKey, attribute.default);
+    else if (attribute.default)
+      element.setAttribute(aliasKey, attribute.default);
     else element.removeAttribute(aliasKey);
   }
 }

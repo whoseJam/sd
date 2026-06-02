@@ -44,7 +44,9 @@ function setter(
 function interpCreator<T = any>(
   fn: (object: any, key: string) => InterpObject,
 ): InterpKind<T> {
-  return Object.assign(fn, { [INTERP_CREATOR]: true as const }) as InterpKind<T>;
+  return Object.assign(fn, {
+    [INTERP_CREATOR]: true as const,
+  }) as InterpKind<T>;
 }
 
 export type LazyInterpKind<T> = LazyInterpFunction & {
@@ -54,7 +56,9 @@ export type LazyInterpKind<T> = LazyInterpFunction & {
 export function lazyInterp<T = any>(
   fn: (l: number, r: number, source: T, target: T) => void,
 ): LazyInterpKind<T> {
-  return Object.assign(fn, { [LAZY_INTERP]: true as const }) as LazyInterpKind<T>;
+  return Object.assign(fn, {
+    [LAZY_INTERP]: true as const,
+  }) as LazyInterpKind<T>;
 }
 
 export const isInterpCreator = (x: unknown): x is InterpCreator =>

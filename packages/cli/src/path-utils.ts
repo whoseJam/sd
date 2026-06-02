@@ -5,13 +5,21 @@ export function relativeTo(source: string, filePath: string): string {
   return path.relative(source, filePath).replaceAll("\\", "/");
 }
 
-export function toTargetFolder(source: string, target: string, filePath: string): string {
+export function toTargetFolder(
+  source: string,
+  target: string,
+  filePath: string,
+): string {
   const rel = relativeTo(source, filePath);
   const dir = path.dirname(rel);
   return dir === "." ? target : `${target}/${dir}`;
 }
 
-export function toTargetFile(source: string, target: string, filePath: string): string {
+export function toTargetFile(
+  source: string,
+  target: string,
+  filePath: string,
+): string {
   return `${target}/${relativeTo(source, filePath)}`;
 }
 
