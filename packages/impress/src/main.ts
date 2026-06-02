@@ -77,30 +77,9 @@ function findIncludeHTMLRequest(): void {
     loadFromURL(element, file);
     return;
   }
-  // No more includes — assign default geometry so a minimal deck (just
-  // <div class="step">) still navigates, then init impress.
-  assignDefaultGeometry();
   if (initialized) return;
   initialized = true;
   window.impress().init();
-}
-
-function assignDefaultGeometry(): void {
-  const root = document.getElementById("impress");
-  if (!root) return;
-  const steps = root.querySelectorAll<HTMLElement>(".step");
-  let x = 0;
-  steps.forEach((step) => {
-    if (
-      step.dataset.x === undefined &&
-      step.dataset.y === undefined &&
-      step.dataset.rotate === undefined &&
-      step.dataset.scale === undefined
-    ) {
-      step.dataset.x = String(x);
-      x += 1200;
-    }
-  });
 }
 
 window.addEventListener("load", () => {

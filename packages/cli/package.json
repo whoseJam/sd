@@ -6,7 +6,6 @@
   "license": "ISC",
   "dependencies": {
     "@sd/impress": "workspace:*",
-    "@sd/plain": "workspace:*",
     "@sd/reveal": "workspace:*",
     "@sd/webslides": "workspace:*"
   },

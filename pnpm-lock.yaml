@@ -46,9 +46,6 @@ importers:
       '@sd/impress':
         specifier: workspace:*
         version: link:../impress
-      '@sd/plain':
-        specifier: workspace:*
-        version: link:../plain
       '@sd/reveal':
         specifier: workspace:*
         version: link:../reveal
@@ -167,12 +164,6 @@ importers:
       dagre:
         specifier: ^0.8.5
         version: 0.8.5
-
-  packages/plain:
-    dependencies:
-      '@sd/element':
-        specifier: workspace:*
-        version: link:../element
 
   packages/reveal:
     dependencies:
