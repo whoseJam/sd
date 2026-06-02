@@ -1,7 +1,16 @@
+import type { SDSVGNodeAttributes } from "@/node/svg-node";
+
+import { Interp } from "@/animate/interp";
 import { Context } from "@/animate/context";
 import { SDSVGNode } from "@/node/svg-node";
 import { Check } from "@/utility/check";
 import { Color as C, SDAllColor, SDPacketColor } from "@/utility/color";
+
+export type BasePathAttributes = SDSVGNodeAttributes & {
+  markerStart: string;
+  markerMid: string;
+  markerEnd: string;
+};
 
 const BASE_PATH_ATTRIBUTES = {
   fill: C.white,
@@ -17,28 +26,48 @@ const BASE_PATH_ATTRIBUTES = {
 };
 
 export abstract class BasePath extends SDSVGNode {
+  declare attributes: BasePathAttributes;
+
   getMarkerStart(): string {
-    return this.vars.markerStart;
+    return this.attributes.markerStart;
   }
   setMarkerStart(marker: string): this {
     const marker_ = marker !== "" ? `url(#${marker})` : "";
-    this.vars.markerStart = marker_;
+    this.triggerAttributeChanged(
+      this.renderer,
+      "markerStart",
+      marker_,
+      this.attributes.markerStart,
+      Interp.emptyInterp,
+    );
     return this;
   }
   getMarkerMid(): string {
-    return this.vars.markerMid;
+    return this.attributes.markerMid;
   }
   setMarkerMid(marker: string): this {
     const marker_ = marker !== "" ? `url(#${marker})` : "";
-    this.vars.markerMid = marker_;
+    this.triggerAttributeChanged(
+      this.renderer,
+      "markerMid",
+      marker_,
+      this.attributes.markerMid,
+      Interp.emptyInterp,
+    );
     return this;
   }
-  setMarkerEnd(): string {
-    return this.vars.markerEnd;
+  getMarkerEnd(): string {
+    return this.attributes.markerEnd;
   }
-  getMarkerEnd(marker: string): this {
+  setMarkerEnd(marker: string): this {
     const marker_ = marker !== "" ? `url(#${marker})` : "";
-    this.vars.markerEnd = marker_;
+    this.triggerAttributeChanged(
+      this.renderer,
+      "markerEnd",
+      marker_,
+      this.attributes.markerEnd,
+      Interp.emptyInterp,
+    );
     return this;
   }
 

@@ -12,9 +12,9 @@ import { SDSVGNode } from "@/node/svg-node";
 import { Color as C } from "@/utility/color";
 
 import type { TransformOrigin } from "../node";
-import type { SDSVGNodeAttributes } from "../svg-node";
+import type { BasePathAttributes } from "@/node/path/base-path";
 
-export type LineAttributes = SDSVGNodeAttributes & {
+export type LineAttributes = BasePathAttributes & {
   x1: number;
   y1: number;
   x2: number;

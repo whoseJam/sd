@@ -1,7 +1,7 @@
 import type { SDFilter } from "@/node/filter/filter";
 import type { TransformOrigin } from "@/node/node";
 import type { Group } from "@/node/other/group";
-import type { SDSVGNodeAttributes } from "@/node/svg-node";
+import type { BasePathAttributes } from "@/node/path/base-path";
 import type { StrokeLineCap, StrokeLineJoin } from "@/node/svg-node";
 import type { RenderNode } from "@/renderer/render-node";
 import type { SDColor } from "@/utility/color";
@@ -13,7 +13,7 @@ import { PathEngine } from "@/node/path/path-engine";
 import { SDSVGNode } from "@/node/svg-node";
 import { Color as C } from "@/utility/color";
 
-export type PathAttributes = SDSVGNodeAttributes & {
+export type PathAttributes = BasePathAttributes & {
   d: string;
 };
 
