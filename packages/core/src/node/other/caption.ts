@@ -1,8 +1,19 @@
+import type { SDNodeAttributes } from "@/node/node";
 import type { Group } from "@/node/other/group";
 
 import { Interp } from "@/animate/interp";
 import { SDHTMLNode } from "@/node/html-node";
 import { RenderNode } from "@/renderer/render-node";
+
+export type CaptionAttributes = SDNodeAttributes & {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  textOpacity: number;
+  primaryText: string;
+  secondaryText: string;
+};
 
 class CaptionObject extends RenderNode {
   caption: Caption;
@@ -75,13 +86,9 @@ class CaptionObject extends RenderNode {
 }
 
 export class Caption extends SDHTMLNode {
-  /* model fields:
+  declare attributes: CaptionAttributes;
+  caption!: CaptionObject;
 
-        textOpacity: number;
-        primaryText: string;
-        secondaryText: string;
-        caption: CaptionObject;
-        */
   constructor(args?: {
     targetNode?: Group;
     x?: number;
@@ -95,20 +102,30 @@ export class Caption extends SDHTMLNode {
   }) {
     super();
 
-    this.textOpacity = 1;
-    this.primaryText = " ";
-    this.secondaryText = " ";
+    const x = args?.x ?? 0;
+    const y = args?.y ?? 0;
+    const width = args?.width ?? 800;
+    const height = args?.height ?? 80;
+    this.attributes = {
+      ...this.attributes,
+      x,
+      y,
+      width,
+      height,
+      textOpacity: 1,
+      primaryText: " ",
+      secondaryText: " ",
+    };
 
     const [foreign, container] = this.createHTMLNode("div", {
-      x: args?.x ?? 0,
-      y: args?.y ?? 0,
-      width: args?.width ?? 800,
-      height: args?.height ?? 80,
+      x,
+      y,
+      width,
+      height,
     });
-    const caption = new CaptionObject(this, container);
     this.foreign = foreign;
     this.renderer = container;
-    this.caption = caption;
+    this.caption = new CaptionObject(this, container);
 
     if (args?.cx !== undefined) this.setCx(args.cx);
     if (args?.cy !== undefined) this.setCy(args.cy);
@@ -119,7 +136,7 @@ export class Caption extends SDHTMLNode {
   }
 
   getX(): number {
-    return this.x;
+    return this.attributes.x;
   }
 
   setX(x: number) {
@@ -127,7 +144,7 @@ export class Caption extends SDHTMLNode {
       this.foreign,
       "x",
       x,
-      this.x,
+      this.attributes.x,
       Interp.numberInterp,
     );
   }
@@ -141,7 +158,7 @@ export class Caption extends SDHTMLNode {
   }
 
   getY(): number {
-    return this.y;
+    return this.attributes.y;
   }
 
   setY(y: number) {
@@ -149,7 +166,7 @@ export class Caption extends SDHTMLNode {
       this.foreign,
       "y",
       y,
-      this.y,
+      this.attributes.y,
       Interp.numberInterp,
     );
   }
@@ -163,7 +180,7 @@ export class Caption extends SDHTMLNode {
   }
 
   getWidth(): number {
-    return this.width;
+    return this.attributes.width;
   }
 
   setWidth(width: number) {
@@ -171,7 +188,7 @@ export class Caption extends SDHTMLNode {
       this.foreign,
       "width",
       width,
-      this.width,
+      this.attributes.width,
       Interp.numberInterp,
     );
   }
@@ -185,7 +202,7 @@ export class Caption extends SDHTMLNode {
   }
 
   getHeight(): number {
-    return this.height;
+    return this.attributes.height;
   }
 
   setHeight(height: number) {
@@ -193,7 +210,7 @@ export class Caption extends SDHTMLNode {
       this.foreign,
       "height",
       height,
-      this.height,
+      this.attributes.height,
       Interp.numberInterp,
     );
   }
@@ -223,7 +240,7 @@ export class Caption extends SDHTMLNode {
   }
 
   getTextOpacity() {
-    return this.textOpacity;
+    return this.attributes.textOpacity;
   }
 
   setTextOpacity(opacity: number): this {
@@ -231,35 +248,35 @@ export class Caption extends SDHTMLNode {
       this.caption,
       "textOpacity",
       opacity,
-      this.textOpacity,
+      this.attributes.textOpacity,
       Interp.numberInterp,
     );
   }
 
   getPrimaryText(): string {
-    return this.primaryText;
+    return this.attributes.primaryText;
   }
 
-  setPrimaryText(text?: string) {
+  setPrimaryText(text: string) {
     return this.triggerAttributeChanged(
       this.caption,
       "primaryText",
       text,
-      this.primaryText,
+      this.attributes.primaryText,
       Interp.stringInterp,
     );
   }
 
   getSecondaryText(): string {
-    return this.secondaryText;
+    return this.attributes.secondaryText;
   }
 
-  setSecondaryText(text?: string) {
+  setSecondaryText(text: string) {
     return this.triggerAttributeChanged(
       this.caption,
       "secondaryText",
       text,
-      this.secondaryText,
+      this.attributes.secondaryText,
       Interp.stringInterp,
     );
   }
