@@ -20,13 +20,12 @@ export type LazyInterpFunction = ((
 export type InterpCreator = ((object: any, key: string) => InterpObject) & {
   [INTERP_CREATOR]: true;
 };
-// Phantom-typed wrapper. fromType / toType exist only at the type level
-// so `pushAction` can infer from/to types from the interp argument —
+// Phantom-typed wrapper. valueType exists only at the type level so
+// `pushAction` can infer from/to types from the interp argument —
 // passing fill: 5 with colorInterp becomes a TS error instead of a
 // runtime crash inside Color.toRGBA.
-export type InterpKind<TSource, TTarget = TSource> = InterpCreator & {
-  readonly fromType?: TSource;
-  readonly toType?: TTarget;
+export type InterpKind<T> = InterpCreator & {
+  readonly valueType?: T;
 };
 type InitFunction = (this: Action) => void;
 type BeforeInterpFunction = (this: Action) => void;
@@ -43,27 +42,20 @@ function setter(
   };
 }
 
-function interpCreator<S = any, T = S>(
+function interpCreator<T = any>(
   fn: (object: any, key: string) => InterpObject,
-): InterpKind<S, T> {
-  return Object.assign(fn, { [INTERP_CREATOR]: true as const }) as InterpKind<
-    S,
-    T
-  >;
+): InterpKind<T> {
+  return Object.assign(fn, { [INTERP_CREATOR]: true as const }) as InterpKind<T>;
 }
 
-export type LazyInterpKind<TSource, TTarget = TSource> = LazyInterpFunction & {
-  readonly fromType?: TSource;
-  readonly toType?: TTarget;
+export type LazyInterpKind<T> = LazyInterpFunction & {
+  readonly valueType?: T;
 };
 
-export function lazyInterp<S = any, T = S>(
-  fn: (l: number, r: number, source: S, target: T) => void,
-): LazyInterpKind<S, T> {
-  return Object.assign(fn, { [LAZY_INTERP]: true as const }) as LazyInterpKind<
-    S,
-    T
-  >;
+export function lazyInterp<T = any>(
+  fn: (l: number, r: number, source: T, target: T) => void,
+): LazyInterpKind<T> {
+  return Object.assign(fn, { [LAZY_INTERP]: true as const }) as LazyInterpKind<T>;
 }
 
 export const isInterpCreator = (x: unknown): x is InterpCreator =>

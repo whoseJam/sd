@@ -141,18 +141,18 @@ if (typeof requestAnimationFrame !== "undefined")
 // and `to` are inferred from `interp` so colorInterp + from: 5 is a TS
 // error rather than a runtime crash. Direct `new Action(...)` callers
 // remain valid during the migration but should be replaced over time.
-interface PushActionOptions<I extends InterpKind<unknown, unknown>> {
+interface PushActionOptions<I extends InterpKind<unknown>> {
   entity: SDNode | RenderNode;
   key: string;
   l: number;
   r: number;
-  from: NonNullable<I["fromType"]>;
-  to: NonNullable<I["toType"]>;
+  from: NonNullable<I["valueType"]>;
+  to: NonNullable<I["valueType"]>;
   interp: I;
   timing: (t: number) => number;
 }
 
-export function pushAction<I extends InterpKind<unknown, unknown>>(
+export function pushAction<I extends InterpKind<unknown>>(
   options: PushActionOptions<I>,
 ): void {
   Animate.push(
@@ -172,18 +172,18 @@ export function pushAction<I extends InterpKind<unknown, unknown>>(
 // Sibling of pushAction for lazy interps — the interp is the callback
 // itself (evaluated by the scheduler at endpoint), and source/target
 // types are still tied to the interp via the LazyInterpKind phantoms.
-interface PushLazyActionOptions<I extends LazyInterpKind<unknown, unknown>> {
+interface PushLazyActionOptions<I extends LazyInterpKind<unknown>> {
   entity: SDNode | RenderNode;
   key: string;
   l: number;
   r: number;
-  from: NonNullable<I["fromType"]>;
-  to: NonNullable<I["toType"]>;
+  from: NonNullable<I["valueType"]>;
+  to: NonNullable<I["valueType"]>;
   interp: I;
   timing: (t: number) => number;
 }
 
-export function pushLazyAction<I extends LazyInterpKind<unknown, unknown>>(
+export function pushLazyAction<I extends LazyInterpKind<unknown>>(
   options: PushLazyActionOptions<I>,
 ): void {
   Animate.push(
