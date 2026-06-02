@@ -4,10 +4,8 @@ import { SDSVGNode } from "@/node/svg-node";
 import { RenderNode } from "@/renderer/render-node";
 
 export class Marker extends SDSVGNode {
-  /* model fields:
+  marker!: RenderNode;
 
-        marker: RenderNode;
-        */
   constructor() {
     super();
 
