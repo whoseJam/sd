@@ -29,8 +29,7 @@ function locateUnmatchedSubtext(
       }
     }
   }
-  console.warn(pattern);
-  throw new Error("Subtext Not Found");
+  throw new Error(`Subtext not found: ${JSON.stringify(pattern)}`);
 }
 
 export function matchSubtext(
@@ -49,8 +48,7 @@ export function matchSubtext(
       remaining--;
     }
   }
-  console.warn(pattern);
-  throw new Error("Subtext Not Found");
+  throw new Error(`Subtext not found: ${JSON.stringify(pattern)}`);
 }
 
 export function mapSubtextsBetweenViews(
