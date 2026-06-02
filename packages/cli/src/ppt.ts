@@ -245,8 +245,9 @@ function cleanDir(p: string, isRoot = true): void {
 }
 
 function getConfiguration() {
-  const mode = global.d ? "development" : "production";
-  const watch = global.w ? true : false;
+  const isDev = global.d ? true : false;
+  const mode = isDev ? "development" : "production";
+  const isWatch = global.w ? true : false;
   const entry = global.entry || ".";
   // Asset base URL: a remote deploy passes -d https://your-domain; otherwise the
   // output is self-contained and the framework wrapper at <out>/<entry>/index.html
@@ -283,7 +284,7 @@ function getConfiguration() {
   const outputPrefix = entry === "." ? "" : `${entry}/`;
   return {
     mode,
-    watch,
+    watch: isWatch,
     plugins,
     entry: host.entry,
     output: {

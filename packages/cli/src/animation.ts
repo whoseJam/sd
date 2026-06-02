@@ -63,7 +63,7 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
 function getConfiguration(file: string, targetFolder: string) {
   const isDev = global.d ? true : false;
   const mode = isDev ? "development" : "production";
-  const watch = global.w ? true : false;
+  const isWatch = global.w ? true : false;
   // Asset base URL. Priority:
   //   1. -d <domain> — remote deploy, base is the absolute URL
   //   2. animation is bundled inside a deck — base walks up from the
@@ -91,7 +91,7 @@ function getConfiguration(file: string, targetFolder: string) {
   ];
   return {
     mode,
-    watch,
+    watch: isWatch,
     output: {
       filename: `${file}.js`,
     },

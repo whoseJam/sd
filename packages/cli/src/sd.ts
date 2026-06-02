@@ -17,9 +17,9 @@ export default function sd(targetFolder: string): NodeJS.ReadWriteStream {
 }
 
 function getConfiguration() {
-  const isDevelopment = global.d ? true : false;
+  const isDev = global.d ? true : false;
   const isWatch = global.w ? true : false;
-  const mode = isDevelopment ? "development" : "production";
+  const mode = isDev ? "development" : "production";
   return {
     mode,
     watch: isWatch,
@@ -31,7 +31,7 @@ function getConfiguration() {
       globalObject: "this",
     },
     module: {
-      rules: [tsLoaderRule(isDevelopment), cssRule],
+      rules: [tsLoaderRule(isDev), cssRule],
     },
     performance: {
       hints: false,
@@ -39,15 +39,15 @@ function getConfiguration() {
       maxAssetSize: 512000,
     },
     optimization: {
-      minimize: !isDevelopment,
+      minimize: !isDev,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
             keep_classnames: true,
             keep_fnames: true,
             compress: {
-              drop_console: !isDevelopment,
-              drop_debugger: !isDevelopment,
+              drop_console: !isDev,
+              drop_debugger: !isDev,
             },
           },
           parallel: true,
@@ -65,6 +65,6 @@ function getConfiguration() {
       symlinks: false,
     },
     externals: { dagre: "dagre" },
-    stats: isDevelopment ? "minimal" : "normal",
+    stats: isDev ? "minimal" : "normal",
   };
 }

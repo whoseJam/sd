@@ -13,10 +13,10 @@ export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
 function getConfiguration() {
   const isDev = global.d ? true : false;
   const mode = isDev ? "development" : "production";
-  const watch = global.w ? true : false;
+  const isWatch = global.w ? true : false;
   return {
     mode,
-    watch,
+    watch: isWatch,
     output: {
       filename: "myreveal.js",
       library: "MyReveal",

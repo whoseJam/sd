@@ -14,9 +14,9 @@ export default function element(targetFolder: string): NodeJS.ReadWriteStream {
 }
 
 function getConfiguration() {
-  const isDevelopment = global.d ? true : false;
+  const isDev = global.d ? true : false;
   const isWatch = global.w ? true : false;
-  const mode = isDevelopment ? "development" : "production";
+  const mode = isDev ? "development" : "production";
   return {
     mode,
     watch: isWatch,
@@ -41,7 +41,7 @@ function getConfiguration() {
                 moduleResolution: "Node",
                 strict: false,
                 skipLibCheck: true,
-                sourceMap: isDevelopment,
+                sourceMap: isDev,
               },
               transpileOnly: true,
             },
@@ -51,12 +51,12 @@ function getConfiguration() {
     },
     performance: { hints: false },
     optimization: {
-      minimize: !isDevelopment,
+      minimize: !isDev,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
             keep_classnames: true,
-            compress: { drop_console: !isDevelopment },
+            compress: { drop_console: !isDev },
           },
           parallel: true,
           extractComments: false,
@@ -68,6 +68,6 @@ function getConfiguration() {
       buildDependencies: { config: [import.meta.filename] },
     },
     resolve: { extensions: [".ts", ".js"] },
-    stats: isDevelopment ? "minimal" : "normal",
+    stats: isDev ? "minimal" : "normal",
   };
 }
