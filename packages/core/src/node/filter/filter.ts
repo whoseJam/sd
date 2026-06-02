@@ -64,12 +64,12 @@ export class Filter extends BaseFilter {
 
   insertBefore(child: SDNode | RenderNode, referenced: SDNode | RenderNode) {
     if (child instanceof SDNode) child.parent = this;
-    const child_ = child instanceof SDNode ? child.getRootRenderNode() : child;
-    const referenced_ =
+    const childNode = child instanceof SDNode ? child.getRootRenderNode() : child;
+    const referencedNode =
       referenced instanceof SDNode
         ? referenced.getRootRenderNode()
         : referenced;
-    this.getRootRenderNode().insertBefore(child_, referenced_);
+    this.getRootRenderNode().insertBefore(childNode, referencedNode);
     return this;
   }
 

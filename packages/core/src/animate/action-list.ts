@@ -215,14 +215,14 @@ export class ActionList {
         }
       }
     }
-    hideActionList.forEach((action_) => {
-      if (action !== action_) {
-        actionMap[action_.animatedKey] = actionMap[action_.animatedKey].filter(
-          (a) => a !== action_,
+    hideActionList.forEach((sibling) => {
+      if (action !== sibling) {
+        actionMap[sibling.animatedKey] = actionMap[sibling.animatedKey].filter(
+          (other) => other !== sibling,
         );
-        this.actionsList.erase(action_);
+        this.actionsList.erase(sibling);
       }
-      const index = this.lazyActions.indexOf(action_);
+      const index = this.lazyActions.indexOf(sibling);
       if (index !== -1) this.lazyActions.splice(index, 1);
     });
   }
@@ -271,20 +271,20 @@ export class ActionList {
       maxTimestamp = Math.max(maxTimestamp, action.r);
     });
     this.actionsList.forEachReverse((action) => {
-      const action_ = action.clone();
-      if (!action_) return;
-      action_.reverse = true;
-      action_.l = maxTimestamp - action.r;
-      action_.r = maxTimestamp - action.l;
-      action_.source = action.target;
-      action_.target = action.source;
-      action_._source = action._target;
-      action_._target = action._source;
+      const cloned = action.clone();
+      if (!cloned) return;
+      cloned.reverse = true;
+      cloned.l = maxTimestamp - action.r;
+      cloned.r = maxTimestamp - action.l;
+      cloned.source = action.target;
+      cloned.target = action.source;
+      cloned.preparedSource = action.preparedTarget;
+      cloned.preparedTarget = action.preparedSource;
       const timingFunction = action.timingFunction;
-      action_.timingFunction = (t: number) => {
+      cloned.timingFunction = (t: number) => {
         return 1.0 - timingFunction(1.0 - t);
       };
-      list.push(action_);
+      list.push(cloned);
     });
     list.enabled = true;
     return list;
@@ -292,9 +292,9 @@ export class ActionList {
   replay() {
     const other = new ActionList();
     this.actionsList.forEach((action) => {
-      const action_ = action.clone();
-      if (!action_) return;
-      other.push(action_);
+      const cloned = action.clone();
+      if (!cloned) return;
+      other.push(cloned);
     });
     other.enabled = true;
     return other;
@@ -317,7 +317,7 @@ export class ActionList {
     entity: SDNode | RenderNode,
     animatedKey: string,
     t: number,
-    default_?: any,
+    defaultValue?: any,
   ) {
     const actionMap = this.actionsMap.get(entity);
     if (!actionMap) return;
@@ -328,7 +328,7 @@ export class ActionList {
       if (action.r === t) value = action.target;
     });
     if (value === undefined) {
-      if (default_ !== undefined) return default_;
+      if (defaultValue !== undefined) return defaultValue;
       throw new Error(`Unable to find attribute ${animatedKey}`);
     }
     return value;

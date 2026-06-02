@@ -15,8 +15,8 @@ export class Action {
   frame: number;
   source: any;
   target: any;
-  _source: any;
-  _target: any;
+  preparedSource: any;
+  preparedTarget: any;
   interp?: InterpObject;
   lazyInterp?: LazyInterpFunction;
   timingFunction: (t: number) => number;
@@ -67,8 +67,8 @@ export class Action {
     action.r = other.r;
     action.source = other.source;
     action.target = other.target;
-    action._source = other._source;
-    action._target = other._target;
+    action.preparedSource = other.preparedSource;
+    action.preparedTarget = other.preparedTarget;
     action.interp = other.interp;
     action.timingFunction = other.timingFunction;
     action.entity = other.entity;

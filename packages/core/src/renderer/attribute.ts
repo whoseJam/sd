@@ -32,11 +32,11 @@ class AttributeConverter {
   toString: (object: any, context?: Context) => string;
   constructor(
     aliasKey: string,
-    default_: string,
+    defaultValue: string,
     toString: (object: any, context?: Context) => string,
   ) {
     this.aliasKey = aliasKey;
-    this.default = default_;
+    this.default = defaultValue;
     this.toString = toString;
   }
 }
@@ -198,26 +198,26 @@ export function setAttribute(
     element.setAttribute(key, value);
     return;
   }
-  const element_ = element as (SVGElement | HTMLElement) & {
+  const typedElement = element as (SVGElement | HTMLElement) & {
     __setAttributeContext: Record<string, any>;
   };
-  if (element_.__setAttributeContext === undefined)
-    element_.__setAttributeContext = {};
-  const value_ =
+  if (typedElement.__setAttributeContext === undefined)
+    typedElement.__setAttributeContext = {};
+  const serialized =
     value === undefined
       ? undefined
-      : attribute.toString(value, element_.__setAttributeContext);
-  const key_ = attribute.aliasKey;
-  if (isStyleKey(type, key_)) {
-    if (value_ !== undefined) element_.style[key_] = value_;
-    else if (attribute.default) element_.style[key_] = attribute.default;
-    else element_.style.removeProperty(key_);
-    if (key_ === "transform-origin") {
-      element_.style["transform-box"] = "fill-box";
+      : attribute.toString(value, typedElement.__setAttributeContext);
+  const aliasKey = attribute.aliasKey;
+  if (isStyleKey(type, aliasKey)) {
+    if (serialized !== undefined) typedElement.style[aliasKey] = serialized;
+    else if (attribute.default) typedElement.style[aliasKey] = attribute.default;
+    else typedElement.style.removeProperty(aliasKey);
+    if (aliasKey === "transform-origin") {
+      typedElement.style["transform-box"] = "fill-box";
     }
   } else {
-    if (value_ !== undefined) element.setAttribute(key_, value_);
-    else if (attribute.default) element.setAttribute(key_, attribute.default);
-    else element.removeAttribute(key_);
+    if (serialized !== undefined) element.setAttribute(aliasKey, serialized);
+    else if (attribute.default) element.setAttribute(aliasKey, attribute.default);
+    else element.removeAttribute(aliasKey);
   }
 }

@@ -104,10 +104,10 @@ export function transformPoint(
   if (t.rotate !== 0) {
     const c = Math.cos(t.rotate);
     const s = Math.sin(t.rotate);
-    const x_ = x * c - y * s;
-    const y_ = x * s + y * c;
-    x = x_;
-    y = y_;
+    const rotX = x * c - y * s;
+    const rotY = x * s + y * c;
+    x = rotX;
+    y = rotY;
   }
   x *= t.scale[0];
   y *= t.scale[1];
@@ -127,10 +127,10 @@ export function inverseTransformPoint(
   if (t.rotate !== 0) {
     const c = Math.cos(-t.rotate);
     const s = Math.sin(-t.rotate);
-    const x_ = x * c - y * s;
-    const y_ = x * s + y * c;
-    x = x_;
-    y = y_;
+    const rotX = x * c - y * s;
+    const rotY = x * s + y * c;
+    x = rotX;
+    y = rotY;
   }
   x += t.origin[0];
   y += t.origin[1];

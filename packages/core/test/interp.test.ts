@@ -26,8 +26,8 @@ const fakeAction = (overrides: any = {}): Action =>
   Object.assign(Object.create(Action.prototype), {
     source: 0,
     target: 1,
-    _source: undefined,
-    _target: undefined,
+    preparedSource: undefined,
+    preparedTarget: undefined,
     reverse: false,
     entity: defaultEntity,
     ...overrides,

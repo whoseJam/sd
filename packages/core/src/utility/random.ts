@@ -9,10 +9,10 @@ const allCharacters =
   specialCharacters;
 
 export function rand(l: number, r: number): number {
-  const l_ = +l;
-  const r_ = +r;
-  const ans = Math.floor(Math.random() * (r_ - l_ + 1));
-  return Math.min(Math.max(l_ + ans, l_), r_);
+  const lo = +l;
+  const hi = +r;
+  const ans = Math.floor(Math.random() * (hi - lo + 1));
+  return Math.min(Math.max(lo + ans, lo), hi);
 }
 
 export function randChar(): string {

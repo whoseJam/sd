@@ -254,16 +254,16 @@ export class RenderNode {
   }
 
   __append(element: Element | RenderNode) {
-    const element_ =
+    const domElement =
       element instanceof RenderNode ? element.element() : element;
-    this.element().append(element_);
+    this.element().append(domElement);
     return this;
   }
 
   __appendChild(element: Element | RenderNode) {
-    const element_ =
+    const domElement =
       element instanceof RenderNode ? element.element() : element;
-    this.element().appendChild(element_);
+    this.element().appendChild(domElement);
     return this;
   }
 
@@ -271,11 +271,11 @@ export class RenderNode {
     element: Element | RenderNode,
     referenced: Element | RenderNode,
   ) {
-    const element_ =
+    const domElement =
       element instanceof RenderNode ? element.element() : element;
-    const referenced_ =
+    const referencedElement =
       referenced instanceof RenderNode ? referenced.element() : referenced;
-    this.element().insertBefore(element_, referenced_);
+    this.element().insertBefore(domElement, referencedElement);
     return this;
   }
 
@@ -285,9 +285,9 @@ export class RenderNode {
   }
 
   __removeChild(element: Element | RenderNode) {
-    const element_ =
+    const domElement =
       element instanceof RenderNode ? element.element() : element;
-    this.element().removeChild(element_);
+    this.element().removeChild(domElement);
     return this;
   }
 
@@ -343,14 +343,14 @@ export class RenderNode {
    */
   static cloneMathRenderNode(math: RenderNode) {
     const element = Dom.deepClone(math.element());
-    const math_ = new RenderNode({
+    const clone = new RenderNode({
       targetNode: math.targetNode,
       targetLayer: math.targetLayer,
       element,
       append: false,
       action: false,
     });
-    return math_;
+    return clone;
   }
 
   static createRenderNode(

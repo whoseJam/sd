@@ -120,13 +120,13 @@ export class Animate {
     entity: SDNode | RenderNode,
     animatedKey: string,
     t: number,
-    default_?: any,
+    defaultValue?: any,
   ) {
     return this.currentActionList.getAttribute(
       entity,
       animatedKey,
       t,
-      default_,
+      defaultValue,
     );
   }
   static debug() {
@@ -146,8 +146,8 @@ interface PushActionOptions<I extends InterpKind<unknown, unknown>> {
   key: string;
   l: number;
   r: number;
-  from: NonNullable<I["__source"]>;
-  to: NonNullable<I["__target"]>;
+  from: NonNullable<I["fromType"]>;
+  to: NonNullable<I["toType"]>;
   interp: I;
   timing: (t: number) => number;
 }
@@ -177,8 +177,8 @@ interface PushLazyActionOptions<I extends LazyInterpKind<unknown, unknown>> {
   key: string;
   l: number;
   r: number;
-  from: NonNullable<I["__source"]>;
-  to: NonNullable<I["__target"]>;
+  from: NonNullable<I["fromType"]>;
+  to: NonNullable<I["toType"]>;
   interp: I;
   timing: (t: number) => number;
 }

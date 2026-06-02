@@ -32,11 +32,11 @@ export abstract class BasePath extends SDSVGNode {
     return this.attributes.markerStart;
   }
   setMarkerStart(marker: string): this {
-    const marker_ = marker !== "" ? `url(#${marker})` : "";
+    const markerUrl = marker !== "" ? `url(#${marker})` : "";
     this.triggerAttributeChanged(
       this.renderer,
       "markerStart",
-      marker_,
+      markerUrl,
       this.attributes.markerStart,
       Interp.emptyInterp,
     );
@@ -46,11 +46,11 @@ export abstract class BasePath extends SDSVGNode {
     return this.attributes.markerMid;
   }
   setMarkerMid(marker: string): this {
-    const marker_ = marker !== "" ? `url(#${marker})` : "";
+    const markerUrl = marker !== "" ? `url(#${marker})` : "";
     this.triggerAttributeChanged(
       this.renderer,
       "markerMid",
-      marker_,
+      markerUrl,
       this.attributes.markerMid,
       Interp.emptyInterp,
     );
@@ -60,11 +60,11 @@ export abstract class BasePath extends SDSVGNode {
     return this.attributes.markerEnd;
   }
   setMarkerEnd(marker: string): this {
-    const marker_ = marker !== "" ? `url(#${marker})` : "";
+    const markerUrl = marker !== "" ? `url(#${marker})` : "";
     this.triggerAttributeChanged(
       this.renderer,
       "markerEnd",
-      marker_,
+      markerUrl,
       this.attributes.markerEnd,
       Interp.emptyInterp,
     );

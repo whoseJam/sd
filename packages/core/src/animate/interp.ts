@@ -20,13 +20,13 @@ export type LazyInterpFunction = ((
 export type InterpCreator = ((object: any, key: string) => InterpObject) & {
   [INTERP_CREATOR]: true;
 };
-// Phantom-typed wrapper. The __source / __target fields exist only at
-// the type level so `pushAction` can infer from/to types from the
-// interp argument — passing fill: 5 with colorInterp becomes a TS error
-// instead of a runtime crash inside Color.toRGBA.
+// Phantom-typed wrapper. fromType / toType exist only at the type level
+// so `pushAction` can infer from/to types from the interp argument —
+// passing fill: 5 with colorInterp becomes a TS error instead of a
+// runtime crash inside Color.toRGBA.
 export type InterpKind<TSource, TTarget = TSource> = InterpCreator & {
-  readonly __source?: TSource;
-  readonly __target?: TTarget;
+  readonly fromType?: TSource;
+  readonly toType?: TTarget;
 };
 type InitFunction = (this: Action) => void;
 type BeforeInterpFunction = (this: Action) => void;
@@ -53,8 +53,8 @@ function interpCreator<S = any, T = S>(
 }
 
 export type LazyInterpKind<TSource, TTarget = TSource> = LazyInterpFunction & {
-  readonly __source?: TSource;
-  readonly __target?: TTarget;
+  readonly fromType?: TSource;
+  readonly toType?: TTarget;
 };
 
 export function lazyInterp<S = any, T = S>(
@@ -74,37 +74,37 @@ export const isLazyInterpFunction = (x: unknown): x is LazyInterpFunction =>
 
 export class InterpObject {
   inited: boolean;
-  onInit_: InitFunction;
-  onBeforeInterp_: BeforeInterpFunction;
-  onAfterInterp_: AfterInterpFunction;
-  callback_: InterpFunction;
+  initFn: InitFunction;
+  beforeFn: BeforeInterpFunction;
+  afterFn: AfterInterpFunction;
+  fn: InterpFunction;
   constructor(callback: InterpFunction) {
-    this.callback_ = callback;
+    this.fn = callback;
     this.inited = false;
-    this.onInit_ = () => {};
-    this.onBeforeInterp_ = () => {};
-    this.onAfterInterp_ = () => {};
+    this.initFn = () => {};
+    this.beforeFn = () => {};
+    this.afterFn = () => {};
   }
   call(action: Action, t: number): void {
-    this.callback_.call(action, t);
+    this.fn.call(action, t);
   }
   onInit(call: InitFunction | Action) {
     if (call instanceof Action) {
       if (this.inited) return;
       this.inited = true;
-      return this.onInit_.call(call);
+      return this.initFn.call(call);
     }
-    this.onInit_ = call;
+    this.initFn = call;
     return this;
   }
   onBeforeInterp(call: BeforeInterpFunction | Action) {
-    if (call instanceof Action) return this.onBeforeInterp_.call(call);
-    this.onBeforeInterp_ = call;
+    if (call instanceof Action) return this.beforeFn.call(call);
+    this.beforeFn = call;
     return this;
   }
   onAfterInterp(call: AfterInterpFunction | Action) {
-    if (call instanceof Action) return this.onAfterInterp_.call(call);
-    this.onAfterInterp_ = call;
+    if (call instanceof Action) return this.afterFn.call(call);
+    this.afterFn = call;
     return this;
   }
 }
@@ -120,10 +120,10 @@ export class Interp {
     const set = setter(object, key);
     const parse = (value: string) => +value.slice(0, -2);
     return new InterpObject(function (t) {
-      set.call(this, `${lerp(this._source, this._target, t)}ex`);
+      set.call(this, `${lerp(this.preparedSource, this.preparedTarget, t)}ex`);
     }).onInit(function () {
-      this._source = parse(this.source);
-      this._target = parse(this.target);
+      this.preparedSource = parse(this.source);
+      this.preparedTarget = parse(this.target);
     });
   });
 
@@ -144,8 +144,8 @@ export class Interp {
   static colorInterp = interpCreator<SDRGBAColor>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
-      const A = this._source;
-      const B = this._target;
+      const A = this.preparedSource;
+      const B = this.preparedTarget;
       set.call(this, {
         r: lerp(A.r, B.r, t),
         g: lerp(A.g, B.g, t),
@@ -153,8 +153,8 @@ export class Interp {
         a: lerp(A.a, B.a, t),
       });
     }).onInit(function () {
-      this._source = Color.toRGBA(this.source);
-      this._target = Color.toRGBA(this.target);
+      this.preparedSource = Color.toRGBA(this.source);
+      this.preparedTarget = Color.toRGBA(this.target);
     });
   });
 
@@ -186,15 +186,15 @@ export class Interp {
     const toArr = (value: Array<number> | number) =>
       typeof value === "number" ? [value] : value;
     return new InterpObject(function (t) {
-      const A = this._source;
-      const B = this._target;
+      const A = this.preparedSource;
+      const B = this.preparedTarget;
       const len = Math.max(A.length, B.length);
       const ans = [];
       for (let i = 0; i < len; i++) ans.push(lerp(A[i] ?? 0, B[i] ?? 0, t));
       set.call(this, ans);
     }).onInit(function () {
-      this._source = toArr(this.source);
-      this._target = toArr(this.target);
+      this.preparedSource = toArr(this.source);
+      this.preparedTarget = toArr(this.target);
     });
   });
 
@@ -252,8 +252,8 @@ export class Interp {
   static pathInterp = interpCreator<string>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
-      const A = this._source;
-      const B = this._target;
+      const A = this.preparedSource;
+      const B = this.preparedTarget;
       const operators: PathOpers = [];
       for (let i = 0; i < A.length; i++) {
         const operator: PathOper = [A[i][0]];
@@ -264,7 +264,7 @@ export class Interp {
       set.call(this, PathEngine.toString(operators));
     })
       .onInit(function () {
-        [this._source, this._target] = PathEngine.toCubics(
+        [this.preparedSource, this.preparedTarget] = PathEngine.toCubics(
           this.source,
           this.target,
         );
@@ -282,16 +282,16 @@ export class Interp {
         return value;
       };
       return new InterpObject(function (t) {
-        const A = this._source;
-        const B = this._target;
+        const A = this.preparedSource;
+        const B = this.preparedTarget;
         const ans = [];
         for (let i = 0; i < A.length; i++)
           ans.push([lerp(A[i][0], B[i][0], t), lerp(A[i][1], B[i][1], t)]);
         set.call(this, ans);
       }).onInit(function () {
         const length = Math.max(this.source.length, this.target.length);
-        this._source = pad(this.source, length);
-        this._target = pad(this.target, length);
+        this.preparedSource = pad(this.source, length);
+        this.preparedTarget = pad(this.target, length);
       });
     },
   );
