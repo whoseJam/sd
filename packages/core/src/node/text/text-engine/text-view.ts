@@ -89,7 +89,7 @@ export class TextView {
     this.styles = styles;
   }
   asSubtextView() {
-    return new SubtextView(this, 0, this.styles.length - 1);
+    return SubtextView.range(this, 0, this.styles.length - 1);
   }
 }
 
@@ -98,14 +98,19 @@ export class SubtextView {
   l?: number;
   r?: number;
   positions?: Set<number>;
-  constructor(textView: TextView, positions: Set<number>);
-  constructor(textView: TextView, l: number, r: number);
-  constructor(textView: TextView, l: number | Set<number>, r?: number) {
+  private constructor(textView: TextView) {
     this.textView = textView;
-    if (typeof l === "number") {
-      this.l = l;
-      this.r = r;
-    } else this.positions = l;
+  }
+  static range(textView: TextView, l: number, r: number): SubtextView {
+    const v = new SubtextView(textView);
+    v.l = l;
+    v.r = r;
+    return v;
+  }
+  static sparse(textView: TextView, positions: Set<number>): SubtextView {
+    const v = new SubtextView(textView);
+    v.positions = positions;
+    return v;
   }
   getStyle() {
     if (!this.textView.styles) return new PathStyle({});

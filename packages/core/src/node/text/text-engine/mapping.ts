@@ -25,7 +25,7 @@ function locateUnmatchedSubtext(
         // the same chars and the trailing unmapped-union pass excludes
         // them.
         for (let j = 0; j < pattern.length; j++) deleted[i + j] = true;
-        return new SubtextView(textView, i, i + pattern.length - 1);
+        return SubtextView.range(textView, i, i + pattern.length - 1);
       }
     }
   }
@@ -44,7 +44,7 @@ export function matchSubtext(
       if (pattern[j] !== textView.text[i + j]) matched = false;
     if (matched) {
       if (remaining === 0)
-        return new SubtextView(textView, i, i + pattern.length - 1);
+        return SubtextView.range(textView, i, i + pattern.length - 1);
       remaining--;
     }
   }
@@ -83,8 +83,8 @@ export function mapSubtextsBetweenViews(
   targetDeleted.forEach((value, i) => {
     if (!value) targetSet.add(i);
   });
-  const sourceSubtextView = new SubtextView(sourceView, sourceSet);
-  const targetSubtextView = new SubtextView(targetView, targetSet);
+  const sourceSubtextView = SubtextView.sparse(sourceView, sourceSet);
+  const targetSubtextView = SubtextView.sparse(targetView, targetSet);
   targetSubtextView.setStyle(sourceSubtextView.getStyle());
   matchings.push([sourceSubtextView, targetSubtextView]);
   return matchings;
