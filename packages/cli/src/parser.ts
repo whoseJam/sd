@@ -23,7 +23,7 @@ export function parseInput(): void {
   const g = globalThis as Record<string, unknown>;
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    const key = arg.replace(/^-/, "");
+    const key = arg.replace(/^-+/, "");
     const value = args[i + 1];
     if (arg.startsWith("-")) {
       if (!value || value.startsWith("-")) {

@@ -24,8 +24,8 @@ declare global {
   var l: boolean | undefined;
   // -domain <value>
   var domain: string | undefined;
-  // -f <framework> (ppt host framework: reveal | plain | ...)
-  var f: string | undefined;
+  // -framework <name> (ppt host framework: reveal | plain | ...)
+  var framework: string | undefined;
 
   // task self-flags
   var sd: boolean | undefined;

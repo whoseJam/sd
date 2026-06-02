@@ -1,0 +1,15 @@
+{
+  "name": "@sd/plain",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Minimal HTML host: renders deck content as a vertical-scroll page with no slide framework chrome",
+  "license": "ISC",
+  "main": "src/host.ts",
+  "exports": {
+    ".": "./src/host.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@sd/element": "workspace:*"
+  }
+}

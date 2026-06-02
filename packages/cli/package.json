@@ -5,6 +5,7 @@
   "description": "Build tasks and CLI entry points (sd-animation, sd-animationGroup, sd-ppt, sd-config)",
   "license": "ISC",
   "dependencies": {
+    "@sd/plain": "workspace:*",
     "@sd/reveal": "workspace:*"
   },
   "devDependencies": {

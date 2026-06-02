@@ -3,6 +3,7 @@
 /.vscode
 /.CodeCounter
 /.VSCodeCounter
+/.playwright-mcp
 node_modules
 dist
 myconfig.json

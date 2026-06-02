@@ -21,7 +21,7 @@ export function task(
   source = source.replaceAll("\\", "/");
   validateJSFile(source);
   const file = String(source).split("/").slice(-1)[0].split(".")[0];
-  const config = getConfiguration(file);
+  const config = getConfiguration(file, targetFolder);
   return gulp
     .src(source)
     .pipe(webpack(config))
@@ -59,13 +59,23 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   return task(sourceFilePath, animationOutputPath);
 }
 
-function getConfiguration(file: string) {
+function getConfiguration(file: string, targetFolder: string) {
   const mode = "development";
   const watch = global.w ? true : false;
-  // Asset base URL: a remote deploy passes -d https://your-domain; otherwise the
-  // output is self-contained and loads everything from "./vendor/..." next to the
-  // HTML. There is no implicit CDN fallback.
-  const base = global.domain !== undefined ? global.domain : ".";
+  // Asset base URL. Priority:
+  //   1. -d <domain> — remote deploy, base is the absolute URL
+  //   2. animation is bundled inside a deck — base walks up from the
+  //      animation's subfolder to the deck root so the iframe-loaded HTML
+  //      resolves `./sd.js` / `./vendor/...` against deck root, not its own dir
+  //   3. standalone build — base is "." (self-contained alongside HTML)
+  const base =
+    global.domain !== undefined
+      ? global.domain
+      : global.targetFolder && targetFolder !== global.targetFolder
+        ? path
+            .relative(targetFolder, global.targetFolder)
+            .replaceAll("\\", "/") || "."
+        : ".";
   const plugins = [
     new HtmlWebpackPlugin({
       template: `${global.projectRoot}/packages/cli/src/aniIndex.html`,

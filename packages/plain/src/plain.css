@@ -1,0 +1,65 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  background: #fafafa;
+}
+
+#slide-host {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+#slide-host > section,
+#slide-host section {
+  margin: 0 0 4rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+#slide-host h1 {
+  font-size: 2rem;
+  margin: 0 0 1rem;
+}
+#slide-host h2 {
+  font-size: 1.5rem;
+  margin: 1.5rem 0 0.75rem;
+}
+#slide-host h3 {
+  font-size: 1.2rem;
+  margin: 1.25rem 0 0.5rem;
+}
+
+#slide-host p {
+  margin: 0 0 1rem;
+}
+
+#slide-host sd-animation {
+  display: block;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+#slide-host pre {
+  background: #1e1e1e;
+  color: #e4e4e4;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+}

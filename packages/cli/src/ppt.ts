@@ -18,6 +18,12 @@ const require = createRequire(import.meta.url);
 interface PptHost {
   template: string;
   entry: string;
+  libraryBundle?: string;
+}
+
+function getHost(): PptHost {
+  const framework = global.framework || "reveal";
+  return require(`@sd/${framework}/host.ts`) as PptHost;
 }
 
 interface FileEventListener {
@@ -160,8 +166,11 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
     );
     process.exit();
   }
+  const host = getHost();
   if (!global.sd) copyAsset("./dist/sd.js", pptOutputPath);
-  if (!global.reveal) copyAsset("./dist/myreveal.js", pptOutputPath);
+  if (host.libraryBundle && !global.reveal) {
+    copyAsset(host.libraryBundle, pptOutputPath);
+  }
   return task(source, pptOutputPath);
 }
 
@@ -280,8 +289,7 @@ function getConfiguration() {
   // output is self-contained and loads everything from "./vendor/..." next to the
   // HTML. There is no implicit CDN fallback.
   const base = global.domain !== undefined ? global.domain : ".";
-  const framework = global.f || "reveal";
-  const host = require(`@sd/${framework}/host.ts`) as PptHost;
+  const host = getHost();
   const plugins = [
     new HtmlWebpackPlugin({
       template: host.template,
