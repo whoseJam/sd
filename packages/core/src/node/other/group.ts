@@ -1,5 +1,12 @@
+import type { AABB } from "@/math/aabb";
 import type { RenderNode } from "@/renderer/render-node";
 
+import {
+  aabbCorners,
+  aabbFromCorners,
+  composeTransform,
+  transformPoint,
+} from "@/math/aabb";
 import { SDNode } from "@/node/node";
 import { SDSVGNode } from "@/node/svg-node";
 
@@ -43,39 +50,17 @@ export class Group extends SDSVGNode {
     return this;
   }
 
-  getX() {
-    let x = this.nodes[0].getX();
-    for (let i = 1; i < this.nodes.length; i++)
-      x = Math.min(x, this.nodes[i].getX());
-    return x;
-  }
-
-  getY() {
-    let y = this.nodes[0].getY();
-    for (let i = 1; i < this.nodes.length; i++)
-      y = Math.min(y, this.nodes[i].getY());
-    return y;
-  }
-
-  getMaxX() {
-    let mx = this.nodes[0].getMaxX();
-    for (let i = 1; i < this.nodes.length; i++)
-      mx = Math.max(mx, this.nodes[i].getMaxX());
-    return mx;
-  }
-
-  getMaxY() {
-    let my = this.nodes[0].getMaxY();
-    for (let i = 1; i < this.nodes.length; i++)
-      my = Math.max(my, this.nodes[i].getMaxY());
-    return my;
-  }
-
-  getWidth() {
-    return this.getMaxX() - this.getX();
-  }
-
-  getHeight() {
-    return this.getMaxY() - this.getY();
+  // Union of each child's local box AFTER that child's own transform — that
+  // is the child's footprint in this group's local frame.
+  getLocalBox(): AABB {
+    if (this.nodes.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
+    const corners: Array<[number, number]> = [];
+    for (const child of this.nodes) {
+      const childLocal = child.getLocalBox();
+      const t = composeTransform(childLocal, child.attributes);
+      for (const c of aabbCorners(childLocal))
+        corners.push(transformPoint(c, t));
+    }
+    return aabbFromCorners(corners);
   }
 }

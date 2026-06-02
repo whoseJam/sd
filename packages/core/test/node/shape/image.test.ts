@@ -25,7 +25,7 @@ describe("Image", () => {
       i.x = 17;
 
       expect(i.attributes.x).toBe(17);
-      expect(i.getX()).toBe(17);
+      expect(i.getLocalX()).toBe(17);
       expect(seen).toEqual([[17, 0]]);
     });
 

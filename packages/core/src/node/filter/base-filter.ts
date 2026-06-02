@@ -1,23 +1,11 @@
+import type { AABB } from "@/math/aabb";
+
 import { SDSVGNode } from "@/node/svg-node";
 
-// Filter primitives don't position themselves in user math space; only
-// the top-level Filter does, via its own x / y / width / height. The
-// getX/getY/getWidth/getHeight here only exist to satisfy the abstracts
-// inherited from SDNode and are never read off a primitive.
+// Filter primitives live in <defs> — they have no on-canvas footprint.
+// Only the top-level Filter positions itself in user math space.
 export class BaseFilter extends SDSVGNode {
-  getX() {
-    return 0;
-  }
-
-  getY() {
-    return 0;
-  }
-
-  getWidth() {
-    return 0;
-  }
-
-  getHeight() {
-    return 0;
+  getLocalBox(): AABB {
+    return { x: 0, y: 0, width: 0, height: 0 };
   }
 }

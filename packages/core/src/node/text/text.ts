@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { Group } from "@/node/other/group";
 import type { StrokeLineCap, StrokeLineJoin } from "@/node/svg-node";
@@ -159,12 +160,13 @@ export class Text extends BaseText {
     return this.offAttributeChanged("fontSize", listener);
   }
 
-  getWidth(): number {
-    return this.width;
-  }
-
-  getHeight(): number {
-    return this.height;
+  getLocalBox(): AABB {
+    return {
+      x: this.attributes.x,
+      y: this.attributes.y,
+      width: this.width,
+      height: this.height,
+    };
   }
 
   get text(): string {

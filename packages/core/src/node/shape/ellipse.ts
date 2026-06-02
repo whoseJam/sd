@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { Group } from "@/node/other/group";
 import type { SDSVGNodeAttributes } from "@/node/svg-node";
@@ -75,32 +76,29 @@ export class Ellipse extends BaseShape {
     args?.targetNode?.appendChild(this);
   }
 
-  getX(): number {
-    return this.getCenterX() - this.getRx();
+  getLocalBox(): AABB {
+    const { cx, cy, rx, ry } = this.attributes;
+    return { x: cx - rx, y: cy - ry, width: 2 * rx, height: 2 * ry };
+  }
+
+  protected containsLocalPoint(p: [number, number]): boolean {
+    const { cx, cy, rx, ry } = this.attributes;
+    if (rx === 0 || ry === 0) return false;
+    const dx = (p[0] - cx) / rx;
+    const dy = (p[1] - cy) / ry;
+    return dx * dx + dy * dy <= 1;
   }
 
   setX(x: number): this {
-    return this.setCenterX(this.getCenterX() + x - this.getX());
-  }
-
-  getY(): number {
-    return this.getCenterY() - this.getRy();
+    return this.setCx(x + this.attributes.rx);
   }
 
   setY(y: number): this {
-    return this.setCenterY(this.getCenterY() + y - this.getY());
-  }
-
-  getWidth(): number {
-    return this.getRx() * 2;
+    return this.setCy(y + this.attributes.ry);
   }
 
   setWidth(width: number): this {
     return this.setRx(width / 2);
-  }
-
-  getHeight(): number {
-    return this.getRy() * 2;
   }
 
   setHeight(height: number): this {
@@ -136,10 +134,6 @@ export class Ellipse extends BaseShape {
 
   offCxChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("cx", listener);
-  }
-
-  getCenterX(): number {
-    return this.getCx();
   }
 
   onCenterXChanged(listener: (vn: number, vo: number) => void) {
@@ -179,10 +173,6 @@ export class Ellipse extends BaseShape {
 
   offCyChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("cy", listener);
-  }
-
-  getCenterY(): number {
-    return this.getCy();
   }
 
   onCenterYChanged(listener: (vn: number, vo: number) => void) {

@@ -1,10 +1,8 @@
+import type { BaseControlAttributes } from "@/node/control/base-control";
 import type { Group } from "@/node/other/group";
 
 import { Interp } from "@/animate/interp";
-import {
-  BaseControl,
-  BaseControlAttributes,
-} from "@/node/control/base-control";
+import { BaseControl } from "@/node/control/base-control";
 import { Color as C } from "@/utility/color";
 
 export type ButtonAttributes = BaseControlAttributes & {

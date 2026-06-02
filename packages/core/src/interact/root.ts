@@ -1,4 +1,4 @@
-import type { SDBox } from "@/node/node";
+import type { AABB } from "@/node/node";
 
 import { Window } from "@/animate/window";
 import { Group } from "@/node/other/group";
@@ -21,7 +21,7 @@ export function svg(): Group {
 export class Root {
   static svg: RenderNode;
   static group: Group;
-  static viewBox: SDBox;
+  static viewBox: AABB;
   static init() {
     // Math coordinates: (0, 0) is the canvas center, y grows upward.
     this.viewBox = { x: -600, y: -300, width: 1200, height: 600 };
@@ -92,7 +92,7 @@ export class Root {
 
 // box is math (bottom-left anchored, y grows up). SVG viewBox uses top-left
 // with y growing down, so the y coordinate flips: svg_y = -(math_y + height).
-function updateSVGViewBox(box: SDBox) {
+function updateSVGViewBox(box: AABB) {
   const view = Root.svg;
   view.setAttribute(
     "viewBox",
@@ -100,7 +100,7 @@ function updateSVGViewBox(box: SDBox) {
   );
 }
 
-function updateWindowRate(box: SDBox) {
+function updateWindowRate(box: AABB) {
   const view = Root.svg;
   const width = view.element().getBoundingClientRect().width;
   const height = view.element().getBoundingClientRect().height;

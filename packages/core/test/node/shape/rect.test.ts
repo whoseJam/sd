@@ -13,7 +13,7 @@ describe("Rect", () => {
       const r = new Rect({ x: 10, y: 20, width: 30, height: 40 });
       expect(attr(r, "x")).toBe("10");
       expect(attr(r, "y")).toBe(String(-(20 + 40)));
-      expect(r.getY()).toBe(20);
+      expect(r.getLocalY()).toBe(20);
     });
   });
 
@@ -27,7 +27,7 @@ describe("Rect", () => {
 
       expect(r.attributes.x).toBe(17);
       expect(r.x).toBe(17);
-      expect(r.getX()).toBe(17);
+      expect(r.getLocalX()).toBe(17);
       expect(seen).toEqual([[17, 0]]);
     });
 

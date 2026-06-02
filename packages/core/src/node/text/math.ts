@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { Group } from "@/node/other/group";
 import type { BaseTextAttributes, TextMapping } from "@/node/text/base-text";
 import type { SDAllColor, SDColor } from "@/utility/color";
@@ -170,12 +171,13 @@ export class Math extends BaseText {
     return this.offAttributeChanged("fontSize", listener);
   }
 
-  getWidth(): number {
-    return this.width;
-  }
-
-  getHeight(): number {
-    return this.height;
+  getLocalBox(): AABB {
+    return {
+      x: this.attributes.x,
+      y: this.attributes.y,
+      width: this.width,
+      height: this.height,
+    };
   }
 
   get text(): Array<string> {
@@ -297,8 +299,8 @@ function parseToHTML(
   );
   math.setAttribute("fill", node.getFill());
   math.setAttribute("stroke", node.getStroke());
-  math.setAttribute("x", node.getX());
-  math.setAttribute("y", node.getY());
+  math.setAttribute("x", node.getLocalX());
+  math.setAttribute("y", node.getLocalY());
   math.setAttribute("fontSize", node.getFontSize());
   const text = MathManager.getMathText(math);
   if (styles === undefined) {

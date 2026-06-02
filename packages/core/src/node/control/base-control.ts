@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDNodeAttributes } from "@/node/node";
 
 import { Interp } from "@/animate/interp";
@@ -13,8 +14,9 @@ export type BaseControlAttributes = SDNodeAttributes & {
 export class BaseControl extends SizedBoxHTMLNode {
   declare attributes: BaseControlAttributes;
 
-  getX(): number {
-    return this.attributes.x;
+  getLocalBox(): AABB {
+    const { x, y, width, height } = this.attributes;
+    return { x, y, width, height };
   }
 
   setX(x: number): this {
@@ -27,10 +29,6 @@ export class BaseControl extends SizedBoxHTMLNode {
     );
   }
 
-  getY(): number {
-    return this.attributes.y;
-  }
-
   setY(y: number): this {
     return this.triggerAttributeChanged(
       this.foreign,
@@ -41,10 +39,6 @@ export class BaseControl extends SizedBoxHTMLNode {
     );
   }
 
-  getWidth(): number {
-    return this.attributes.width;
-  }
-
   setWidth(width: number): this {
     return this.triggerAttributeChanged(
       this.foreign,
@@ -53,10 +47,6 @@ export class BaseControl extends SizedBoxHTMLNode {
       this.attributes.width,
       Interp.numberInterp,
     );
-  }
-
-  getHeight(): number {
-    return this.attributes.height;
   }
 
   setHeight(height: number): this {

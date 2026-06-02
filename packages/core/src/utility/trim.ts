@@ -11,7 +11,7 @@ function findExitRate(link: Path, source: SDNode): number {
   let r = 1;
   while (r - l > EPS) {
     const mid = (l + r) / 2;
-    if (source.inRange(link.getPointAtRate(mid))) l = mid;
+    if (source.containsPoint(link.getPointAtRate(mid))) l = mid;
     else r = mid;
   }
   if (link.totalLength() * l <= 1) return 0;
@@ -23,7 +23,7 @@ function findEnterRate(link: Path, target: SDNode): number {
   let r = 1;
   while (r - l > EPS) {
     const mid = (l + r) / 2;
-    if (target.inRange(link.getPointAtRate(mid))) r = mid;
+    if (target.containsPoint(link.getPointAtRate(mid))) r = mid;
     else l = mid;
   }
   if (link.totalLength() * (1 - l) <= 1) return 1;

@@ -4,6 +4,7 @@ import type {
   InterpObject,
   LazyInterpFunction,
 } from "@/animate/interp";
+import type { AABB } from "@/math/aabb";
 import type { SDEasingFunction } from "@/math/easing-function";
 import type { Filter } from "@/node/filter/filter";
 import type { Group } from "@/node/other/group";
@@ -14,6 +15,14 @@ import { Animate } from "@/animate/animate";
 import { Context } from "@/animate/context";
 import { Interp, isInterpCreator } from "@/animate/interp";
 import { Window } from "@/animate/window";
+import {
+  aabbContainsPoint,
+  aabbCorners,
+  aabbFromCorners,
+  inverseTransformPoint,
+  composeTransform,
+  transformPoint,
+} from "@/math/aabb";
 import { EasingFunction as T } from "@/math/easing-function";
 
 export type Percent = `${number}%`;
@@ -24,12 +33,7 @@ type XLocation = NumberOrPercent | XLocationString;
 type YLocation = NumberOrPercent | YLocationString;
 export type TransformOrigin = [XLocation, YLocation];
 
-export type SDBox = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+export type { AABB } from "@/math/aabb";
 
 type AttributeListener = (vn: any, vo: any) => void;
 
@@ -181,10 +185,89 @@ export abstract class SDNode {
     return this.offAttributeChanged("opacity", listener);
   }
 
-  abstract getX(): number;
-  abstract getY(): number;
-  abstract getWidth(): number;
-  abstract getHeight(): number;
+  // Local: untransformed authoring frame.
+  // World: after walking this node's transform up the parent chain.
+  // Subclasses implement getLocalBox; everything else derives from it.
+  abstract getLocalBox(): AABB;
+
+  getLocalX(): number {
+    return this.getLocalBox().x;
+  }
+
+  getLocalY(): number {
+    return this.getLocalBox().y;
+  }
+
+  getLocalWidth(): number {
+    return this.getLocalBox().width;
+  }
+
+  getLocalHeight(): number {
+    return this.getLocalBox().height;
+  }
+
+  getLocalCenterX(): number {
+    const b = this.getLocalBox();
+    return b.x + b.width / 2;
+  }
+
+  getLocalCenterY(): number {
+    const b = this.getLocalBox();
+    return b.y + b.height / 2;
+  }
+
+  getLocalCenter(): [number, number] {
+    return [this.getLocalCenterX(), this.getLocalCenterY()];
+  }
+
+  getLocalMaxX(): number {
+    const b = this.getLocalBox();
+    return b.x + b.width;
+  }
+
+  getLocalMaxY(): number {
+    const b = this.getLocalBox();
+    return b.y + b.height;
+  }
+
+  getWorldAABB(): AABB {
+    let corners = aabbCorners(this.getLocalBox());
+    let node: SDNode | undefined = this;
+    while (node) {
+      const t = composeTransform(node.getLocalBox(), node.attributes);
+      corners = corners.map((c) => transformPoint(c, t));
+      node = node.parent;
+    }
+    return aabbFromCorners(corners);
+  }
+
+  worldToLocal(p: [number, number]): [number, number] {
+    const chain: Array<SDNode> = [];
+    let node: SDNode | undefined = this;
+    while (node) {
+      chain.push(node);
+      node = node.parent;
+    }
+    let q = p;
+    for (let i = chain.length - 1; i >= 0; i--) {
+      const n = chain[i];
+      const t = composeTransform(n.getLocalBox(), n.attributes);
+      q = inverseTransformPoint(q, t);
+    }
+    return q;
+  }
+
+  // Narrow-phase hit test. Broad-phase reject on world AABB, then defer
+  // to the per-shape local test (default = local AABB; Ellipse / Polygon
+  // / Path override).
+  containsPoint(p: [number, number]): boolean {
+    if (!aabbContainsPoint(this.getWorldAABB(), p)) return false;
+    return this.containsLocalPoint(this.worldToLocal(p));
+  }
+
+  protected containsLocalPoint(p: [number, number]): boolean {
+    return aabbContainsPoint(this.getLocalBox(), p);
+  }
 
   get scale(): [number, number] {
     return this.attributes.scale;
@@ -334,44 +417,6 @@ export abstract class SDNode {
     return this.offAttributeChanged("transformOrigin", listener);
   }
 
-  getCenter(): [number, number] {
-    return [this.getCenterX(), this.getCenterY()];
-  }
-
-  getCenterX(): number {
-    return this.getX() + this.getWidth() / 2;
-  }
-
-  getCx(): number {
-    return this.getCenterX();
-  }
-
-  getCenterY(): number {
-    return this.getY() + this.getHeight() / 2;
-  }
-
-  getCy(): number {
-    return this.getCenterY();
-  }
-
-  getMaxX() {
-    return this.getX() + this.getWidth();
-  }
-
-  getMaxY() {
-    return this.getY() + this.getHeight();
-  }
-
-  inRange(point: [number, number]): boolean {
-    const [x, y] = point;
-    return (
-      x >= this.getX() &&
-      x <= this.getMaxX() &&
-      y >= this.getY() &&
-      y <= this.getMaxY()
-    );
-  }
-
   /**
    * Makes this component appear.
    *
@@ -420,7 +465,7 @@ export abstract class SDNode {
   zoomIn() {
     return this.startSubAnimate() // scale from 0 to 1
       .subAnimate(0, 0)
-      .setTransformOrigin(this.getCenter())
+      .setTransformOrigin(this.getLocalCenter())
       .setScale(0)
       .subAnimate(0, 1)
       .setScale(1)
@@ -439,7 +484,7 @@ export abstract class SDNode {
   zoomOut() {
     return this.startSubAnimate() // scale from 1 to 0
       .subAnimate(0, 0)
-      .setTransformOrigin(this.getCenter())
+      .setTransformOrigin(this.getLocalCenter())
       .setScale(1)
       .subAnimate(0, 1)
       .setScale(0)

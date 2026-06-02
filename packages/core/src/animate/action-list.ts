@@ -305,10 +305,11 @@ export class ActionList {
   updateWindowSize() {
     this.actionsMap.forEach((_, entity) => {
       if (entity instanceof SDSVGNode && visible(entity)) {
-        Window.MATH_MINX = Math.min(Window.MATH_MINX, entity.getX());
-        Window.MATH_MINY = Math.min(Window.MATH_MINY, entity.getY());
-        Window.MATH_MAXX = Math.max(Window.MATH_MAXX, entity.getMaxX());
-        Window.MATH_MAXY = Math.max(Window.MATH_MAXY, entity.getMaxY());
+        const box = entity.getWorldAABB();
+        Window.MATH_MINX = Math.min(Window.MATH_MINX, box.x);
+        Window.MATH_MINY = Math.min(Window.MATH_MINY, box.y);
+        Window.MATH_MAXX = Math.max(Window.MATH_MAXX, box.x + box.width);
+        Window.MATH_MAXY = Math.max(Window.MATH_MAXY, box.y + box.height);
       }
     });
   }

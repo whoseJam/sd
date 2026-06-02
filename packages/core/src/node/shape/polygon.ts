@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { Group } from "@/node/other/group";
 import type { SDSVGNodeAttributes } from "@/node/svg-node";
@@ -87,20 +88,25 @@ export class Polygon extends BaseShape {
     );
   }
 
-  getX() {
-    return PolygonEngine.pointsToBox(this.points).x;
+  getLocalBox(): AABB {
+    return PolygonEngine.pointsToBox(this.points);
   }
 
-  getY() {
-    return PolygonEngine.pointsToBox(this.points).y;
-  }
-
-  getWidth() {
-    return PolygonEngine.pointsToBox(this.points).width;
-  }
-
-  getHeight() {
-    return PolygonEngine.pointsToBox(this.points).height;
+  // Ray-casting (even-odd) — works for arbitrary simple polygons.
+  protected containsLocalPoint(p: [number, number]): boolean {
+    const pts = this.points;
+    const n = pts.length;
+    if (n < 3) return false;
+    let inside = false;
+    for (let i = 0, j = n - 1; i < n; j = i++) {
+      const [xi, yi] = pts[i];
+      const [xj, yj] = pts[j];
+      const intersect =
+        yi > p[1] !== yj > p[1] &&
+        p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi;
+      if (intersect) inside = !inside;
+    }
+    return inside;
   }
 
   getPoints() {

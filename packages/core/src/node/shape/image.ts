@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { Group } from "@/node/other/group";
 import type { SDSVGNodeAttributes } from "@/node/svg-node";
 import type { RenderNode } from "@/renderer/render-node";
@@ -49,6 +50,11 @@ export class Image extends BaseShape {
     args?.targetNode?.appendChild(this.renderer);
   }
 
+  getLocalBox(): AABB {
+    const { x, y, width, height } = this.attributes;
+    return { x, y, width, height };
+  }
+
   get x(): number {
     return this.attributes.x;
   }
@@ -61,10 +67,6 @@ export class Image extends BaseShape {
       this.attributes.x,
       Interp.numberInterp,
     );
-  }
-
-  getX(): number {
-    return this.x;
   }
 
   setX(x: number): this {
@@ -94,10 +96,6 @@ export class Image extends BaseShape {
     );
   }
 
-  getY(): number {
-    return this.y;
-  }
-
   setY(y: number): this {
     this.y = y;
     return this;
@@ -123,10 +121,6 @@ export class Image extends BaseShape {
       this.attributes.width,
       Interp.numberInterp,
     );
-  }
-
-  getWidth(): number {
-    return this.width;
   }
 
   setWidth(width: number): this {
@@ -163,10 +157,6 @@ export class Image extends BaseShape {
       this.attributes.y,
       Interp.numberInterp,
     );
-  }
-
-  getHeight(): number {
-    return this.height;
   }
 
   setHeight(height: number): this {

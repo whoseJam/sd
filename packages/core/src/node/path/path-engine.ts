@@ -1,4 +1,5 @@
-import type { SDBox, SDNode } from "@/node/node";
+import type { AABB } from "@/math/aabb";
+import type { SDNode } from "@/node/node";
 
 import { Root, svg } from "@/interact/root";
 import { RenderNode } from "@/renderer/render-node";
@@ -37,7 +38,7 @@ export class PathEngine {
     );
     this.pathSVG.setAttribute("opacity", 0);
   }
-  static toBox(d: string): SDBox {
+  static toBox(d: string): AABB {
     this.pathSVG.setAttribute("d", this.flipY(d));
     const bbox = this.pathSVG.element().getBBox();
     return {
@@ -675,7 +676,7 @@ export class PathEngine {
       const mid = (l + r) / 2.0;
       const length = t * mid;
       const point = this.pathSVG.element().getPointAtLength(length);
-      if (source.inRange([point.x, point.y])) l = mid;
+      if (source.containsPoint([point.x, point.y])) l = mid;
       else r = mid;
     }
     if (t * l <= 1) return 0;
@@ -690,7 +691,7 @@ export class PathEngine {
       const mid = (l + r) / 2.0;
       const length = t * mid;
       const point = this.pathSVG.element().getPointAtLength(length);
-      if (target.inRange([point.x, point.y])) r = mid;
+      if (target.containsPoint([point.x, point.y])) r = mid;
       else l = mid;
     }
     if (t * (1 - l) <= 1) return 1;

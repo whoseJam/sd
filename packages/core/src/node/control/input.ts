@@ -1,9 +1,8 @@
+import type { BaseControlAttributes } from "@/node/control/base-control";
+
 import { Interp } from "@/animate/interp";
 import { Status } from "@/interact/status";
-import {
-  BaseControl,
-  BaseControlAttributes,
-} from "@/node/control/base-control";
+import { BaseControl } from "@/node/control/base-control";
 import { Dom } from "@/utility/dom";
 
 export type InputAttributes = BaseControlAttributes & {

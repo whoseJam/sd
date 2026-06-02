@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { TransformOrigin } from "@/node/node";
 import type { Group } from "@/node/other/group";
@@ -17,14 +18,10 @@ export type PathAttributes = BasePathAttributes & {
   d: string;
 };
 
-// x / y / width / height are bbox values derived from d; cached after
-// each `d` update so the public getters stay O(1).
+// Local box is derived from d and cached after each update so getLocalBox stays O(1).
 export class Path extends BasePath {
   declare attributes: PathAttributes;
-  protected x: number = 0;
-  protected y: number = 0;
-  protected width: number = 0;
-  protected height: number = 0;
+  protected box: AABB = { x: 0, y: 0, width: 0, height: 0 };
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "d") return renderer.setAttribute("d", PathEngine.flipY(value));
@@ -76,10 +73,12 @@ export class Path extends BasePath {
       d,
     };
     const box = PathEngine.toBox(d);
-    this.x = box.x ?? 0;
-    this.y = box.y ?? 0;
-    this.width = box.width ?? 0;
-    this.height = box.height ?? 0;
+    this.box = {
+      x: box.x ?? 0,
+      y: box.y ?? 0,
+      width: box.width ?? 0,
+      height: box.height ?? 0,
+    };
 
     this.createSVGNode("path", {
       filter: Filter.toURLString(args?.filter),
@@ -88,20 +87,23 @@ export class Path extends BasePath {
     args?.targetNode?.appendChild(this);
   }
 
-  getX() {
-    return this.x;
+  getLocalBox(): AABB {
+    return this.box;
   }
 
-  getY() {
-    return this.y;
-  }
-
-  getWidth() {
-    return this.width;
-  }
-
-  getHeight() {
-    return this.height;
+  // SVG isPointInFill works on the rendered element, whose y is flipped.
+  // We pass the renderer-flipped point so the test matches what the user sees.
+  protected containsLocalPoint(p: [number, number]): boolean {
+    const element = this.renderer?.element() as SVGGeometryElement | undefined;
+    if (!element || typeof element.isPointInFill !== "function") {
+      return super.containsLocalPoint(p);
+    }
+    const svgRoot = element.ownerSVGElement;
+    if (!svgRoot) return super.containsLocalPoint(p);
+    const pt = svgRoot.createSVGPoint();
+    pt.x = p[0];
+    pt.y = -p[1];
+    return element.isPointInFill(pt);
   }
 
   getPointAtRate(k: number): [number, number] {
@@ -128,10 +130,12 @@ export class Path extends BasePath {
   set d(v: string) {
     const old = this.attributes.d;
     const box = PathEngine.toBox(v);
-    this.x = box.x ?? 0;
-    this.y = box.y ?? 0;
-    this.width = box.width ?? 0;
-    this.height = box.height ?? 0;
+    this.box = {
+      x: box.x ?? 0,
+      y: box.y ?? 0,
+      width: box.width ?? 0,
+      height: box.height ?? 0,
+    };
     this.triggerAttributeChanged(this.renderer, "d", v, old, Interp.pathInterp);
   }
 

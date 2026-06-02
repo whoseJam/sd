@@ -1,8 +1,9 @@
-import type { SDBox } from "@/node/node";
+import type { AABB } from "@/math/aabb";
+import type { RenderNode } from "@/renderer/render-node";
 
 import { SDSVGNode } from "@/node/svg-node";
-import { RenderNode } from "@/renderer/render-node";
 
+// Markers are <defs> — they have no on-canvas footprint.
 export class Marker extends SDSVGNode {
   marker!: RenderNode;
 
@@ -11,17 +12,8 @@ export class Marker extends SDSVGNode {
 
     this.marker = this.createSVGNode("marker", {});
   }
-  getX() {
-    return 0;
-  }
-  getY() {
-    return 0;
-  }
-  getWidth() {
-    return 0;
-  }
-  getHeight() {
-    return 0;
+  getLocalBox(): AABB {
+    return { x: 0, y: 0, width: 0, height: 0 };
   }
   setID(id: string | number) {
     this.marker.setAttribute("id", id);
@@ -31,7 +23,7 @@ export class Marker extends SDSVGNode {
     this.marker.setAttribute("markerUnits", unit);
     return this;
   }
-  setViewBox(box: SDBox) {
+  setViewBox(box: AABB) {
     this.marker.setAttribute("viewBox", box);
     return this;
   }

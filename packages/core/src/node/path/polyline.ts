@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { TransformOrigin } from "@/node/node";
 import type { Group } from "@/node/other/group";
@@ -81,20 +82,12 @@ export class Polyline extends BasePath {
     args?.targetNode?.appendChild(this);
   }
 
-  getX() {
-    return PolylineEngine.toBox(this.points).x;
+  getLocalBox(): AABB {
+    return PolylineEngine.toBox(this.points);
   }
 
-  getY() {
-    return PolylineEngine.toBox(this.points).y;
-  }
-
-  getWidth() {
-    return PolylineEngine.toBox(this.points).width;
-  }
-
-  getHeight() {
-    return PolylineEngine.toBox(this.points).height;
+  protected containsLocalPoint(_p: [number, number]): boolean {
+    return false;
   }
 
   getPointAtRate(k: number) {

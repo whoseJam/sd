@@ -2,12 +2,12 @@ import type { Circle, SizedBoxNode } from "@sd/core";
 
 export function BackgroundLayout(lhs: SizedBoxNode, rhs: SizedBoxNode) {
   rhs
-    .setWidth(lhs.getWidth())
-    .setHeight(lhs.getHeight())
-    .setX(lhs.getX())
-    .setY(lhs.getY());
+    .setWidth(lhs.getLocalWidth())
+    .setHeight(lhs.getLocalHeight())
+    .setX(lhs.getLocalX())
+    .setY(lhs.getLocalY());
 }
 
 export function CircleBackgroundLayout(lhs: Circle, rhs: Circle) {
-  rhs.setR(lhs.getR()).setX(lhs.getX()).setY(lhs.getY());
+  rhs.setR(lhs.getR()).setX(lhs.getLocalX()).setY(lhs.getLocalY());
 }

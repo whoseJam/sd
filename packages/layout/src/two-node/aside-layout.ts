@@ -19,32 +19,36 @@ interface AsideLayoutParam {
   gap?: number;
 }
 
-export function AsideLayout(lhs: BoxNode, rhs: BoxNode, args: AsideLayoutParam) {
+export function AsideLayout(
+  lhs: BoxNode,
+  rhs: BoxNode,
+  args: AsideLayoutParam,
+) {
   const { align = "tc", gap = 5 } = args;
   if (align === "tl") {
-    rhs.setX(lhs.getX()).setMy(lhs.getY() - gap);
+    rhs.setX(lhs.getLocalX()).setMy(lhs.getLocalY() - gap);
   } else if (align === "tc") {
-    rhs.setCx(lhs.getCx()).setMy(lhs.getY() - gap);
+    rhs.setCx(lhs.getLocalCenterX()).setMy(lhs.getLocalY() - gap);
   } else if (align === "tr") {
-    rhs.setMx(lhs.getMaxX()).setMy(lhs.getY() - gap);
+    rhs.setMx(lhs.getLocalMaxX()).setMy(lhs.getLocalY() - gap);
   } else if (align === "lt") {
-    rhs.setMx(lhs.getX() - gap).setY(lhs.getY());
+    rhs.setMx(lhs.getLocalX() - gap).setY(lhs.getLocalY());
   } else if (align === "lc") {
-    rhs.setMx(lhs.getX() - gap).setCy(lhs.getCy());
+    rhs.setMx(lhs.getLocalX() - gap).setCy(lhs.getLocalCenterY());
   } else if (align === "lb") {
-    rhs.setMx(lhs.getX() - gap).setMy(lhs.getMaxY());
+    rhs.setMx(lhs.getLocalX() - gap).setMy(lhs.getLocalMaxY());
   } else if (align === "bl") {
-    rhs.setX(lhs.getX()).setY(lhs.getMaxY() + gap);
+    rhs.setX(lhs.getLocalX()).setY(lhs.getLocalMaxY() + gap);
   } else if (align === "bc") {
-    rhs.setCx(lhs.getCx()).setY(lhs.getMaxY() + gap);
+    rhs.setCx(lhs.getLocalCenterX()).setY(lhs.getLocalMaxY() + gap);
   } else if (align === "br") {
-    rhs.setMx(lhs.getMaxX()).setY(lhs.getMaxY() + gap);
+    rhs.setMx(lhs.getLocalMaxX()).setY(lhs.getLocalMaxY() + gap);
   } else if (align === "rt") {
-    rhs.setX(lhs.getMaxX() + gap).setY(lhs.getY());
+    rhs.setX(lhs.getLocalMaxX() + gap).setY(lhs.getLocalY());
   } else if (align === "rc") {
-    rhs.setX(lhs.getMaxX() + gap).setCy(lhs.getCy());
+    rhs.setX(lhs.getLocalMaxX() + gap).setCy(lhs.getLocalCenterY());
   } else if (align === "rb") {
-    rhs.setX(lhs.getMaxX() + gap).setMy(lhs.getMaxY());
+    rhs.setX(lhs.getLocalMaxX() + gap).setMy(lhs.getLocalMaxY());
   } else {
     throw new Error(`Invalid align: ${align}`);
   }

@@ -1,5 +1,7 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { Group } from "@/node/other/group";
+import type { BasePathAttributes } from "@/node/path/base-path";
 import type { StrokeLineCap, StrokeLineJoin } from "@/node/svg-node";
 import type { RenderNode } from "@/renderer/render-node";
 import type { SDColor } from "@/utility/color";
@@ -12,7 +14,6 @@ import { SDSVGNode } from "@/node/svg-node";
 import { Color as C } from "@/utility/color";
 
 import type { TransformOrigin } from "../node";
-import type { BasePathAttributes } from "@/node/path/base-path";
 
 export type LineAttributes = BasePathAttributes & {
   x1: number;
@@ -86,28 +87,20 @@ export class Line extends BasePath {
     args?.targetNode?.appendChild(this);
   }
 
-  getX() {
-    return Math.min(this.getX1(), this.getX2());
+  getLocalBox(): AABB {
+    const x1 = this.x1;
+    const x2 = this.x2;
+    const y1 = this.y1;
+    const y2 = this.y2;
+    const x = Math.min(x1, x2);
+    const y = Math.min(y1, y2);
+    return { x, y, width: Math.max(x1, x2) - x, height: Math.max(y1, y2) - y };
   }
 
-  getY() {
-    return Math.min(this.getY1(), this.getY2());
-  }
-
-  getMaxX() {
-    return Math.max(this.getX1(), this.getX2());
-  }
-
-  getMaxY() {
-    return Math.max(this.getY1(), this.getY2());
-  }
-
-  getWidth() {
-    return this.getMaxX() - this.getX();
-  }
-
-  getHeight() {
-    return this.getMaxY() - this.getY();
+  // Strokes have no fill — never claim a hit. (If a future need arises,
+  // add a distance-to-segment test against strokeWidth/2.)
+  protected containsLocalPoint(_p: [number, number]): boolean {
+    return false;
   }
 
   get x1(): number {

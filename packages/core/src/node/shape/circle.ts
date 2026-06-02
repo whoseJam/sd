@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDFilter } from "@/node/filter/filter";
 import type { TransformOrigin } from "@/node/node";
 import type { Group } from "@/node/other/group";
@@ -83,6 +84,35 @@ export class Circle extends BaseShape {
     args?.targetNode?.appendChild(this);
   }
 
+  getLocalBox(): AABB {
+    const { cx, cy, r } = this.attributes;
+    return { x: cx - r, y: cy - r, width: 2 * r, height: 2 * r };
+  }
+
+  protected containsLocalPoint(p: [number, number]): boolean {
+    const { cx, cy, r } = this.attributes;
+    if (r === 0) return false;
+    const dx = p[0] - cx;
+    const dy = p[1] - cy;
+    return dx * dx + dy * dy <= r * r;
+  }
+
+  setX(x: number): this {
+    return this.setCx(x + this.attributes.r);
+  }
+
+  setY(y: number): this {
+    return this.setCy(y + this.attributes.r);
+  }
+
+  setWidth(width: number): this {
+    return this.setR(width / 2);
+  }
+
+  setHeight(height: number): this {
+    return this.setR(height / 2);
+  }
+
   get cx(): number {
     return this.attributes.cx;
   }
@@ -112,10 +142,6 @@ export class Circle extends BaseShape {
 
   offCxChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("cx", listener);
-  }
-
-  getCenterX(): number {
-    return this.getCx();
   }
 
   onCenterXChanged(listener: (vn: number, vo: number) => void) {
@@ -155,10 +181,6 @@ export class Circle extends BaseShape {
 
   offCyChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("cy", listener);
-  }
-
-  getCenterY(): number {
-    return this.getCy();
   }
 
   onCenterYChanged(listener: (vn: number, vo: number) => void) {
@@ -206,37 +228,5 @@ export class Circle extends BaseShape {
 
   offRChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("r", listener);
-  }
-
-  getX(): number {
-    return this.getCenterX() - this.getR();
-  }
-
-  setX(x: number): this {
-    return this.setCenterX(this.getCenterX() + x - this.getX());
-  }
-
-  getY(): number {
-    return this.getCenterY() - this.getR();
-  }
-
-  setY(y: number): this {
-    return this.setCenterY(this.getCenterY() + y - this.getY());
-  }
-
-  getWidth(): number {
-    return this.getR() * 2;
-  }
-
-  setWidth(width: number): this {
-    return this.setR(width / 2);
-  }
-
-  getHeight(): number {
-    return this.getR() * 2;
-  }
-
-  setHeight(height: number): this {
-    return this.setR(height / 2);
   }
 }

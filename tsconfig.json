@@ -26,5 +26,12 @@
     "incremental": true
   },
   "include": ["packages/core/src/**/*", "examples/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts", "work", "题库", "examples/_archive"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "work",
+    "题库",
+    "examples/_archive"
+  ]
 }

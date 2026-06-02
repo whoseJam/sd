@@ -80,7 +80,10 @@ export abstract class BaseText extends BoxSVGNode {
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y")
-      return renderer.setAttribute("y", -(value + (this.getHeight() || 0)));
+      return renderer.setAttribute(
+        "y",
+        -(value + (this.getLocalHeight() || 0)),
+      );
     super.renderAttribute(renderer, key, value);
   }
 
@@ -102,10 +105,6 @@ export abstract class BaseText extends BoxSVGNode {
       this.attributes.x,
       Interp.numberInterp,
     );
-  }
-
-  getX(): number {
-    return this.x;
   }
 
   setX(x: number): this {
@@ -135,10 +134,6 @@ export abstract class BaseText extends BoxSVGNode {
     );
   }
 
-  getY(): number {
-    return this.y;
-  }
-
   setY(y: number): this {
     this.y = y;
     return this;
@@ -151,5 +146,4 @@ export abstract class BaseText extends BoxSVGNode {
   offYChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("y", listener);
   }
-
 }

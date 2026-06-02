@@ -16,8 +16,8 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
   const text_ = A.getAttribute(text, "text", t, text.getText());
   const family = A.getAttribute(text, "fontFamily", t, text.getFontFamily());
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
-  const x = A.getAttribute(text, "x", t, text.getX());
-  const y = A.getAttribute(text, "y", t, text.getY());
+  const x = A.getAttribute(text, "x", t, text.getLocalX());
+  const y = A.getAttribute(text, "y", t, text.getLocalY());
   const paths = FontManager.getTextPathsFromOpenType(text_, family, size, x, y);
   return paths.map((path) => {
     const data = path.toPathData(4);
@@ -29,8 +29,8 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
 function getMathPaths(text: Math, t: number): Array<PathView> {
   const html = A.getAttribute(text, "html", t, text.attributes.html);
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
-  const x = A.getAttribute(text, "x", t, text.getX());
-  const y = A.getAttribute(text, "y", t, text.getY());
+  const x = A.getAttribute(text, "x", t, text.getLocalX());
+  const y = A.getAttribute(text, "y", t, text.getLocalY());
   html.setAttribute("font-size", size);
   text.renderAttribute(html, "x", x);
   text.renderAttribute(html, "y", y);
@@ -45,8 +45,8 @@ export function getTextPaths2(
 ): Array<PathView> {
   const family = A.getAttribute(text, "fontFamily", t, text.getFontFamily());
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
-  const x = A.getAttribute(text, "x", t, text.getX());
-  const y = A.getAttribute(text, "y", t, text.getY());
+  const x = A.getAttribute(text, "x", t, text.getLocalX());
+  const y = A.getAttribute(text, "y", t, text.getLocalY());
   const paths = FontManager.getTextPathsFromOpenType(
     string,
     family,

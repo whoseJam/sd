@@ -7,7 +7,7 @@ interface CenterContentFitLayoutParam {
 }
 
 export function CenterLayout(lhs: BoxNode, rhs: BoxNode) {
-  rhs.setCenter(lhs.getCenter());
+  rhs.setCenter(lhs.getLocalCenter());
 }
 
 export function CenterContentFitLayout(
@@ -31,10 +31,10 @@ export function CenterRectContentFitLayout(
 ) {
   const { rate = 1.2 } = args ?? {};
 
-  const center = lhs.getCenter();
-  const [w, h] = [lhs.getWidth(), lhs.getHeight()];
-  const cw = Math.max(rhs.getWidth(), 1);
-  const ch = Math.max(rhs.getHeight(), 1);
+  const center = lhs.getLocalCenter();
+  const [w, h] = [lhs.getLocalWidth(), lhs.getLocalHeight()];
+  const cw = Math.max(rhs.getLocalWidth(), 1);
+  const ch = Math.max(rhs.getLocalHeight(), 1);
   const k = Math.min(w / cw, h / ch) / rate;
 
   rhs
@@ -50,10 +50,10 @@ export function CenterCircleContentFitLayout(
 ) {
   const { rate = 1.2 } = args ?? {};
 
-  const center = lhs.getCenter();
-  const r = Math.min(lhs.getWidth(), lhs.getHeight()) / 2 / rate;
-  const cw = Math.max(rhs.getWidth(), 1);
-  const ch = Math.max(rhs.getHeight(), 1);
+  const center = lhs.getLocalCenter();
+  const r = Math.min(lhs.getLocalWidth(), lhs.getLocalHeight()) / 2 / rate;
+  const cw = Math.max(rhs.getLocalWidth(), 1);
+  const ch = Math.max(rhs.getLocalHeight(), 1);
   const k = ch / cw;
   const w = 2 * Math.sqrt((r * r) / (k * k + 1));
   const h = w * k;
@@ -68,10 +68,13 @@ export function CenterEllipseContentFitLayout(
 ) {
   const { rate = 1.2 } = args ?? {};
 
-  const center = lhs.getCenter();
-  const [w, h] = [lhs.getWidth() / 2 / rate, lhs.getHeight() / 2 / rate];
-  const cw = Math.max(rhs.getWidth(), 1);
-  const ch = Math.max(rhs.getHeight(), 1);
+  const center = lhs.getLocalCenter();
+  const [w, h] = [
+    lhs.getLocalWidth() / 2 / rate,
+    lhs.getLocalHeight() / 2 / rate,
+  ];
+  const cw = Math.max(rhs.getLocalWidth(), 1);
+  const ch = Math.max(rhs.getLocalHeight(), 1);
   const k = Math.min(
     (2 * w) / cw,
     (2 * h) / ch,

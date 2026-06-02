@@ -1,3 +1,4 @@
+import type { AABB } from "@/math/aabb";
 import type { SDNodeAttributes } from "@/node/node";
 import type { Group } from "@/node/other/group";
 
@@ -135,8 +136,9 @@ export class Caption extends SizedBoxHTMLNode {
     args?.targetNode?.appendChild(this);
   }
 
-  getX(): number {
-    return this.attributes.x;
+  getLocalBox(): AABB {
+    const { x, y, width, height } = this.attributes;
+    return { x, y, width, height };
   }
 
   setX(x: number) {
@@ -157,10 +159,6 @@ export class Caption extends SizedBoxHTMLNode {
     return this.offAttributeChanged("x", listener);
   }
 
-  getY(): number {
-    return this.attributes.y;
-  }
-
   setY(y: number) {
     return this.triggerAttributeChanged(
       this.foreign,
@@ -179,10 +177,6 @@ export class Caption extends SizedBoxHTMLNode {
     return this.offAttributeChanged("y", listener);
   }
 
-  getWidth(): number {
-    return this.attributes.width;
-  }
-
   setWidth(width: number) {
     return this.triggerAttributeChanged(
       this.foreign,
@@ -199,10 +193,6 @@ export class Caption extends SizedBoxHTMLNode {
 
   offWidthChanged(listener: (vn: number, vo: number) => void) {
     return this.offAttributeChanged("width", listener);
-  }
-
-  getHeight(): number {
-    return this.attributes.height;
   }
 
   setHeight(height: number) {
