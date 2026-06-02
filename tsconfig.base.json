@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2022",
     "module": "es6",
     "moduleResolution": "Node",
-    "lib": ["es6", "DOM"],
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
