@@ -362,6 +362,16 @@ export abstract class SDNode {
     return this.getY() + this.getHeight();
   }
 
+  inRange(point: [number, number]): boolean {
+    const [x, y] = point;
+    return (
+      x >= this.getX() &&
+      x <= this.getMaxX() &&
+      y >= this.getY() &&
+      y <= this.getMaxY()
+    );
+  }
+
   /**
    * Makes this component appear.
    *
