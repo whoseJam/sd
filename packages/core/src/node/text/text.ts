@@ -17,10 +17,6 @@ import {
   transformProcess,
   transformPostProcess,
 } from "@/node/text/text-engine/transform";
-import {
-  typewritterProcess,
-  typewritterPostProcess,
-} from "@/node/text/text-engine/typewritter";
 import { Color as C } from "@/utility/color";
 
 import type { TransformOrigin } from "../node";
@@ -297,36 +293,50 @@ export class Text extends BaseText {
     return this.offAttributeChanged("fontFamily", listener);
   }
 
-  typewritter(text: string | number) {
-    const text_ = String(text);
-    const box = FontManager.boundingBox(
-      text_,
-      this.attributes.fontFamily,
-      this.attributes.fontSize,
+  setSubtextFill(subtext: string | number, color: SDColor, i: number = 0) {
+    return this.applySubtextStyle(subtext, i, (style) => (style.fill = color));
+  }
+
+  setSubtextStroke(subtext: string | number, color: SDColor, i: number = 0) {
+    return this.applySubtextStyle(subtext, i, (style) => (style.stroke = color));
+  }
+
+  setSubtextStrokeWidth(
+    subtext: string | number,
+    width: number,
+    i: number = 0,
+  ) {
+    return this.applySubtextStyle(
+      subtext,
+      i,
+      (style) => (style.strokeWidth = width),
     );
-    const styles = buildAnimation(
+  }
+
+  private applySubtextStyle(
+    subtext: string | number,
+    occurrence: number,
+    mutate: (style: PathStyle) => void,
+  ) {
+    const textView = createTextView(this.attributes.text, {});
+    const subtextView = matchSubtext(textView, String(subtext), occurrence);
+    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
+      style.clone(),
+    );
+    subtextView.__iterate((j) => mutate(newStyles[j]));
+    buildAnimation(
       this,
-      { text: this.attributes.text, styles: this.attributes.subtextStyles },
-      { text: text_ },
-      typewritterProcess(),
-      typewritterPostProcess(this, this.parent.getRootRenderNode()),
-      "typewritter",
+      { text: this.attributes.text },
+      { text: this.attributes.text },
+      transformProcess([]),
+      transformPostProcess(this, this.parent.getRootRenderNode()),
+      "*",
     );
-    const html = parseToHTML(styles, text_);
-    this.width = box.width;
-    this.height = box.height;
-    this.refreshY();
-    this.triggerAttributeChanged(
-      undefined,
-      "text",
-      text_,
-      this.attributes.text,
-      Interp.emptyInterp,
-    );
+    const html = parseToHTML(newStyles, this.attributes.text);
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",
-      styles,
+      newStyles,
       this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
@@ -337,70 +347,6 @@ export class Text extends BaseText {
       this.attributes.html,
       Interp.stringBlankInMiddleInterp,
     );
-    return this;
-  }
-
-  setSubtextFill(subtext: string | number, color: SDColor, i: number = 0) {
-    const textView = createTextView(this.attributes.text, {});
-    const subtextView = matchSubtext(textView, String(subtext));
-    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
-      style.clone(),
-    );
-    subtextView.__iterate((i) => (newStyles[i].fill = color));
-    buildAnimation(
-      this,
-      { text: this.attributes.text },
-      { text: this.attributes.text },
-      transformProcess([]),
-      transformPostProcess(this, this.parent.getRootRenderNode()),
-      "*",
-    );
-    this.attributes.subtextStyles = newStyles;
-    this.attributes.html = parseToHTML.call(this);
-    return this;
-  }
-
-  setSubtextStroke(subtext: string | number, color: SDColor, i: number = 0) {
-    const textView = createTextView(this.attributes.text, {});
-    const subtextView = matchSubtext(textView, String(subtext));
-    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
-      style.clone(),
-    );
-    subtextView.__iterate((i) => (newStyles[i].stroke = color));
-    buildAnimation(
-      this,
-      { text: this.attributes.text },
-      { text: this.attributes.text },
-      transformProcess([]),
-      transformPostProcess(this, this.parent.getRootRenderNode()),
-      "*",
-    );
-    this.attributes.subtextStyles = newStyles;
-    this.attributes.html = parseToHTML.call(this);
-    return this;
-  }
-
-  setSubtextStrokeWidth(
-    subtext: string | number,
-    width: number,
-    i: number = 0,
-  ) {
-    const textView = createTextView(this.attributes.text, {});
-    const subtextView = matchSubtext(textView, String(subtext));
-    const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
-      style.clone(),
-    );
-    subtextView.__iterate((i) => (newStyles[i].strokeWidth = width));
-    buildAnimation(
-      this,
-      { text: this.attributes.text },
-      { text: this.attributes.text },
-      transformProcess([]),
-      transformPostProcess(this, this.parent.getRootRenderNode()),
-      "*",
-    );
-    this.attributes.subtextStyles = newStyles;
-    this.attributes.html = parseToHTML.call(this);
     return this;
   }
 }

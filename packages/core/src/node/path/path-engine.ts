@@ -485,15 +485,66 @@ export class PathEngine {
   // number of cubic segments so caller can lerp them operator-by-
   // operator. Alignment splits the longest cubic in the shorter array
   // at t=0.5 using De Casteljau, repeating until the counts match.
+  // Equalize op count between two paths so pathInterp can lerp them
+  // op-by-op. Works in two passes:
+  //
+  //   1. Sub-path count alignment — if one side has fewer M operators,
+  //      append a degenerate sub-path ([M x y, C x y x y x y]) anchored
+  //      at that side's OWN first M. The missing sub-path therefore
+  //      appears to grow out of the path's existing position during
+  //      morph rather than popping in from the other side's coords.
+  //   2. Per-sub-path cubic count alignment — splitLongestCubic does
+  //      not know about M boundaries; running it globally on a flat op
+  //      list can split a cubic in the wrong sub-path and leave op
+  //      types misaligned. We split per-sub-path-pair instead.
   static toCubics(
     path1: string | PathOpers,
     path2: string | PathOpers,
   ): [PathOpers, PathOpers] {
-    const a = this.toCubic(path1);
-    const b = this.toCubic(path2);
-    while (a.length < b.length && PathEngine.splitLongestCubic(a)) {}
-    while (b.length < a.length && PathEngine.splitLongestCubic(b)) {}
-    return [a, b];
+    const aSubs = this.splitSubpaths(this.toCubic(path1));
+    const bSubs = this.splitSubpaths(this.toCubic(path2));
+    while (aSubs.length < bSubs.length)
+      aSubs.push(PathEngine.degenerateAt(aSubs[0]));
+    while (bSubs.length < aSubs.length)
+      bSubs.push(PathEngine.degenerateAt(bSubs[0]));
+    for (let i = 0; i < aSubs.length; i++) {
+      while (
+        aSubs[i].length < bSubs[i].length &&
+        PathEngine.splitLongestCubic(aSubs[i])
+      ) {}
+      while (
+        bSubs[i].length < aSubs[i].length &&
+        PathEngine.splitLongestCubic(bSubs[i])
+      ) {}
+    }
+    return [aSubs.flat() as PathOpers, bSubs.flat() as PathOpers];
+  }
+
+  // Split a flat op list into one PathOpers per sub-path. Each result
+  // entry begins with an M (or m). Ops before the first M are dropped.
+  static splitSubpaths(ops: PathOpers): PathOpers[] {
+    const result: PathOpers[] = [];
+    let current: PathOpers = [];
+    for (const op of ops) {
+      if (op[0] === "M" || op[0] === "m") {
+        if (current.length) result.push(current);
+        current = [op];
+      } else if (current.length) {
+        current.push(op);
+      }
+    }
+    if (current.length) result.push(current);
+    return result;
+  }
+
+  private static degenerateAt(ref: PathOpers): PathOpers {
+    const m = ref[0];
+    const x = m[1] as number;
+    const y = m[2] as number;
+    return [
+      ["M", x, y],
+      ["C", x, y, x, y, x, y],
+    ];
   }
 
   // Find the cubic with the longest chord and replace it with its two

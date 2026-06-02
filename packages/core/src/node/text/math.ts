@@ -250,7 +250,7 @@ export class Math extends BaseText {
   ): this {
     const textView = createTextView(this.attributes.text, {});
     const text = parseToHTML(this, String(subtext))[1];
-    const subtextView = matchSubtext(textView, text);
+    const subtextView = matchSubtext(textView, text, i);
     const newStyles = this.attributes.subtextStyles.map((style: PathStyle) =>
       style.clone(),
     );

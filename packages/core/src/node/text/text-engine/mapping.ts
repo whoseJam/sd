@@ -27,12 +27,18 @@ function calculate(
 export function matchSubtext(
   textView: TextView,
   pattern: string | Array<string>,
+  occurrence: number = 0,
 ): SubtextView {
+  let remaining = occurrence;
   for (let i = 0; i < textView.text.length; i++) {
     let matched = true;
     for (let j = 0; j < pattern.length && matched; j++)
       if (pattern[j] !== textView.text[i + j]) matched = false;
-    if (matched) return new SubtextView(textView, i, i + pattern.length - 1);
+    if (matched) {
+      if (remaining === 0)
+        return new SubtextView(textView, i, i + pattern.length - 1);
+      remaining--;
+    }
   }
   console.warn(pattern);
   throw new Error("Subtext Not Found");

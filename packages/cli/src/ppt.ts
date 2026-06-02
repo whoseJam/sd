@@ -49,14 +49,12 @@ defineEventListener("png|jpg|jpeg", {
   onChange: copyImage,
   onUnlink: cleanFile,
 });
-defineEventListener("js", {
-  onAdd: function (filePath, destFolderPath) {
-    gulp.task(filePath, () => animation.task(filePath, destFolderPath));
-    gulp.task(filePath)();
-  },
-  onChange: function () {},
-  onUnlink: function () {},
-});
+const onAddAnimation = (filePath: string, destFolderPath: string) => {
+  gulp.task(filePath, () => animation.task(filePath, destFolderPath));
+  gulp.task(filePath)();
+};
+defineEventListener("js", { onAdd: onAddAnimation, onChange: () => {}, onUnlink: () => {} });
+defineEventListener("ts", { onAdd: onAddAnimation, onChange: () => {}, onUnlink: () => {} });
 
 export function task(
   source: string,

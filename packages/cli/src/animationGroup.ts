@@ -17,14 +17,13 @@ interface FileEventListener {
 
 const eventListener: Record<string, FileEventListener> = {};
 
-defineEventListener("js", {
-  onAdd: function (filePath, dest) {
-    gulp.task(filePath, () => animation.task(filePath, dest));
-    gulp.task(filePath)();
-  },
-  onChange: function () {},
-  onUnlink: function () {},
-});
+const onAddEntry = (filePath: string, dest: string) => {
+  gulp.task(filePath, () => animation.task(filePath, dest));
+  gulp.task(filePath)();
+};
+
+defineEventListener("js", { onAdd: onAddEntry, onChange: () => {}, onUnlink: () => {} });
+defineEventListener("ts", { onAdd: onAddEntry, onChange: () => {}, onUnlink: () => {} });
 
 export function task(source: string, targetFolder: string): void {
   global.source = source;
@@ -32,7 +31,7 @@ export function task(source: string, targetFolder: string): void {
 
   walk(source, (p: string) => {
     const suffix = p.split(".").slice(-1)[0];
-    if (suffix !== "js") return;
+    if (suffix !== "js" && suffix !== "ts") return;
     eventListener[suffix].onAdd(pathToOriginFile(p), pathToTargetFolder(p));
   });
 
@@ -41,7 +40,7 @@ export function task(source: string, targetFolder: string): void {
     watcher.on("add", function (p: string) {
       p = p.replaceAll("\\", "/");
       const suffix = p.split(".").slice(-1)[0];
-      if (suffix !== "js") return;
+      if (suffix !== "js" && suffix !== "ts") return;
       if (!eventListener[suffix] || !eventListener[suffix].onAdd) {
         console.log(
           colors(
@@ -56,7 +55,7 @@ export function task(source: string, targetFolder: string): void {
     watcher.on("unlink", function (p: string) {
       p = p.replaceAll("\\", "/");
       const suffix = p.split(".").slice(-1)[0];
-      if (suffix !== "js") return;
+      if (suffix !== "js" && suffix !== "ts") return;
       if (!eventListener[suffix] || !eventListener[suffix].onUnlink) {
         console.log(
           colors(

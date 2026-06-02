@@ -74,35 +74,43 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         sourceSubtext.count(),
         targetSubtext.count(),
       );
+      const fadePath = (
+        node: RenderNode,
+        d: string,
+        opacityFrom: number,
+        opacityTo: number,
+      ) => {
+        node.setAttribute("d", d);
+        createAction(node, opacityFrom, opacityTo, Interp.numberInterp, "opacity");
+      };
+      const makePath = () =>
+        RenderNode.createRenderNodeWithoutAction(undefined, group, "path");
       for (const [sourceIndex, targetIndex] of mapping) {
-        const character = RenderNode.createRenderNodeWithoutAction(
-          undefined,
-          group,
-          "path",
-        );
         const source = sourcePaths[sourceIndex];
         const target = targetPaths[targetIndex];
         if (sourceIndex === undefined) {
-          if (!target) continue;
-          character.setAttribute("d", target.d);
-          createAction(character, 0, 1, Interp.numberInterp, "opacity");
-          continue;
-        } else if (targetIndex === undefined) {
-          if (!source) continue;
-          character.setAttribute("d", source.d);
-          createAction(character, 1, 0, Interp.numberInterp, "opacity");
-          continue;
-        } else if (source === undefined && target === undefined) {
-          continue;
-        } else if (source === undefined) {
-          character.setAttribute("d", target.d);
-          createAction(character, 0, 1, Interp.numberInterp, "opacity");
-          continue;
-        } else if (target === undefined) {
-          character.setAttribute("d", source.d);
-          createAction(character, 1, 0, Interp.numberInterp, "opacity");
+          if (target) fadePath(makePath(), target.d, 0, 1);
           continue;
         }
+        if (targetIndex === undefined) {
+          if (source) fadePath(makePath(), source.d, 1, 0);
+          continue;
+        }
+        if (source === undefined && target === undefined) continue;
+        if (source === undefined) {
+          fadePath(makePath(), target.d, 0, 1);
+          continue;
+        }
+        if (target === undefined) {
+          fadePath(makePath(), source.d, 1, 0);
+          continue;
+        }
+        // Both chars exist — one path node, morph d directly. Sub-path
+        // alignment (multi-M glyphs like "o" matched against single-M
+        // ones like "1") is handled inside PathEngine.toCubics. Keeping
+        // a single <path> element preserves SVG fill-rule semantics so
+        // glyph holes (o's inner) render as actual holes.
+        const character = makePath();
         character.setAttribute("d", source.d);
         character.setAttribute("transform", source.transform);
         createAction(character, source.d, target.d, Interp.pathInterp, "d");

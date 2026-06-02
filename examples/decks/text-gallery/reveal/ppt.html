@@ -1,0 +1,101 @@
+<section>
+    <h1>Text Gallery</h1>
+    <p>Visual walkthrough of <code>sd.Text</code> contracts.</p>
+    <p style="opacity:0.6;font-size:0.6em">→ / space to advance. Animated slides also use space to trigger.</p>
+</section>
+
+<section>
+    <h2>defaults</h2>
+    <p style="font-size:0.6em">Black "Hello" at center — fontSize 20, Times New Roman.</p>
+    <sd-animation src="../animation/defaults.js"
+        viewbox="-150 -50 300 100"
+        style="width: 600px; height: 200px;"></sd-animation>
+</section>
+
+<section>
+    <h2>font-size</h2>
+    <p style="font-size:0.6em">20 / 40 / 80 px stacked top→bottom — each line ~2× taller than the previous.</p>
+    <sd-animation src="../animation/font-size.js"
+        viewbox="-250 -150 500 400"
+        style="width: 700px; height: 560px;"></sd-animation>
+</section>
+
+<section>
+    <h2>font-family</h2>
+    <p style="font-size:0.6em">Top: Times New Roman (serif). Bottom: Arial (sans-serif). Same text, same size, visibly different glyph shapes.</p>
+    <sd-animation src="../animation/font-family.js"
+        viewbox="-320 -130 640 260"
+        style="width: 1000px; height: 400px;"></sd-animation>
+</section>
+
+<section>
+    <h2>anchor</h2>
+    <p style="font-size:0.6em">Each red dot is at the same math y. Labels show what corner of the text box anchors to the dot for each constructor arg: <code>(x,y)</code> = bottom-left, <code>(cx,cy)</code> = vertical center on left edge, <code>(centerX,centerY)</code> = box center.</p>
+    <sd-animation src="../animation/anchor.js"
+        viewbox="-400 30 1000 180"
+        style="width: 1200px; height: 220px;"></sd-animation>
+</section>
+
+<section>
+    <h2>subtext-fill</h2>
+    <p style="font-size:0.6em">Three "abcde" rows — top untouched (control), middle: chars 2-3 ("cd") red, bottom: chars 0-2 ("abc") blue. Only the highlighted range should be colored.</p>
+    <sd-animation src="../animation/subtext-fill.js"
+        viewbox="-160 -140 320 320"
+        style="width: 500px; height: 500px;"></sd-animation>
+</section>
+
+<section>
+    <h2>subtext-i-param</h2>
+    <p style="font-size:0.6em">Three "ababab" rows with <code>setSubtextFill("ab", red, i)</code> at i=0,1,2 top→bottom. Expect the red pair to slide right as i grows — verifying the matchSubtext occurrence fix.</p>
+    <sd-animation src="../animation/subtext-i-param.js"
+        viewbox="-200 -140 400 320"
+        style="width: 600px; height: 480px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-default</h2>
+    <p style="font-size:0.6em">Press space — "1" transforms into "hello" with default mapping (chars fade in/out, no specific letter mapping).</p>
+    <sd-animation src="../animation/set-text-default.js"
+        viewbox="-250 -100 500 200"
+        style="width: 800px; height: 320px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-mapping</h2>
+    <p style="font-size:0.6em">Press space — "H" → "II" via explicit mapping <code>{H: "II"}</code>. The H should split into two I's, not fade.</p>
+    <sd-animation src="../animation/set-text-mapping.js"
+        viewbox="-200 -120 400 240"
+        style="width: 600px; height: 360px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-insert</h2>
+    <p style="font-size:0.6em">Press space — "1234" → "1+2+3+4" with mapping <code>{1:"1", 2:"2", 3:"3", 4:"4"}</code>. Digits should stay put; "+" glyphs should grow in between.</p>
+    <sd-animation src="../animation/set-text-insert.js"
+        viewbox="-280 -80 560 160"
+        style="width: 1000px; height: 280px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-font-size-animated</h2>
+    <p style="font-size:0.6em">Press space — fontSize 20 → 120 over 1.5s. The text bottom-left corner stays pinned to the red dot through the entire tween (math y must not drift).</p>
+    <sd-animation src="../animation/set-font-size-animated.js"
+        viewbox="-250 -30 800 200"
+        style="width: 1200px; height: 320px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-font-family</h2>
+    <p style="font-size:0.6em">Press space — Times New Roman morphs to Arial. Glyph outlines should interpolate continuously, not pop.</p>
+    <sd-animation src="../animation/set-font-family.js"
+        viewbox="-220 -80 440 160"
+        style="width: 700px; height: 260px;"></sd-animation>
+</section>
+
+<section>
+    <h2>set-text-noop</h2>
+    <p style="font-size:0.6em">Press space — <code>setText("hello")</code> on a Text already "hello" must be a true no-op: zero motion, zero flicker. (Locks in the early-return in <code>setText</code>.)</p>
+    <sd-animation src="../animation/set-text-noop.js"
+        viewbox="-220 -80 440 160"
+        style="width: 700px; height: 260px;"></sd-animation>
+</section>
