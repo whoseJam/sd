@@ -80,7 +80,10 @@ function getConfiguration(file: string, targetFolder: string) {
         : ".";
   const plugins = [
     new HtmlWebpackPlugin({
-      template: path.join(import.meta.dirname, "../../element/src/template.html"),
+      template: path.join(
+        import.meta.dirname,
+        "../../element/src/template.html",
+      ),
       inject: "body",
       inlineSource: ".(js)$",
       minify: false,

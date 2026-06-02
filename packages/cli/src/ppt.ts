@@ -14,6 +14,7 @@ import { parseConfig, parseInput } from "./parser";
 import { toOriginFile, toTargetFile, toTargetFolder, walk } from "./path-utils";
 import theme from "./theme";
 import { copyVendorAssets } from "./utils";
+import { cssRule, perfHints, scssRule, tsLoaderRule } from "./webpack-base";
 
 const require = createRequire(import.meta.url);
 
@@ -29,7 +30,10 @@ function getHost(): PptHost {
   const framework = global.framework ?? "reveal";
   if (!VALID_FRAMEWORKS.includes(framework)) {
     console.log(
-      colors("red", `[Error] Unknown framework '${framework}'. Valid: ${VALID_FRAMEWORKS.join(", ")}`),
+      colors(
+        "red",
+        `[Error] Unknown framework '${framework}'. Valid: ${VALID_FRAMEWORKS.join(", ")}`,
+      ),
     );
     process.exit(1);
   }
@@ -120,7 +124,10 @@ export function task(
       );
       return;
     }
-    eventListener[suffix].onAdd(toOriginFile(source, p), toTargetFolder(source, targetFolder, p));
+    eventListener[suffix].onAdd(
+      toOriginFile(source, p),
+      toTargetFolder(source, targetFolder, p),
+    );
   });
 
   if (global.w) {
@@ -154,7 +161,10 @@ export function task(
         );
         return;
       }
-      eventListener[suffix].onAdd(toOriginFile(source, p), toTargetFolder(source, targetFolder, p));
+      eventListener[suffix].onAdd(
+        toOriginFile(source, p),
+        toTargetFolder(source, targetFolder, p),
+      );
     });
     watcher.on("unlink", function (p: string) {
       p = p.replaceAll("\\", "/");
@@ -292,41 +302,12 @@ function getConfiguration() {
       assetModuleFilename: `${outputPrefix}[hash][ext]`,
     },
     module: {
-      rules: [
-        {
-          test: /\.js$/,
-          use: { loader: "babel-loader" },
-        },
-        {
-          test: /\.ts$/,
-          use: {
-            loader: "ts-loader",
-            options: {
-              compilerOptions: {
-                allowJs: true,
-                target: "ES6",
-                module: "ESNext",
-                moduleResolution: "Node",
-                strict: false,
-                skipLibCheck: true,
-              },
-              transpileOnly: true,
-            },
-          },
-        },
-        { test: /\.css$/, use: ["style-loader", "css-loader"] },
-        {
-          test: /\.scss$/,
-          use: ["style-loader", "css-loader", "sass-loader"],
-        },
-      ],
+      rules: [tsLoaderRule(isDev), cssRule, scssRule],
     },
     resolve: {
       extensions: [".ts", ".js"],
     },
-    performance: {
-      hints: false,
-    },
+    performance: perfHints,
     cache: true,
   };
 }

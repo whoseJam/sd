@@ -2,6 +2,8 @@ import gulp from "gulp";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
+import { perfHints, tsLoaderRule } from "./webpack-base";
+
 export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
     .src(["./packages/element/src/element.ts"])
@@ -27,29 +29,9 @@ function getConfiguration() {
       iife: true,
     },
     module: {
-      rules: [
-        {
-          test: /\.(ts|js)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "ts-loader",
-            options: {
-              compilerOptions: {
-                allowJs: true,
-                target: "ES6",
-                module: "ESNext",
-                moduleResolution: "Node",
-                strict: false,
-                skipLibCheck: true,
-                sourceMap: isDev,
-              },
-              transpileOnly: true,
-            },
-          },
-        },
-      ],
+      rules: [tsLoaderRule(isDev)],
     },
-    performance: { hints: false },
+    performance: perfHints,
     optimization: {
       minimize: !isDev,
       minimizer: [
