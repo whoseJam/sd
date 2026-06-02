@@ -4,7 +4,7 @@ import type {
   SubtextView,
   TextView,
 } from "@/node/text/text-engine/text-view";
-import type { SDColor } from "@/utility/color";
+import type { SDRGBAColor } from "@/utility/color";
 
 import { Animate as A, pushAction } from "@/animate/animate";
 import { Interp, lazyInterp } from "@/animate/interp";
@@ -146,8 +146,8 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
           key: "fill",
           l,
           r,
-          from: sourceStyle.fill as SDColor,
-          to: targetStyle.fill as SDColor,
+          from: sourceStyle.fill as SDRGBAColor,
+          to: targetStyle.fill as SDRGBAColor,
           interp: Interp.colorInterp,
           timing,
         });
@@ -156,8 +156,8 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
           key: "stroke",
           l,
           r,
-          from: sourceStyle.stroke as SDColor,
-          to: targetStyle.stroke as SDColor,
+          from: sourceStyle.stroke as SDRGBAColor,
+          to: targetStyle.stroke as SDRGBAColor,
           interp: Interp.colorInterp,
           timing,
         });

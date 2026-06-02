@@ -1,5 +1,5 @@
 import type { PathOper, PathOpers } from "@/node/path/path-engine";
-import type { SDColor } from "@/utility/color";
+import type { SDRGBAColor } from "@/utility/color";
 
 import { Action } from "@/animate/action";
 import { PathEngine } from "@/node/path/path-engine";
@@ -112,7 +112,7 @@ export class InterpObject {
 const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t;
 
 export class Interp {
-  static emptyInterp = interpCreator<unknown>(
+  static emptyInterp = interpCreator<never>(
     (object, key) => new InterpObject(function (t: number) {}),
   );
 
@@ -141,7 +141,7 @@ export class Interp {
     });
   });
 
-  static colorInterp = interpCreator<SDColor>((object, key) => {
+  static colorInterp = interpCreator<SDRGBAColor>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       const A = this._source;
@@ -158,7 +158,7 @@ export class Interp {
     });
   });
 
-  static stringInterp = interpCreator<string>((object, key) => {
+  static stringInterp = interpCreator<never>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       if (!this.reverse && t === 1) set.call(this, this.target);
@@ -166,7 +166,7 @@ export class Interp {
     });
   });
 
-  static stringBlankInMiddleInterp = interpCreator<string>((object, key) => {
+  static stringBlankInMiddleInterp = interpCreator<never>((object, key) => {
     const set = setter(object, key);
     return new InterpObject(function (t) {
       if (t === 0) set.call(this, " ");
@@ -174,14 +174,14 @@ export class Interp {
     });
   });
 
-  static childBlankInMiddleInterp = interpCreator<unknown>((object, key) => {
+  static childBlankInMiddleInterp = interpCreator<never>((object, key) => {
     return new InterpObject(function (t) {
       if (t === 0 && this.source) object.__removeChild(this.source);
       if (t === 1 && this.target) object.__append(this.target);
     });
   });
 
-  static arrayInterp = interpCreator<number | Array<number>>((object, key) => {
+  static arrayInterp = interpCreator<Array<number>>((object, key) => {
     const set = setter(object, key);
     const toArr = (value: Array<number> | number) =>
       typeof value === "number" ? [value] : value;

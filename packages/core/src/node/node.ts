@@ -1,9 +1,4 @@
-import type {
-  InterpCreator,
-  InterpFunction,
-  InterpObject,
-  LazyInterpFunction,
-} from "@/animate/interp";
+import type { InterpKind } from "@/animate/interp";
 import type { AABB } from "@/math/aabb";
 import type { SDEasingFunction } from "@/math/easing-function";
 import type { Filter } from "@/node/filter/filter";
@@ -13,7 +8,7 @@ import type { RenderNode } from "@/renderer/render-node";
 import { Action } from "@/animate/action";
 import { Animate } from "@/animate/animate";
 import { Context } from "@/animate/context";
-import { Interp, isInterpCreator } from "@/animate/interp";
+import { Interp } from "@/animate/interp";
 import { Window } from "@/animate/window";
 import {
   aabbContainsPoint,
@@ -279,7 +274,7 @@ export abstract class SDNode {
       "scale",
       v,
       this.attributes.scale,
-      Interp.arrayInterp,
+      Interp.vectorInterp,
     );
   }
 
@@ -350,7 +345,7 @@ export abstract class SDNode {
       "translate",
       v,
       this.attributes.translate,
-      Interp.arrayInterp,
+      Interp.vectorInterp,
     );
   }
 
@@ -536,18 +531,17 @@ export abstract class SDNode {
     key: K,
     vn: this["attributes"][K],
     vo: this["attributes"][K],
-    interp?: InterpObject | InterpFunction | LazyInterpFunction | InterpCreator,
+    interp?: InterpKind<this["attributes"][K]>,
   ): this {
     (this.attributes as this["attributes"])[key] = vn;
     if (interp && Window.SHOULD_INTERP) {
-      const interp_ = isInterpCreator(interp) ? interp(object, key) : interp;
       Animate.push(
         new Action(
           this.delay(),
           this.delay() + this.duration(),
           vo,
           vn,
-          interp_,
+          interp(object, key),
           this.timingFunction,
           this,
           key,
