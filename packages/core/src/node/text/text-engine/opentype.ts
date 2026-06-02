@@ -24,7 +24,7 @@ export class FontManager {
   private static load(family: string) {
     const base =
       typeof window !== "undefined"
-        ? (window as any).__SD_FONTS_URL__
+        ? (window as Window & { __SD_FONTS_URL__?: string }).__SD_FONTS_URL__
         : undefined;
     if (!base) return;
     const url = `${base}/${family}.ttf`;

@@ -45,7 +45,7 @@ export function processMapping(mapping: TextMapping): TextMappingArray {
   ): TextMappingObject {
     return { source: item[0], target: String(item[1]) };
   }
-  function processArrayItem(item: Array<any>): TextMappingObject {
+  function processArrayItem(item: TextMappingItem): TextMappingObject {
     if (item.length === 3)
       return processArrayObjectSubtextItem(
         item as TextMappingObjectSubtextItem,
@@ -68,8 +68,6 @@ export function processMapping(mapping: TextMapping): TextMappingArray {
   }
   return result;
 }
-
-export type TextConfigDictionary = { [key: string]: any };
 
 // width / height are first-class reactive attributes (not class fields)
 // so they participate in the animation system the same way x / y do.
