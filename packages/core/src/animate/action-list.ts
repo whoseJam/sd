@@ -107,6 +107,7 @@ export class ActionList {
   validCount: number;
   totalCount: number;
   actionsMap: Map<SDNode | RenderNode, Record<string, Array<Action>>>;
+  currentValueMap: Map<SDNode | RenderNode, Record<string, unknown>>;
   actionsList: ActionLinkList;
   lazyActions: Array<Action>;
   enabled: boolean;
@@ -117,6 +118,7 @@ export class ActionList {
     this.validCount = 0; // action (hide = false)
     this.totalCount = 0; // action (by push)
     this.actionsMap = new Map();
+    this.currentValueMap = new Map();
     this.actionsList = new ActionLinkList();
     this.lazyActions = [];
     this.enabled = false;
@@ -134,6 +136,15 @@ export class ActionList {
     if (!this.actionsMap.has(action.entity))
       this.actionsMap.set(action.entity, {});
     const actionMap = this.actionsMap.get(action.entity);
+    if (action.animatedKey.indexOf(":") === -1) {
+      let entityCurrentMap = this.currentValueMap.get(action.entity);
+      if (!entityCurrentMap) {
+        entityCurrentMap = {};
+        this.currentValueMap.set(action.entity, entityCurrentMap);
+      }
+      if (!(action.animatedKey in entityCurrentMap))
+        entityCurrentMap[action.animatedKey] = action.source;
+    }
     if (!actionMap[action.animatedKey]) actionMap[action.animatedKey] = [];
     actionMap[action.animatedKey].push(action);
     this.actionsList.push(action);
@@ -227,6 +238,18 @@ export class ActionList {
     });
   }
   firstTick() {
+    for (const [entity, record] of this.actionsMap) {
+      const currentMap = this.currentValueMap.get(entity);
+      for (const key of Object.keys(record)) {
+        if (key.indexOf(":") !== -1) continue;
+        const actions = record[key].filter((a) => !a.is(Action.hideFlag));
+        if (actions.length < 2) continue;
+        actions.sort((a, b) => a.l - b.l);
+        actions[0].source = currentMap?.[key];
+        for (let i = 1; i < actions.length; i++)
+          actions[i].source = actions[i - 1].target;
+      }
+    }
     this.lazyActions.forEach((action) => {
       action.lazyInterp(action.l, action.r, action.source, action.target);
     });
@@ -240,7 +263,17 @@ export class ActionList {
       if (!action.t) action.t = t;
       const duration = this.t - action.t;
       action.tick(duration);
-      if (action.is(Action.stopFlag)) this.stopCount++;
+      if (action.is(Action.stopFlag)) {
+        this.stopCount++;
+        if (action.animatedKey.indexOf(":") === -1) {
+          let entityCurrentMap = this.currentValueMap.get(action.entity);
+          if (!entityCurrentMap) {
+            entityCurrentMap = {};
+            this.currentValueMap.set(action.entity, entityCurrentMap);
+          }
+          entityCurrentMap[action.animatedKey] = action.target;
+        }
+      }
     });
   }
   restart() {
