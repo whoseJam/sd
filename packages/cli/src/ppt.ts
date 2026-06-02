@@ -62,7 +62,9 @@ export function task(
   source: string,
   targetFolder: string,
 ): NodeJS.ReadWriteStream {
-  const pptFilePath = `${source}/ppt.html`;
+  const entry = global.entry || ".";
+  const pptFilePath =
+    entry === "." ? `${source}/ppt.html` : `${source}/${entry}/ppt.html`;
 
   if (!fs.existsSync(pptFilePath)) {
     console.log(
@@ -74,8 +76,12 @@ export function task(
   global.source = source;
   global.targetFolder = targetFolder;
 
-  cleanAllFiles(targetFolder);
-  cleanAllEmptyDirectories(targetFolder);
+  // With --entry, multiple framework builds share the same -o; only nuke this
+  // entry's own wrapper dir so other entries' outputs survive. Shared content
+  // (animation/, sd.js, vendor/) is re-emitted by walk + copy below anyway.
+  const cleanRoot = entry === "." ? targetFolder : `${targetFolder}/${entry}`;
+  cleanAllFiles(cleanRoot);
+  cleanAllEmptyDirectories(cleanRoot);
   copyVendorAssets(global.projectRoot, targetFolder);
   walk(source, (p: string) => {
     const suffix = p.split(".").slice(-1)[0];
@@ -285,14 +291,25 @@ function defineEventListener(
 function getConfiguration() {
   const mode = global.d ? "development" : "production";
   const watch = global.w ? true : false;
+  const entry = global.entry || ".";
   // Asset base URL: a remote deploy passes -d https://your-domain; otherwise the
-  // output is self-contained and loads everything from "./vendor/..." next to the
-  // HTML. There is no implicit CDN fallback.
-  const base = global.domain !== undefined ? global.domain : ".";
+  // output is self-contained and the framework wrapper at <out>/<entry>/index.html
+  // walks `depth` levels up to reach the project root where sd.js / vendor sit.
+  const base =
+    global.domain !== undefined
+      ? global.domain
+      : entry === "."
+        ? "."
+        : entry
+            .split("/")
+            .map(() => "..")
+            .join("/");
+  const filename = entry === "." ? "index.html" : `${entry}/index.html`;
   const host = getHost();
   const plugins = [
     new HtmlWebpackPlugin({
       template: host.template,
+      filename,
       inject: "body",
       inlineSource: ".(js)$",
       minify: false,
@@ -304,11 +321,19 @@ function getConfiguration() {
       DOMAIN: JSON.stringify(base),
     }),
   ];
+  // Namespace the framework wrapper's emitted assets under <entry>/ so that
+  // running multiple framework builds into the same -o (one per --entry) does
+  // not collide on main.js or on CSS-referenced asset files.
+  const outputPrefix = entry === "." ? "" : `${entry}/`;
   return {
     mode,
     watch,
     plugins,
     entry: host.entry,
+    output: {
+      filename: `${outputPrefix}main.js`,
+      assetModuleFilename: `${outputPrefix}[hash][ext]`,
+    },
     module: {
       rules: [
         {

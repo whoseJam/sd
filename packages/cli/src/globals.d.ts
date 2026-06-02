@@ -24,8 +24,10 @@ declare global {
   var l: boolean | undefined;
   // -domain <value>
   var domain: string | undefined;
-  // -framework <name> (ppt host framework: reveal | plain | ...)
+  // -framework <name> (ppt host framework: reveal | impress | webslides)
   var framework: string | undefined;
+  // -entry <relpath> (project-rooted ppt: which subdir is the deck entry)
+  var entry: string | undefined;
 
   // task self-flags
   var sd: boolean | undefined;
