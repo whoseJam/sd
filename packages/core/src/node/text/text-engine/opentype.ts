@@ -12,19 +12,6 @@ export class FontManager {
   private static loadAllPromise: Promise<void> | null = null;
 
   static init() {
-    // Register each whitelisted family with the browser's CSS font resolver,
-    // pointing at the TTFs shipped under vendor/fonts/. This keeps SVG <text>
-    // rendering identical across browsers / headless — the browser no longer
-    // falls back to whatever the host system happens to call "Arial".
-    const style = document.createElement("style");
-    style.textContent = fontWhitelist
-      .map((family) => {
-        const url = `${sdBase}/vendor/fonts/${encodeURIComponent(family)}.ttf`;
-        return `@font-face { font-family: ${JSON.stringify(family)}; src: url(${JSON.stringify(url)}) format("truetype"); }`;
-      })
-      .join("\n");
-    document.head.appendChild(style);
-
     this.textSVG = RenderNode.createRenderNodeWithoutAction(
       undefined,
       Root.svg,
