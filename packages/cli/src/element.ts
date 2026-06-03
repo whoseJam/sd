@@ -2,7 +2,7 @@ import gulp from "gulp";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
-import { perfHints, tsLoaderRule } from "./webpack-base";
+import { tsLoaderRule } from "./webpack-base";
 
 export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
@@ -31,7 +31,6 @@ function getConfiguration() {
     module: {
       rules: [tsLoaderRule(isDev)],
     },
-    performance: perfHints,
     optimization: {
       minimize: !isDev,
       minimizer: [

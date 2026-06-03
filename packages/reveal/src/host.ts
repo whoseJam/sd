@@ -5,4 +5,4 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 
 export const template = path.join(here, "template.html");
 export const entry = path.join(here, "main.ts");
-export const libraryBundle = "./dist/myreveal.js";
+export const libraryBundle = "./dist/reveal.js";

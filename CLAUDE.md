@@ -42,9 +42,9 @@ gulp animation-group -i <directory> -w
 # Presentation: bundle a deck directory containing ppt.html and per-slide animation scripts
 gulp ppt -i <deck-dir> -o <output-dir>
 gulp ppt -i <deck-dir> -w
-gulp ppt -i <deck-dir> -l                             # use locally-built sd.js / myreveal.js
+gulp ppt -i <deck-dir> -l                             # use locally-built sd.js / reveal.js
 
-# Library bundles (run individually when you want fresh sd.js / myreveal.js / sd-element.js)
+# Library bundles (run individually when you want fresh sd.js / reveal.js / sd-element.js)
 gulp sd      -o <output-dir>
 gulp reveal  -o <output-dir>
 gulp element -o <output-dir>     # IIFE bundle: vanilla HTML can <script src="sd-element.js">
@@ -92,9 +92,9 @@ Animation bundles do NOT inline `@sd/core`. Instead:
 - The per-animation webpack config marks `@/sd` and `slidew` as externals mapping to global `sd`.
 - This keeps each animation script tiny (~5-20 KB) and the shared engine cacheable.
 
-PPT bundles work the same way: the framework's `template.html` loads `sd.js` and (for reveal) `myreveal.js` globals; each slide's animation is a separate small bundle.
+PPT bundles work the same way: the framework's `template.html` loads `sd.js` and (for reveal) `reveal.js` globals; each slide's animation is a separate small bundle.
 
-The `-l` flag tells the CLI to copy `dist/sd.js` (or `dist/myreveal.js`) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
+The `-l` flag tells the CLI to copy `dist/sd.js` (or `dist/reveal.js`) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
 ## Loader / Plugin Hoisting
 

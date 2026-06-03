@@ -14,7 +14,7 @@ import { parseConfig, parseInput } from "./parser";
 import { toOriginFile, toTargetFile, toTargetFolder, walk } from "./path-utils";
 import theme from "./theme";
 import { copyVendorAssets } from "./utils";
-import { cssRule, perfHints, scssRule, tsLoaderRule } from "./webpack-base";
+import { cssRule, scssRule, tsLoaderRule } from "./webpack-base";
 
 const require = createRequire(import.meta.url);
 
@@ -307,7 +307,6 @@ function getConfiguration() {
     resolve: {
       extensions: [".ts", ".js"],
     },
-    performance: perfHints,
     cache: true,
   };
 }

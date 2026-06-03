@@ -18,7 +18,7 @@ function getConfiguration() {
     mode,
     watch: isWatch,
     output: {
-      filename: "myreveal.js",
+      filename: "reveal.js",
       library: "MyReveal",
       libraryTarget: "umd",
       umdNamedDefine: true,
@@ -36,9 +36,6 @@ function getConfiguration() {
     },
     resolve: {
       extensions: [".ts", ".js"],
-    },
-    performance: {
-      hints: false,
     },
     cache: true,
   };

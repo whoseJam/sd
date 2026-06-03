@@ -102,9 +102,6 @@ function getConfiguration(file: string, targetFolder: string) {
     module: {
       rules: [tsLoaderRule(isDev), cssRule],
     },
-    performance: {
-      hints: false,
-    },
     cache: true,
     resolve: {
       alias: {

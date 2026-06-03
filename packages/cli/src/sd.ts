@@ -33,11 +33,6 @@ function getConfiguration() {
     module: {
       rules: [tsLoaderRule(isDev), cssRule],
     },
-    performance: {
-      hints: false,
-      maxEntrypointSize: 512000,
-      maxAssetSize: 512000,
-    },
     optimization: {
       minimize: !isDev,
       minimizer: [

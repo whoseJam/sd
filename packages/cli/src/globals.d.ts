@@ -20,7 +20,7 @@ declare global {
   var s: boolean | undefined;
   // -p <port>
   var p: string | undefined;
-  // -l (use local sd.js / myreveal.js)
+  // -l (use local sd.js / reveal.js)
   var l: boolean | undefined;
   // -domain <value>
   var domain: string | undefined;
@@ -31,6 +31,6 @@ declare global {
 
   // set by `gulp sd` so ppt/animation/animation-group skip re-copying dist/sd.js
   var sd: boolean | undefined;
-  // set by `gulp reveal` so ppt skips re-copying dist/myreveal.js
+  // set by `gulp reveal` so ppt skips re-copying dist/reveal.js
   var reveal: boolean | undefined;
 }
