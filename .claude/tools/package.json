@@ -1,9 +1,9 @@
 {
-  "name": "sd-snapshot",
+  "name": "sd-snapshot-tools",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "Headless snapshot tool: drives a built @sd/core animation through its pauses and stitches a labeled grid PNG. Used by Claude (and humans) for visual feedback.",
+  "description": "Headless snapshot tools: sd-animation-snapshot (per-pause grid) and sd-ppt-snapshot (per-slide grid). Used by Claude (and humans) for visual feedback.",
   "dependencies": {
     "playwright": "^1.49.0",
     "sharp": "^0.34.0"

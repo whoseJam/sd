@@ -102,19 +102,28 @@ For webslides/impress the framework bundle is fully self-contained (framework + 
 
 The `-l` flag tells the CLI to copy `dist/sd.js` (or the framework bundle) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
-## Snapshot tool (visual feedback for AI agents)
+## Snapshot tools (visual feedback for AI agents)
 
-`.claude/tools/sd-snapshot.ts` — drives a built animation HTML through its `sd.pause()` boundaries via headless chromium and stitches the per-pause screenshots into one labeled grid PNG. Relies on `sd.Window.PUPPETEER` (toggles iframe-sizing chatter) and `sd.device().keyDown("N")` (programmatic frame advance) — both exposed via `sd.ts` re-exports of `Window` / `Animate` / `device`.
+Two tools under `.claude/tools/`, both stitch per-frame screenshots into one labeled grid PNG via headless chromium. Shared helpers (static server, label SVG, grid stitcher) live in `.claude/tools/grid.ts`.
+
+`sd-animation-snapshot.ts` — drives a built animation HTML through its `sd.pause()` boundaries. Relies on `sd.Window.PUPPETEER` (toggles iframe-sizing chatter) and `sd.device().keyDown("N")` (programmatic frame advance) — both exposed via `sd.ts` re-exports of `Window` / `Animate` / `device`.
+
+`sd-ppt-snapshot.ts` — drives a built deck (reveal / webslides / impress) through every slide and screenshots each at its initial state (no per-iframe pause advance). Auto-detects the framework from window globals: `Reveal` (set explicitly by `packages/reveal/src/reveal.ts`), `ws` (set by `packages/webslides/src/main.ts`), or `impress`. Idle wait per slide defaults to 300ms for reveal/webslides and 1100ms for impress (transitionDuration is 1000ms).
 
 ```bash
 # one-time setup
 cd .claude/tools && pnpm install --ignore-workspace && npx playwright install chromium
 
-# default: 5×5 grid of pauses 1-25
-bun .claude/tools/sd-snapshot.ts <html-path>
-# single frame, or a range
-bun .claude/tools/sd-snapshot.ts <html-path> --pause 7
-bun .claude/tools/sd-snapshot.ts <html-path> --from 10 --to 14
+# animations: default 5×5 grid of pauses 1-25
+bun .claude/tools/sd-animation-snapshot.ts <html-path>
+bun .claude/tools/sd-animation-snapshot.ts <html-path> --pause 7
+bun .claude/tools/sd-animation-snapshot.ts <html-path> --from 10 --to 14
+
+# decks: default = all slides
+bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html>
+bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html> --slide 3
+bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html> --from 5 --to 8
+bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html> --idle 1500
 ```
 
 stdout = output PNG absolute path (only line). stderr = `pageerror` traces collected during the run, if any. Exit 0 = clean run; exit 1 = errors collected (PNG still produced for partial-state inspection).

@@ -12,8 +12,11 @@ import Picture from "./plugin/picture";
 declare global {
   interface Window {
     MyRevealCallback?: () => void;
+    Reveal?: typeof Reveal;
   }
 }
+
+window.Reveal = Reveal;
 
 const plugins: RevealPlugin[] = [
   Image(),

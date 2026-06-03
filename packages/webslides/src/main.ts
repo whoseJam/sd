@@ -9,9 +9,12 @@ import "./webslides.scss";
 declare global {
   interface Window {
     WebSlides: new (options?: Record<string, unknown>) => unknown;
+    ws?: unknown;
   }
 }
 
 window.addEventListener("load", () => {
-  includeHTML({ rootId: "webslides" }).then(() => new window.WebSlides());
+  includeHTML({ rootId: "webslides" }).then(() => {
+    window.ws = new window.WebSlides();
+  });
 });
