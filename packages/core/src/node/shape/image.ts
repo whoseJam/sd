@@ -19,6 +19,10 @@ export class Image extends BaseShape {
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y") return renderer.setAttribute("y", -(value + this.height));
+    // See rect.ts:renderAttribute — height needs its per-tick value written
+    // back into attributes so the trailing y re-fire in `set height` reads
+    // the current frame instead of the synchronously-set target.
+    if (key === "height") (this.attributes as ImageAttributes).height = value;
     super.renderAttribute(renderer, key, value);
   }
 

@@ -109,24 +109,19 @@ sd.main(async () => {
         r = l;
         if (segment[l] === 0) continue;
         while (r + 1 < W && segment[r + 1] > 0) r++;
-        // Build the band at full geometry and fade in. Animating height from
-        // 0 looks reversed here: Rect's renderer derives SVG y from the
-        // attribute height, which the action system sets to its final value
-        // immediately, so the rect ends up anchored at the *new* scanline and
-        // visually grows downward — the opposite of the math y-up intent.
         const band = new sd.Rect({
           targetNode: svg,
           x: gx(l),
           y: gy(prevY),
           width: (r - l + 1) * UNIT,
-          height: dy * UNIT,
+          height: 0,
           fill: SWEPT,
-          fillOpacity: 0,
+          fillOpacity: 0.32,
           stroke: C.none,
         });
         band
           .startAnimate({ duration: 600 })
-          .setFillOpacity(0.32)
+          .setHeight(dy * UNIT)
           .endAnimate();
       }
     }

@@ -26,6 +26,14 @@ export class Rect extends BaseShape {
 
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     if (key === "y") return renderer.setAttribute("y", -(value + this.height));
+    // SVG y is derived from y + height each tick (see "y" branch). The action
+    // system writes attributes.height to its target synchronously when set
+    // height is called, so by the time interp ticks fire, this.height already
+    // reads the final value — without this write-back, the trailing y re-fire
+    // in `set height` would compute the final SVG y from frame 0. Mirrors
+    // base-text.ts:90-106 (which has no SVG height to update, hence the early
+    // return there; here we still need super to push the value to the DOM).
+    if (key === "height") (this.attributes as RectAttributes).height = value;
     super.renderAttribute(renderer, key, value);
   }
 
