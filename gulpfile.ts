@@ -6,6 +6,7 @@ import path from "node:path";
 import * as animation from "./packages/cli/src/animation";
 import * as animationGroup from "./packages/cli/src/animation-group";
 import element from "./packages/cli/src/element";
+import impress from "./packages/cli/src/impress";
 import * as parser from "./packages/cli/src/parser";
 import { walk } from "./packages/cli/src/path-utils";
 import * as ppt from "./packages/cli/src/ppt";
@@ -13,6 +14,7 @@ import reveal from "./packages/cli/src/reveal";
 import sd from "./packages/cli/src/sd";
 import theme from "./packages/cli/src/theme";
 import * as type from "./packages/cli/src/type";
+import webslides from "./packages/cli/src/webslides";
 
 global.projectRoot = import.meta.dirname.replaceAll("\\", "/");
 
@@ -28,6 +30,18 @@ gulp.task("reveal", () => {
   global.reveal = true;
   const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
   return reveal(pptOutputPath);
+});
+
+gulp.task("webslides", () => {
+  global.webslides = true;
+  const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
+  return webslides(pptOutputPath);
+});
+
+gulp.task("impress", () => {
+  global.impress = true;
+  const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
+  return impress(pptOutputPath);
 });
 
 gulp.task("theme", async () => {

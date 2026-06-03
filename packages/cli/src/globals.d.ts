@@ -31,6 +31,8 @@ declare global {
 
   // set by `gulp sd` so ppt/animation/animation-group skip re-copying dist/sd.js
   var sd: boolean | undefined;
-  // set by `gulp reveal` so ppt skips re-copying dist/reveal.js
+  // set by `gulp <framework>` so ppt skips re-copying the framework bundle
   var reveal: boolean | undefined;
+  var webslides: boolean | undefined;
+  var impress: boolean | undefined;
 }

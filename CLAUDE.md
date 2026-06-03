@@ -8,11 +8,13 @@ This is a pnpm-workspace monorepo. All library code lives under `packages/`; use
 
 ```
 packages/
-  core/      @sd/core     Rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)
-  reveal/    @sd/reveal   reveal.js integration layer (plugins, MathJax, theme SCSS)
-  element/   @sd/element  <sd-animation> custom element that wraps an iframe (host-side embedding)
-  cli/       @sd/cli      Build tasks + CLI entries (sd-animation, sd-animation-group, sd-ppt, sd-config)
-  assets/    @sd/assets   Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
+  core/       @sd/core       Rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)
+  reveal/     @sd/reveal     reveal.js integration layer (plugins, MathJax, theme SCSS)
+  webslides/  @sd/webslides  WebSlides host: framework + include-html walker, shipped as IIFE bundle
+  impress/    @sd/impress    impress.js host: framework + include-html walker, shipped as IIFE bundle
+  element/    @sd/element    <sd-animation> custom element that wraps an iframe (host-side embedding)
+  cli/        @sd/cli        Build tasks + CLI entries (sd-animation, sd-animation-group, sd-ppt, sd-config)
+  assets/     @sd/assets     Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
 examples/
   animations/  Single-animation demo scripts (former unit/)
   decks/       Sample PPT decks (former example/)
@@ -45,9 +47,11 @@ gulp ppt -i <deck-dir> -w
 gulp ppt -i <deck-dir> -l                             # use locally-built sd.js / reveal.js
 
 # Library bundles (run individually when you want fresh sd.js / reveal.js / sd-element.js)
-gulp sd      -o <output-dir>
-gulp reveal  -o <output-dir>
-gulp element -o <output-dir>     # IIFE bundle: vanilla HTML can <script src="sd-element.js">
+gulp sd        -o <output-dir>
+gulp reveal    -o <output-dir>
+gulp webslides -o <output-dir>   # IIFE: framework + include-html walker, loaded via <script>
+gulp impress   -o <output-dir>   # IIFE: same shape as webslides
+gulp element   -o <output-dir>   # IIFE bundle: vanilla HTML can <script src="sd-element.js">
 
 # Theme CSS compile (Reveal/css/theme/source/*.scss -> compiled .css)
 gulp theme   -o <output-dir>
@@ -92,9 +96,11 @@ Animation bundles do NOT inline `@sd/core`. Instead:
 - The per-animation webpack config marks `@/sd` and `slidew` as externals mapping to global `sd`.
 - This keeps each animation script tiny (~5-20 KB) and the shared engine cacheable.
 
-PPT bundles work the same way: the framework's `template.html` loads `sd.js` and (for reveal) `reveal.js` globals; each slide's animation is a separate small bundle.
+PPT bundles work the same way: the framework's `template.html` loads `sd.js` and the framework bundle (`reveal.js` / `webslides.js` / `impress.js`) as globals; each slide's animation is a separate small bundle.
 
-The `-l` flag tells the CLI to copy `dist/sd.js` (or `dist/reveal.js`) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
+For webslides/impress the framework bundle is fully self-contained (framework + include-html walker + init), so the per-deck `main.js` is an empty stub; for reveal the per-deck `main.js` still carries deck-specific code (e.g. `ThemeManager`).
+
+The `-l` flag tells the CLI to copy `dist/sd.js` (or the framework bundle) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
 ## Loader / Plugin Hoisting
 

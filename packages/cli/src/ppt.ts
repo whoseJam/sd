@@ -18,7 +18,8 @@ import { cssRule, scssRule, tsLoaderRule } from "./webpack-base";
 
 const require = createRequire(import.meta.url);
 
-const VALID_FRAMEWORKS = ["reveal", "impress", "webslides"];
+type Framework = "reveal" | "impress" | "webslides";
+const VALID_FRAMEWORKS: Framework[] = ["reveal", "impress", "webslides"];
 
 interface PptHost {
   template: string;
@@ -27,7 +28,7 @@ interface PptHost {
 }
 
 function getHost(): PptHost {
-  const framework = global.framework ?? "reveal";
+  const framework = (global.framework ?? "reveal") as Framework;
   if (!VALID_FRAMEWORKS.includes(framework)) {
     console.log(
       colors(
@@ -210,10 +211,21 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   }
   const host = getHost();
   if (!global.sd) copyAsset("./dist/sd.js", pptOutputPath);
-  if (host.libraryBundle && !global.reveal) {
+  if (host.libraryBundle && !isFrameworkBundleBuilt()) {
     copyAsset(host.libraryBundle, pptOutputPath);
   }
   return task(source, pptOutputPath);
+}
+
+function isFrameworkBundleBuilt(): boolean {
+  const framework = (global.framework ?? "reveal") as Framework;
+  return Boolean(
+    {
+      reveal: global.reveal,
+      webslides: global.webslides,
+      impress: global.impress,
+    }[framework],
+  );
 }
 
 function copyAsset(
