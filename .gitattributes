@@ -1,0 +1,4 @@
+packages/assets/fonts/*.ttf filter=lfs diff=lfs merge=lfs -text
+packages/assets/fonts/*.otf filter=lfs diff=lfs merge=lfs -text
+packages/assets/fonts/*.woff filter=lfs diff=lfs merge=lfs -text
+packages/assets/fonts/*.woff2 filter=lfs diff=lfs merge=lfs -text

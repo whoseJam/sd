@@ -175,11 +175,25 @@ async function captureFrames(
   page: Awaited<ReturnType<typeof chromium.prototype.newPage>>,
   args: Args,
 ): Promise<Buffer[]> {
+  // currentActionList.enabled flips false→true on the first tick after the
+  // user code's first pause(). Combined with finished(), this distinguishes
+  // "settled at a real pause boundary" from "before main() even ran". Plain
+  // finished() is trivially true in both states and would race the snapshot.
   const waitForFinished = async (): Promise<void> => {
     await page.waitForFunction(
       () => {
-        const sd = (globalThis as unknown as { sd?: { Animate: { finished(): boolean } } }).sd;
-        return sd?.Animate.finished() === true;
+        const sd = (globalThis as unknown as {
+          sd?: {
+            Animate: {
+              finished(): boolean;
+              currentActionList: { enabled: boolean };
+            };
+          };
+        }).sd;
+        return (
+          sd?.Animate.finished() === true &&
+          sd.Animate.currentActionList.enabled === true
+        );
       },
       { timeout: args.timeoutMs },
     );

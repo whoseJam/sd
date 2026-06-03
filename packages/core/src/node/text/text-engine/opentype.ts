@@ -2,31 +2,29 @@ import opentype from "opentype.js";
 
 import type { Text } from "@/node/text/text";
 
-import { fontWhitelist } from "@/interact/config";
+import { fontWhitelist, sdBase } from "@/interact/config";
 import { Root } from "@/interact/root";
 import { RenderNode } from "@/renderer/render-node";
-
-interface FontData {
-  family: string;
-  blob(): Promise<Blob>;
-}
-
-declare global {
-  interface Window {
-    queryLocalFonts?: () => Promise<FontData[]>;
-  }
-}
 
 export class FontManager {
   private static textSVG: RenderNode;
   private static fonts: Record<string, opentype.Font> = {};
-  private static localFontsPromise: Promise<FontData[]> | null = null;
   private static loadAllPromise: Promise<void> | null = null;
 
   static init() {
-    if (window.queryLocalFonts) {
-      this.localFontsPromise = window.queryLocalFonts().catch(() => []);
-    }
+    // Register each whitelisted family with the browser's CSS font resolver,
+    // pointing at the TTFs shipped under vendor/fonts/. This keeps SVG <text>
+    // rendering identical across browsers / headless — the browser no longer
+    // falls back to whatever the host system happens to call "Arial".
+    const style = document.createElement("style");
+    style.textContent = fontWhitelist
+      .map((family) => {
+        const url = `${sdBase}/vendor/fonts/${encodeURIComponent(family)}.ttf`;
+        return `@font-face { font-family: ${JSON.stringify(family)}; src: url(${JSON.stringify(url)}) format("truetype"); }`;
+      })
+      .join("\n");
+    document.head.appendChild(style);
+
     this.textSVG = RenderNode.createRenderNodeWithoutAction(
       undefined,
       Root.svg,
@@ -43,19 +41,17 @@ export class FontManager {
   }
 
   private static async doLoadAll(): Promise<void> {
-    if (!this.localFontsPromise) return;
-    const all = await this.localFontsPromise;
     await Promise.all(
-      fontWhitelist.map((family) => {
-        if (this.fonts[family]) return;
-        const match = all.find((f) => f.family === family);
-        if (!match) return;
-        return match
-          .blob()
-          .then((b) => b.arrayBuffer())
-          .then((buf) => {
-            this.fonts[family] = opentype.parse(buf);
-          });
+      fontWhitelist.map(async (family) => {
+        const url = `${sdBase}/vendor/fonts/${encodeURIComponent(family)}.ttf`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(
+            `Font ${family} not found at ${url} (HTTP ${res.status}). Add packages/assets/fonts/${family}.ttf or remove ${family} from data-fonts.`,
+          );
+        }
+        const buf = await res.arrayBuffer();
+        this.fonts[family] = opentype.parse(buf);
       }),
     );
   }
@@ -70,7 +66,7 @@ export class FontManager {
       typeof input === "string" ? family : input.getFontFamily();
     const fontSize = typeof input === "string" ? size : input.getFontSize();
     function includeChinese(str: string) {
-      return /[\u4e00-\u9fa5]/.test(str);
+      return /[一-龥]/.test(str);
     }
     if (!this.fonts[fontFamily] || includeChinese(text)) {
       this.textSVG.setAttribute("text", text);
@@ -95,6 +91,11 @@ export class FontManager {
     y: number,
   ): Array<opentype.Path> {
     const font = this.fonts[family];
+    if (!font) {
+      throw new Error(
+        `Font ${family} not loaded. Add it to data-fonts and ship packages/assets/fonts/${family}.ttf.`,
+      );
+    }
     const ascender = font.ascender;
     const descender = font.descender;
     const scale = size / font.unitsPerEm;
