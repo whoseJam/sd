@@ -12,14 +12,13 @@ export type BasePathAttributes = SDSVGNodeAttributes & {
   markerEnd: string;
 };
 
+// Path-only SVG attribute defaults applied as extras during createSVGNode.
+// Concrete subclasses (Line, Path, Polyline) populate fill / stroke /
+// strokeOpacity / strokeWidth / strokeDashArray themselves from constructor
+// args; including those here would shadow the user's args, because extras
+// renderAttribute fires after the attributes loop in SDSVGNode.createSVGNode.
+// Keep only the BasePath-unique marker fields, which no subclass sets.
 const BASE_PATH_ATTRIBUTES = {
-  fill: C.white,
-  fillOpacity: 0,
-  stroke: C.black,
-  strokeOpacity: 1,
-  strokeWidth: 1,
-  strokeDashOffset: 0,
-  strokeDashArray: [1, 0],
   markerStart: "",
   markerMid: "",
   markerEnd: "",
