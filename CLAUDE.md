@@ -102,6 +102,23 @@ For webslides/impress the framework bundle is fully self-contained (framework + 
 
 The `-l` flag tells the CLI to copy `dist/sd.js` (or the framework bundle) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
+## Snapshot tool (visual feedback for AI agents)
+
+`.claude/tools/sd-snapshot.ts` — drives a built animation HTML through its `sd.pause()` boundaries via headless chromium and stitches the per-pause screenshots into one labeled grid PNG. Relies on `sd.Window.PUPPETEER` (toggles iframe-sizing chatter) and `sd.device().keyDown("N")` (programmatic frame advance) — both exposed via `sd.ts` re-exports of `Window` / `Animate` / `device`.
+
+```bash
+# one-time setup
+cd .claude/tools && pnpm install --ignore-workspace && npx playwright install chromium
+
+# default: 5×5 grid of pauses 1-25
+bun .claude/tools/sd-snapshot.ts <html-path>
+# single frame, or a range
+bun .claude/tools/sd-snapshot.ts <html-path> --pause 7
+bun .claude/tools/sd-snapshot.ts <html-path> --from 10 --to 14
+```
+
+stdout = output PNG absolute path (only line). stderr = `pageerror` traces collected during the run, if any. Exit 0 = clean run; exit 1 = errors collected (PNG still produced for partial-state inspection).
+
 ## Loader / Plugin Hoisting
 
 `.npmrc` hoists `*-loader`, `*-webpack-plugin`, `webpack`, and `webpack-stream` to the workspace root `node_modules`. This is needed because `gulpfile.js` is at the workspace root but the per-task webpack configs live in `packages/cli/src/`; without hoisting, webpack-stream (running from cwd = root) cannot resolve loaders that pnpm installed under `packages/cli/node_modules/`.

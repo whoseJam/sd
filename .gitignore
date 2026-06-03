@@ -4,6 +4,7 @@
 /.CodeCounter
 /.VSCodeCounter
 /.playwright-mcp
+/.claude/worktrees
 node_modules
 dist
 myconfig.json

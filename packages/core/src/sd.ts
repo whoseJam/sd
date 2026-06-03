@@ -1,7 +1,8 @@
 import { init } from "@/interact/init";
 init();
 export { Action } from "@/animate/action";
-export { CONTINUE_STAGE, pause } from "@/animate/window";
+export { Animate } from "@/animate/animate";
+export { CONTINUE_STAGE, pause, Window } from "@/animate/window";
 export { device } from "@/interact/device";
 export { svg } from "@/interact/root";
 export { easing } from "@/math/easing-function";
