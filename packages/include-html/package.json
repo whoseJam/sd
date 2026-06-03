@@ -1,0 +1,11 @@
+{
+  "name": "@sd/include-html",
+  "version": "0.0.1",
+  "private": true,
+  "description": "DOM walker that resolves <... include-html=\"./xxx.html\"> attributes by fetching and inlining the referenced HTML",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

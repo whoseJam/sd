@@ -1,6 +1,6 @@
-import type { RevealApi, RevealPlugin, SlideChangedEvent } from "../types";
+import { getLocationFromAncestor } from "@sd/include-html";
 
-import { getLocationFromAncestor } from "../include";
+import type { RevealApi, RevealPlugin, SlideChangedEvent } from "../types";
 
 export default function Image(): RevealPlugin {
   return { id: "image", init };
@@ -31,6 +31,6 @@ function getURL(image: HTMLImageElement): string | undefined {
   ) {
     return url;
   }
-  const base = getLocationFromAncestor(image);
+  const base = getLocationFromAncestor(image, "slide-host");
   return base ? `${base}/${url}` : url;
 }

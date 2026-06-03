@@ -12,6 +12,7 @@
   "dependencies": {
     "@sd/assets": "workspace:*",
     "@sd/element": "workspace:*",
+    "@sd/include-html": "workspace:*",
     "reveal.js": "^5.1.0"
   }
 }

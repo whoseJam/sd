@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@sd/element": "workspace:*",
+    "@sd/include-html": "workspace:*",
     "webslides": "^1.5.0"
   }
 }

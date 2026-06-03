@@ -1,6 +1,7 @@
+import { includeHTML } from "@sd/include-html";
+
 import "./plugin/reset.css";
 import "./plugin/reveal.css";
-import includeHTML from "./include";
 
 declare const DOMAIN: string;
 
@@ -160,4 +161,4 @@ window.addEventListener("load", () => {
   themeManager.loadTheme("beige");
 });
 
-includeHTML(window.MyRevealCallback!);
+includeHTML({ rootId: "slide-host" }).then(window.MyRevealCallback!);

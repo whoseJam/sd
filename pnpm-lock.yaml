@@ -155,9 +155,14 @@ importers:
       '@sd/element':
         specifier: workspace:*
         version: link:../element
+      '@sd/include-html':
+        specifier: workspace:*
+        version: link:../include-html
       impress.js:
         specifier: ^1.1.0
         version: 1.1.0
+
+  packages/include-html: {}
 
   packages/layout:
     dependencies:
@@ -176,6 +181,9 @@ importers:
       '@sd/element':
         specifier: workspace:*
         version: link:../element
+      '@sd/include-html':
+        specifier: workspace:*
+        version: link:../include-html
       reveal.js:
         specifier: ^5.1.0
         version: 5.2.1
@@ -185,6 +193,9 @@ importers:
       '@sd/element':
         specifier: workspace:*
         version: link:../element
+      '@sd/include-html':
+        specifier: workspace:*
+        version: link:../include-html
       webslides:
         specifier: ^1.5.0
         version: 1.5.0
