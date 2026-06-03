@@ -1,0 +1,46 @@
+<section>
+    <section>
+        <h1>扫描线</h1>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>给定平面上 $n$ 个矩形，求它们的并集面积。</p>
+        <p class="fragment">直接容斥的复杂度是 $O(2^n)$，行不通。</p>
+        <p class="fragment">扫描线把二维问题降为<b>一维区间维护</b>。</p>
+    </section>
+    <section>
+        <h2>扫描线</h2>
+        <sd-animation src="../animation/扫描线/扫描线.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">需要一个一维数据结构支持两件事</p>
+        <ol>
+            <li class="fragment">添加 / 删除一条覆盖区间</li>
+            <li class="fragment">查询当前被覆盖的总长度</li>
+        </ol>
+    </section>
+    <section>
+        <h2>从反面入手</h2>
+        <p>直接维护"被覆盖区间的长度"不方便。改写为：</p>
+        <p class="fragment">
+            $$
+            被覆盖长度 = 总长度 - 未被覆盖长度
+            $$
+        </p>
+        <p class="fragment quote">把每个矩形对应的区间视作 +1 / -1，未被覆盖的长度 = 值为 $0$ 的位置个数。</p>
+        <p class="fragment">维护<b><ruby>区间最小值<rt>min</rt></ruby></b>与<b><ruby>最小值的数量<rt>cnt</rt></ruby></b>：</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void pushUp(int x) {
+                    t[x].min = min(t[lc].min, t[rc].min);
+                    t[x].cnt = 0;
+                    if (t[x].min == t[lc].min) t[x].cnt += t[lc].cnt;
+                    if (t[x].min == t[rc].min) t[x].cnt += t[rc].cnt;
+                }
+            </script>
+        </codeblock>
+        <ul>
+            <li class="fragment">最小值 $= 0$：未覆盖长度就是 cnt</li>
+            <li class="fragment">最小值 $> 0$：整段都被覆盖</li>
+        </ul>
+    </section>
+</section>

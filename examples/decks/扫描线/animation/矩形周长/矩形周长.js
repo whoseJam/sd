@@ -1,5 +1,5 @@
 import * as sd from "@/sd";
-import { gridHelpers } from "./_grid";
+import { gridHelpers } from "../_grid";
 
 const svg = sd.svg();
 const C = sd.color();
@@ -11,7 +11,9 @@ const C = sd.color();
 // show that |Δ covered length| accumulates the horizontal perimeter.
 const W = 30;
 const H = 16;
-const { UNIT, gx, gy } = gridHelpers(W, H, 18);
+const { UNIT, gx, gy, Y0 } = gridHelpers(W, H, 18);
+const STRIP_GAP = 14;
+const STRIP_H = 12;
 
 const NEUTRAL = "#d0d0d0";
 const RECT_STROKE = "#666";
@@ -34,9 +36,7 @@ const events = [];
 const cells = [];
 const segment = sd.make1d(W, 0);
 
-const STRIP_GAP = 14;
-const STRIP_H = 12;
-const STRIP_Y = gy(0) - STRIP_GAP - STRIP_H;
+const STRIP_Y = Y0 - STRIP_GAP - STRIP_H;
 
 function coverageColor(c) {
   if (c <= 0) return C.white;

@@ -1,5 +1,5 @@
 import * as sd from "@/sd";
-import { gridHelpers } from "./_grid";
+import { gridHelpers } from "../_grid";
 
 const svg = sd.svg();
 const C = sd.color();

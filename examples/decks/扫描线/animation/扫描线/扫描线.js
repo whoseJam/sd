@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+import { gridHelpers } from "../_grid";
 
 const svg = sd.svg();
 const C = sd.color();
@@ -8,12 +9,7 @@ const C = sd.color();
 // that y-up logical frame; the renderer handles the actual SVG flip.
 const W = 20;
 const H = 10;
-const UNIT = 28;
-const X0 = (-W * UNIT) / 2;
-const Y0 = (-H * UNIT) / 2;
-const gx = (lx) => X0 + lx * UNIT;
-const gy = (ly) => Y0 + ly * UNIT;
-
+const { UNIT, gx, gy, Y0 } = gridHelpers(W, H, 28);
 const STRIP_GAP = 14;
 const STRIP_H = 14;
 // Strip sits below the frame; its rect.y is the strip's lower edge in y-up.

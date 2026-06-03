@@ -1,9 +1,12 @@
-// Minimal coord helper for the 扫描线 deck animations.
-// Centers a W×H logical grid on the canvas with UNIT px per logical unit.
-// gx / gy convert from logical coords to sd's math y-up world coords —
-// pass the logical bottom-y of a Rect (sd renders y as the bottom edge).
+// Coordinate helpers for a W × H logical grid centered on the canvas.
+// sd-animation auto-fits the viewBox to the rendered content bounds (the
+// iframe negotiates this with the parent via postMessage, so the host slide
+// just sets <sd-animation style="width: ...; height: ..."> and sd handles the
+// rest). UNIT here is just the SVG-unit size of one cell — it sets the
+// relative visual weight of strokes / fonts / spacing, not the final pixel
+// size on screen.
 
-export function gridHelpers(W, H, UNIT) {
+export function gridHelpers(W, H, UNIT = 40) {
   const X0 = (-W * UNIT) / 2;
   const Y0 = (-H * UNIT) / 2;
   return {
