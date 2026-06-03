@@ -163,12 +163,30 @@ async function gotoSlide(page: Page, fw: Framework, index: number): Promise<void
   await page.evaluate(
     ([framework, i]) => {
       const w = window as unknown as {
-        Reveal: { slide: (h: number, v: number, f: number) => void };
+        Reveal: {
+          slide: (h: number, v: number, f: number) => void;
+          getHorizontalSlides: () => Element[];
+        };
         ws: { goToSlide: (i: number) => void };
         impress: () => { goto: (i: number) => void };
       };
-      if (framework === "reveal") w.Reveal.slide(i, 0, 0);
-      else if (framework === "webslides") w.ws.goToSlide(i);
+      if (framework === "reveal") {
+        // Reveal counts both horizontal and vertical slides into getTotalSlides(),
+        // but slide(h, v, f) needs the (h, v) pair. Walk the horizontal sections
+        // to convert a linear index into the right coordinates.
+        let remaining = i;
+        const horiz = w.Reveal.getHorizontalSlides();
+        for (let h = 0; h < horiz.length; h++) {
+          const verticals = horiz[h].querySelectorAll(":scope > section");
+          const vCount = Math.max(1, verticals.length);
+          if (remaining < vCount) {
+            w.Reveal.slide(h, verticals.length > 0 ? remaining : 0, 0);
+            return;
+          }
+          remaining -= vCount;
+        }
+        w.Reveal.slide(horiz.length - 1, 0, 0);
+      } else if (framework === "webslides") w.ws.goToSlide(i);
       else w.impress().goto(i);
     },
     [fw, index] as [Framework, number],
