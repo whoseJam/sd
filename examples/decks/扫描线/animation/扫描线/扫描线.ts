@@ -25,6 +25,7 @@ const SWEPT_FILL = C.orange;
 const TICK_ADD = C.mediumSeaGreen;
 const TICK_REM = C.darkRed;
 const TEXT_NEUTRAL = C.darkButtonGrey;
+const GRID_INK = C.silver;
 
 // Coverage ramp is its own gradient — a custom blue scale so the strip's
 // coverage count reads distinctly from the orange swept region.
@@ -53,13 +54,50 @@ const events: Ev[] = [];
 const dataRects: sd.Rect[] = [];
 const cells: sd.Rect[] = [];
 const ticks: sd.Line[] = [];
+const gridVerticals: sd.Line[] = [];
+const gridHorizontals: sd.Line[] = [];
 const segment = sd.make1d(W, 0);
 
 let frame: sd.Rect;
 let line: sd.Line;
 let coverageText: sd.Text;
+let areaText: sd.Text;
 
 sd.init(() => {
+  // Faint internal grid: turns the frame from "an outline" into "graph
+  // paper", which is what the sweepline algorithm actually thinks of as
+  // the integer plane underneath.
+  for (let i = 1; i < W; i++) {
+    gridVerticals.push(
+      new sd.Line({
+        targetNode: svg,
+        x1: gx(i),
+        y1: gy(0),
+        x2: gx(i),
+        y2: gy(H),
+        stroke: GRID_INK,
+        strokeWidth: 0.8,
+        strokeDashArray: [2, 3],
+        opacity: 0,
+      }),
+    );
+  }
+  for (let j = 1; j < H; j++) {
+    gridHorizontals.push(
+      new sd.Line({
+        targetNode: svg,
+        x1: gx(0),
+        y1: gy(j),
+        x2: gx(W),
+        y2: gy(j),
+        stroke: GRID_INK,
+        strokeWidth: 0.8,
+        strokeDashArray: [2, 3],
+        opacity: 0,
+      }),
+    );
+  }
+
   frame = new sd.Rect({
     targetNode: svg,
     x: gx(0),
@@ -108,12 +146,24 @@ sd.init(() => {
     );
   }
 
+  // Right-rail readouts: coverage is the per-frame intermediate state;
+  // Σ is the actual algorithmic output (union area). Stacking them and
+  // letting both morph each beat makes the "running result" tangible.
   coverageText = new sd.Text({
     targetNode: svg,
     text: `0 / ${W}`,
-    x: gx(W) + 10,
-    cy: STRIP_Y + STRIP_H / 2,
-    fontSize: 16,
+    x: gx(W) + 12,
+    cy: STRIP_Y + STRIP_H / 2 - 11,
+    fontSize: 15,
+    fill: TEXT_NEUTRAL,
+    opacity: 0,
+  });
+  areaText = new sd.Text({
+    targetNode: svg,
+    text: "Σ 0",
+    x: gx(W) + 12,
+    cy: STRIP_Y + STRIP_H / 2 + 11,
+    fontSize: 15,
     fill: TEXT_NEUTRAL,
     opacity: 0,
   });
@@ -144,31 +194,47 @@ sd.main(async () => {
     );
   }
 
-  // Entrance choreography: frame → rects (staggered) → strip cells wave →
-  // event ticks → coverage readout. All concurrent under one pause so the
-  // viewer reads it as one "scene assembling" beat.
-  frame.startAnimate({ duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
+  // Entrance choreography reads as layers being laid down in order:
+  // graph paper → frame → input rects → strip → tick stops → readouts.
+  // Concurrent under one pause, each layer offset so the eye follows.
+  for (let i = 0; i < gridVerticals.length; i++) {
+    gridVerticals[i]
+      .startAnimate({ delay: i * 8, duration: 220, easing: E.easeOut })
+      .setOpacity(0.35)
+      .endAnimate();
+  }
+  for (let j = 0; j < gridHorizontals.length; j++) {
+    gridHorizontals[j]
+      .startAnimate({ delay: 60 + j * 16, duration: 220, easing: E.easeOut })
+      .setOpacity(0.35)
+      .endAnimate();
+  }
+  frame.startAnimate({ delay: 220, duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
   for (let i = 0; i < dataRects.length; i++) {
     dataRects[i]
-      .startAnimate({ delay: 100 + i * 80, duration: 300, easing: E.easeOut })
+      .startAnimate({ delay: 340 + i * 80, duration: 300, easing: E.easeOut })
       .setOpacity(1)
       .endAnimate();
   }
   for (let i = 0; i < cells.length; i++) {
     cells[i]
-      .startAnimate({ delay: 200 + i * 15, duration: 280, easing: E.easeOut })
+      .startAnimate({ delay: 460 + i * 15, duration: 280, easing: E.easeOut })
       .setOpacity(1)
       .setY(STRIP_Y)
       .endAnimate();
   }
   for (let i = 0; i < ticks.length; i++) {
     ticks[i]
-      .startAnimate({ delay: 500 + i * 30, duration: 220, easing: E.easeOut })
+      .startAnimate({ delay: 780 + i * 30, duration: 220, easing: E.easeOut })
       .setOpacity(1)
       .endAnimate();
   }
   coverageText
-    .startAnimate({ delay: 720, duration: 240, easing: E.easeOut })
+    .startAnimate({ delay: 980, duration: 240, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  areaText
+    .startAnimate({ delay: 1060, duration: 240, easing: E.easeOut })
     .setOpacity(1)
     .endAnimate();
 
@@ -192,13 +258,15 @@ sd.main(async () => {
 
   // One pause per event. Within each beat: sweep up (geometric), then at
   // arrival a small "thump" — tick lights up, affected rect borders shift,
-  // strip cells repaint, coverage number updates.
+  // strip cells repaint, coverage and area readouts update.
   const SWEEP_DUR = 700;
   const ARRIVAL_DELAY = SWEEP_DUR - 100;
   const ARRIVAL_DUR = 260;
   const TEXT_DUR = 240;
 
   let prevY = 0;
+  let prevCov = 0;
+  let area = 0;
   for (let evIdx = 0; evIdx < events.length; evIdx++) {
     const ev = events[evIdx];
     const dy = ev.eventY - prevY;
@@ -259,6 +327,11 @@ sd.main(async () => {
     }
 
     const cov = segment.reduce((s: number, v: number) => s + (v > 0 ? 1 : 0), 0);
+    // Area is the algorithm's real output: each sweep span contributes
+    // prevCov × dy. Snap-update at arrival so the digit morph syncs with
+    // the visual "thump" rather than ticking continuously.
+    if (dy > 0) area += prevCov * dy;
+
     // sd's setText is a morph: the unchanged " / 20" subtext stays put via
     // sparse-match; only the count digit reshapes. That morph IS the beat —
     // no need to layer a fill flash on top.
@@ -266,8 +339,13 @@ sd.main(async () => {
       .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
       .setText(`${cov} / ${W}`)
       .endAnimate();
+    areaText
+      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .setText(`Σ ${area}`)
+      .endAnimate();
 
     prevY = ev.eventY;
+    prevCov = cov;
     await sd.pause();
   }
 });

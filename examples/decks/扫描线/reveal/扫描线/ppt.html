@@ -5,13 +5,15 @@
     <section>
         <h2>问题</h2>
         <p>给定平面上 $n$ 个矩形，求它们的并集面积。</p>
+        <sd-animation src="../../animation/扫描线/问题.js"
+            style="margin: 0 auto; width: 600px; height: 280px;"></sd-animation>
         <p class="fragment">直接容斥的复杂度是 $O(2^n)$，行不通。</p>
         <p class="fragment">扫描线把二维问题降为<b>一维区间维护</b>。</p>
     </section>
     <section>
         <h2>扫描线</h2>
         <sd-animation src="../../animation/扫描线/扫描线.js"
-            style="width: 1000px; height: 400px;"></sd-animation>
+            style="margin: 0 auto; width: 1000px; height: 400px;"></sd-animation>
         <p class="fragment">需要一个一维数据结构支持两件事</p>
         <ol>
             <li class="fragment">添加 / 删除一条覆盖区间</li>

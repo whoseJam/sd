@@ -6,7 +6,7 @@
         <h2>独特区间</h2>
         <p>我们不妨把包含某个唯一元素的区间称为<b>独特区间</b>。</p>
         <sd-animation src="../../animation/不无聊的序列/不无聊的序列单元素贡献.js"
-            style="width: 1000px; height: 200px;"></sd-animation>
+            style="margin: 0 auto; width: 1000px; height: 200px;"></sd-animation>
         <p>某个元素能让一堆区间变得<b>独特</b>。</p>
         <p class="fragment">设 $L_i$ 表示左边第一个和 $a_i$ 相同的元素位置。</p>
         <p class="fragment">设 $R_i$ 表示右边第一个和 $a_i$ 相同的元素位置。</p>
@@ -16,7 +16,7 @@
     <section>
         <h2>思路转换</h2>
         <sd-animation src="../../animation/不无聊的序列/思路转换.js"
-            style="width: 1000px; height: 450px;"></sd-animation>
+            style="margin: 0 auto; width: 1000px; height: 450px;"></sd-animation>
         <p class="fragment">构造出 $n$ 个矩形，第 $i$ 个矩形的信息为 $[L_i+1, i]\times[i, R_i-1]$。</p>
         <p class="fragment">求矩形面积并，若面积最终等于 $n(n+1)/2$，那么意味着所有子区间都是独特的区间，整个序列就不无聊。</p>
     </section>
@@ -24,6 +24,6 @@
         <h2>反例</h2>
         <p class="quote">这是一个无聊的序列。</p>
         <sd-animation src="../../animation/不无聊的序列/反例.js"
-            style="width: 1000px; height: 450px;"></sd-animation>
+            style="margin: 0 auto; width: 1000px; height: 450px;"></sd-animation>
     </section>
 </section>
