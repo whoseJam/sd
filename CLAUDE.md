@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Layout
 
-This is a pnpm-workspace monorepo. All library code lives under `packages/`; user content lives under `examples/` and `ppt/`.
+This is a pnpm-workspace monorepo. All library code lives under `packages/`; user content lives under `examples/`.
 
 ```
 packages/
@@ -17,13 +17,12 @@ packages/
   assets/     @sd/assets     Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
 examples/
   animations/  Single-animation demo scripts (former unit/)
-  decks/       Sample PPT decks (former example/)
-ppt/
-  work/      User lecture decks (algorithm topics)
-  题库/      Problem-set mirrors (codeforces, 洛谷, self)
+  decks/       Sample PPT decks (former example/); each deck has `reveal/` + `animation/` subdirs
 docs/        Markdown notes
 gulpfile.js  Workspace-root build entry; tasks live in @sd/cli
 ```
+
+Legacy decks/animations that depend on removed APIs live in `deprecated/` (gitignored, local only) — do not build from there.
 
 Cross-package imports go through workspace deps (e.g. `import "@sd/element"`, `import "@sd/reveal/plugin/reveal.css"`). The `@sd/reveal` package.json has an `exports` map (`"./*": "./src/*"`) that makes subpath imports look natural.
 
@@ -41,8 +40,10 @@ gulp animation -i <file> -l                           # use local sd.js (assumes
 gulp animation-group -i <directory> -o <output-dir>
 gulp animation-group -i <directory> -w
 
-# Presentation: bundle a deck directory containing ppt.html and per-slide animation scripts
-gulp ppt -i <deck-dir> -o <output-dir>
+# Presentation: bundle a deck directory containing ppt.html and per-slide animation scripts.
+# Decks under examples/decks/<name>/ are split: reveal/ holds ppt.html + slide HTML, animation/ holds the bundles.
+gulp ppt           -i examples/decks/<name>/reveal    -o <output-dir>
+gulp animation-group -i examples/decks/<name>/animation -o <output-dir>
 gulp ppt -i <deck-dir> -w
 gulp ppt -i <deck-dir> -l                             # use locally-built sd.js / reveal.js
 
