@@ -36,14 +36,15 @@ interface Args {
 }
 
 const VIEWPORT = { width: 1200, height: 690 };
-// impress.js default transitionDuration is 1000ms; reveal/webslides settle
-// well under 300ms. --idle overrides for both.
+// Slides that embed sd-animation iframes need their initial pause to fully
+// render before capture — short waits leave fade-in mid-flight and ghost
+// the slide transition on top. --idle overrides per invocation.
 const IDLE_DEFAULT_BY_FW: Record<Framework, number> = {
-  reveal: 300,
-  webslides: 300,
-  impress: 1100,
+  reveal: 1000,
+  webslides: 1000,
+  impress: 1000,
 };
-const READY_TIMEOUT_DEFAULT = 15000;
+const READY_TIMEOUT_DEFAULT = 10000;
 
 function printHelp(): void {
   process.stderr.write(`Usage: sd-ppt-snapshot <deck-html-path> [flags]
