@@ -9,6 +9,11 @@ import { Action } from "@/animate/action";
 import { Animate } from "@/animate/animate";
 import { Context } from "@/animate/context";
 import { Interp } from "@/animate/interp";
+import {
+  ParametricAction,
+  type TweenBounds,
+  type TweenFn,
+} from "@/animate/parametric-action";
 import { Window } from "@/animate/window";
 import {
   aabbContainsPoint,
@@ -118,6 +123,41 @@ export abstract class SDNode {
     this.delayMs = 0;
     this.durationMs = 0;
     this.timingFunction = undefined;
+    return this;
+  }
+
+  // Parametric animation: one logical action whose value at each frame is
+  // computed by `fn(t)` with t ∈ [0, 1] (already eased). Unlike startAnimate's
+  // [from, to] interp, the curve can be any shape — circle, bezier, lissajous —
+  // without being split into N short actions.
+  // bounds is the world-space bbox the entity sweeps mid-tween; only required
+  // when fn(0.5) lies outside the bbox implied by endpoints (fn(0) and fn(1)
+  // are already covered via the same setter-mirror mechanism startAnimate uses).
+  tween(opts: {
+    delay?: number;
+    duration: number;
+    easing?: SDEasingFunction;
+    bounds?: TweenBounds;
+    fn: TweenFn;
+  }): this {
+    const delay = opts.delay ?? 0;
+    const duration = opts.duration;
+    const timing = T.toEasingFunction(opts.easing);
+    const finalValues = opts.fn(1);
+    const attrs = Object.keys(finalValues);
+    Object.assign(this.attributes, finalValues);
+    Animate.pushParametric(
+      new ParametricAction(
+        delay,
+        delay + duration,
+        this,
+        this.getRootRenderNode(),
+        attrs,
+        opts.fn,
+        timing,
+        opts.bounds,
+      ),
+    );
     return this;
   }
 

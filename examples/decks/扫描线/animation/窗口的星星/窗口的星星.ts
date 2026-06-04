@@ -279,20 +279,23 @@ sd.main(async () => {
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
 
   const FADE_IN = 360;
-  const N_SEG = 32;
-  const SEG_DUR = 110;
-  for (let i = 1; i <= N_SEG; i++) {
-    const [x, y] = pointAt(startAngle + (i / N_SEG) * 2 * Math.PI);
-    win
-      .startAnimate({
-        delay: FADE_IN + (i - 1) * SEG_DUR,
-        duration: SEG_DUR,
-        easing: E.linear,
-      })
-      .setX(gx(x))
-      .setY(gy(y))
-      .endAnimate();
-  }
+  const SWEEP_DUR = 3520;
+  // fn(0) starts at the same point as the setX/Y above, fn(1) returns there —
+  // mid-tween the anchor sweeps the focusRegion's perimeter, so bounds must
+  // cover x ∈ [fsx-WIN_W, fsx] × y ∈ [fsy-WIN_H, fsy] plus window size.
+  win.tween({
+    delay: FADE_IN,
+    duration: SWEEP_DUR,
+    easing: E.linear,
+    bounds: {
+      x: [gx(fsx - WIN_W), gx(fsx) + WIN_W * UNIT],
+      y: [gy(fsy - WIN_H), gy(fsy) + WIN_H * UNIT],
+    },
+    fn: (t) => {
+      const [x, y] = pointAt(startAngle + t * 2 * Math.PI);
+      return { x: gx(x), y: gy(y) };
+    },
+  });
 
   await sd.pause();
 

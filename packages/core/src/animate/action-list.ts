@@ -1,6 +1,7 @@
 import type { RenderNode } from "@/renderer/render-node";
 
 import { Action } from "@/animate/action";
+import { ParametricAction } from "@/animate/parametric-action";
 import { Window } from "@/animate/window";
 import { SDNode } from "@/node/node";
 import { SDSVGNode } from "@/node/svg-node";
@@ -110,6 +111,7 @@ export class ActionList {
   currentValueMap: Map<SDNode | RenderNode, Record<string, unknown>>;
   actionsList: ActionLinkList;
   lazyActions: Array<Action>;
+  parametricList: Array<ParametricAction>;
   enabled: boolean;
   constructor() {
     this.t = 0;
@@ -121,7 +123,13 @@ export class ActionList {
     this.currentValueMap = new Map();
     this.actionsList = new ActionLinkList();
     this.lazyActions = [];
+    this.parametricList = [];
     this.enabled = false;
+  }
+  pushParametric(action: ParametricAction) {
+    this.totalCount++;
+    this.parametricList.push(action);
+    this.validCount++;
   }
   push(action: Action) {
     if (action.lazyInterp) this.pushLazyAction(action);
@@ -275,15 +283,31 @@ export class ActionList {
         }
       }
     });
+    this.parametricList.forEach((action) => {
+      if (action.is(ParametricAction.stopFlag)) return;
+      if (!action.t) action.t = t;
+      action.tick(this.t - action.t);
+      if (action.is(ParametricAction.stopFlag)) this.stopCount++;
+    });
   }
   restart() {
     this.actionsList.forEach((action) => {
       action.unset(Action.stopFlag);
     });
+    this.parametricList.forEach((action) => {
+      action.unset(ParametricAction.stopFlag);
+      action.set(ParametricAction.firstCallFlag);
+      action.t = 0;
+    });
   }
   forceToFinish() {
     this.actionsList.forEach((action) => {
       if (action.is(Action.stopFlag)) return;
+      action.forceToFinish();
+      this.stopCount++;
+    });
+    this.parametricList.forEach((action) => {
+      if (action.is(ParametricAction.stopFlag)) return;
       action.forceToFinish();
       this.stopCount++;
     });
@@ -293,6 +317,10 @@ export class ActionList {
     let totalCount = 0;
     this.actionsList.forEach((action) => {
       if (action.is(Action.stopFlag)) stopCount++;
+      totalCount++;
+    });
+    this.parametricList.forEach((action) => {
+      if (action.is(ParametricAction.stopFlag)) stopCount++;
       totalCount++;
     });
     return stopCount === totalCount;
@@ -343,6 +371,23 @@ export class ActionList {
         Window.MATH_MINY = Math.min(Window.MATH_MINY, box.y);
         Window.MATH_MAXX = Math.max(Window.MATH_MAXX, box.x + box.width);
         Window.MATH_MAXY = Math.max(Window.MATH_MAXY, box.y + box.height);
+      }
+    });
+    // tween contributes a world-space bbox directly when bounds is set —
+    // entity at fn(1) is already in actionsMap via push, so the endpoint
+    // bbox is covered above; bounds only needs to add mid-tween extremes.
+    this.parametricList.forEach((action) => {
+      if (!action.bounds) return;
+      if (!visible(action.entity)) return;
+      const bx = action.bounds.x;
+      const by = action.bounds.y;
+      if (bx) {
+        Window.MATH_MINX = Math.min(Window.MATH_MINX, bx[0]);
+        Window.MATH_MAXX = Math.max(Window.MATH_MAXX, bx[1]);
+      }
+      if (by) {
+        Window.MATH_MINY = Math.min(Window.MATH_MINY, by[0]);
+        Window.MATH_MAXY = Math.max(Window.MATH_MAXY, by[1]);
       }
     });
   }
