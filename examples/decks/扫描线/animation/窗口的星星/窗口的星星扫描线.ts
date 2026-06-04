@@ -15,21 +15,20 @@ const { UNIT, gx, gy } = gridHelpers(GRID_W, GRID_H, 28);
 
 const WIN_W = 4;
 const WIN_H = 3;
-// Cluster stars so anchor rectangles overlap deeply — the punchline reads max=4.
+// Spread stars so anchor rectangles enter/exit at distinct y's — the sweep
+// shows running coverage stepping up before settling on the punchline max.
+// sx ≥ W+1 / sy ≥ H+1 keeps anchor rects off the grid border.
 const stars: [number, number][] = [
-  [5, 3],
-  [6, 4],
-  [7, 3],
-  [8, 4],
-  [9, 3],
-  [10, 4],
+  [5, 4],
+  [9, 5],
+  [8, 6],
+  [11, 6],
+  [10, 7],
 ];
 
 const STAR_INK = C.gold;
 const RECT_INK = C.orange;
 const SWEEP_LINE = C.red;
-const TICK_ADD = C.mediumSeaGreen;
-const TICK_REM = C.darkRed;
 const TEXT_NEUTRAL = C.darkButtonGrey;
 const GRID_INK = C.silver;
 const MAX_INK = C.crimson;
@@ -50,9 +49,13 @@ interface Ev {
   rectIdx: number;
 }
 
-const STRIP_GAP = 18;
+// Strip is the 1D coverage readout. Sits below the grid with a small gap so
+// the sweep line crossing into events doesn't visually collide with cell
+// colour updates.
+const STRIP_GAP = 26;
 const STRIP_H = 22;
-const STRIP_Y = gy(0) - STRIP_GAP - STRIP_H;
+const STRIP_Y = gy(GRID_H) + STRIP_GAP;
+const TEXT_Y = STRIP_Y + STRIP_H + 22;
 
 const events: Ev[] = [];
 const dataRects: sd.Rect[] = [];
@@ -66,7 +69,6 @@ let frame: sd.Rect;
 let line: sd.Line;
 let nowText: sd.Text;
 let maxText: sd.Text;
-let maxMarker: sd.Rect;
 
 const PIN_NOW = { "now ": "now " };
 const PIN_MAX = { "max ": "max " };
@@ -143,9 +145,13 @@ sd.init(() => {
     );
   }
 
+  // Anchor rectangles are stroke-only — they're the input; cell colour does
+  // the work of showing coverage so the two layers don't compete.
   stars.forEach(([sx, sy], idx) => {
-    const rx = sx - WIN_W + 1;
-    const ry = sy - WIN_H + 1;
+    // Anchor rect [sx-W, sx] × [sy-H, sy] — star sits at the bottom-right
+    // corner of its rect, matching 窗口的星星.ts's region orientation.
+    const rx = sx - WIN_W;
+    const ry = sy - WIN_H;
     dataRects.push(
       new sd.Rect({
         targetNode: svg,
@@ -153,10 +159,9 @@ sd.init(() => {
         y: gy(ry),
         width: WIN_W * UNIT,
         height: WIN_H * UNIT,
-        fill: RECT_INK,
-        fillOpacity: 0,
+        fill: C.none,
         stroke: RECT_INK,
-        strokeWidth: 1,
+        strokeWidth: 1.4,
         strokeOpacity: 0,
       }),
     );
@@ -180,23 +185,11 @@ sd.init(() => {
     );
   }
 
-  maxMarker = new sd.Rect({
-    targetNode: svg,
-    x: gx(0),
-    y: STRIP_Y - 10,
-    width: UNIT,
-    height: STRIP_H,
-    fill: C.none,
-    stroke: MAX_INK,
-    strokeWidth: 2,
-    opacity: 0,
-  });
-
   nowText = new sd.Text({
     targetNode: svg,
     text: "now 0",
-    x: gx(GRID_W) + 14,
-    cy: STRIP_Y + STRIP_H / 2 - 11,
+    cx: gx(GRID_W / 2) - 22,
+    cy: TEXT_Y,
     fontSize: 15,
     fill: TEXT_NEUTRAL,
     opacity: 0,
@@ -204,8 +197,8 @@ sd.init(() => {
   maxText = new sd.Text({
     targetNode: svg,
     text: "max 0",
-    x: gx(GRID_W) + 14,
-    cy: STRIP_Y + STRIP_H / 2 + 11,
+    cx: gx(GRID_W / 2) + 22,
+    cy: TEXT_Y,
     fontSize: 15,
     fill: MAX_INK,
     opacity: 0,
@@ -222,22 +215,6 @@ sd.main(async () => {
     while (k < events.length && events[k].eventY === y) row.push(events[k++]);
     grouped.push(row);
   }
-
-  const TICK_X1 = gx(0) - 16;
-  const TICK_X2 = gx(0) - 4;
-  const ticks: sd.Line[] = grouped.map(
-    (row) =>
-      new sd.Line({
-        targetNode: svg,
-        x1: TICK_X1,
-        y1: gy(row[0].eventY),
-        x2: TICK_X2,
-        y2: gy(row[0].eventY),
-        stroke: C.silver,
-        strokeWidth: 1,
-        opacity: 0,
-      }),
-  );
 
   for (let i = 0; i < gridV.length; i++) {
     gridV[i]
@@ -261,8 +238,7 @@ sd.main(async () => {
   for (let i = 0; i < dataRects.length; i++) {
     dataRects[i]
       .startAnimate({ delay: 460 + i * 70, duration: 360, easing: E.easeOut })
-      .setFillOpacity(0.16)
-      .setStrokeOpacity(0.5)
+      .setStrokeOpacity(0.55)
       .endAnimate();
   }
   for (let i = 0; i < cells.length; i++) {
@@ -270,12 +246,6 @@ sd.main(async () => {
       .startAnimate({ delay: 600 + i * 14, duration: 260, easing: E.easeOut })
       .setOpacity(1)
       .setY(STRIP_Y)
-      .endAnimate();
-  }
-  for (let i = 0; i < ticks.length; i++) {
-    ticks[i]
-      .startAnimate({ delay: 820 + i * 30, duration: 220, easing: E.easeOut })
-      .setOpacity(1)
       .endAnimate();
   }
   nowText
@@ -320,30 +290,19 @@ sd.main(async () => {
       .setY2(gy(y))
       .endAnimate();
 
-    const dominant = row[0].type;
-    ticks[gIdx]
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-      .setStroke(dominant === 1 ? TICK_ADD : TICK_REM)
-      .setStrokeWidth(2.5)
-      .endAnimate();
-
     for (const ev of row) {
       for (let i = ev.x; i < ev.x + ev.w; i++) segment[i] += ev.type;
     }
     for (const ev of row) {
       dataRects[ev.rectIdx]
         .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-        .setStrokeOpacity(ev.type === 1 ? 0.95 : 0.25)
+        .setStrokeOpacity(ev.type === 1 ? 0.95 : 0.18)
         .endAnimate();
     }
 
     let cellMax = 0;
-    let cellMaxIdx = 0;
     for (let i = 0; i < GRID_W; i++) {
-      if (segment[i] > cellMax) {
-        cellMax = segment[i];
-        cellMaxIdx = i;
-      }
+      if (segment[i] > cellMax) cellMax = segment[i];
       cells[i]
         .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
         .setFill(coverColor(segment[i]))
@@ -360,11 +319,6 @@ sd.main(async () => {
       maxText
         .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
         .setText(`max ${runningMax}`, PIN_MAX)
-        .endAnimate();
-      maxMarker
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-        .setX(gx(cellMaxIdx))
-        .setOpacity(0.95)
         .endAnimate();
     }
 
