@@ -59,13 +59,22 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         sourcePositions.length,
         targetPositions.length,
       );
+      // Fading chars only animate opacity — the style stays constant for
+      // the duration, so fill/stroke/stroke-width are written once via
+      // attribute. Without these the path inherits the SVG default (black)
+      // regardless of the Text's fill, producing black ghosting during
+      // length-changing morphs.
       const fadePath = (
         node: RenderNode,
         d: string,
+        style: PathStyle,
         opacityFrom: number,
         opacityTo: number,
       ) => {
         node.setAttribute("d", d);
+        node.setAttribute("fill", style.fill);
+        node.setAttribute("stroke", style.stroke);
+        node.setAttribute("stroke-width", style.strokeWidth);
         pushAction({
           entity: node,
           key: "opacity",
@@ -92,21 +101,29 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
           sourceIndex === undefined ? undefined : sourcePaths[sourceIndex];
         const target =
           targetIndex === undefined ? undefined : targetPaths[targetIndex];
+        const sourceStyleResolved =
+          sourceIndex === undefined
+            ? undefined
+            : sourceStyles[sourceIndex].styleAt(text, l);
+        const targetStyleResolved =
+          targetIndex === undefined
+            ? undefined
+            : targetStyles[targetIndex].styleAt(text, r);
         if (sourceIndex === undefined) {
-          if (target) fadePath(makePath(), target.d, 0, 1);
+          if (target) fadePath(makePath(), target.d, targetStyleResolved, 0, 1);
           continue;
         }
         if (targetIndex === undefined) {
-          if (source) fadePath(makePath(), source.d, 1, 0);
+          if (source) fadePath(makePath(), source.d, sourceStyleResolved, 1, 0);
           continue;
         }
         if (source === undefined && target === undefined) continue;
         if (source === undefined) {
-          fadePath(makePath(), target.d, 0, 1);
+          fadePath(makePath(), target.d, targetStyleResolved, 0, 1);
           continue;
         }
         if (target === undefined) {
-          fadePath(makePath(), source.d, 1, 0);
+          fadePath(makePath(), source.d, sourceStyleResolved, 1, 0);
           continue;
         }
         // Both chars exist — one path node, morph d directly. Sub-path
@@ -139,15 +156,13 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
             timing,
           });
         }
-        const sourceStyle = sourceStyles[sourceIndex].styleAt(text, l);
-        const targetStyle = targetStyles[targetIndex].styleAt(text, r);
         pushAction({
           entity: character,
           key: "fill",
           l,
           r,
-          from: sourceStyle.fill as SDRGBAColor,
-          to: targetStyle.fill as SDRGBAColor,
+          from: sourceStyleResolved.fill as SDRGBAColor,
+          to: targetStyleResolved.fill as SDRGBAColor,
           interp: Interp.colorInterp,
           timing,
         });
@@ -156,8 +171,8 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
           key: "stroke",
           l,
           r,
-          from: sourceStyle.stroke as SDRGBAColor,
-          to: targetStyle.stroke as SDRGBAColor,
+          from: sourceStyleResolved.stroke as SDRGBAColor,
+          to: targetStyleResolved.stroke as SDRGBAColor,
           interp: Interp.colorInterp,
           timing,
         });
@@ -166,8 +181,8 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
           key: "stroke-width",
           l,
           r,
-          from: sourceStyle.strokeWidth as number,
-          to: targetStyle.strokeWidth as number,
+          from: sourceStyleResolved.strokeWidth as number,
+          to: targetStyleResolved.strokeWidth as number,
           interp: Interp.numberInterp,
           timing,
         });
