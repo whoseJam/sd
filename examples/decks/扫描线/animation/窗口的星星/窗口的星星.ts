@@ -42,7 +42,7 @@ let win: sd.Rect;
 let anchor: sd.Circle;
 let countText: sd.Text;
 
-const PIN_SEEN = { "见到 ": "见到 " };
+const PIN_SEEN = { "seen ": "seen " };
 
 // sd-element's flush pass (used for measuring iframe size) accumulates every
 // beat's actions into one list. To stay under the partial-overlap check, every
@@ -138,7 +138,7 @@ sd.init(() => {
 
   countText = new sd.Text({
     targetNode: svg,
-    text: "见到 0",
+    text: "seen 0",
     x: gx(GRID_W) + 14,
     cy: gy(GRID_H / 2),
     fontSize: 16,
@@ -205,7 +205,7 @@ sd.main(async () => {
   litStars(initWX, initWY);
   countText
     .startAnimate({ delay: READ_DELAY, duration: READ_DUR, easing: E.easeOut })
-    .setText(`见到 ${seen(initWX, initWY)}`, PIN_SEEN)
+    .setText(`seen ${seen(initWX, initWY)}`, PIN_SEEN)
     .endAnimate();
 
   await sd.pause();
@@ -227,7 +227,7 @@ sd.main(async () => {
     litStars(wx, wy);
     countText
       .startAnimate({ delay: READ_DELAY, duration: READ_DUR, easing: E.easeOut })
-      .setText(`见到 ${seen(wx, wy)}`, PIN_SEEN)
+      .setText(`seen ${seen(wx, wy)}`, PIN_SEEN)
       .endAnimate();
     await sd.pause();
   }

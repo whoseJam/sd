@@ -83,6 +83,16 @@ export class FontManager {
         `Font ${family} not loaded. Add it to data-fonts and ship packages/assets/fonts/${family}.ttf.`,
       );
     }
+    // Path morphing renders glyphs through opentype's outlines. The shipped
+    // Latin TTFs (Arial / Consolas / Times) have no CJK coverage, so chars
+    // outside their range silently fall back to .notdef boxes — visible as
+    // empty rectangles in a setText morph. Throw at the source instead.
+    const missing = missingGlyphs(font, text);
+    if (missing.length > 0) {
+      throw new Error(
+        `Font "${family}" has no glyph for ${missing.map((c) => JSON.stringify(c)).join(", ")} in ${JSON.stringify(text)}. Pick a font that covers these characters, or split the readout so the morphing portion stays inside the font's coverage.`,
+      );
+    }
     const ascender = font.ascender;
     const descender = font.descender;
     const scale = size / font.unitsPerEm;
@@ -100,6 +110,18 @@ export class FontManager {
     const box = this.boundingBox(text, family, 20);
     return (height / box.height) * 20;
   }
+}
+
+function missingGlyphs(font: opentype.Font, text: string): string[] {
+  const seen = new Set<string>();
+  const missing: string[] = [];
+  for (const ch of text) {
+    if (seen.has(ch)) continue;
+    seen.add(ch);
+    const glyph = font.charToGlyph(ch);
+    if (!glyph || glyph.index === 0) missing.push(ch);
+  }
+  return missing;
 }
 
 function getTextWidth(font: opentype.Font, text: string, size: number) {
