@@ -332,16 +332,15 @@ sd.main(async () => {
     // the visual "thump" rather than ticking continuously.
     if (dy > 0) area += prevCov * dy;
 
-    // sd's setText is a morph: the unchanged " / 20" subtext stays put via
-    // sparse-match; only the count digit reshapes. That morph IS the beat —
-    // no need to layer a fill flash on top.
+    // setText morphs only the count digit; mapping pins the constant tail/symbol
+    // so positional alignment doesn't reshape them.
     coverageText
       .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
-      .setText(`${cov} / ${W}`)
+      .setText(`${cov} / ${W}`, { [` / ${W}`]: ` / ${W}` })
       .endAnimate();
     areaText
       .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
-      .setText(`Σ ${area}`)
+      .setText(`Σ ${area}`, { "Σ ": "Σ " })
       .endAnimate();
 
     prevY = ev.eventY;

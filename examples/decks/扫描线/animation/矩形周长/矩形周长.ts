@@ -343,15 +343,15 @@ sd.main(async () => {
 
     coverageText
       .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
-      .setText(`cov ${cov} / ${W}`)
+      .setText(`cov ${cov} / ${W}`, { "cov ": "cov ", [` / ${W}`]: ` / ${W}` })
       .endAnimate();
     deltaText
       .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
-      .setText(`Δ ${delta}`)
+      .setText(`Δ ${delta}`, { "Δ ": "Δ " })
       .endAnimate();
     sumText
       .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
-      .setText(`Σ ${totalPerim}`)
+      .setText(`Σ ${totalPerim}`, { "Σ ": "Σ " })
       .endAnimate();
 
     await sd.pause();

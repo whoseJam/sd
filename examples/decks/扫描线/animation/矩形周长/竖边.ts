@@ -36,6 +36,13 @@ let frame: sd.Rect;
 let hSumText: sd.Text;
 let vSumText: sd.Text;
 let totalText: sd.Text;
+let sumH = 0;
+let sumV = 0;
+
+// Pin the constant prefix during setText morphs — alignCharacterSequence would
+// otherwise duplicate Σ across multiple target slots and reshape the symbol.
+const PIN_H = { "ΣH ": "ΣH " };
+const PIN_V = { "ΣV ": "ΣV " };
 
 // Run the row-flip sweep along an axis. `axisLen` is the cell count along
 // the sweep direction; `crossLen` along the perpendicular; `add(cellIdx,
@@ -151,31 +158,19 @@ sd.init(() => {
     fill: V_INK,
     opacity: 0,
   });
-  totalText = new sd.Text({
-    targetNode: svg,
-    text: "= 0",
-    x: READ_X,
-    cy: READ_CY - 26,
-    fontSize: 18,
-    fill: TEXT_NEUTRAL,
-    opacity: 0,
-  });
-});
-
-sd.main(async () => {
+  // Edges + totals are deterministic from `data`; compute them in init so
+  // totalText can be seeded with its final value (no morph needed for the punchline).
   const hEvs: { sweepAt: number; cellStart: number; cellEnd: number; type: 1 | -1 }[] = [];
   data.forEach(([x, y, w, h]) => {
     hEvs.push({ sweepAt: y, cellStart: x, cellEnd: x + w, type: 1 });
     hEvs.push({ sweepAt: y + h, cellStart: x, cellEnd: x + w, type: -1 });
   });
-
   const vEvs: { sweepAt: number; cellStart: number; cellEnd: number; type: 1 | -1 }[] = [];
   data.forEach(([x, y, w, h]) => {
     vEvs.push({ sweepAt: x, cellStart: y, cellEnd: y + h, type: 1 });
     vEvs.push({ sweepAt: x + w, cellStart: y, cellEnd: y + h, type: -1 });
   });
-
-  const sumH = sweep(W, W, hEvs, (atY, l, r) => {
+  sumH = sweep(W, W, hEvs, (atY, l, r) => {
     hEdges.push(
       new sd.Line({
         targetNode: svg,
@@ -189,7 +184,7 @@ sd.main(async () => {
       }),
     );
   });
-  const sumV = sweep(H, H, vEvs, (atX, l, r) => {
+  sumV = sweep(H, H, vEvs, (atX, l, r) => {
     vEdges.push(
       new sd.Line({
         targetNode: svg,
@@ -204,6 +199,18 @@ sd.main(async () => {
     );
   });
 
+  totalText = new sd.Text({
+    targetNode: svg,
+    text: `= ${sumH + sumV}`,
+    x: READ_X,
+    cy: READ_CY - 26,
+    fontSize: 18,
+    fill: TEXT_NEUTRAL,
+    opacity: 0,
+  });
+});
+
+sd.main(async () => {
   // Layered entrance — graph paper → frame → input rects → readouts.
   for (let i = 0; i < gridV.length; i++) {
     gridV[i]
@@ -245,7 +252,7 @@ sd.main(async () => {
   }
   hSumText
     .startAnimate({ delay: hEdges.length * 60, duration: 280, easing: E.easeOut })
-    .setText(`ΣH ${sumH}`)
+    .setText(`ΣH ${sumH}`, PIN_H)
     .endAnimate();
 
   await sd.pause();
@@ -260,7 +267,7 @@ sd.main(async () => {
   }
   vSumText
     .startAnimate({ delay: vEdges.length * 60, duration: 280, easing: E.easeOut })
-    .setText(`ΣV ${sumV}`)
+    .setText(`ΣV ${sumV}`, PIN_V)
     .endAnimate();
 
   await sd.pause();
@@ -268,7 +275,6 @@ sd.main(async () => {
   totalText
     .startAnimate({ duration: 320, easing: E.easeOut })
     .setOpacity(1)
-    .setText(`= ${sumH + sumV}`)
     .endAnimate();
 
   await sd.pause();
