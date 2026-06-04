@@ -16,13 +16,15 @@ const { UNIT, gx, gy } = gridHelpers(GRID_W, GRID_H, 30);
 
 const WIN_W = 4;
 const WIN_H = 3;
+// Each star's anchor region is [sx-W, sx] × [sy-H, sy]; keep stars at
+// sx ≥ 5 / sy ≥ 4 so no region touches the grid border.
 const stars: [number, number][] = [
-  [3, 2],
-  [5, 5],
-  [6, 3],
-  [8, 6],
-  [9, 4],
-  [11, 5],
+  [5, 4],
+  [6, 6],
+  [8, 5],
+  [10, 7],
+  [11, 4],
+  [13, 6],
 ];
 
 const STAR_INK = C.gold;
@@ -222,7 +224,7 @@ sd.main(async () => {
   // Reset every non-focus star to dim — touching the focus star here would create
   // an overlapping fill action with the lit transition below (partial overlap on the
   // same attr is a hard throw in sd's action list).
-  const focusIdx = 2;
+  const focusIdx = 0;
   for (let i = 0; i < starNodes.length; i++) {
     if (i === focusIdx) continue;
     starNodes[i]
@@ -259,8 +261,24 @@ sd.main(async () => {
 
   await sd.pause();
 
-  // Same construction for every other star — the forest of orange rectangles
-  // IS the input to the next slide's sweep.
+  // Bring window back at (fsx, fsy) — the top-right corner of the orange
+  // region, where window bl = star. Window sits up-and-right of the region
+  // so the two read as separate shapes.
+  win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
+  win.startAnimate({ duration: 600, easing: E.easeInOut }).setX(gx(fsx)).setY(gy(fsy)).endAnimate();
+
+  await sd.pause();
+
+  // Slide to (1, 1) — the original first anchor from beat 2. Window now
+  // overlaps the region exactly: same anchor that opened the deck still
+  // covers this star, closing the loop.
+  win.startAnimate({ duration: 600, easing: E.easeInOut }).setX(gx(1)).setY(gy(1)).endAnimate();
+
+  await sd.pause();
+
+  // Window retreats, then every remaining star's anchor rectangle fades in —
+  // the forest of orange rectangles is what the next slide's sweep consumes.
+  win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0).endAnimate();
   for (let i = 0; i < stars.length; i++) {
     if (i === focusIdx) continue;
     const [sx, sy] = stars[i];
