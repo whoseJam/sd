@@ -1,5 +1,0 @@
-#369.陌上花开：https://www.luogu.com.cn/problem/P3810
-#370.Mokia：https://www.luogu.com.cn/problem/P4390
-#496.动态逆序对：https://www.luogu.com.cn/problem/P3157
-#1103.寒假作业：https://www.luogu.com.cn/problem/P2717
-#1104.TATT：https://www.luogu.com.cn/problem/P3769

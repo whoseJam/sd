@@ -1,4 +1,0 @@
-#86.工程规划：https://www.luogu.com.cn/problem/P1260
-#164.糖果：https://www.luogu.com.cn/problem/P3275
-#1043.01串：https://www.luogu.com.cn/problem/P5751
-#87.区间：https://www.acwing.com/problem/content/description/364/

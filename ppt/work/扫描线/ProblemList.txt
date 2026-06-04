@@ -1,6 +1,0 @@
-扫描线：
-#1004.扫描线：https://www.luogu.com.cn/problem/P5490
-#1005.矩形周长：https://www.luogu.com.cn/problem/P1856
-#1006.窗口的星星：https://www.luogu.com.cn/problem/P1502
-#466.内部白点：https://www.luogu.com.cn/problem/P5816
-#1009.不无聊的序列：https://www.luogu.com.cn/problem/UVA1608
