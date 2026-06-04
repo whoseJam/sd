@@ -37,6 +37,8 @@ interface Args {
 
 const VIEWPORT = { width: 1200, height: 690 };
 const STEP_TIMEOUT_DEFAULT = 15000;
+// Bounds infinite-pause-loop user code; realistic decks are well under 100.
+const MAX_ADVANCES = 500;
 
 function printHelp(): void {
   process.stderr.write(`Usage: sd-animation-snapshot <html-path> [flags]
@@ -204,6 +206,20 @@ async function captureFrames(
     if (i < args.to) {
       await advance();
       await waitForBoundary(args.timeoutMs);
+    }
+  }
+  // Drive remaining pauses past --to so firstTick runs every lazyInterp —
+  // glyph misses / path-engine errors only fire there.
+  if (!reachedEnd) {
+    let driven = shots.length;
+    while (driven < MAX_ADVANCES && !(await mainFinished())) {
+      await advance();
+      driven++;
+      try {
+        await waitForBoundary(args.timeoutMs);
+      } catch {
+        break;
+      }
     }
   }
   // Union of per-frame bboxes — animations that mount entities mid-run
