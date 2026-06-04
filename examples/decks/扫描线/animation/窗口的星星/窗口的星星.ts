@@ -261,35 +261,32 @@ sd.main(async () => {
 
   await sd.pause();
 
-  // Position window first, fade in, then trace an ellipse whose semi-axes
-  // match the focus region's half-extent — window's bottom-left circles
-  // through the rectangle without ever leaving it.
+  // Window re-enters at the circle's start point — a beat on its own so the
+  // viewer registers "the anchor is back inside the region" before the orbit.
+  // r < min(WIN_W, WIN_H)/2 so the circle stays interior, not flush with the
+  // region edge.
   const cxr = fsx - WIN_W / 2;
   const cyr = fsy - WIN_H / 2;
-  const rx = WIN_W / 2;
-  const ry = WIN_H / 2;
+  const r = 1;
   const startAngle = Math.PI;
   const pointAt = (theta: number): [number, number] => [
-    cxr + rx * Math.cos(theta),
-    cyr + ry * Math.sin(theta),
+    cxr + r * Math.cos(theta),
+    cyr + r * Math.sin(theta),
   ];
 
   const [sxStart, syStart] = pointAt(startAngle);
   win.startAnimate({ duration: 0 }).setX(gx(sxStart)).setY(gy(syStart)).endAnimate();
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
 
-  const FADE_IN = 360;
-  const SWEEP_DUR = 3520;
-  // fn(0) starts at the same point as the setX/Y above, fn(1) returns there —
-  // mid-tween the anchor sweeps the focusRegion's perimeter, so bounds must
-  // cover x ∈ [fsx-WIN_W, fsx] × y ∈ [fsy-WIN_H, fsy] plus window size.
+  await sd.pause();
+
+  // Orbit a true circle interior to the region — window stays entirely inside.
   win.tween({
-    delay: FADE_IN,
-    duration: SWEEP_DUR,
+    duration: 2000,
     easing: E.linear,
     bounds: {
-      x: [gx(fsx - WIN_W), gx(fsx) + WIN_W * UNIT],
-      y: [gy(fsy - WIN_H), gy(fsy) + WIN_H * UNIT],
+      x: [gx(cxr - r), gx(cxr + r) + WIN_W * UNIT],
+      y: [gy(cyr - r), gy(cyr + r) + WIN_H * UNIT],
     },
     fn: (t) => {
       const [x, y] = pointAt(startAngle + t * 2 * Math.PI);
