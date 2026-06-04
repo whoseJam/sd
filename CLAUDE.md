@@ -28,37 +28,70 @@ Cross-package imports go through workspace deps (e.g. `import "@sd/element"`, `i
 
 The `dist/` outputs from `gulp sd`, `gulp reveal`, `gulp element` are written to whatever path `-o` specifies (or `pptOutputPath` from `myconfig.json`); they are not committed.
 
+## Conventions
+
+### Code style
+
+- **No `_xxx` naming.** Use TS `private` / `protected` / `public` modifiers, not `_`-prefixed fields, even for lazy-getter backing storage.
+- **No `any` / `as any`.** Use `as unknown as T` or refactor the API.
+- **No backwards-compat hacks.** When changing core APIs, pick the cleanest extensible design; breaking changes are fine.
+- **No silent fallback to mask bugs.** If you see `if (!foo) return` at the bottom of a stack, find the root cause and declare intent at the correct layer instead.
+- **Renaming for shadowing:** make the outer name more precise (`suffix` → `suffixes`) or rename the import (`path` → `nodePath`). Do not shrink to single letters (`s` / `x` / `p`).
+- **Optional runtime config absences are silent.** If `__SD_*_URL__` is missing, just `return` — no `console.warn`. Visual gaps are obvious; don't add noise.
+
+### Comments
+
+- Default to no comment. Only add one when the WHY is non-obvious (a hidden constraint, a workaround, a subtle invariant).
+- All `//` and `/* */` are in English. Chinese in chat is fine; in code, English only.
+- Don't explain WHAT the code does; well-named identifiers already do that.
+
+### Formatting / lint
+
+- `pnpm format` = `oxfmt` (printWidth 80, lf) then `oxlint --fix` with `perfectionist/sort-imports` (natural asc, type-imports first) and `consistent-type-imports`.
+- Import-order issues (including circular-import failures caused by reordering) get fixed automatically by running format.
+- `pnpm format` exit 1 is usually just `no-unused-vars` warnings; read the output before assuming a real failure.
+- Not auto-sorted: object keys, JSX props, switch cases, names inside `{ ... }` of an import.
+
+### Commits
+
+- Default to **one commit per task** bundling all related changes — don't split by "logical theme" unless the user asks. Long commit messages are fine.
+
 ## Build and Development Commands
 
+### Develop a deck locally (the canonical loop)
+
+Decks under `examples/decks/<name>/` are split: `reveal/` holds `ppt.html` + slide HTML; `animation/` holds the per-slide bundles. The slide HTML references its bundle via `<sd-animation src="../../animation/<name>/<name>.js">`, so the two trees must land at sibling output paths.
+
+Run these **four in background**:
+
 ```bash
-# Single animation: bundle <file>.ts and emit <file>.html + <file>.js
-gulp animation -i examples/animations/<file>.ts -o <output-dir>
-gulp animation -i <file> -w                           # watch mode
-gulp animation -i <file> -l                           # use local sd.js (assumes it's at pptOutputPath/sd.js)
+gulp sd -w                                                                          # rebuild dist/sd.js on core changes
+gulp ppt           -i examples/decks/<deck>/reveal    -o /tmp/sd-test/reveal -l -w  # deck HTML + reveal bundle
+gulp animation-group -i examples/decks/<deck>/animation -o /tmp/sd-test/animation -l -w  # per-slide animation bundles
+gulp serve -o /tmp/sd-test -p 8765                                                  # live-server: no-cache + page auto-reload
+```
 
-# Animation group: walk a directory and bundle each .js/.ts entry
-gulp animation-group -i <directory> -o <output-dir>
-gulp animation-group -i <directory> -w
+`-l` copies the locally-built `sd.js` / `reveal.js` into the output dir (otherwise the HTML loads them from `https://whosejam.site/public/`).
 
-# Presentation: bundle a deck directory containing ppt.html and per-slide animation scripts.
-# Decks under examples/decks/<name>/ are split: reveal/ holds ppt.html + slide HTML, animation/ holds the bundles.
-gulp ppt           -i examples/decks/<name>/reveal    -o <output-dir>
-gulp animation-group -i examples/decks/<name>/animation -o <output-dir>
-gulp ppt -i <deck-dir> -w
-gulp ppt -i <deck-dir> -l                             # use locally-built sd.js / reveal.js
+Browser: **http://127.0.0.1:8765/reveal/index.html** — and **in DevTools turn on "Disable cache"**. Chrome's in-memory cache for `<sd-animation>` iframes survives `Cache-Control: no-store`; live-server's WebSocket-triggered full-page reload (fired when any file under `-o` changes) is what reliably flushes those iframes. A dumb static server (`npx http-server`, `python -m http.server`) does NOT work here — no auto-reload means the iframe sits on the old bundle indefinitely.
 
-# Library bundles (run individually when you want fresh sd.js / reveal.js / sd-element.js)
-gulp sd        -o <output-dir>
+If `gulp` isn't on PATH, prefix with `pnpm exec`.
+
+### Other tasks
+
+```bash
+gulp animation -i examples/animations/<file>.ts -o <output-dir>     # single animation, emit <file>.html + <file>.js
+gulp animation -i <file> -w                                          # watch mode
+gulp animation -i <file> -l                                          # use local sd.js (at pptOutputPath/sd.js)
+gulp animation-group -i <directory> -o <output-dir> [-w]             # walk a dir, bundle each .js/.ts
+
+gulp sd        -o <output-dir>                                       # library bundles
 gulp reveal    -o <output-dir>
 gulp webslides -o <output-dir>   # IIFE: framework + include-html walker, loaded via <script>
 gulp impress   -o <output-dir>   # IIFE: same shape as webslides
 gulp element   -o <output-dir>   # IIFE bundle: vanilla HTML can <script src="sd-element.js">
 
-# Theme CSS compile (Reveal/css/theme/source/*.scss -> compiled .css)
-gulp theme   -o <output-dir>
-
-# Static dev server (serves pptOutputPath via live-server)
-gulp serve -p 8080
+gulp theme   -o <output-dir>     # compile Reveal/css/theme/source/*.scss
 ```
 
 `myconfig.json` at the repo root (gitignored) holds default `animationOutputPath`, `pptOutputPath`, `releaseOutputPath`. Override per-invocation with `-o`. Manage via `gulp <task>` after first run, or `sd-config <key> <value>`.
@@ -103,6 +136,27 @@ For webslides/impress the framework bundle is fully self-contained (framework + 
 
 The `-l` flag tells the CLI to copy `dist/sd.js` (or the framework bundle) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
 
+## SD-PPT Animation Style
+
+Default style for animations written in `examples/decks/<deck>/animation/*.ts`. (Future variations may emerge — for now there is one default, applied everywhere.)
+
+### Slide layout
+
+- `<sd-animation>` is a custom element with `:host { display: block }`. Reveal centers text but **not** block children, so each tag must carry `style="margin: 0 auto; width: ...; height: ...;"` to center. Write `margin: 0 auto` first, then the size.
+
+### Animation script defaults
+
+- Get the palette + easings from factories at the top of every file:
+  ```ts
+  const C = sd.color();
+  const E = sd.easing();
+  ```
+  Use `C.steelBlue` / `E.easeOut`, not `"#4682b4"` / `"easeOut"`. Hex only when the palette has no match.
+- **Staggered fade-in entrance.** Layer by visual depth: grid/background → frame → input data → measurement scaffolding → numeric labels. 80–200ms delay per element within a layer, ≥200ms gap between layers. All entrance animations fire concurrently before the first `await sd.pause()`.
+- **`await sd.pause()` is a semantic beat, not a timer.** Each pause corresponds to one algorithmic step; the viewer advances with N. End every animation with a trailing `await sd.pause()` so snapshot tools capture the final state and the last beat is pause-able.
+- **Visual elements carry algorithmic meaning.** The end state should let a viewer read the answer (Σ area, coverage `n/W`, invariants) without further animation. Don't rely on motion alone — load each element with semantic payload.
+- **Background scaffolding is low-presence:** opacity 0.30–0.40, `strokeWidth` 0.6–0.8, `strokeDashArray: [2, 3]`. Fade these in first.
+
 ## Snapshot tools (visual feedback for AI agents)
 
 Two tools under `.claude/tools/`, both stitch per-frame screenshots into one labeled grid PNG via headless chromium. Shared helpers (static server, label SVG, grid stitcher) live in `.claude/tools/grid.ts`.
@@ -135,8 +189,19 @@ stdout = output PNG absolute path (only line). stderr = `pageerror` traces colle
 
 ## Working with the Codebase
 
-- Add a new visual primitive: drop a file under `packages/core/src/Node/Shape/` (or appropriate subfolder), then re-export from `packages/core/src/sd.ts`.
+### Where to put things
+
+- Add a new visual primitive: drop a file under `packages/core/src/Node/Shape/` (or the appropriate subfolder), then re-export from `packages/core/src/sd.ts`.
 - Add a new layout: drop a file under `packages/core/src/Layout/<category>/`, then re-export from `sd.ts`.
 - Add a new reveal plugin: drop a file under `packages/reveal/src/plugin/` and register it in `MyReveal.js`.
-- New CLI task: add a `.js` file to `packages/cli/src/`, register it in `gulpfile.js`, and (if user-facing) add to `package.json#bin`.
+- New CLI task: add a `.ts` file to `packages/cli/src/`, register it in `gulpfile.ts`, and (if user-facing) add to `package.json#bin`.
 - New animation demo: put a `.ts` file under `examples/animations/`, then `gulp animation -i examples/animations/<name>.ts`.
+
+### Working as an AI agent
+
+This repo intentionally stores **no per-agent memory** — every collaboration norm lives in this file. If you learn something the next agent should know (a build trap, a missing flag, a convention), update CLAUDE.md instead of recording it privately.
+
+- **Tool calls:** don't combine queries and writes in a single `Bash` invocation or a single parallel batch. Run queries first, decide, then issue writes. Multiple writes that belong to the same wave (e.g. `mkdir` + `mv` + edit the gitignore) can be merged. Queries are cheap and reversible; writes aren't — see the current state before mutating.
+- **Background tasks (watchers, builds, tests):** if one runs noticeably past expected time (>1.5×), report what you're seeing and your guess; silent waiting is a collaboration problem.
+- **Don't rely on summary lines.** If a doc references a recipe, dev loop, or build flow, read the actual file before running anything — one-line indexes drop the details that make the recipe correct.
+- **Don't add backwards-compat shims** when changing APIs (see Conventions). When in doubt about whether something old is in use, grep — the codebase is small enough.

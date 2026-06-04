@@ -13,20 +13,19 @@ const E = sd.easing();
 // crossings exist; the ones that aren't already black are the new black
 // points (the process terminates after exactly one round).
 const GRID_W = 10;
-const GRID_H = 8;
+const GRID_H = 3;
 const { UNIT, gx, gy } = gridHelpers(GRID_W, GRID_H, 32);
 
-// Chosen so 3 of 11 crossings are interior white — enough of a payoff to
-// see the counter step up across the sweep without crowding the grid.
+// Flat dataset: top and bottom rows span x∈[1,5] and column axes at x=1,5
+// span y∈[0,2]. The middle row's wider span [0,9] passes through both
+// columns, producing the two interior whites (1,1) and (5,1).
 const data: [number, number][] = [
-  [2, 1],
-  [6, 1],
-  [4, 3],
-  [8, 3],
-  [2, 5],
-  [8, 5],
-  [4, 7],
-  [6, 7],
+  [1, 0],
+  [5, 0],
+  [0, 1],
+  [9, 1],
+  [1, 2],
+  [5, 2],
 ];
 
 const DOT_INK = "#222";

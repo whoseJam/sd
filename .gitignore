@@ -11,3 +11,4 @@ dist
 myconfig.json
 tsconfig.tsbuildinfo
 packages/assets/themes/
+/deprecated
