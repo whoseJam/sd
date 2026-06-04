@@ -261,18 +261,26 @@ sd.main(async () => {
 
   await sd.pause();
 
-  // Bring window back at (fsx, fsy) — the top-right corner of the orange
-  // region, where window bl = star. Window sits up-and-right of the region
-  // so the two read as separate shapes.
+  // Walk the window's bottom-left clockwise around all four corners of the
+  // focus region and back to start. Slide duration matches beats 3-5 so
+  // flush-mode setX/setY accumulation stays in complete-overlap territory;
+  // subsequent segments sit in adjacent [n·600, (n+1)·600] slots.
+  const SLIDE_DUR = 600;
+  const loop: [number, number][] = [
+    [fsx, fsy],                 // (5, 4) top-right
+    [fsx - WIN_W, fsy],         // (1, 4) top-left
+    [fsx - WIN_W, fsy - WIN_H], // (1, 1) bottom-left — beat 2's anchor
+    [fsx, fsy - WIN_H],         // (5, 1) bottom-right
+    [fsx, fsy],                 // back to (5, 4)
+  ];
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
-  win.startAnimate({ duration: 600, easing: E.easeInOut }).setX(gx(fsx)).setY(gy(fsy)).endAnimate();
-
-  await sd.pause();
-
-  // Slide to (1, 1) — the original first anchor from beat 2. Window now
-  // overlaps the region exactly: same anchor that opened the deck still
-  // covers this star, closing the loop.
-  win.startAnimate({ duration: 600, easing: E.easeInOut }).setX(gx(1)).setY(gy(1)).endAnimate();
+  for (let i = 0; i < loop.length; i++) {
+    win
+      .startAnimate({ delay: i * SLIDE_DUR, duration: SLIDE_DUR, easing: E.easeInOut })
+      .setX(gx(loop[i][0]))
+      .setY(gy(loop[i][1]))
+      .endAnimate();
+  }
 
   await sd.pause();
 
