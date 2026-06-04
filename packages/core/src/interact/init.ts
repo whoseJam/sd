@@ -1,4 +1,3 @@
-import { createWaterMark } from "@/animate/animate";
 import { Window } from "@/animate/window";
 import { Device } from "@/interact/device";
 import { Root } from "@/interact/root";
@@ -25,5 +24,4 @@ export function init() {
   MathManager.init();
   PathEngine.init();
   PolygonEngine.init();
-  createWaterMark();
 }

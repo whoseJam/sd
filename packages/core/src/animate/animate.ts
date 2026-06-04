@@ -10,29 +10,6 @@ import { Action } from "@/animate/action";
 import { ActionList } from "@/animate/action-list";
 import { Window } from "@/animate/window";
 import { Status as S } from "@/interact/status";
-import { Dom } from "@/utility/dom";
-
-let checkWaterMarkTick = 0;
-const WATER_MARK_CHECK_INTERVAL = 100;
-const WATER_MARK_STRING = "pow" + "er b" + "y wh" + "oseJ" + "am";
-
-export function createWaterMark() {
-  const watermark = Dom.createElementAndAppendToBody("div");
-  watermark.innerHTML = `
-    <div id="watermark" style="position: fixed; bottom: 10px; right: 10px; font-size: 15px; color: rgba(0, 0, 0, 0.3); pointer-events: none;">
-    ${WATER_MARK_STRING}
-    </div>
-    `;
-}
-
-function checkWaterMark() {
-  checkWaterMarkTick++;
-  if (checkWaterMarkTick >= WATER_MARK_CHECK_INTERVAL) {
-    checkWaterMarkTick = 0;
-    if (Dom.getByID("watermark")) return;
-    createWaterMark();
-  }
-}
 
 export class Animate {
   static lastTickFlag = false;
@@ -59,7 +36,6 @@ export class Animate {
     currentActionList.firstTick();
   }
   static tick(t: number) {
-    checkWaterMark();
     this.currentTimestamp = t;
     const currentActionList = this.currentActionList;
     if (Window.SHOULD_FLUSH || this.shouldStop) return;

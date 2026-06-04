@@ -25,6 +25,11 @@ export class Window {
   static CURRENT_FRAME = 0;
   static MAXIMUM_FRAME = 0;
   static WHOSEJAM = 0;
+  // Set when sd.main()'s user callback returns and the framework calls
+  // pause(LAST_MAIN_STAGE). External tooling (snapshots, exporters) can poll
+  // this to detect end-of-animation without guessing timeouts; the framework
+  // itself doesn't read it.
+  static MAIN_FINISHED = false;
   static SHOULD_EXPORT = false;
   static SHOULD_FLUSH = false;
   static IS_CONTINUING = false;
@@ -247,6 +252,7 @@ export function pause(ms?: number): Promise<void> {
     case NORMAL_FRAME:
       return promiseOfNormalFrame();
     case LAST_MAIN_STAGE:
+      Window.MAIN_FINISHED = true;
       return promiseOfLastMainFrame();
   }
 }

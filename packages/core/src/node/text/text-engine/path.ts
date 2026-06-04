@@ -17,7 +17,16 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
   const family = A.getAttribute(text, "fontFamily", t, text.getFontFamily());
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
   const x = A.getAttribute(text, "x", t, text.getLocalX());
-  const y = A.getAttribute(text, "y", t, text.getLocalY());
+  const localY = A.getAttribute(text, "y", t, text.getLocalY());
+  // BaseText.renderAttribute writes DOM y = -(localY + height); morph
+  // overlays render in raw SVG space, so we must apply the same flip
+  // here or they land at SVG y=-localY instead of co-located with the
+  // <text> element (visible only when the viewBox happens to span both).
+  // text.attributes.height is already the TARGET height at firstTick
+  // time, so measure THIS frame's content/family/size directly — same
+  // pattern getMathPaths uses for the analogous Math case.
+  const box = FontManager.boundingBox(content, family, size);
+  const y = -(localY + box.height);
   const paths = FontManager.getTextPathsFromOpenType(
     content,
     family,

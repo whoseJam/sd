@@ -28,6 +28,7 @@ interface Args {
   from: number;
   to: number;
   output: string;
+  outputExplicit: boolean;
   timeoutMs: number;
   open: boolean;
 }
@@ -97,70 +98,100 @@ function parseArgs(argv: string[]): Args {
     throw new Error("--to must be an integer >= --from");
   }
 
+  const outputExplicit = output !== undefined;
   if (!output) {
     const base = path.basename(htmlPath, path.extname(htmlPath));
     const range = from === to ? `p${from}` : `p${from}-${to}`;
     output = `/tmp/sd-animation-snapshot-${base}-${range}.png`;
   }
 
-  return { htmlPath, from, to, output, timeoutMs, open };
+  return { htmlPath, from, to, output, outputExplicit, timeoutMs, open };
+}
+
+interface CaptureResult {
+  shots: Buffer[];
+  reachedEnd: boolean;
 }
 
 async function captureFrames(
   page: Awaited<ReturnType<typeof chromium.prototype.newPage>>,
   args: Args,
-): Promise<Buffer[]> {
-  // currentActionList.enabled flips false→true on the first tick after the
-  // user code's first pause(). Combined with finished(), this distinguishes
-  // "settled at a real pause boundary" from "before main() even ran". Plain
-  // finished() is trivially true in both states and would race the snapshot.
-  const waitForFinished = async (): Promise<void> => {
-    await page.waitForFunction(
+): Promise<CaptureResult> {
+  // After each advance we wait for the framework to settle at the next
+  // boundary — either the next user-pause (enabled flips on a fresh list
+  // with finished actions) or end-of-main (sd's pause(LAST_MAIN_STAGE)
+  // sets Window.MAIN_FINISHED before suspending forever). MAIN_FINISHED
+  // is sd's own end-of-animation flag; reading it removes any need for
+  // timeout-based guessing.
+  const waitForBoundary = (timeoutMs: number): Promise<void> =>
+    page.waitForFunction(
       () => {
         const sd = (globalThis as unknown as {
           sd?: {
+            Window: { MAIN_FINISHED: boolean };
             Animate: {
               finished(): boolean;
               currentActionList: { enabled: boolean };
             };
           };
         }).sd;
+        if (!sd) return false;
+        if (sd.Window.MAIN_FINISHED) return true;
         return (
-          sd?.Animate.finished() === true &&
+          sd.Animate.finished() === true &&
           sd.Animate.currentActionList.enabled === true
         );
       },
-      { timeout: args.timeoutMs },
-    );
-  };
+      undefined,
+      { timeout: timeoutMs },
+    ).then(() => undefined);
 
-  const advance = async (): Promise<void> => {
-    await page.evaluate(() => {
-      const sd = (globalThis as unknown as { sd: { device(): { keyDown(k: string): void } } }).sd;
+  const mainFinished = (): Promise<boolean> =>
+    page.evaluate(() => {
+      const sd = (globalThis as unknown as {
+        sd: { Window: { MAIN_FINISHED: boolean } };
+      }).sd;
+      return sd.Window.MAIN_FINISHED;
+    });
+
+  const advance = (): Promise<void> =>
+    page.evaluate(() => {
+      const sd = (globalThis as unknown as {
+        sd: { device(): { keyDown(k: string): void } };
+      }).sd;
       sd.device().keyDown("N");
     });
-  };
 
-  await waitForFinished();
+  await waitForBoundary(args.timeoutMs);
 
+  // Skip phase: advance to --from. If main finishes before we get there,
+  // --from was too high.
   for (let i = 1; i < args.from; i++) {
+    if (await mainFinished()) {
+      throw new Error(
+        `--from ${args.from} exceeds the animation's pause count (only ${i - 1} pause(s) available)`,
+      );
+    }
     await advance();
-    await waitForFinished();
+    await waitForBoundary(args.timeoutMs);
   }
 
+  // Capture phase: stop when MAIN_FINISHED — no extra screenshot of the
+  // post-end empty frame.
   const shots: Buffer[] = [];
+  let reachedEnd = false;
   for (let i = args.from; i <= args.to; i++) {
+    if (await mainFinished()) {
+      reachedEnd = true;
+      break;
+    }
     shots.push(await page.screenshot({ type: "png" }));
     if (i < args.to) {
       await advance();
-      try {
-        await waitForFinished();
-      } catch {
-        // Animation got stuck — capture whatever state we're in on the next iter.
-      }
+      await waitForBoundary(args.timeoutMs);
     }
   }
-  return shots;
+  return { shots, reachedEnd };
 }
 
 async function main(): Promise<void> {
@@ -186,6 +217,7 @@ async function main(): Promise<void> {
         }).sd;
         return Boolean(sd?.Window && sd?.Animate?.finished && sd?.device);
       },
+      undefined,
       { timeout: args.timeoutMs },
     );
     await page.evaluate(() => {
@@ -193,16 +225,34 @@ async function main(): Promise<void> {
       sd.Window.PUPPETEER = true;
     });
 
-    const shots = await captureFrames(page, args);
+    const { shots, reachedEnd } = await captureFrames(page, args);
+
+    // Rewrite the auto-generated path so the filename reflects what was
+    // actually captured, not what was requested. Explicit -o paths are
+    // honored as-is — the user asked for that name.
+    const requested = args.to - args.from + 1;
+    let outputPath = args.output;
+    if (reachedEnd && !args.outputExplicit) {
+      const actualTo = args.from + shots.length - 1;
+      const base = path.basename(args.htmlPath, path.extname(args.htmlPath));
+      const range = args.from === actualTo ? `p${args.from}` : `p${args.from}-${actualTo}`;
+      outputPath = `/tmp/sd-animation-snapshot-${base}-${range}.png`;
+    }
+
     await stitchGrid({
       shots,
       startIndex: args.from,
-      outputPath: args.output,
+      outputPath,
       fallbackWidth: VIEWPORT.width,
       fallbackHeight: VIEWPORT.height,
     });
-    const resolved = path.resolve(args.output);
+    const resolved = path.resolve(outputPath);
     process.stdout.write(`${resolved}\n`);
+    if (reachedEnd && shots.length < requested) {
+      process.stderr.write(
+        `note: animation has only ${args.from + shots.length - 1} pause(s); requested --to ${args.to} was clamped.\n`,
+      );
+    }
     if (args.open) await openInViewer(resolved);
   } finally {
     await browser.close();

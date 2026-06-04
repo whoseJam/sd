@@ -137,6 +137,7 @@ async function detectFramework(page: Page, timeoutMs: number): Promise<Framework
       }
       return false;
     },
+    undefined,
     { timeout: timeoutMs },
   );
 
@@ -219,10 +220,12 @@ async function main(): Promise<void> {
     const total = await getTotal(page, framework);
 
     const from = args.from;
-    const to = Math.min(args.to ?? total, total);
     if (from > total) {
       throw new Error(`--from ${from} exceeds total slides (${total})`);
     }
+    const requestedTo = args.to;
+    const to = Math.min(requestedTo ?? total, total);
+    const clamped = requestedTo !== undefined && requestedTo > total;
 
     const output =
       args.output ??
@@ -252,6 +255,11 @@ async function main(): Promise<void> {
     });
     const resolved = path.resolve(output);
     process.stdout.write(`${resolved}\n`);
+    if (clamped) {
+      process.stderr.write(
+        `note: deck has only ${total} slide(s); requested --to ${requestedTo} was clamped.\n`,
+      );
+    }
     if (args.open) await openInViewer(resolved);
   } finally {
     await browser.close();
