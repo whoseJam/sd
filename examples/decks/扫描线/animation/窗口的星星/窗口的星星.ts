@@ -261,24 +261,39 @@ sd.main(async () => {
 
   await sd.pause();
 
-  // Walk the window's bottom-left clockwise around all four corners of the
-  // focus region and back to start. Slide duration matches beats 3-5 so
-  // flush-mode setX/setY accumulation stays in complete-overlap territory;
-  // subsequent segments sit in adjacent [n·600, (n+1)·600] slots.
-  const SLIDE_DUR = 600;
-  const loop: [number, number][] = [
-    [fsx, fsy],                 // (5, 4) top-right
-    [fsx - WIN_W, fsy],         // (1, 4) top-left
-    [fsx - WIN_W, fsy - WIN_H], // (1, 1) bottom-left — beat 2's anchor
-    [fsx, fsy - WIN_H],         // (5, 1) bottom-right
-    [fsx, fsy],                 // back to (5, 4)
+  // Position window first, fade in, then trace an ellipse whose semi-axes
+  // match the focus region's half-extent — window's bottom-left circles
+  // through the rectangle without ever leaving it.
+  const cxr = fsx - WIN_W / 2;
+  const cyr = fsy - WIN_H / 2;
+  const rx = WIN_W / 2;
+  const ry = WIN_H / 2;
+  const startAngle = Math.PI;
+  const angleAt = (i: number, n: number) => startAngle + (i / n) * 2 * Math.PI;
+  const pointAt = (theta: number): [number, number] => [
+    cxr + rx * Math.cos(theta),
+    cyr + ry * Math.sin(theta),
   ];
+
+  const [sxStart, syStart] = pointAt(startAngle);
+  win.startAnimate({ duration: 0 }).setX(gx(sxStart)).setY(gy(syStart)).endAnimate();
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
-  for (let i = 0; i < loop.length; i++) {
+
+  // Motion has to begin at delay ≥ 600 — beats 3-5's setX/setY occupies
+  // [0, 600] and any overlapping range that isn't an exact match throws.
+  const MOTION_START = 600;
+  const N_SEG = 24;
+  const SEG_DUR = 130;
+  for (let i = 1; i <= N_SEG; i++) {
+    const [x, y] = pointAt(angleAt(i, N_SEG));
     win
-      .startAnimate({ delay: i * SLIDE_DUR, duration: SLIDE_DUR, easing: E.easeInOut })
-      .setX(gx(loop[i][0]))
-      .setY(gy(loop[i][1]))
+      .startAnimate({
+        delay: MOTION_START + (i - 1) * SEG_DUR,
+        duration: SEG_DUR,
+        easing: E.linear,
+      })
+      .setX(gx(x))
+      .setY(gy(y))
       .endAnimate();
   }
 
