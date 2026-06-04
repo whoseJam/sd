@@ -12,20 +12,28 @@ const E = sd.easing();
 // a vertical axis (column x, ≥2 dots). The scanline below counts how many
 // crossings exist; the ones that aren't already black are the new black
 // points (the process terminates after exactly one round).
-const GRID_W = 10;
-const GRID_H = 3;
+const GRID_W = 13;
+const GRID_H = 4;
 const { UNIT, gx, gy } = gridHelpers(GRID_W, GRID_H, 32);
 
-// Flat dataset: top and bottom rows span x∈[1,5] and column axes at x=1,5
-// span y∈[0,2]. The middle row's wider span [0,9] passes through both
-// columns, producing the two interior whites (1,1) and (5,1).
+// 11 points laid out so the counter ticks twice across two distinct rows:
+// row 1 has H axis [0,11] crossing V columns 1 (span [0,2]) and 4 (span
+// [0,3]), giving new whites (1,1) and (4,1); row 2 has H axis [1,12]
+// crossing V columns 4 and 11 (span [0,3]), giving (4,2) and (11,2).
+// Mixed axis lengths (col 1 is short, col 8 is short and offset) give
+// the trackers visible entry/exit beats at different rows.
 const data: [number, number][] = [
   [1, 0],
-  [5, 0],
+  [4, 0],
+  [11, 0],
   [0, 1],
-  [9, 1],
+  [11, 1],
   [1, 2],
-  [5, 2],
+  [8, 2],
+  [12, 2],
+  [4, 3],
+  [8, 3],
+  [11, 3],
 ];
 
 const DOT_INK = "#222";
@@ -361,6 +369,11 @@ sd.main(async () => {
 
   for (const row of grouped) {
     const y = row[0].eventY;
+    const vPluses = row.filter((e) => e.kind === "v+");
+    const hEv = row.find((e) => e.kind === "h");
+    const vMinuses = row.filter((e) => e.kind === "v-");
+
+    // Insert beat: sweep arrives, v+ trackers commit into the segment.
     scanLine
       .startAnimate({ duration: SWEEP_DUR, easing: E.easeInOut })
       .setY1(dotY(y))
@@ -369,36 +382,35 @@ sd.main(async () => {
     for (const tr of trackerByX.values()) {
       tr.startAnimate({ duration: SWEEP_DUR, easing: E.easeInOut }).setCy(dotY(y)).endAnimate();
     }
-
-    for (const ev of row) {
-      if (ev.kind === "v+") {
-        const tr = new sd.Circle({
-          targetNode: svg,
-          cx: dotX(ev.x!),
-          cy: dotY(y),
-          r: 4,
-          fill: TRACKER,
-          opacity: 0,
-        });
-        trackerByX.set(ev.x!, tr);
-        tr
-          .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-          .setOpacity(1)
-          .endAnimate();
-        segment[ev.x!] = 1;
-        stripCells[ev.x!]
-          .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-          .setFill(TRACKER)
-          .endAnimate();
-      }
+    for (const ev of vPluses) {
+      const tr = new sd.Circle({
+        targetNode: svg,
+        cx: dotX(ev.x!),
+        cy: dotY(y),
+        r: 4,
+        fill: TRACKER,
+        opacity: 0,
+      });
+      trackerByX.set(ev.x!, tr);
+      tr
+        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .setOpacity(1)
+        .endAnimate();
+      segment[ev.x!] = 1;
+      stripCells[ev.x!]
+        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .setFill(TRACKER)
+        .endAnimate();
     }
+    await sd.pause();
 
-    const hEv = row.find((e) => e.kind === "h");
+    // Query beat: band over [xl,xr] reads the segment without mutating it;
+    // the running counter updates here, not during insert.
     let band: sd.Rect | undefined;
-    let rowNew = 0;
     if (hEv) {
       const xl = hEv.xl!;
       const xr = hEv.xr!;
+      let rowNew = 0;
       band = new sd.Rect({
         targetNode: svg,
         x: gx(xl) + 2,
@@ -411,21 +423,16 @@ sd.main(async () => {
         opacity: 0,
       });
       band
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({ duration: ARRIVAL_DUR, easing: E.easeOut })
         .setOpacity(1)
         .endAnimate();
-
       for (let x = xl; x <= xr; x++) {
         if (segment[x] !== 1) continue;
         const key = `${x},${y}`;
         const ring = newMarkers.get(key);
         if (ring) {
           ring
-            .startAnimate({
-              delay: ARRIVAL_DELAY + ARRIVAL_DUR,
-              duration: HOLD_DUR,
-              easing: E.easeOut,
-            })
+            .startAnimate({ delay: ARRIVAL_DUR, duration: HOLD_DUR, easing: E.easeOut })
             .setFill(DOT_INK)
             .endAnimate();
           rowNew++;
@@ -433,16 +440,12 @@ sd.main(async () => {
           const dotIdx = data.findIndex(([dx, dy]) => dx === x && dy === y);
           if (dotIdx >= 0) {
             dotNodes[dotIdx]
-              .startAnimate({
-                delay: ARRIVAL_DELAY + ARRIVAL_DUR,
-                duration: HOLD_DUR / 2,
-                easing: E.easeOut,
-              })
+              .startAnimate({ delay: ARRIVAL_DUR, duration: HOLD_DUR / 2, easing: E.easeOut })
               .setR(8)
               .endAnimate();
             dotNodes[dotIdx]
               .startAnimate({
-                delay: ARRIVAL_DELAY + ARRIVAL_DUR + HOLD_DUR / 2,
+                delay: ARRIVAL_DUR + HOLD_DUR / 2,
                 duration: HOLD_DUR / 2,
                 easing: E.easeOut,
               })
@@ -454,38 +457,26 @@ sd.main(async () => {
       if (rowNew > 0) {
         runningNew += rowNew;
         countText
-          .startAnimate({
-            delay: ARRIVAL_DELAY + ARRIVAL_DUR,
-            duration: HOLD_DUR,
-            easing: E.easeOut,
-          })
+          .startAnimate({ delay: ARRIVAL_DUR, duration: HOLD_DUR, easing: E.easeOut })
           .setText(`found ${runningNew}`, PIN_NEW)
           .endAnimate();
       }
-    }
-
-    for (const ev of row) {
-      if (ev.kind === "v-") {
-        const tr = trackerByX.get(ev.x!);
-        if (tr) {
-          tr
-            .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-            .setOpacity(0)
-            .endAnimate();
-          trackerByX.delete(ev.x!);
-        }
-        segment[ev.x!] = 0;
-        stripCells[ev.x!]
-          .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
-          .setFill(C.white)
-          .endAnimate();
-      }
-    }
-
-    await sd.pause();
-
-    if (band) {
+      await sd.pause();
       band.startAnimate({ duration: 260, easing: E.easeOut }).setOpacity(0).endAnimate();
+    }
+
+    // v- retires under the next sweep — no separate beat.
+    for (const ev of vMinuses) {
+      const tr = trackerByX.get(ev.x!);
+      if (tr) {
+        tr.startAnimate({ duration: ARRIVAL_DUR, easing: E.easeOut }).setOpacity(0).endAnimate();
+        trackerByX.delete(ev.x!);
+      }
+      segment[ev.x!] = 0;
+      stripCells[ev.x!]
+        .startAnimate({ duration: ARRIVAL_DUR, easing: E.easeOut })
+        .setFill(C.white)
+        .endAnimate();
     }
   }
 });

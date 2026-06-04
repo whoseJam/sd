@@ -185,6 +185,19 @@ export abstract class SDNode {
     this.getRootRenderNode().remove();
   }
 
+  // Reorder among direct siblings only (sd is mostly flat, so this is
+  // usually what you want; for nested groups, raise/lower do not escape
+  // the parent layer).
+  raise() {
+    this.getRootRenderNode().raise();
+    return this;
+  }
+
+  lower() {
+    this.getRootRenderNode().lower();
+    return this;
+  }
+
   renderAttribute(renderer: RenderNode, key: string, value: any) {
     renderer.setAttribute(key, value);
   }
