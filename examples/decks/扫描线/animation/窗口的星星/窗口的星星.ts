@@ -269,7 +269,6 @@ sd.main(async () => {
   const rx = WIN_W / 2;
   const ry = WIN_H / 2;
   const startAngle = Math.PI;
-  const angleAt = (i: number, n: number) => startAngle + (i / n) * 2 * Math.PI;
   const pointAt = (theta: number): [number, number] => [
     cxr + rx * Math.cos(theta),
     cyr + ry * Math.sin(theta),
@@ -279,16 +278,14 @@ sd.main(async () => {
   win.startAnimate({ duration: 0 }).setX(gx(sxStart)).setY(gy(syStart)).endAnimate();
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
 
-  // Motion has to begin at delay ≥ 600 — beats 3-5's setX/setY occupies
-  // [0, 600] and any overlapping range that isn't an exact match throws.
-  const MOTION_START = 600;
-  const N_SEG = 24;
-  const SEG_DUR = 130;
+  const FADE_IN = 360;
+  const N_SEG = 32;
+  const SEG_DUR = 110;
   for (let i = 1; i <= N_SEG; i++) {
-    const [x, y] = pointAt(angleAt(i, N_SEG));
+    const [x, y] = pointAt(startAngle + (i / N_SEG) * 2 * Math.PI);
     win
       .startAnimate({
-        delay: MOTION_START + (i - 1) * SEG_DUR,
+        delay: FADE_IN + (i - 1) * SEG_DUR,
         duration: SEG_DUR,
         easing: E.linear,
       })

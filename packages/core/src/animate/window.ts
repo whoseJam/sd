@@ -230,7 +230,12 @@ export function pause(ms?: number): Promise<void> {
       Window.CURRENT_FRAME <= Window.IFRAME_MAX_FRAME &&
       pauseBehavior !== LAST_MAIN_STAGE
     ) {
-      Window.CURRENT_FRAME++;
+      // Swap to a fresh action list per beat — same as normal mode's
+      // nextFrame path — so trim()'s partial-overlap check only sees
+      // actions queued inside this beat. Without this, sd-element's
+      // measurement pass accumulates every beat into one list and the
+      // user has to align cross-beat ranges on every shared attribute.
+      A.startNewFrame();
       return; // no block
     } else {
       lastMainFrame();
