@@ -20,6 +20,8 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
+import type { Page } from "playwright";
+import sharp from "sharp";
 
 import { attachIssueCollector, findDocRoot, openInViewer, startStaticServer, stitchGrid } from "./grid";
 
@@ -108,10 +110,20 @@ function parseArgs(argv: string[]): Args {
   return { htmlPath, from, to, output, outputExplicit, timeoutMs, open };
 }
 
+interface Bbox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 interface CaptureResult {
   shots: Buffer[];
   reachedEnd: boolean;
+  clip: Bbox | null;
 }
+
+const CLIP_PADDING = 24;
 
 async function captureFrames(
   page: Awaited<ReturnType<typeof chromium.prototype.newPage>>,
@@ -179,6 +191,7 @@ async function captureFrames(
   // Capture phase: stop when MAIN_FINISHED — no extra screenshot of the
   // post-end empty frame.
   const shots: Buffer[] = [];
+  const bboxes: Bbox[] = [];
   let reachedEnd = false;
   for (let i = args.from; i <= args.to; i++) {
     if (await mainFinished()) {
@@ -186,12 +199,130 @@ async function captureFrames(
       break;
     }
     shots.push(await page.screenshot({ type: "png" }));
+    const bb = await measureSvgBBox(page);
+    if (bb) bboxes.push(bb);
     if (i < args.to) {
       await advance();
       await waitForBoundary(args.timeoutMs);
     }
   }
-  return { shots, reachedEnd };
+  // Union of per-frame bboxes — animations that mount entities mid-run
+  // (e.g. sweep bands) would be clipped if we only sampled one frame.
+  const unionBox = unionBBoxes(bboxes);
+  const clip = unionBox ? await pageClipFromSvgBox(page, unionBox) : null;
+  return { shots, reachedEnd, clip };
+}
+
+function measureSvgBBox(page: Page): Promise<Bbox | null> {
+  return page.evaluate(() => {
+    const svg = document.querySelector("svg");
+    if (!svg) return null;
+    const bbox = svg.getBBox();
+    if (!bbox || bbox.width === 0 || bbox.height === 0) return null;
+    return { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height };
+  });
+}
+
+function unionBBoxes(bboxes: Bbox[]): Bbox | null {
+  if (bboxes.length === 0) return null;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const b of bboxes) {
+    if (b.x < minX) minX = b.x;
+    if (b.y < minY) minY = b.y;
+    if (b.x + b.width > maxX) maxX = b.x + b.width;
+    if (b.y + b.height > maxY) maxY = b.y + b.height;
+  }
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function pageClipFromSvgBox(page: Page, svgBox: Bbox): Promise<Bbox | null> {
+  return page.evaluate((box: Bbox) => {
+    const svg = document.querySelector("svg");
+    if (!svg) return null;
+    const rect = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    if (rect.width === 0 || rect.height === 0 || vb.width === 0 || vb.height === 0) return null;
+    // preserveAspectRatio="xMidYMid meet" — content fits inside the SVG rect,
+    // letterboxed and centered. Scale = min of axis ratios.
+    const scale = Math.min(rect.width / vb.width, rect.height / vb.height);
+    const offsetX = rect.x + (rect.width - vb.width * scale) / 2;
+    const offsetY = rect.y + (rect.height - vb.height * scale) / 2;
+    return {
+      x: offsetX + (box.x - vb.x) * scale,
+      y: offsetY + (box.y - vb.y) * scale,
+      width: box.width * scale,
+      height: box.height * scale,
+    };
+  }, svgBox);
+}
+
+async function cropShots(
+  shots: Buffer[],
+  clip: Bbox,
+  viewport: { width: number; height: number },
+): Promise<Buffer[]> {
+  const left = Math.max(0, Math.floor(clip.x - CLIP_PADDING));
+  const top = Math.max(0, Math.floor(clip.y - CLIP_PADDING));
+  const right = Math.min(viewport.width, Math.ceil(clip.x + clip.width + CLIP_PADDING));
+  const bottom = Math.min(viewport.height, Math.ceil(clip.y + clip.height + CLIP_PADDING));
+  const width = right - left;
+  const height = bottom - top;
+  if (width <= 0 || height <= 0) return shots;
+  return Promise.all(
+    shots.map((buf) =>
+      sharp(buf).extract({ left, top, width, height }).png().toBuffer(),
+    ),
+  );
+}
+
+// Skips the iframe + postMessage dance sd-element uses to enter flush mode;
+// directly sets the same Window flags as soon as sd.js parses. SHOULD_FLUSH
+// makes pause() resolve instantly, so main() runs to the end in one tick and
+// every beat's actions land in a single action list — same accumulation the
+// real deck triggers. Without this the snapshot only exercises the
+// "advance via key N" path, which never hits partial-overlap conflicts.
+const FORCE_FLUSH_MODE = `
+  (() => {
+    const arm = () => {
+      const sd = window.sd;
+      if (!sd || !sd.Window) return setTimeout(arm, 0);
+      sd.Window.SHOULD_FLUSH = true;
+      sd.Window.PUPPETEER = true;
+      sd.Window.IFRAME_ID = 0;
+      sd.Window.IFRAME_URL = '';
+      sd.Window.IFRAME_RATE = 1.01;
+      sd.Window.IFRAME_MAX_FRAME = Infinity;
+    };
+    arm();
+  })();
+`;
+
+async function runFlushPass(
+  browser: Awaited<ReturnType<typeof chromium.launch>>,
+  url: string,
+  timeoutMs: number,
+): Promise<ReturnType<typeof attachIssueCollector>> {
+  const ctx = await browser.newContext({ viewport: VIEWPORT });
+  const page = await ctx.newPage();
+  const collector = attachIssueCollector(page);
+  await page.addInitScript(FORCE_FLUSH_MODE);
+  try {
+    await page.goto(url, { waitUntil: "load" });
+    await page.waitForFunction(
+      () => (globalThis as unknown as { sd?: { Window?: { MAIN_FINISHED?: boolean } } })
+        .sd?.Window?.MAIN_FINISHED === true,
+      undefined,
+      { timeout: timeoutMs },
+    );
+  } catch {
+    // Timeout means main() never reached LAST_MAIN_STAGE — usually because an
+    // action conflict threw partway. The pageerror is already in the collector.
+  }
+  await ctx.close();
+  return collector;
 }
 
 async function main(): Promise<void> {
@@ -204,8 +335,24 @@ async function main(): Promise<void> {
   const server = await startStaticServer(docRoot);
   const browser = await chromium.launch();
   let collector: ReturnType<typeof attachIssueCollector> | undefined;
+  let captureError: unknown;
 
   try {
+    const flushCollector = await runFlushPass(
+      browser,
+      `${server.url}/${urlPath}`,
+      Math.min(args.timeoutMs, 15000),
+    );
+    if (flushCollector.hasErrors()) {
+      process.stderr.write(
+        "flush pass would throw when sd-element measures the iframe:\n",
+      );
+      process.stderr.write(flushCollector.format());
+      await browser.close();
+      await server.close();
+      process.exit(1);
+    }
+
     const page = await browser.newPage({ viewport: VIEWPORT });
     collector = attachIssueCollector(page);
 
@@ -225,7 +372,7 @@ async function main(): Promise<void> {
       sd.Window.PUPPETEER = true;
     });
 
-    const { shots, reachedEnd } = await captureFrames(page, args);
+    const { shots, reachedEnd, clip } = await captureFrames(page, args);
 
     // Rewrite the auto-generated path so the filename reflects what was
     // actually captured, not what was requested. Explicit -o paths are
@@ -239,8 +386,10 @@ async function main(): Promise<void> {
       outputPath = `/tmp/sd-animation-snapshot-${base}-${range}.png`;
     }
 
+    const finalShots = clip ? await cropShots(shots, clip, VIEWPORT) : shots;
+
     await stitchGrid({
-      shots,
+      shots: finalShots,
       startIndex: args.from,
       outputPath,
       fallbackWidth: VIEWPORT.width,
@@ -254,15 +403,25 @@ async function main(): Promise<void> {
       );
     }
     if (args.open) await openInViewer(resolved);
+  } catch (err) {
+    captureError = err;
   } finally {
     await browser.close();
     await server.close();
   }
 
+  // Always surface collected page-level issues — a hidden action-list throw
+  // would otherwise just look like an opaque waitForBoundary timeout.
   if (collector && collector.issues.length > 0) {
     process.stderr.write(collector.format());
-    if (collector.hasErrors()) process.exit(1);
   }
+  if (captureError !== undefined) {
+    process.stderr.write(
+      `${captureError instanceof Error ? (captureError.stack ?? captureError.message) : String(captureError)}\n`,
+    );
+    process.exit(1);
+  }
+  if (collector?.hasErrors()) process.exit(1);
 }
 
 main().catch((err: unknown) => {

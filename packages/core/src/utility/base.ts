@@ -10,6 +10,20 @@ import { FontManager } from "@/node/text/text-engine/opentype";
 
 let initFinished: boolean = true;
 
+// Decorate every error that escapes a user callback with the beat where it
+// fired — without this, an action-list conflict thrown deep inside the user's
+// main() looks like an opaque "Action conflict on fill" with no hint of which
+// pause-segment the offending startAnimate sits in. Decorate once: if a
+// re-thrown error already carries [beat …], don't stack tags.
+function tagWithBeat<T>(label: string, run: () => Promise<T>): Promise<T> {
+  return run().catch((err: unknown) => {
+    if (err instanceof Error && !/\[beat /.test(err.message)) {
+      err.message = `[${label} beat ${Window.CURRENT_FRAME + 1}] ${err.message}`;
+    }
+    throw err;
+  });
+}
+
 /**
  * Initializes the framework environment.
  *
@@ -30,7 +44,9 @@ export async function init(
       window.self === window.top ||
       (window.self !== window.top && Window.IFRAME_INITED)
     ) {
-      await callback(Window.IFRAME_ARGS ?? {});
+      await tagWithBeat("init", () =>
+        Promise.resolve(callback(Window.IFRAME_ARGS ?? {})),
+      );
       initFinished = true;
     } else {
       setTimeout(fn, 20);
@@ -56,7 +72,7 @@ export async function main(
   const fn = async (): Promise<void> => {
     if (initFinished) {
       await FontManager.loadAll();
-      await callback();
+      await tagWithBeat("main", () => Promise.resolve(callback()));
       await pause(LAST_MAIN_STAGE);
     } else {
       setTimeout(fn, 20);
