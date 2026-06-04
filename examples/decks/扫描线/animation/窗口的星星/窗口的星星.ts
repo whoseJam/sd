@@ -28,12 +28,9 @@ const stars: [number, number][] = [
 const STAR_INK = C.gold;
 const STAR_LIT = C.crimson;
 const WIN_INK = C.steelBlue;
-const ANCHOR_INK = C.darkGray;
 const REGION_INK = C.orange;
 const TEXT_NEUTRAL = C.darkButtonGrey;
 const GRID_INK = C.silver;
-
-const ANCHOR_SIZE = 7;
 
 const gridV: sd.Line[] = [];
 const gridH: sd.Line[] = [];
@@ -41,7 +38,6 @@ const starNodes: sd.Polygon[] = [];
 
 let frame: sd.Rect;
 let win: sd.Rect;
-let anchor: sd.Rect;
 let countText: sd.Text;
 
 const PIN_SEEN = { "seen ": "seen " };
@@ -192,19 +188,9 @@ sd.main(async () => {
     strokeWidth: 2,
     opacity: 0,
   });
-  anchor = new sd.Rect({
-    targetNode: svg,
-    x: gx(initWX) - ANCHOR_SIZE / 2,
-    y: gy(initWY) - ANCHOR_SIZE / 2,
-    width: ANCHOR_SIZE,
-    height: ANCHOR_SIZE,
-    fill: ANCHOR_INK,
-    opacity: 0,
-  });
   // entrance + retreat must share the same (delay, duration) on opacity —
   // flush-mode action accumulation otherwise sees a partial overlap.
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(1).endAnimate();
-  anchor.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(1).endAnimate();
   litStars(initWX, initWY);
   countText
     .startAnimate({ delay: READ_DELAY, duration: READ_DUR, easing: E.easeOut })
@@ -222,11 +208,6 @@ sd.main(async () => {
   ];
   for (const [wx, wy] of stops) {
     win.startAnimate({ duration: 600, easing: E.easeInOut }).setX(gx(wx)).setY(gy(wy)).endAnimate();
-    anchor
-      .startAnimate({ duration: 600, easing: E.easeInOut })
-      .setX(gx(wx) - ANCHOR_SIZE / 2)
-      .setY(gy(wy) - ANCHOR_SIZE / 2)
-      .endAnimate();
     litStars(wx, wy);
     countText
       .startAnimate({ delay: READ_DELAY, duration: READ_DUR, easing: E.easeOut })
@@ -238,7 +219,6 @@ sd.main(async () => {
   // Flip the picture: hide the window, pick one star, and reveal the set of anchors
   // that would have seen it — a W×H rectangle. That's the per-star contribution.
   win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0).endAnimate();
-  anchor.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0).endAnimate();
   // Reset every non-focus star to dim — touching the focus star here would create
   // an overlapping fill action with the lit transition below (partial overlap on the
   // same attr is a hard throw in sd's action list).
@@ -257,10 +237,12 @@ sd.main(async () => {
     .startAnimate({ delay: LIT_DELAY, duration: LIT_DUR, easing: E.easeOut })
     .setFill(STAR_LIT)
     .endAnimate();
+  // Closed interval: anchor seeing (sx, sy) ⇔ a ∈ [sx-W, sx] × [sy-H, sy].
+  // The region's TOP-RIGHT corner is the star itself.
   const focusRegion = new sd.Rect({
     targetNode: svg,
-    x: gx(fsx - WIN_W + 1),
-    y: gy(fsy - WIN_H + 1),
+    x: gx(fsx - WIN_W),
+    y: gy(fsy - WIN_H),
     width: WIN_W * UNIT,
     height: WIN_H * UNIT,
     fill: REGION_INK,
@@ -284,8 +266,8 @@ sd.main(async () => {
     const [sx, sy] = stars[i];
     const r = new sd.Rect({
       targetNode: svg,
-      x: gx(sx - WIN_W + 1),
-      y: gy(sy - WIN_H + 1),
+      x: gx(sx - WIN_W),
+      y: gy(sy - WIN_H),
       width: WIN_W * UNIT,
       height: WIN_H * UNIT,
       fill: REGION_INK,
