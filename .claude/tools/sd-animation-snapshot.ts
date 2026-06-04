@@ -12,14 +12,16 @@
 //
 // Output:
 //   stdout = absolute path of the stitched PNG (only line printed)
-//   stderr = pageerror traces collected during the run, if any
-//   exit 0 = no pageerror; exit 1 = errors collected (PNG still written)
+//   stderr = browser issues (pageerror + console.error/warn + failed
+//            requests + 4xx/5xx responses) collected during the run
+//   exit 0 = no error-level issues; exit 1 = at least one error
+//   (PNG is always written)
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 
-import { findDocRoot, startStaticServer, stitchGrid } from "./grid";
+import { attachIssueCollector, findDocRoot, openInViewer, startStaticServer, stitchGrid } from "./grid";
 
 interface Args {
   htmlPath: string;
@@ -27,6 +29,7 @@ interface Args {
   to: number;
   output: string;
   timeoutMs: number;
+  open: boolean;
 }
 
 const VIEWPORT = { width: 1200, height: 690 };
@@ -42,6 +45,7 @@ Flags:
   --pause N           Shorthand for --from N --to N (single frame)
   -o, --output PATH   Output PNG path (default /tmp/sd-animation-snapshot-<name>-<range>.png)
   --timeout MS        Per-step timeout, ms (default ${STEP_TIMEOUT_DEFAULT})
+  --no-open           Don't auto-open the PNG (macOS Preview otherwise refreshes in place)
   -h, --help          Show this help
 `);
 }
@@ -54,6 +58,7 @@ function parseArgs(argv: string[]): Args {
   let single: number | undefined;
   let output: string | undefined;
   let timeoutMs = STEP_TIMEOUT_DEFAULT;
+  let open = true;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -63,6 +68,7 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--pause") single = Number(argv[++i]);
     else if (arg === "-o" || arg === "--output") output = argv[++i];
     else if (arg === "--timeout") timeoutMs = Number(argv[++i]);
+    else if (arg === "--no-open") open = false;
     else if (arg === "-h" || arg === "--help") {
       printHelp();
       process.exit(0);
@@ -97,7 +103,7 @@ function parseArgs(argv: string[]): Args {
     output = `/tmp/sd-animation-snapshot-${base}-${range}.png`;
   }
 
-  return { htmlPath, from, to, output, timeoutMs };
+  return { htmlPath, from, to, output, timeoutMs, open };
 }
 
 async function captureFrames(
@@ -166,13 +172,11 @@ async function main(): Promise<void> {
 
   const server = await startStaticServer(docRoot);
   const browser = await chromium.launch();
-  const pageErrors: string[] = [];
+  let collector: ReturnType<typeof attachIssueCollector> | undefined;
 
   try {
     const page = await browser.newPage({ viewport: VIEWPORT });
-    page.on("pageerror", (err) => {
-      pageErrors.push(err.stack ?? err.message);
-    });
+    collector = attachIssueCollector(page);
 
     await page.goto(`${server.url}/${urlPath}`, { waitUntil: "load" });
     await page.waitForFunction(
@@ -197,18 +201,17 @@ async function main(): Promise<void> {
       fallbackWidth: VIEWPORT.width,
       fallbackHeight: VIEWPORT.height,
     });
-    process.stdout.write(`${path.resolve(args.output)}\n`);
+    const resolved = path.resolve(args.output);
+    process.stdout.write(`${resolved}\n`);
+    if (args.open) await openInViewer(resolved);
   } finally {
     await browser.close();
     await server.close();
   }
 
-  if (pageErrors.length > 0) {
-    process.stderr.write(`\n${pageErrors.length} page error(s) during run:\n`);
-    for (const err of pageErrors) {
-      process.stderr.write(`${err}\n`);
-    }
-    process.exit(1);
+  if (collector && collector.issues.length > 0) {
+    process.stderr.write(collector.format());
+    if (collector.hasErrors()) process.exit(1);
   }
 }
 

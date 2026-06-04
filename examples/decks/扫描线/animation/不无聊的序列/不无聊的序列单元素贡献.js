@@ -1,106 +1,98 @@
 import * as sd from "@/sd";
 
+// For each element a_i in a row of cells, sweep i = 0..N-1:
+// find L_i (nearest equal on the left) and R_i (on the right). Subintervals
+// with left in [L_i+1, i] and right in [i, R_i-1] are all uniquely
+// witnessed by a_i — shown as a top bracket over [L+1, i] (left-endpoint
+// range) and a bottom bracket over [i, R-1] (right-endpoint range).
+
 const svg = sd.svg();
 const C = sd.color();
 
-// A 1-D sequence drawn as a row of cells. Highlight one element a_i, then
-// show its "uniqueness contribution band" — every subinterval whose left
-// endpoint is in [L_i+1, i] and right in [i, R_i-1] is made unique by a_i.
-const N = 10;
-const UNIT = 50;
+const data = [2, 4, 3, 4, 6, 2, 3, 4];
+const N = data.length;
+const UNIT = 60;
 const X0 = (-N * UNIT) / 2;
-const Y0 = -UNIT / 2;
-const cellX = (i) => X0 + i * UNIT;
+const CELL_Y = -UNIT / 2;
 
-const seq = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3];
-const I = 4; // 0-indexed: a_I = 5, L_I = 8 (a_8 = 5), R_I = N (none on right with value 5)
-// Actually a_8 = 5 in this sequence. So L_I for i=4 is the previous 5 (none) = -1; R_I = 8.
-// Let me pick i=2 (a_2 = 4): L = -1 (no previous 4), R = N (no next 4).
-// For a clean visual let me use i=3 (a_3 = 1): L_3 = 1 (a_1 = 1), R_3 = N (no later 1).
+const FOCUS = "#f14c4c";
+const RANGE = "#4a90e2";
+const GREY = "#aaa";
+
+const cellLeft = (i) => X0 + i * UNIT;
+const cellMid = (i) => X0 + (i + 0.5) * UNIT;
+
+const cells = [];
+const labels = [];
 
 sd.init(() => {
   for (let i = 0; i < N; i++) {
-    const isFocus = i === 3;
-    new sd.Rect({
-      targetNode: svg,
-      x: cellX(i),
-      y: Y0,
-      width: UNIT,
-      height: UNIT,
-      fill: isFocus ? "#f14c4c" : C.white,
-      fillOpacity: isFocus ? 0.18 : 1,
-      stroke: isFocus ? "#f14c4c" : "#aaa",
-      strokeWidth: 1.5,
-    });
-    new sd.Text({
-      targetNode: svg,
-      text: String(seq[i]),
-      cx: cellX(i) + UNIT / 2,
-      cy: 0,
-      fontSize: 24,
-      fill: isFocus ? "#f14c4c" : "#222",
-    });
+    cells.push(
+      new sd.Rect({
+        targetNode: svg,
+        x: cellLeft(i),
+        y: CELL_Y,
+        width: UNIT,
+        height: UNIT,
+        fill: C.white,
+        stroke: GREY,
+        strokeWidth: 1.5,
+      }),
+    );
+    labels.push(
+      new sd.Text({
+        targetNode: svg,
+        text: String(data[i]),
+        cx: cellMid(i),
+        cy: 0,
+        fontSize: 26,
+        fill: "#222",
+      }),
+    );
   }
 });
+
+function makeBracket(a, b, side, label) {
+  const x1 = cellLeft(a);
+  const x2 = cellLeft(b) + UNIT;
+  const baseY = side === "top" ? UNIT / 2 + 14 : -UNIT / 2 - 14;
+  const tickDir = side === "top" ? -6 : 6;
+  const labelY = side === "top" ? baseY + 12 : baseY - 12;
+  const items = [
+    new sd.Line({ targetNode: svg, x1, y1: baseY, x2, y2: baseY, stroke: RANGE, strokeWidth: 1.5, opacity: 0 }),
+    new sd.Line({ targetNode: svg, x1, y1: baseY, x2: x1, y2: baseY + tickDir, stroke: RANGE, strokeWidth: 1.5, opacity: 0 }),
+    new sd.Line({ targetNode: svg, x1: x2, y1: baseY, x2, y2: baseY + tickDir, stroke: RANGE, strokeWidth: 1.5, opacity: 0 }),
+    new sd.Text({ targetNode: svg, text: label, cx: (x1 + x2) / 2, cy: labelY, fontSize: 16, fill: RANGE, opacity: 0 }),
+  ];
+  for (const item of items) item.startAnimate({ duration: 300 }).setOpacity(1).endAnimate();
+  return items;
+}
+
+function fadeOut(items) {
+  for (const item of items) item.startAnimate({ duration: 300 }).setOpacity(0).endAnimate();
+}
 
 sd.main(async () => {
   await sd.pause();
 
-  const i = 3;
-  const L = 1;
-  const R = N;
+  for (let i = 0; i < N; i++) {
+    let L = -1;
+    for (let k = i - 1; k >= 0; k--) if (data[k] === data[i]) { L = k; break; }
+    let R = N;
+    for (let k = i + 1; k < N; k++) if (data[k] === data[i]) { R = k; break; }
 
-  // Mark L_i and R_i positions with brackets / labels.
-  new sd.Text({
-    targetNode: svg,
-    text: "L",
-    cx: cellX(L) + UNIT / 2,
-    cy: -UNIT - 4,
-    fontSize: 18,
-    fill: "#4a90e2",
-  });
-  new sd.Text({
-    targetNode: svg,
-    text: "i",
-    cx: cellX(i) + UNIT / 2,
-    cy: -UNIT - 4,
-    fontSize: 18,
-    fill: "#f14c4c",
-  });
-  if (R < N) {
-    new sd.Text({
-      targetNode: svg,
-      text: "R",
-      cx: cellX(R) + UNIT / 2,
-      cy: -UNIT - 4,
-      fontSize: 18,
-      fill: "#4a90e2",
-    });
+    cells[i].startAnimate({ duration: 300 }).setStroke(FOCUS).setFill("#fdecec").endAnimate();
+    labels[i].startAnimate({ duration: 300 }).setFill(FOCUS).endAnimate();
+    await sd.pause();
+
+    const top = makeBracket(L + 1, i, "top", "[L+1, i]");
+    const bot = makeBracket(i, R - 1, "bottom", "[i, R-1]");
+    await sd.pause();
+
+    fadeOut(top);
+    fadeOut(bot);
+    cells[i].startAnimate({ duration: 300 }).setStroke(GREY).setFill(C.white).endAnimate();
+    labels[i].startAnimate({ duration: 300 }).setFill("#222").endAnimate();
+    await sd.pause();
   }
-  await sd.pause();
-
-  // Draw the [L+1, i] band on top and [i, R-1] band below to show range pair.
-  const leftBand = new sd.Rect({
-    targetNode: svg,
-    x: cellX(L + 1),
-    y: UNIT / 2 + 6,
-    width: (i - L) * UNIT,
-    height: 14,
-    fill: "#4a90e2",
-    fillOpacity: 0,
-    stroke: C.none,
-  });
-  leftBand.startAnimate({ duration: 500 }).setFillOpacity(0.4).endAnimate();
-
-  const rightBand = new sd.Rect({
-    targetNode: svg,
-    x: cellX(i),
-    y: UNIT / 2 + 24,
-    width: (R - i) * UNIT,
-    height: 14,
-    fill: "#f58617",
-    fillOpacity: 0,
-    stroke: C.none,
-  });
-  rightBand.startAnimate({ duration: 500 }).setFillOpacity(0.4).endAnimate();
 });

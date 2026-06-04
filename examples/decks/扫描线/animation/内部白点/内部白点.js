@@ -4,22 +4,24 @@ import { gridHelpers } from "../_grid";
 const svg = sd.svg();
 const C = sd.color();
 
-// Several black points on a grid. Two points sharing a row form a
-// horizontal segment; two sharing a column form a vertical segment. An
-// interior white point becomes black exactly when it sits on the
-// intersection of a horizontal and a vertical segment. We translate
-// "count intersections" into a sweep: sort all events by y, walk up,
-// maintain a segment array of "currently active vertical columns", and
-// whenever the scanline hits a horizontal segment row, the answer for
-// that row is the count of active columns inside [xl, xr].
-const GRID_W = 12;
+// A grid with black points placed at lattice cells. Horizontal then vertical
+// links join points sharing a row / column. A red scanline sweeps top-to-bottom
+// through events: at a vertical-segment start it opens a tracker dot riding
+// the scanline in that column and bumps the per-column counter strip below;
+// at a horizontal-segment row it flashes a red query band over the column
+// range [xl, xr]; at a vertical-segment end it closes the tracker and
+// decrements the counter. Dots, strip cells, trackers, query band all align
+// on the same per-column x grid (column k centered at gx(k)+UNIT/2).
+const GRID_W = 11;
 const GRID_H = 8;
 const { UNIT, gx, gy, Y0 } = gridHelpers(GRID_W, GRID_H, 40);
-const STRIP_GAP = 16;
+const STRIP_GAP = 18;
 const STRIP_H = 18;
+const STRIP_Y = Y0 - STRIP_GAP - STRIP_H;
 
 const SCAN = "#f14c4c";
 const LINK = "#4a90e2";
+const TRACKER = "#1c6fd6";
 
 const data = [
   [3, 1],
@@ -35,10 +37,11 @@ const data = [
   [9, 6],
 ];
 
+const dotX = (x) => gx(x) + UNIT / 2;
+const dotY = (y) => gy(y) + UNIT / 2;
+
 const cells = [];
 const segment = sd.make1d(GRID_W, 0);
-
-const STRIP_Y = Y0 - STRIP_GAP - STRIP_H;
 
 function coverageColor(c) {
   if (c <= 0) return C.white;
@@ -47,31 +50,15 @@ function coverageColor(c) {
   return LINK;
 }
 
-// Group by y (horizontal pairs) and by x (vertical pairs).
-const byY = new Map();
+const horizGroups = new Map();
 for (const [x, y] of data) {
-  if (!byY.has(y)) byY.set(y, []);
-  byY.get(y).push(x);
+  if (!horizGroups.has(y)) horizGroups.set(y, []);
+  horizGroups.get(y).push(x);
 }
-const byX = new Map();
+const vertGroups = new Map();
 for (const [x, y] of data) {
-  if (!byX.has(x)) byX.set(x, []);
-  byX.get(x).push(y);
-}
-
-// Events: vertical-segment endpoints (+1 / -1 on segment[x]) and
-// horizontal-segment rows (query type, attached to a row span).
-const events = [];
-for (const [x, ys] of byX) {
-  if (ys.length < 2) continue;
-  ys.sort((a, b) => a - b);
-  events.push({ kind: "v+", x, eventY: ys[0] });
-  events.push({ kind: "v-", x, eventY: ys[ys.length - 1] });
-}
-for (const [y, xs] of byY) {
-  if (xs.length < 2) continue;
-  xs.sort((a, b) => a - b);
-  events.push({ kind: "h", eventY: y, xl: xs[0], xr: xs[xs.length - 1] });
+  if (!vertGroups.has(x)) vertGroups.set(x, []);
+  vertGroups.get(x).push(y);
 }
 
 sd.init(() => {
@@ -86,40 +73,11 @@ sd.init(() => {
     strokeWidth: 1,
   });
 
-  for (const [x, ys] of byX) {
-    if (ys.length < 2) continue;
-    const sorted = [...ys].sort((a, b) => a - b);
-    new sd.Line({
-      targetNode: svg,
-      x1: gx(x),
-      y1: gy(sorted[0]),
-      x2: gx(x),
-      y2: gy(sorted[sorted.length - 1]),
-      stroke: LINK,
-      strokeWidth: 1.2,
-      opacity: 0.5,
-    });
-  }
-  for (const [y, xs] of byY) {
-    if (xs.length < 2) continue;
-    const sorted = [...xs].sort((a, b) => a - b);
-    new sd.Line({
-      targetNode: svg,
-      x1: gx(sorted[0]),
-      y1: gy(y),
-      x2: gx(sorted[sorted.length - 1]),
-      y2: gy(y),
-      stroke: LINK,
-      strokeWidth: 1.2,
-      opacity: 0.5,
-    });
-  }
-
   data.forEach(([x, y]) => {
     new sd.Circle({
       targetNode: svg,
-      cx: gx(x),
-      cy: gy(y),
+      cx: dotX(x),
+      cy: dotY(y),
       r: 6,
       fill: "#222",
     });
@@ -136,58 +94,128 @@ sd.init(() => {
         fill: C.white,
         stroke: "#d0d0d0",
         strokeWidth: 0.5,
+        opacity: 0,
       }),
     );
   }
 });
 
 sd.main(async () => {
-  // Sort events by y; for a tie, opens (+1) before queries (h) before
-  // closes (-1) so a vertical column that starts at row y is counted by a
-  // horizontal segment also at row y.
-  const order = { "v+": 0, "h": 1, "v-": 2 };
-  events.sort((a, b) => {
-    if (a.eventY !== b.eventY) return a.eventY - b.eventY;
-    return order[a.kind] - order[b.kind];
-  });
+  await sd.pause();
+
+  for (const [y, xs] of horizGroups) {
+    if (xs.length < 2) continue;
+    xs.sort((a, b) => a - b);
+    new sd.Line({
+      targetNode: svg,
+      x1: dotX(xs[0]),
+      y1: dotY(y),
+      x2: dotX(xs[xs.length - 1]),
+      y2: dotY(y),
+      stroke: LINK,
+      strokeWidth: 1.5,
+      strokeOpacity: 0.6,
+    })
+      .startAnimate({ duration: 600 })
+      .pointStoT()
+      .endAnimate();
+  }
+  await sd.pause();
+
+  for (const [x, ys] of vertGroups) {
+    if (ys.length < 2) continue;
+    ys.sort((a, b) => a - b);
+    new sd.Line({
+      targetNode: svg,
+      x1: dotX(x),
+      y1: dotY(ys[0]),
+      x2: dotX(x),
+      y2: dotY(ys[ys.length - 1]),
+      stroke: LINK,
+      strokeWidth: 1.5,
+      strokeOpacity: 0.6,
+    })
+      .startAnimate({ duration: 600 })
+      .pointStoT()
+      .endAnimate();
+  }
   await sd.pause();
 
   const line = new sd.Line({
     targetNode: svg,
     x1: gx(0),
-    y1: gy(0),
+    y1: dotY(0),
     x2: gx(GRID_W),
-    y2: gy(0),
+    y2: dotY(0),
     stroke: SCAN,
     strokeWidth: 2.5,
     opacity: 0,
   });
   line.startAnimate({ duration: 400 }).setOpacity(1).endAnimate();
+  for (const cell of cells) cell.startAnimate({ duration: 400 }).setOpacity(1).endAnimate();
   await sd.pause();
 
+  const events = [];
+  for (const [x, ys] of vertGroups) {
+    if (ys.length < 2) continue;
+    const sorted = [...ys].sort((a, b) => a - b);
+    events.push({ kind: "v+", x, eventY: sorted[0] });
+    events.push({ kind: "v-", x, eventY: sorted[sorted.length - 1] });
+  }
+  for (const [y, xs] of horizGroups) {
+    if (xs.length < 2) continue;
+    const sorted = [...xs].sort((a, b) => a - b);
+    events.push({ kind: "h", eventY: y, xl: sorted[0], xr: sorted[sorted.length - 1] });
+  }
+  const order = { "v+": 0, h: 1, "v-": 2 };
+  events.sort((a, b) => {
+    if (a.eventY !== b.eventY) return a.eventY - b.eventY;
+    return order[a.kind] - order[b.kind];
+  });
+
+  const trackerByX = new Map();
   for (const ev of events) {
-    line.startAnimate({ duration: 500 }).setY1(gy(ev.eventY)).setY2(gy(ev.eventY)).endAnimate();
+    line.startAnimate({ duration: 500 }).setY1(dotY(ev.eventY)).setY2(dotY(ev.eventY)).endAnimate();
+    for (const tracker of trackerByX.values()) {
+      tracker.startAnimate({ duration: 500 }).setCy(dotY(ev.eventY)).endAnimate();
+    }
+
     if (ev.kind === "v+") {
+      const tracker = new sd.Circle({
+        targetNode: svg,
+        cx: dotX(ev.x),
+        cy: dotY(ev.eventY),
+        r: 4,
+        fill: TRACKER,
+        opacity: 0,
+      });
+      trackerByX.set(ev.x, tracker);
+      tracker.startAnimate({ duration: 350 }).setOpacity(1).endAnimate();
       segment[ev.x] += 1;
       cells[ev.x].startAnimate({ duration: 350 }).setFill(coverageColor(segment[ev.x])).endAnimate();
     } else if (ev.kind === "v-") {
+      const tracker = trackerByX.get(ev.x);
+      if (tracker) {
+        tracker.startAnimate({ duration: 350 }).setOpacity(0).endAnimate();
+        trackerByX.delete(ev.x);
+      }
       segment[ev.x] -= 1;
       cells[ev.x].startAnimate({ duration: 350 }).setFill(coverageColor(segment[ev.x])).endAnimate();
     } else {
-      // Highlight the query range [xl, xr] on the strip — these cells'
-      // active-column count is the number of new black points on this row.
-      const flash = new sd.Rect({
+      const band = new sd.Rect({
         targetNode: svg,
         x: gx(ev.xl),
-        y: STRIP_Y - 4,
+        y: STRIP_Y - STRIP_H - 8,
         width: (ev.xr - ev.xl + 1) * UNIT,
-        height: STRIP_H + 8,
+        height: STRIP_H,
         fill: C.none,
-        stroke: "#f14c4c",
+        stroke: SCAN,
         strokeWidth: 2,
         opacity: 0,
       });
-      flash.startAnimate({ duration: 350 }).setOpacity(1).endAnimate();
+      band.startAnimate({ duration: 350 }).setOpacity(1).endAnimate();
+      await sd.pause();
+      band.startAnimate({ duration: 350 }).setOpacity(0).endAnimate();
     }
     await sd.pause();
   }

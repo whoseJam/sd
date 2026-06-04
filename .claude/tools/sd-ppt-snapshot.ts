@@ -12,14 +12,16 @@
 //
 // Output:
 //   stdout = absolute path of the stitched PNG (only line printed)
-//   stderr = pageerror traces collected during the run, if any
-//   exit 0 = no pageerror; exit 1 = errors collected (PNG still written)
+//   stderr = browser issues (pageerror + console.error/warn + failed
+//            requests + 4xx/5xx responses) collected during the run
+//   exit 0 = no error-level issues; exit 1 = at least one error
+//   (PNG is always written)
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 
-import { findDocRoot, startStaticServer, stitchGrid } from "./grid";
+import { attachIssueCollector, findDocRoot, openInViewer, startStaticServer, stitchGrid } from "./grid";
 
 type Framework = "reveal" | "webslides" | "impress";
 
@@ -30,6 +32,7 @@ interface Args {
   output?: string;
   idleMs?: number;
   timeoutMs: number;
+  open: boolean;
 }
 
 const VIEWPORT = { width: 1200, height: 690 };
@@ -53,6 +56,7 @@ Flags:
   --idle MS           Wait per slide after navigation before screenshot (default per framework: reveal/webslides 300, impress 1100)
   -o, --output PATH   Output PNG path (default /tmp/sd-ppt-snapshot-<name>-<range>.png)
   --timeout MS        Framework-ready timeout, ms (default ${READY_TIMEOUT_DEFAULT})
+  --no-open           Don't auto-open the PNG (macOS Preview otherwise refreshes in place)
   -h, --help          Show this help
 `);
 }
@@ -66,6 +70,7 @@ function parseArgs(argv: string[]): Args {
   let output: string | undefined;
   let idleMs: number | undefined;
   let timeoutMs = READY_TIMEOUT_DEFAULT;
+  let open = true;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -76,6 +81,7 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--idle") idleMs = Number(argv[++i]);
     else if (arg === "-o" || arg === "--output") output = argv[++i];
     else if (arg === "--timeout") timeoutMs = Number(argv[++i]);
+    else if (arg === "--no-open") open = false;
     else if (arg === "-h" || arg === "--help") {
       printHelp();
       process.exit(0);
@@ -102,7 +108,7 @@ function parseArgs(argv: string[]): Args {
     throw new Error("--to must be an integer >= --from");
   }
 
-  return { htmlPath, from, to, output, idleMs, timeoutMs };
+  return { htmlPath, from, to, output, idleMs, timeoutMs, open };
 }
 
 type Page = Awaited<ReturnType<typeof chromium.prototype.newPage>>;
@@ -202,13 +208,11 @@ async function main(): Promise<void> {
 
   const server = await startStaticServer(docRoot);
   const browser = await chromium.launch();
-  const pageErrors: string[] = [];
+  let collector: ReturnType<typeof attachIssueCollector> | undefined;
 
   try {
     const page = await browser.newPage({ viewport: VIEWPORT });
-    page.on("pageerror", (err) => {
-      pageErrors.push(err.stack ?? err.message);
-    });
+    collector = attachIssueCollector(page);
 
     await page.goto(`${server.url}/${urlPath}`, { waitUntil: "load" });
     const framework = await detectFramework(page, args.timeoutMs);
@@ -246,18 +250,17 @@ async function main(): Promise<void> {
       fallbackWidth: VIEWPORT.width,
       fallbackHeight: VIEWPORT.height,
     });
-    process.stdout.write(`${path.resolve(output)}\n`);
+    const resolved = path.resolve(output);
+    process.stdout.write(`${resolved}\n`);
+    if (args.open) await openInViewer(resolved);
   } finally {
     await browser.close();
     await server.close();
   }
 
-  if (pageErrors.length > 0) {
-    process.stderr.write(`\n${pageErrors.length} page error(s) during run:\n`);
-    for (const err of pageErrors) {
-      process.stderr.write(`${err}\n`);
-    }
-    process.exit(1);
+  if (collector && collector.issues.length > 0) {
+    process.stderr.write(collector.format());
+    if (collector.hasErrors()) process.exit(1);
   }
 }
 
