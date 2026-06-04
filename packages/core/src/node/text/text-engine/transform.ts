@@ -46,6 +46,23 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         r,
       );
       const group = RenderNode.createRenderNodeWithTime(targetLayer, l, l, "g");
+      // Morph group is a sibling of <text>, not a child — so it doesn't inherit the Text's
+      // opacity for free. Mirror it onto the group, plus an action if it animates in [l, r].
+      const opacityAtL = A.getAttribute(text, "opacity", l, text.getOpacity());
+      const opacityAtR = A.getAttribute(text, "opacity", r, text.getOpacity());
+      group.setAttribute("opacity", opacityAtL);
+      if (opacityAtL !== opacityAtR) {
+        pushAction({
+          entity: group,
+          key: "opacity",
+          l,
+          r,
+          from: opacityAtL,
+          to: opacityAtR,
+          interp: Interp.numberInterp,
+          timing,
+        });
+      }
       // SubtextView indices are positions within the FULL text (the
       // subtext picks out a subset). alignCharacterSequence returns LOCAL
       // indices into the subtext though; we translate them back to

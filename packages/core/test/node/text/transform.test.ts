@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const pushedActions: Array<{ key: string; entity: object; from: unknown; to: unknown }> = [];
 const createdPaths: Array<{ attrs: Map<string, unknown> }> = [];
+const createdGroups: Array<{ attrs: Map<string, unknown> }> = [];
 
 vi.mock("@/animate/animate", async () => {
   const actual = await vi.importActual<typeof import("@/animate/animate")>(
@@ -27,9 +28,17 @@ vi.mock("@/node/text/text-engine/path", () => ({
 
 vi.mock("@/renderer/render-node", () => ({
   RenderNode: {
-    createRenderNodeWithTime: () => ({
-      __animate: () => ({ remove: () => {} }),
-    }),
+    createRenderNodeWithTime: () => {
+      const group = {
+        attrs: new Map<string, unknown>(),
+        setAttribute(k: string, v: unknown) {
+          group.attrs.set(k, v);
+        },
+        __animate: () => ({ remove: () => {} }),
+      };
+      createdGroups.push(group);
+      return group;
+    },
     createRenderNodeWithoutAction: () => {
       const node = {
         attrs: new Map<string, unknown>(),
@@ -61,13 +70,30 @@ function styleEntry(fill: string, stroke: string) {
   };
 }
 
+function mockAttrs(
+  sourceStyles: unknown,
+  targetStyles: unknown,
+  opacityL = 1,
+  opacityR = 1,
+) {
+  vi.mocked(Animate.getAttribute).mockImplementation(
+    (_e: unknown, key: string, t: number, fallback?: unknown) => {
+      if (key === "subtextStyles") return t === 0 ? sourceStyles : targetStyles;
+      if (key === "opacity") return t === 0 ? opacityL : opacityR;
+      return fallback;
+    },
+  );
+}
+
 function invokeMorph(
   l: number,
   r: number,
   sourceSubs: ReturnType<typeof subtext>[],
   targetSubs: ReturnType<typeof subtext>[],
+  textOpacity = 1,
 ) {
-  const fn = transformPostProcess({} as never, {} as never);
+  const text = { getOpacity: () => textOpacity };
+  const fn = transformPostProcess(text as never, {} as never);
   fn.call({ timingFunction: () => 0 } as never, l, r, sourceSubs as never, targetSubs as never);
 }
 
@@ -81,6 +107,7 @@ function fillOn(node: { attrs: Map<string, unknown> } | undefined): unknown {
 beforeEach(() => {
   pushedActions.length = 0;
   createdPaths.length = 0;
+  createdGroups.length = 0;
   vi.mocked(getPaths).mockReset();
   vi.mocked(Animate.getAttribute).mockReset();
 });
@@ -90,9 +117,7 @@ describe("transformPostProcess", () => {
     vi.mocked(getPaths)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
       .mockReturnValueOnce([pathView("M0,0L10,5")] as never);
-    vi.mocked(Animate.getAttribute)
-      .mockReturnValueOnce([styleEntry("#ff0000", "none")])
-      .mockReturnValueOnce([styleEntry("#00ff00", "none")]);
+    mockAttrs([styleEntry("#ff0000", "none")], [styleEntry("#00ff00", "none")]);
 
     invokeMorph(0, 1, [subtext([0])], [subtext([0])]);
 
@@ -109,9 +134,7 @@ describe("transformPostProcess", () => {
     vi.mocked(getPaths)
       .mockReturnValueOnce([] as never)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never);
-    vi.mocked(Animate.getAttribute)
-      .mockReturnValueOnce([]) // source styles
-      .mockReturnValueOnce([styleEntry("#ff0000", "none")]); // target styles
+    mockAttrs([], [styleEntry("#ff0000", "none")]);
 
     invokeMorph(0, 1, [subtext([])], [subtext([0])]);
 
@@ -123,9 +146,7 @@ describe("transformPostProcess", () => {
     vi.mocked(getPaths)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
       .mockReturnValueOnce([] as never);
-    vi.mocked(Animate.getAttribute)
-      .mockReturnValueOnce([styleEntry("#00ff00", "none")])
-      .mockReturnValueOnce([]);
+    mockAttrs([styleEntry("#00ff00", "none")], []);
 
     invokeMorph(0, 1, [subtext([0])], [subtext([])]);
 
@@ -137,7 +158,7 @@ describe("transformPostProcess", () => {
     vi.mocked(getPaths)
       .mockReturnValueOnce([undefined] as never)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never);
-    vi.mocked(Animate.getAttribute).mockReturnValue([styleEntry("#0000ff", "none")]);
+    mockAttrs([styleEntry("#0000ff", "none")], [styleEntry("#0000ff", "none")]);
 
     invokeMorph(0, 1, [subtext([0])], [subtext([0])]);
 
@@ -145,11 +166,54 @@ describe("transformPostProcess", () => {
     expect(fillOn(createdPaths[0])).toBe("#0000ff");
   });
 
+  it("morph group mirrors Text's opacity (seeded + animated when text fades)", () => {
+    vi.mocked(getPaths)
+      .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
+      .mockReturnValueOnce([pathView("M0,0L10,5")] as never);
+    mockAttrs(
+      [styleEntry("#ff0000", "none")],
+      [styleEntry("#ff0000", "none")],
+      0.2,
+      0.8,
+    );
+
+    invokeMorph(0, 1, [subtext([0])], [subtext([0])]);
+
+    expect(createdGroups).toHaveLength(1);
+    expect(createdGroups[0].attrs.get("opacity")).toBe(0.2);
+    const opAction = pushedActions.find(
+      (a) => a.entity === createdGroups[0] && a.key === "opacity",
+    );
+    expect(opAction).toBeDefined();
+    expect(opAction!.from).toBe(0.2);
+    expect(opAction!.to).toBe(0.8);
+  });
+
+  it("morph group seeds opacity but skips action when text opacity is static", () => {
+    vi.mocked(getPaths)
+      .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
+      .mockReturnValueOnce([pathView("M0,0L10,5")] as never);
+    mockAttrs(
+      [styleEntry("#ff0000", "none")],
+      [styleEntry("#ff0000", "none")],
+      0.5,
+      0.5,
+    );
+
+    invokeMorph(0, 1, [subtext([0])], [subtext([0])]);
+
+    expect(createdGroups[0].attrs.get("opacity")).toBe(0.5);
+    const opAction = pushedActions.find(
+      (a) => a.entity === createdGroups[0] && a.key === "opacity",
+    );
+    expect(opAction).toBeUndefined();
+  });
+
   it("target-path undefined (whitespace glyph) → fade-out path carries source fill", () => {
     vi.mocked(getPaths)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
       .mockReturnValueOnce([undefined] as never);
-    vi.mocked(Animate.getAttribute).mockReturnValue([styleEntry("#abcdef", "none")]);
+    mockAttrs([styleEntry("#abcdef", "none")], [styleEntry("#abcdef", "none")]);
 
     invokeMorph(0, 1, [subtext([0])], [subtext([0])]);
 

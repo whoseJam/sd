@@ -153,11 +153,12 @@ sd.init(() => {
   });
   totalText = new sd.Text({
     targetNode: svg,
-    text: "",
+    text: "= 0",
     x: READ_X,
     cy: READ_CY - 26,
     fontSize: 18,
     fill: TEXT_NEUTRAL,
+    opacity: 0,
   });
 });
 
@@ -266,6 +267,7 @@ sd.main(async () => {
 
   totalText
     .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
     .setText(`= ${sumH + sumV}`)
     .endAnimate();
 
