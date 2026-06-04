@@ -1,11 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Module mocks isolate transformPostProcess from the real animate scheduler
-// and the real DOM. We capture pushed actions and created path nodes, then
-// assert the contract: every <path> the morph emits must end up with a
-// `fill` set (either via attribute or via a fill action) — otherwise the
-// fading char renders with the SVG default (black), regardless of the
-// owning Text's fill.
+// Contract: every <path> the morph emits must end up with a fill set, or it inherits SVG default
+// (black) and the fading char renders black regardless of the Text's fill.
 
 const pushedActions: Array<{ key: string; entity: object; from: unknown; to: unknown }> = [];
 const createdPaths: Array<{ attrs: Map<string, unknown> }> = [];
@@ -90,21 +86,26 @@ beforeEach(() => {
 });
 
 describe("transformPostProcess", () => {
-  it("matched chars carry the text's fill via fill action", () => {
+  it("matched chars seed initial fill attr AND push fill action", () => {
     vi.mocked(getPaths)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
       .mockReturnValueOnce([pathView("M0,0L10,5")] as never);
-    vi.mocked(Animate.getAttribute).mockReturnValue([styleEntry("#ff0000", "none")]);
+    vi.mocked(Animate.getAttribute)
+      .mockReturnValueOnce([styleEntry("#ff0000", "none")])
+      .mockReturnValueOnce([styleEntry("#00ff00", "none")]);
 
     invokeMorph(0, 1, [subtext([0])], [subtext([0])]);
 
     expect(createdPaths).toHaveLength(1);
-    expect(fillOn(createdPaths[0])).toBe("#ff0000");
+    const path = createdPaths[0];
+    expect(path.attrs.get("fill")).toBe("#ff0000");
+    const action = pushedActions.find((a) => a.entity === path && a.key === "fill");
+    expect(action).toBeDefined();
+    expect(action!.from).toBe("#ff0000");
+    expect(action!.to).toBe("#00ff00");
   });
 
   it("fade-in (sourceIndex undefined) carries target's fill, not SVG default", () => {
-    // "" → "X": sourcePositions empty, targetPositions=[0]. alignCharacterSequence
-    // returns [[undefined, 0]] → fadePath branch (line 95-98 in transform.ts).
     vi.mocked(getPaths)
       .mockReturnValueOnce([] as never)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never);
@@ -119,8 +120,6 @@ describe("transformPostProcess", () => {
   });
 
   it("fade-out (targetIndex undefined) carries source's fill, not SVG default", () => {
-    // "X" → "": sourcePositions=[0], targetPositions empty. alignCharacterSequence
-    // returns [[0, undefined]] → fadePath branch (line 99-102).
     vi.mocked(getPaths)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
       .mockReturnValueOnce([] as never);
@@ -135,9 +134,6 @@ describe("transformPostProcess", () => {
   });
 
   it("source-path undefined (whitespace glyph) → fade-in path carries target fill", () => {
-    // Both indices map (matched alignment), but getPaths returned undefined
-    // for source — that's the "whitespace glyph" case (getTextPaths returns
-    // undefined for empty path data). Branch at line 104-107.
     vi.mocked(getPaths)
       .mockReturnValueOnce([undefined] as never)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never);
@@ -150,7 +146,6 @@ describe("transformPostProcess", () => {
   });
 
   it("target-path undefined (whitespace glyph) → fade-out path carries source fill", () => {
-    // Mirror of the above; branch at line 108-111.
     vi.mocked(getPaths)
       .mockReturnValueOnce([pathView("M0,0L10,0")] as never)
       .mockReturnValueOnce([undefined] as never);

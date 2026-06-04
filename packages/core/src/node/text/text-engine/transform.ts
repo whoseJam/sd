@@ -59,11 +59,8 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         sourcePositions.length,
         targetPositions.length,
       );
-      // Fading chars only animate opacity — the style stays constant for
-      // the duration, so fill/stroke/stroke-width are written once via
-      // attribute. Without these the path inherits the SVG default (black)
-      // regardless of the Text's fill, producing black ghosting during
-      // length-changing morphs.
+      // Style stays constant during a fade; write attrs once. Without this the path inherits
+      // SVG default (black) regardless of the Text's fill.
       const fadePath = (
         node: RenderNode,
         d: string,
@@ -134,6 +131,11 @@ export function transformPostProcess(text: BaseText, targetLayer: RenderNode) {
         const character = makePath();
         character.setAttribute("d", source.d);
         character.setAttribute("transform", source.transform);
+        // Seed style attrs so frame-0 renders in source style; without this the action loop's
+        // pre-tick state is the SVG default (black) and matched chars flash black for one frame.
+        character.setAttribute("fill", sourceStyleResolved.fill);
+        character.setAttribute("stroke", sourceStyleResolved.stroke);
+        character.setAttribute("stroke-width", sourceStyleResolved.strokeWidth);
         pushAction({
           entity: character,
           key: "d",
