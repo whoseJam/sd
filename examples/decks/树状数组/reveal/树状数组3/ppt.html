@@ -1,0 +1,37 @@
+<section>
+    <section>
+        <h1>树状数组 3</h1>
+        <p>luogu P3372 — 区间改 + 区间查</p>
+    </section>
+    <section>
+        <h2>推导</h2>
+        <p>设 $D_i = A_i - A_{i-1}$，$S(n) = \sum_{i \le n} A_i$。</p>
+        <p class="fragment">
+            $$ S(n) = \sum_{i \le n} \sum_{j \le i} D_j = \sum_{j \le n} (n - j + 1) D_j = (n + 1) \sum_j D_j - \sum_j j D_j $$
+        </p>
+        <p class="fragment">维护两个树状数组：$\sum D_j$ 和 $\sum j D_j$。</p>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <codeblock>
+            <script type="text/template">
+                void add(int x, ll d) {
+                    for (int i = x; i <= n; i += lowbit(i)) {
+                        c1[i] += d;
+                        c2[i] += d * x;
+                    }
+                }
+                ll sum(int x) {
+                    ll a = 0, b = 0;
+                    for (int i = x; i > 0; i -= lowbit(i)) {
+                        a += c1[i];
+                        b += c2[i];
+                    }
+                    return (x + 1) * a - b;
+                }
+                // 区间 [l, r] 加 d：add(l, d); add(r + 1, -d);
+                // 区间 [l, r] 求和：sum(r) - sum(l - 1);
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>更多的树状数组</h1>
+        <p>不止求和</p>
+    </section>
+    <section>
+        <h2>朴素版</h2>
+        <codeblock>
+            <script type="text/template">
+                void add(int x, int d) {
+                    for (int i = x; i <= n; i += lowbit(i)) c[i] += d;
+                }
+                int sum(int x) {
+                    int ans = 0;
+                    for (int i = x; i > 0; i -= lowbit(i)) ans += c[i];
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>异或版</h2>
+        <p>把 $+$ 换成 $\oplus$，就能维护区间异或和。</p>
+        <codeblock>
+            <script type="text/template">
+                void add(int x, int d) {
+                    for (int i = x; i <= n; i += lowbit(i)) c[i] ^= d;
+                }
+                int xor_(int x) {
+                    int ans = 0;
+                    for (int i = x; i > 0; i -= lowbit(i)) ans ^= c[i];
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">只要运算是<b>可结合 + 有逆元</b>，树状数组都能套。</p>
+    </section>
+</section>

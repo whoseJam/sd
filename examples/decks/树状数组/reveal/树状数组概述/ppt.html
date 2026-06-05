@@ -1,0 +1,77 @@
+<section>
+    <section>
+        <h1>树状数组</h1>
+    </section>
+    <section>
+        <h2>动态连续和</h2>
+        <p>数组 $\{A_i\}$，支持：</p>
+        <ol>
+            <li><code>Add(x, d)</code>：$A_x \mathrel{+}= d$</li>
+            <li><code>Query(l, r)</code>：$A_l + \dots + A_r$</li>
+        </ol>
+    </section>
+    <section>
+        <h2>方案一：直接数组</h2>
+        <sd-animation src="../../animation/树状数组概述/直接数组模拟.js"
+            style="margin: 0 auto; width: 600px; height: 120px;"></sd-animation>
+        <p>$\text{Add}$ $O(1)$，$\text{Query}$ $O(n)$，总 $O(nm)$。</p>
+    </section>
+    <section>
+        <h2>方案二：前缀和数组</h2>
+        <sd-animation src="../../animation/树状数组概述/前缀和模拟.js"
+            style="margin: 0 auto; width: 600px; height: 200px;"></sd-animation>
+        <p>$\text{Query}$ $O(1)$，$\text{Add}$ $O(n)$，总还是 $O(nm)$。</p>
+    </section>
+    <section>
+        <h2>lowbit</h2>
+        <p>$\text{lowbit}(x) = x \& (-x)$ $=$ 最低位的 $1$ 对应的权值。</p>
+        <sd-animation src="../../animation/树状数组概述/lowbit.js"
+            style="margin: 0 auto; width: 720px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>lowbit 的意义</h2>
+        <p>$\text{lowbit}(i)$ $=$ 树状数组节点 $i$ 所覆盖的区间长度。</p>
+        <sd-animation src="../../animation/树状数组概述/lowbit的意义.js"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>二进制拆分 — $n = 12$</h2>
+        <p>$t_i$ 覆盖 $[i - \text{lowbit}(i) + 1, i]$，按层堆叠。</p>
+        <sd-animation src="../../animation/树状数组概述/二进制拆分12.js"
+            style="margin: 0 auto; width: 880px; height: 320px;"></sd-animation>
+    </section>
+    <section>
+        <h2>二进制拆分 — $n = 8$</h2>
+        <p>$n = 2^k$ 时顶层只有一个块覆盖整个数组。</p>
+        <sd-animation src="../../animation/树状数组概述/二进制拆分8.js"
+            style="margin: 0 auto; width: 600px; height: 320px;"></sd-animation>
+    </section>
+    <section>
+        <h2>求和 — $\text{sum}(7)$</h2>
+        <p>从 $i = 7$ 开始，每次 $i \mathrel{-}= \text{lowbit}(i)$。</p>
+        <sd-animation src="../../animation/树状数组概述/求和.js"
+            style="margin: 0 auto; width: 880px; height: 320px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int sum(int x) {
+                    int ans = 0;
+                    for (int i = x; i > 0; i -= lowbit(i)) ans += c[i];
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>修改 — $\text{add}(5, d)$</h2>
+        <p>从 $i = 5$ 开始，每次 $i \mathrel{+}= \text{lowbit}(i)$。</p>
+        <sd-animation src="../../animation/树状数组概述/修改.js"
+            style="margin: 0 auto; width: 880px; height: 320px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void add(int x, int d) {
+                    for (int i = x; i <= n; i += lowbit(i)) c[i] += d;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

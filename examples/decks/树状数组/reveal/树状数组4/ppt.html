@@ -1,0 +1,11 @@
+<section>
+    <section>
+        <h1>树状数组 4</h1>
+        <p>区间改 + 区间 $S$ 求和</p>
+    </section>
+    <section>
+        <h2>推导</h2>
+        <p>$\text{Sum}(n) = \sum_{i \le n} S_i = \sum_{k \le n} D_k \cdot \tfrac{1}{2}\bigl(k^2 + (-2n - 3)k + (n^2 + 3n + 2)\bigr)$。</p>
+        <p class="fragment">把 $k^2 D_k$、$k D_k$、$D_k$ 分别用三个树状数组维护。</p>
+    </section>
+</section>

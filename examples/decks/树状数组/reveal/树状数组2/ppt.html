@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>树状数组 2</h1>
+        <p>luogu P3368 — 区间改 + 单点查</p>
+    </section>
+    <section>
+        <h2>放线段</h2>
+        <p>用差分。$D_i = A_i - A_{i-1}$。</p>
+        <ul>
+            <li class="fragment">$\text{Query}(x) = A_x = D_1 + \dots + D_x$ — 在 $D$ 上前缀求和</li>
+            <li class="fragment">$\text{Add}(l, r, k)$ $=$ $D_l \mathrel{+}= k$，$D_{r+1} \mathrel{-}= k$ — 两个单点</li>
+        </ul>
+        <p class="fragment">树状数组维护 $D$ 即可。两端 $O(\log n)$。</p>
+    </section>
+</section>
