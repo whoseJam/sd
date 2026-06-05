@@ -1,3 +1,3 @@
-import { rectUnion } from "../../common/rect-union";
+import { rectUnion } from "./rect-union";
 
 rectUnion([2, 4, 2, 4, 6, 2, 3, 4]);
