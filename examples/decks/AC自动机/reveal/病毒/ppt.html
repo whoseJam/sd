@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>病毒</h1>
+        <p>luogu P2444</p>
+    </section>
+    <section>
+        <h2>病毒</h2>
+        <p>$n$ 个病毒码（01 串），求是否存在<b>不含任何病毒码作为子串</b>的无限 01 序列。</p>
+        <sd-animation src="../../animation/病毒/匹配与构造.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 380px;"></sd-animation>
+        <p class="fragment">在 trie 图上走 $=$ 构造一个串。要构造无限串，就要在图上找一条<b>不经过终止点的无限路径</b>。</p>
+    </section>
+    <section>
+        <h2>病毒</h2>
+        <p>无限路径 $\Leftrightarrow$ 不经过终止点的环。两个例子：</p>
+        <div style="display: flex; justify-content: space-around; gap: 16px;">
+            <div style="width: 48%; text-align: center;">
+                <p>$\{ 01, 11, 000 \}$ —— 无安全环</p>
+                <sd-animation src="../../animation/病毒/无环.js"
+                    style="width: 95%; height: 320px;"></sd-animation>
+            </div>
+            <div style="width: 48%; text-align: center;">
+                <p>$\{ 011, 11, 000 \}$ —— 有 $0 \leftrightarrow 01$ 安全环</p>
+                <sd-animation src="../../animation/病毒/有环.js"
+                    style="width: 95%; height: 320px;"></sd-animation>
+            </div>
+        </div>
+        <p class="fragment">DFS 判环即可。</p>
+    </section>
+</section>

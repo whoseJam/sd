@@ -1,0 +1,37 @@
+<section>
+    <section>
+        <h1>trie 图</h1>
+        <p>把 AC 的失配转移全部预连上</p>
+    </section>
+    <section>
+        <h2>背景</h2>
+        <p>AC 自动机匹配遇到失配时要走 fail 边再尝试。提前算好"如果在 $u$ 上读字符 $c$ 应该去哪"，匹配时就不需要再跳 fail。</p>
+        <sd-animation src="../../animation/trie图概述/背景.js"
+            style="margin: 0 auto; width: 720px; height: 360px;"></sd-animation>
+        <p class="fragment">把这个"下一步"函数预存进 $\text{ch}[u][c]$ 就是 trie 图。</p>
+    </section>
+    <section>
+        <h2>trie 图</h2>
+        <p>正常 trie 边 $+$ 预算好的失配转移 $+$ fail 链，全都存在同一张图里。</p>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <sd-animation src="../../animation/trie图概述/trie图.js"
+                style="width: 42%; height: 380px;"></sd-animation>
+            <codeblock style="width: 58%;">
+                <script type="text/template">
+                    void build() {
+                        queue<int> q; q.push(1);
+                        while (!q.empty()) {
+                            int u = q.front(); q.pop();
+                            for (int c = 0; c < 26; c++) {
+                                int f = fa[u], v = ch[u][c];
+                                if (!v) ch[u][c] = ch[f][c] ? ch[f][c] : 1;
+                                else { fa[v] = ch[f][c] ? ch[f][c] : 1; q.push(v); }
+                            }
+                        }
+                    }
+                </script>
+            </codeblock>
+        </div>
+        <p class="fragment">在 trie 图上匹配只需要沿 $\text{ch}$ 走，<b>无脑</b>。</p>
+    </section>
+</section>

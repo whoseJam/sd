@@ -289,4 +289,57 @@ export class Trie {
     }
     return out;
   }
+
+  /** Full AC transition function. Returns the destination for (node, ch). */
+  trieGraph(charset: ReadonlyArray<string>): Map<number, Map<string, number>> {
+    const go = new Map<number, Map<string, number>>();
+    for (let i = 0; i < this.nodes.length; i++) go.set(i, new Map());
+    const rootGo = go.get(0) as Map<string, number>;
+    for (const ch of charset) {
+      const direct = this.children.get(0)?.get(ch);
+      rootGo.set(ch, direct ?? 0);
+    }
+    const queue: number[] = [];
+    for (const v of this.children.get(0)?.values() ?? []) queue.push(v);
+    while (queue.length > 0) {
+      const u = queue.shift() as number;
+      const uGo = go.get(u) as Map<string, number>;
+      const fGo = go.get(this.fail[u]) as Map<string, number>;
+      for (const ch of charset) {
+        const direct = this.children.get(u)?.get(ch);
+        if (direct !== undefined) {
+          uGo.set(ch, direct);
+          queue.push(direct);
+        } else {
+          uGo.set(ch, fGo.get(ch) ?? 0);
+        }
+      }
+    }
+    return go;
+  }
+
+  /** Draw the "extra" trie-graph edges (those not already drawn as
+   *  trie children) as curved colored arrows. Returns the new Paths. */
+  drawTrieGraphEdges(
+    go: Map<number, Map<string, number>>,
+    opts?: { stroke?: sd.SDColor; bending?: number },
+  ): sd.Path[] {
+    const out: sd.Path[] = [];
+    const stroke = opts?.stroke ?? "#7fb8b8";
+    const bending = opts?.bending ?? 0.35;
+    for (const [u, uGo] of go) {
+      for (const [, v] of uGo) {
+        if (this.children.get(u)?.get(this.charForChild(u, v) ?? "") === v) continue;
+        out.push(this.failLink(u, v, { stroke, bending }));
+      }
+    }
+    return out;
+  }
+
+  private charForChild(u: number, v: number): string | undefined {
+    const kids = this.children.get(u);
+    if (!kids) return undefined;
+    for (const [ch, id] of kids) if (id === v) return ch;
+    return undefined;
+  }
 }
