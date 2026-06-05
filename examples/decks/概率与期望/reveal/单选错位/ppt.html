@@ -1,0 +1,13 @@
+<section>
+    <section>
+        <h1>单选错位</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 题排列，每题第 $i$ 个有 $a_i$ 个选项。考试时把第 $i$ 题答案写到了第 $i + 1$ 题位置上 — 求做对的题数期望。</p>
+    </section>
+    <section>
+        <h2>线性性</h2>
+        <p>$E = \sum_i P(\text{第 } i \text{ 题做对})$。第 $i$ 题做对 $\Leftrightarrow$ 第 $i - 1$ 题答案恰好和第 $i$ 题答案相同 $= \min(a_{i-1}, a_i) / (a_{i-1} a_i)$。</p>
+    </section>
+</section>

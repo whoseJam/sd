@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>期望</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>$E(X) = \sum_x x \cdot P(X = x)$。</p>
+    </section>
+    <section>
+        <h2>线性性</h2>
+        <p>$E(X + Y) = E(X) + E(Y)$ — 无论 $X, Y$ 是否独立都成立。</p>
+        <p class="fragment">大多数期望题目的关键工具。</p>
+    </section>
+    <section>
+        <h2>dp 套路</h2>
+        <p>令 $f(s) = $ 从状态 $s$ 出发的期望步数 / 期望值。</p>
+        <p class="fragment">写出转移 $f(s) = \sum p_{s \to t} (f(t) + 步数)$。出现环时高斯消元。</p>
+    </section>
+</section>
