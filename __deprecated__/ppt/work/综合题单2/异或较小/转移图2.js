@@ -1,5 +1,5 @@
 import * as sd from "@/sd";
-import { build01TrieTreeSync } from "../../Trie/_/Build01TrieTreeSync";
+import { build01TrieTreeSync } from "../_/Build01TrieTreeSync";
 
 const svg = sd.svg();
 const V = sd.vec();
