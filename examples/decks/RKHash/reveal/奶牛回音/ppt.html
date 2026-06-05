@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>奶牛回音</h1>
+        <p>luogu P2957</p>
+    </section>
+    <section>
+        <h2>奶牛回音</h2>
+        <p>给定 $s, t$，取整数 $k$；如果 $s$ 前 $k$ 等于 $t$ 后 $k$（或反过来），$k$ 合法。求最大合法 $k$。</p>
+        <p class="fragment">暴力 $O(n^2)$；预处理哈希后比较只要 $O(1)$，总 $O(n)$。</p>
+    </section>
+    <section>
+        <h2>奶牛回音</h2>
+        <codeblock>
+            <script type="text/template">
+                int lim = min(ls, lt);
+                for (int k = lim; k >= 1; k--) {
+                    if (Hash(s, ls - k + 1, ls) == Hash(t, 1, k)) { cout << k; return; }
+                    if (Hash(t, lt - k + 1, lt) == Hash(s, 1, k)) { cout << k; return; }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

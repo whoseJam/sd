@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>RKHash 预处理</h1>
+    </section>
+    <section>
+        <h2>RKHash 预处理</h2>
+        <p>长度 $n$ 的串，$m$ 次询问子串 Hash。</p>
+        <sd-animation src="../../animation/RKHash预处理/多次询问子串Hash值.js"
+            style="margin: 0 auto; width: 720px; height: 140px;"></sd-animation>
+        <p class="fragment">每次重算：$O(nm)$。能否更快？</p>
+    </section>
+    <section>
+        <h2>RKHash 预处理</h2>
+        <div style="display: flex; gap: 24px; justify-content: center;">
+            <div>
+                <p>前缀哈希</p>
+                <p>$$S(n) = \sum_{i=1}^n B^{n-i} s_i$$</p>
+            </div>
+            <div>
+                <p>幂次</p>
+                <p>$$P(k) = B^k$$</p>
+            </div>
+        </div>
+        <p class="fragment">$$\text{Hash}(l, r) = S(r) - S(l-1) \cdot P(r - l + 1)$$</p>
+        <sd-animation src="../../animation/RKHash预处理/RKHash.js" class="fragment"
+            style="margin: 0 auto; width: 600px; height: 140px;"></sd-animation>
+    </section>
+</section>

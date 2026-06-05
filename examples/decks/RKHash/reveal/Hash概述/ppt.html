@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>Hash</h1>
+        <p>Hash 的一般思路</p>
+    </section>
+    <section>
+        <h2>Hash</h2>
+        <p>$n$ 个对象 $o_1, \dots, o_n$，需要两两比较是否相同。</p>
+        <sd-animation src="../../animation/Hash概述/Hash的作用.js"
+            style="margin: 0 auto; width: 600px; height: 360px;"></sd-animation>
+        <p class="fragment">如果有 $f$，把每个对象映射到<b style="color: purple;">唯一数值 $h_i$</b>，比较 $h$ 比比较 $o$ 快得多。</p>
+        <p class="fragment">$$O(n^2 \cdot T_{\text{cmp}}) \to O(n \cdot T_f + n^2)$$</p>
+    </section>
+    <section>
+        <h2>Hash</h2>
+        <p>Hash 研究的就是<b>从对象到数值的映射 $f$</b>。</p>
+        <p style="text-align: center;">$o \xrightarrow{f} \text{Hash}(o)$</p>
+    </section>
+</section>

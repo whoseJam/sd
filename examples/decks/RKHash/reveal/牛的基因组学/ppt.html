@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>牛的基因组学</h1>
+        <p>luogu P3667</p>
+    </section>
+    <section>
+        <h2>牛的基因组学</h2>
+        <p>$n$ 头斑点牛 + $n$ 头非斑点牛，每头基因长 $m$。找最短的区分窗口长度 $k$。</p>
+        <sd-animation src="../../animation/牛的基因组学/样例解释.js"
+            style="margin: 0 auto; width: 600px; height: 360px;"></sd-animation>
+    </section>
+    <section>
+        <h2>牛的基因组学</h2>
+        <p>二分 $k$。检验：每个长度 $k$ 的窗口收集斑点牛该段的 Hash 集合 $S$，再看非斑点牛该段 Hash 是否落进 $S$。</p>
+        <codeblock>
+            <script type="text/template">
+                bool check(int len) {
+                    for (int l = 1; l + len - 1 <= m; l++) {
+                        int r = l + len - 1;
+                        set<ull> S;
+                        for (int i = 1; i <= n; i++) S.insert(Hash(i, l, r));
+                        bool ok = true;
+                        for (int i = n + 1; i <= 2 * n; i++)
+                            if (S.count(Hash(i, l, r))) { ok = false; break; }
+                        if (ok) return true;
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

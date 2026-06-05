@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>RKHash</h1>
+        <p>面向字符串的 Hash</p>
+    </section>
+    <section>
+        <h2>RKHash</h2>
+        <p>输入限定字符串，用来快速比较两个串是否相等。</p>
+    </section>
+    <section>
+        <h2>DIY 一个</h2>
+        <p>最朴素：把所有字符 ASCII 加起来。</p>
+        <p>$$\text{Hash}(ab) = 97 + 98 = 195,\quad \text{Hash}(ba) = 98 + 97 = 195$$</p>
+        <p class="quote">丢失了位置信息 → 大量冲突。</p>
+    </section>
+    <section>
+        <h2>多项式 Hash</h2>
+        <p>把字符串看作 $B$ 进制数：</p>
+        <p>$$\text{Hash}(s) = \sum_{i=1}^n B^{n-i} \cdot s_i \pmod{p}$$</p>
+        <p class="fragment">$B$ 选大于字符集大小的素数，$p$ 选大素数。位置信息保留 ✓。</p>
+    </section>
+</section>

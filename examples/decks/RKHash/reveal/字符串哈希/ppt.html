@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>字符串哈希</h1>
+        <p>luogu P3370</p>
+    </section>
+    <section>
+        <h2>字符串哈希</h2>
+        <p>$n$ 个串中不同串的个数。直观做法：丢 set。</p>
+        <codeblock>
+            <script type="text/template">
+                set<string> S;
+                while (n--) { string s; cin >> s; S.insert(s); }
+                cout << S.size();
+            </script>
+        </codeblock>
+        <p class="fragment">用 Hash 值代替原串放进 set 即可，常数小很多。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                set<ull> S;
+                while (n--) { string s; cin >> s; S.insert(Hash(s)); }
+                cout << S.size();
+            </script>
+        </codeblock>
+    </section>
+</section>

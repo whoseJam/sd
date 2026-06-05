@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>音乐</h1>
+        <p>luogu P10634</p>
+    </section>
+    <section>
+        <h2>音乐</h2>
+        <p>两段旋律等价 $\Leftrightarrow$ 离散化（每个音的"相对秩"）后等价。</p>
+        <sd-animation src="../../animation/音乐/样例解释.js"
+            style="margin: 0 auto; width: 720px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>音乐</h2>
+        <p>B 串不动，预处理离散化 Hash。A 串上跑大小为 $m$ 的滑动窗口，逐步维护窗口的 Hash。</p>
+        <sd-animation src="../../animation/音乐/特例.js"
+            style="margin: 0 auto; width: 540px; height: 200px;"></sd-animation>
+        <ul>
+            <li class="fragment">$H_1 = H_0 - \text{rk}_C \cdot B^{m-1}$ &nbsp;（去掉最左）</li>
+            <li class="fragment">$H_2 = H_1 \cdot B$ &nbsp;（左移）</li>
+            <li class="fragment">$H_3 = H_2 + \text{rk}_A \cdot B^0$ &nbsp;（加最右）</li>
+            <li class="fragment">秩可能变化 → 再补 $\Delta$ 修正</li>
+        </ul>
+    </section>
+</section>
