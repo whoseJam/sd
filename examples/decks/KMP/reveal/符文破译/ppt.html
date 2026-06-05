@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>符文破译</h1>
+        <p>luogu P8112</p>
+    </section>
+    <section>
+        <h2>符文破译</h2>
+        <p>把 $S$ 分割成尽可能少的 $T$ 的非空前缀。</p>
+        <p class="fragment">在 $T$ 的失配树上跑 KMP：每次匹配走到一个 $T$ 前缀，断开开新段。</p>
+    </section>
+    <section>
+        <h2>符文破译</h2>
+        <sd-animation src="../../animation/符文破译/符文破译.js"
+            style="margin: 0 auto; width: 900px; height: 480px;"></sd-animation>
+        <p class="fragment">每次贪心走到最长的 $T$ 前缀再断，转移即 $f_j = f_{j-i} + 1$（$T[1..i]$ 是匹配到的最长前缀）。</p>
+    </section>
+</section>

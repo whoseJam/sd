@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>动物园</h1>
+        <p>luogu P2375</p>
+    </section>
+    <section>
+        <h2>动物园</h2>
+        <p>定义 $\textit{num}(i)$ $=$ $s[1..i]$ 中长度 $\le \tfrac i 2$ 的 border 数量。</p>
+        <p class="fragment">求出 $\textit{num}(1), \dots, \textit{num}(n)$。</p>
+    </section>
+    <section>
+        <h2>动物园</h2>
+        <p>$\textit{num}(i)$ $=$ 失配树上从 $i$ 往上爬，<b>第一个深度对应长度 $\le \tfrac i 2$</b>的祖先的深度。</p>
+        <sd-animation src="../../animation/动物园/动物园.js"
+            style="margin: 0 auto; width: 900px; height: 460px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    while (cur && t[cur + 1] != t[i]) cur = len[cur];
+                    if (t[cur + 1] == t[i]) cur++;
+                    while (cur > (i / 2)) cur = len[cur];
+                    ans = (ll) ans * (dep[cur] + 1) % Mod;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

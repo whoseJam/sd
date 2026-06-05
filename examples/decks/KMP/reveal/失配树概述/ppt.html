@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>失配树</h1>
+    </section>
+    <section>
+        <h2>失配树</h2>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <sd-animation src="../../animation/失配树概述/失配树.js"
+                style="margin: 0; width: 56%; height: 520px;"></sd-animation>
+            <div style="width: 44%;">
+                <p>用 $\{\textit{len}_i\}$ 建出的<b style="color: red;">失配树</b>：</p>
+                <ul>
+                    <li class="fragment">每个节点对应一个前缀</li>
+                    <li class="fragment">$i\rightarrow \textit{len}_i$ 连一条边</li>
+                    <li class="fragment">节点 $u$ 的所有祖先 = 它的所有 border</li>
+                    <ul>
+                        <li class="fragment">越靠近 $u$ 的祖先，对应前缀越长</li>
+                        <li class="fragment">越靠近根，对应前缀越短</li>
+                    </ul>
+                </ul>
+                <p class="fragment quote">失配跳转 = 在失配树上爬祖先。</p>
+            </div>
+        </div>
+    </section>
+</section>

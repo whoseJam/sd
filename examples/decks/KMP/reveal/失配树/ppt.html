@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>失配树（模板）</h1>
+        <p>luogu P5829</p>
+    </section>
+    <section>
+        <h2>失配树（模板）</h2>
+        <p>对一个串 $s$，多次查询。每次给出 $(i, j)$，求 $s[1..i]$ 与 $s[1..j]$ 的最长公共 border。</p>
+        <p class="fragment">一个前缀的所有 border $=$ 它在失配树上的所有祖先。</p>
+        <p class="fragment">两个前缀的<b>最长公共 border</b> $=$ 两个节点的<b>最近公共祖先 (LCA)</b>。</p>
+    </section>
+    <section>
+        <h2>失配树（模板）</h2>
+        <sd-animation src="../../animation/失配树/失配树.js"
+            style="margin: 0 auto; width: 900px; height: 500px;"></sd-animation>
+        <p>把 LCA 算出来即可，倍增或 Tarjan 均可。</p>
+    </section>
+</section>
