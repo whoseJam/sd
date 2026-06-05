@@ -263,4 +263,30 @@ export class Trie {
     }
     return out;
   }
+
+  /** Walk text on the AC automaton (requires buildFail() first). */
+  walk(text: string): Array<{ i: number; ch: string; from: number; to: number }> {
+    const steps: Array<{ i: number; ch: string; from: number; to: number }> = [];
+    let cur = 0;
+    for (let i = 1; i <= text.length; i++) {
+      const ch = text[i - 1];
+      let f = cur;
+      while (f !== 0 && !this.children.get(f)?.has(ch)) f = this.fail[f];
+      const next = this.children.get(f)?.get(ch) ?? 0;
+      steps.push({ i, ch, from: cur, to: next });
+      cur = next;
+    }
+    return steps;
+  }
+
+  failChain(i: number): number[] {
+    const out: number[] = [];
+    let cur = i;
+    while (true) {
+      out.push(cur);
+      if (cur === 0) break;
+      cur = this.fail[cur];
+    }
+    return out;
+  }
 }

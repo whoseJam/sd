@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>AC 自动机 2</h1>
+        <p>luogu P3796 — 简单版 II</p>
+    </section>
+    <section>
+        <h2>AC 自动机 — 匹配</h2>
+        <p>$s$ 主串中，每个模式串出现了多少次？</p>
+        <sd-animation src="../../animation/AC自动机2/匹配.js"
+            style="margin: 0 auto; width: 880px; height: 360px;"></sd-animation>
+        <p class="fragment">主串到达 $u$ 时，AC 自动机上所有<b>可匹配节点</b>$=$$u$ 的 fail 链$=$这一位置出现的所有模式串前缀。</p>
+        <p class="fragment quote">暴力让 fail 链上每个点都 $+1$？最坏 $O(|s| \cdot |AC|)$。</p>
+    </section>
+    <section>
+        <h2>fail 树子树和</h2>
+        <p>正向：每个节点累计访问次数（可能多次）。最后在 fail 树上 DFS，子树和即该节点出现总次数。</p>
+        <sd-animation src="../../animation/AC自动机2/标记.js"
+            style="margin: 0 auto; width: 880px; height: 360px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void Dfs(int u) {
+                    for (int v : failChildren[u]) { Dfs(v); cnt[u] += cnt[v]; }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

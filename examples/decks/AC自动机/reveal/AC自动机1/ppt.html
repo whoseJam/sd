@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>AC 自动机 1</h1>
+        <p>luogu P3808 — 简单版</p>
+    </section>
+    <section>
+        <h2>AC 自动机 — 匹配</h2>
+        <p>$n$ 个模式串 + 主串 $s$，统计有多少个模式串在 $s$ 里出现过。</p>
+        <p class="fragment">$n$ 个模式串建 AC 自动机，主串拿去跑：</p>
+        <sd-animation src="../../animation/AC自动机1/匹配.js" class="fragment"
+            style="margin: 0 auto; width: 880px; height: 360px;"></sd-animation>
+        <ul>
+            <li class="fragment">若 $u \xrightarrow{s_i} v$ 存在：转移。</li>
+            <li class="fragment">否则沿 fail 切削，再尝试。</li>
+        </ul>
+    </section>
+    <section>
+        <h2>标记 — 仅终止节点（漏了）</h2>
+        <p>以 $\{aba, ba, aa, bb, b\}$ 为例，主串 "abaa"：</p>
+        <sd-animation src="../../animation/AC自动机1/标记1.js"
+            style="margin: 0 auto; width: 880px; height: 360px;"></sd-animation>
+        <p class="fragment quote">主串到达的节点是<b>可匹配节点中最长的那个</b> — 它的后缀模式串没被走到。</p>
+        <p class="fragment">"ba"、"b" 都出现了，但只 mark 了 "aba" 和 "aa"。</p>
+    </section>
+    <section>
+        <h2>标记 — fail 链全部 mark</h2>
+        <p>每次走到 $u$，把 $u$ 的整条 fail 链上的节点都 mark：</p>
+        <sd-animation src="../../animation/AC自动机1/标记2.js"
+            style="margin: 0 auto; width: 880px; height: 360px;"></sd-animation>
+        <p class="fragment">每个节点最多被标记一次（标记后就跳过），总时间 $O(|AC|)$。</p>
+    </section>
+</section>
