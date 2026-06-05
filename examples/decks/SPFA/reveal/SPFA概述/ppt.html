@@ -1,0 +1,47 @@
+<section>
+    <section>
+        <h1>SPFA</h1>
+        <p>关于 SPFA</p>
+    </section>
+    <section>
+        <h2>SPFA</h2>
+        <p>单源最短路。最坏 $O(nm)$ — 网格图可以卡到上界。能用 Dijkstra 就不要 SPFA。</p>
+        <p class="fragment">SPFA 适用于<b>任意</b>图：有向 / 无向，正权 / 负权，还能判负环。</p>
+        <ul class="fragment">
+            <li>有负权边 $\nRightarrow$ 有负环</li>
+            <li>有负环 $\Rightarrow$ 有负权边</li>
+        </ul>
+        <sd-animation src="../../animation/SPFA概述/负权与负环.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>算法</h2>
+        <ol>
+            <li class="fragment">队列 $Q$ 装"可能能松弛别人"的点，初始放起点 $s$</li>
+            <li class="fragment">取队头 $u$，尝试松弛邻接点</li>
+            <li class="fragment">若 $v$ 被松弛了且 $v \notin Q$，把 $v$ 入队</li>
+        </ol>
+        <sd-animation src="../../animation/SPFA概述/SPFA.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 240px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void SPFA(int S) {
+                    queue<int> q;
+                    for (int i = 1; i <= n; i++) dis[i] = inf;
+                    dis[S] = 0; inq[S] = 1; q.push(S);
+                    while (q.size()) {
+                        int u = q.front(); q.pop(); inq[u] = 0;
+                        for (auto& link : G[u]) {
+                            int v = link.to;
+                            int w = link.value;
+                            if (dis[v] > dis[u] + w) {
+                                dis[v] = dis[u] + w;
+                                if (!inq[v]) { q.push(v); inq[v] = 1; }
+                            }
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

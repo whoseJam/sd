@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>负环</h1>
+        <p>luogu P3385 — SPFA 的不可替代场景</p>
+    </section>
+    <section>
+        <h2>判负环</h2>
+        <p>无负环时，从起点到任意点的最短路最多经过 $n - 1$ 条边。</p>
+        <p class="fragment">有负环时，某些点的最短路经过的边数<b>可以无穷</b>。</p>
+        <p class="fragment">记录每个点的最短路边数，超过 $n - 1$ 即有负环。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool SPFA(int S) {
+                    queue<int> q;
+                    for (int i = 1; i <= n; i++) dis[i] = inf;
+                    dis[S] = 0; inq[S] = 1; q.push(S);
+                    while (q.size()) {
+                        int u = q.front(); q.pop(); inq[u] = 0;
+                        for (auto& link : G[u]) {
+                            int v = link.to;
+                            int w = link.value;
+                            if (dis[v] > dis[u] + w) {
+                                dis[v] = dis[u] + w;
+                                len[v] = len[u] + 1;
+                                if (len[v] >= n) return true;
+                                if (!inq[v]) { q.push(v); inq[v] = 1; }
+                            }
+                        }
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
