@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>DNA 修复</h1>
+        <p>POJ 3691</p>
+    </section>
+    <section>
+        <h2>DNA 修复</h2>
+        <p>给定主串 $s$ 和病毒词典。修改 $s$ 中最少多少个字符使得它不包含任何病毒？</p>
+        <p class="fragment quote">主串在 trie 图上行走 — 路径是固定的。<b>修改字符</b>$=$ 在某一步选择走 trie 图任意一条出边。</p>
+        <p class="fragment">设 $f_{i, u}$ $=$ 已走 $i$ 步、停在 $u$、没经过任何终止点，最少修改次数。</p>
+        <div class="fragment">
+            $$
+            f_{i, u} + [s_{i+1} \ne c_{u, v}] \xrightarrow{\min} f_{i+1, v}
+            $$
+            <sd-animation src="../../animation/DNA修复/状态转移.js"
+                style="margin: 0 auto; width: 360px; height: 140px;"></sd-animation>
+        </div>
+    </section>
+</section>

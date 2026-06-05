@@ -1,0 +1,12 @@
+<section>
+    <section>
+        <h1>单词</h1>
+        <p>luogu P3966</p>
+    </section>
+    <section>
+        <h2>单词</h2>
+        <p>给定 $n$ 个单词，问每个单词在所有单词拼接而成的文本里作为子串出现了多少次。</p>
+        <p class="fragment">把 $n$ 个单词建一个 AC 自动机。对每个单词独立跑一遍匹配，途经的 fail 链祖先都算一次出现 — 即 AC 自动机 2 那一套，跑 $n$ 次。</p>
+        <p class="fragment quote">优化：在 trie 上直接统计 — 每个节点的初始访问次数 $=$ 经过它的单词数；最后 fail 树 DFS 子树和。</p>
+    </section>
+</section>

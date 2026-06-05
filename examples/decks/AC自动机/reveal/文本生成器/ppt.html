@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>文本生成器</h1>
+        <p>luogu P4052</p>
+    </section>
+    <section>
+        <h2>文本生成器</h2>
+        <p>可读文本数 $=$ trie 图上长度为 $m$、至少经过一个终止点的路径数。</p>
+        <p class="fragment">设 $f_{i, u, 0/1}$ $=$ 已走 $i$ 步，停在 $u$，是否经过终止点的方案数。</p>
+        <div class="fragment">
+            <p>
+                $$
+                f_{i, u, e} \xrightarrow{+} f_{i+1, v, e \,\lor\, \text{isEnd}(v)}
+                $$
+            </p>
+            <sd-animation src="../../animation/文本生成器/状态转移.js"
+                style="margin: 0 auto; width: 360px; height: 140px;"></sd-animation>
+        </div>
+        <p class="fragment">
+            $$
+            \text{answer} = \sum_u f_{m, u, 1}
+            $$
+        </p>
+    </section>
+</section>
