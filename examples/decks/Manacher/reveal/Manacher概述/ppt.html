@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>Manacher</h1>
+        <p>$O(n)$ 找出字符串里所有回文</p>
+    </section>
+    <section>
+        <h2>Manacher</h2>
+        <p>对每个位置 $i$，求 $p_i$ $=$ 以 $i$ 为中心的最长奇回文的半长 $+1$。</p>
+        <sd-animation src="../../animation/Manacher概述/Manacher.js"
+            style="margin: 0 auto; width: 720px; height: 260px;"></sd-animation>
+        <p class="fragment">关键：若当前 $i$ 落在已知回文 $(\text{pos}, \text{Max})$ 范围内，先用对称点的 $p$ 来初始化，再向外暴力扩展。</p>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <codeblock>
+            <script type="text/template">
+                // 串两端预填 #，s = "#a#b#a#" 之类
+                void Manacher(const string& s) {
+                    int Max = 0, pos = 0;
+                    for (int i = 1; i < (int)s.length() - 1; i++) {
+                        if (Max > i) p[i] = min(p[pos * 2 - i], Max - i);
+                        else        p[i] = 1;
+                        while (s[i + p[i]] == s[i - p[i]]) p[i]++;
+                        if (Max < i + p[i]) { Max = i + p[i]; pos = i; }
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">偶回文：在每个字符间塞分隔符 $\#$，统一为奇回文处理。</p>
+    </section>
+</section>

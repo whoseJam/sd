@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>ABB</h1>
+        <p>luogu P9606</p>
+    </section>
+    <section>
+        <h2>ABB</h2>
+        <p>给一个串，问末尾至少加几个字符能让它变成回文。</p>
+        <p class="fragment">找最长的<b>右端点 $=$ 串尾</b>的回文，剩下的字符 reverse 后拼到末尾。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int ans = n;
+                for (int i = 2; i + 1 < (int)s.length(); i++) {
+                    if (i + p[i] == (int)s.length() - 1)
+                        ans = min(ans, (i - p[i]) / 2);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
