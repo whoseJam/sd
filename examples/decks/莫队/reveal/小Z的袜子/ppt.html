@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>小Z的袜子</h1>
+        <p>luogu P1494</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>区间内随机抽两只同色袜子的概率 $= \dfrac{\sum_i C_{c_i}^{2}}{C_{R - L + 1}^{2}}$。</p>
+        <sd-animation src="../../animation/小Z的袜子/概率.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 100px;"></sd-animation>
+    </section>
+    <section>
+        <h2>转移</h2>
+        <codeblock>
+            <script type="text/template">
+                void Add(int x, int d) {
+                    ans -= c[x] * (c[x] - 1) / 2;
+                    c[x] += d;
+                    ans += c[x] * (c[x] - 1) / 2;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

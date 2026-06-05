@@ -1,0 +1,43 @@
+<section>
+    <section>
+        <h1>小B的询问</h1>
+        <p>luogu P2709</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>求区间内 $\sum_i \text{cnt}_i^2$（$\text{cnt}_i$ 为数 $i$ 的出现次数）。</p>
+    </section>
+    <section>
+        <h2>$O(1)$ 转移</h2>
+        <codeblock>
+            <script type="text/template">
+                void Add(int x, int d) {
+                    ans -= cnt[x] * cnt[x];
+                    cnt[x] += d;
+                    ans += cnt[x] * cnt[x];
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>排序 + 扫描</h2>
+        <codeblock>
+            <script type="text/template">
+                int B = sqrt(n);
+                bool cmp(Query a, Query b) {
+                    int ba = (a.l - 1) / B, bb = (b.l - 1) / B;
+                    if (ba != bb) return ba < bb;
+                    return a.r < b.r;
+                }
+                int l = 1, r = 0;
+                for (int i = 1; i <= m; i++) {
+                    while (l < Q[i].l) Add(a[l], -1), l++;
+                    while (l > Q[i].l) l--, Add(a[l], 1);
+                    while (r < Q[i].r) r++, Add(a[r], 1);
+                    while (r > Q[i].r) Add(a[r], -1), r--;
+                    answer[Q[i].id] = ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

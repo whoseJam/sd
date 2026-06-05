@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>数颜色</h1>
+        <p>luogu P1903</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>区间内不同颜色个数，支持单点修改 — 带修莫队板子。</p>
+    </section>
+    <section>
+        <h2>排序 + 主循环</h2>
+        <codeblock>
+            <script type="text/template">
+                struct Query { int l, r, t, id; };
+                struct Modify { int x, pre, nxt; };
+
+                void Solve() {
+                    int l = 1, r = 0, t = 0;
+                    for (int i = 1; i <= qtot; i++) {
+                        while (Q[i].l < l) l--, Add(a[l]);
+                        while (l < Q[i].l) Del(a[l]), l++;
+                        while (r < Q[i].r) r++, Add(a[r]);
+                        while (Q[i].r < r) Del(a[r]), r--;
+                        while (t < Q[i].t) Upd(++t, l, r, +1);
+                        while (Q[i].t < t) Upd(t--, l, r, -1);
+                        ans[Q[i].id] = cur;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

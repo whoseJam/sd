@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>回滚莫队</h1>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <p>有些场景的数据结构 — <b>只能添加，不易删除</b>（例如要维护"最大值"，删元素后求新最大值难）。</p>
+        <ul class="fragment">
+            <li>$r{+}{+}$ / $l{-}{-}$：添加</li>
+            <li>$r{-}{-}$ / $l{+}{+}$：删除</li>
+        </ul>
+        <p class="fragment">回滚莫队把<b>所有</b>操作变成添加。</p>
+    </section>
+    <section>
+        <h2>策略</h2>
+        <sd-animation src="../../animation/回滚莫队概述/回滚.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 200px;"></sd-animation>
+        <ol class="fragment">
+            <li>处理一个块内的询问：固定 $r$ 单调右移，$l$ 每次重置到块右端，左扩</li>
+            <li>每询问处理完，撤销 $l$ 的扩展（回滚）</li>
+        </ol>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (左端点落在 blockId 块内的询问 Q[i]) {
+                    if (右端点也落在 blockId 块内) 暴力计算
+                    else {
+                        while (r <= Q[i].r) Add(++r);
+                        int snap = ans;
+                        for (int i = blockEnd; i >= Q[i].l; i--) Add(i);
+                        answer[Q[i].id] = ans;
+                        for (int i = blockEnd; i >= Q[i].l; i--) undo(i);
+                        ans = snap;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

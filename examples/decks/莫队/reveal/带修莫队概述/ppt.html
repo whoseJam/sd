@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>带修莫队</h1>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <p>普通莫队只能处理离线静态查询。带修莫队允许夹杂<b>单点修改</b>。</p>
+    </section>
+    <section>
+        <h2>三元组排序</h2>
+        <p>把询问看作 $(l, r, t)$，修改看作 $(p, t)$。</p>
+        <p class="fragment">按 (左块, 右块, 时间) 三关键字排序。</p>
+        <sd-animation src="../../animation/带修莫队概述/排序.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 100px;"></sd-animation>
+    </section>
+    <section>
+        <h2>复杂度</h2>
+        <p>每询问 $l, r$ 移动 $O(B)$，$m$ 询问 → $O(mB)$。时间指针每个 (左块, 右块) 组合内最多 $O(n)$，组合数 $(n/B)^2$ → $O(n^3 / B^2)$。</p>
+        <p class="fragment">取 $B = n^{2/3}$，总 $O(n^{5/3})$。</p>
+    </section>
+</section>

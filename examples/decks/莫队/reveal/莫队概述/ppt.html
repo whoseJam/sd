@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>莫队</h1>
+        <p>优雅一点的暴力</p>
+    </section>
+    <section>
+        <h2>适用场景</h2>
+        <ul>
+            <li>$n$ 个区间查询，<b>允许离线</b></li>
+            <li>线段树等数据结构不易于维护答案</li>
+            <li>$[l, r]$ 的答案能 $O(1)$ 扩展到 $[l \pm 1, r]$ 或 $[l, r \pm 1]$</li>
+        </ul>
+        <p class="fragment">→ 莫队 $O(n \sqrt{n})$。</p>
+    </section>
+    <section>
+        <h2>分块排序</h2>
+        <sd-animation src="../../animation/莫队概述/分块.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 140px;"></sd-animation>
+        <p>把序列以 $B$ 为单位分块。询问按 (左端点所在块编号, 右端点) 排序，顺次处理。</p>
+        <ul class="fragment">
+            <li>$l$：每个块内每询问最多移 $B$，总 $O(nB)$</li>
+            <li>$r$：每个块内单调右移，总 $O(n^2 / B)$</li>
+        </ul>
+        <p class="fragment">$B = \sqrt{n}$ 时总和 $O(n \sqrt{n})$。</p>
+    </section>
+</section>
