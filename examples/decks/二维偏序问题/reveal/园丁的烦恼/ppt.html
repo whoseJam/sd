@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>园丁的烦恼</h1>
+        <p>luogu P2163</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>平面 $n$ 点，$m$ 次矩形查询点数。</p>
+    </section>
+    <section>
+        <h2>矩形差分</h2>
+        <p>矩形 $[x_1, x_2] \times [y_1, y_2]$ 内点数 $= S(x_2, y_2) - S(x_1 - 1, y_2) - S(x_2, y_1 - 1) + S(x_1 - 1, y_1 - 1)$，其中 $S(a, b)$ = 左下方点数。</p>
+        <p class="fragment">每个矩形拆 4 个偏序查询，与点合并按 $x$ 排序，扫描线 + 树状数组 — $O((n + m) \log n)$。</p>
+    </section>
+</section>

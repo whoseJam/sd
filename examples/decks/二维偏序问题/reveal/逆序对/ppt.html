@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>逆序对</h1>
+        <p>luogu P1908</p>
+    </section>
+    <section>
+        <h2>偏序视角</h2>
+        <p>逆序对 $\Leftrightarrow$ $j < i$ 且 $a_j > a_i$。把 $(i, a_i)$ 看作平面点 — 数 $i$ 左上方的点。</p>
+    </section>
+    <section>
+        <h2>$a$ 值离散化</h2>
+        <p>$a_i \le 10^9$ — 树状数组开不下。先离散化到 $[1, n]$：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) Ls[++Lsn] = a[i];
+                sort(Ls + 1, Ls + 1 + Lsn);
+                Lsn = unique(Ls + 1, Ls + 1 + Lsn) - Ls - 1;
+                for (int i = 1; i <= n; i++)
+                    a[i] = lower_bound(Ls + 1, Ls + 1 + Lsn, a[i]) - Ls;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>扫描</h2>
+        <p>按 $i$ 升序扫，对每个 $i$ 查询树状数组 $(a_i, n]$ 区间和，再插入 $a_i$。</p>
+    </section>
+</section>

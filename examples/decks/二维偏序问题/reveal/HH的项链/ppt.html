@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>HH 的项链</h1>
+        <p>luogu P1972</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>多次询问区间内不同数字的种类数。</p>
+    </section>
+    <section>
+        <h2>前驱位置</h2>
+        <p>每种数字"在区间内第一次出现"才贡献 1。令 $p_i$ = $a_i$ 上一次出现的位置（不存在则 0）。</p>
+        <p class="fragment">
+            $$
+            \text{ans}(L, R) = \sum_{L \le i \le R} [p_i < L]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>偏序数点</h2>
+        <p>把每个 $i$ 看作 $(i, p_i)$，查询变成"$i \in [L, R]$ 且 $p_i < L$"的点数。</p>
+        <p class="fragment">询问按 $L$ 离线排序，扫到 $L$ 时把所有 $p_i < L$ 的点激活 — 再用树状数组查 $[L, R]$ 内的激活数。</p>
+    </section>
+</section>

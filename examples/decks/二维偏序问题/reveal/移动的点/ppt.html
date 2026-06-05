@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>移动的点</h1>
+        <p>CF 1311F</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>数轴上 $n$ 个移动的点，速度恒定，求所有相遇的总和（每对相遇一次的距离贡献）。</p>
+    </section>
+    <section>
+        <h2>偏序转化</h2>
+        <p>$i$ 和 $j$ 相遇 $\Leftrightarrow$ $v_i \ne v_j$ 且按 $v$ 排序后位置严格交错 — 也即把 $i$ 表示成 $(x_i, v_i)$ 后做平面偏序统计。</p>
+        <p class="fragment">按速度 $v$ 排序，扫描时按 $x$ 用树状数组维护。</p>
+    </section>
+</section>

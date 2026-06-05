@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>二维偏序问题</h1>
+    </section>
+    <section>
+        <h2>什么是二维偏序数点</h2>
+        <p>平面上撒一把点，统计：</p>
+        <ul>
+            <li class="fragment">每个点左下方有多少个点</li>
+            <li class="fragment">每个点左上方的点的最大价值</li>
+            <li class="fragment">每个点右下方的点的价值和</li>
+            <li class="fragment">...</li>
+        </ul>
+        <sd-animation src="../../animation/概述/二维偏序.js" class="fragment"
+            style="margin: 0 auto; width: 400px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>通用做法</h2>
+        <p>对其中一维排序后扫描，用<b>线段树 / 树状数组</b>约束另一维范围。</p>
+    </section>
+</section>
