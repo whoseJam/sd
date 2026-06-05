@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>Prim</h1>
+        <p>稠密图的 MST 算法</p>
+    </section>
+    <section>
+        <h2>算法</h2>
+        <p>类似 Dijkstra：从某起点开始扩展 $T$，每次加入"到 $T$ 直连边最小"的点。</p>
+        <sd-animation src="../../animation/Prim概述/Prim原理.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <sd-animation src="../../animation/Prim概述/Prim实现.js"
+            style="margin: 0 auto; width: 540px; height: 260px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void Prim(int s) {
+                    for (int i = 1; i <= n; i++) dis[i] = inf;
+                    dis[s] = 0;
+                    for (int i = 1; i <= n; i++) {
+                        int u = 0;
+                        for (int v = 1; v <= n; v++)
+                            if (!vis[v] && dis[v] < dis[u]) u = v;
+                        vis[u] = 1;
+                        ans += dis[u];
+                        for (int v = 1; v <= n; v++)
+                            if (!vis[v]) dis[v] = min(dis[v], getDist(u, v));
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

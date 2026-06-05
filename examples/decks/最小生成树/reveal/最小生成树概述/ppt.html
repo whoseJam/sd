@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>生成树与最小生成树</h1>
+    </section>
+    <section>
+        <h2>生成树</h2>
+        <p>$n$ 个点的无向连通图中取 $n - 1$ 条边连通所有点 — 一棵生成树。</p>
+        <p class="fragment">带权图中边权和最小的生成树叫<b>最小生成树</b>。</p>
+    </section>
+    <section>
+        <h2>三种主流算法</h2>
+        <table>
+            <thead>
+                <tr><th>算法</th><th>适用</th><th>复杂度</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Kruskal</td><td>稀疏图</td><td>$O(m \log m)$</td></tr>
+                <tr><td>Prim</td><td>稠密图，$m \approx n^2$</td><td>$O(n^2)$ 朴素 / $O(m \log n)$ 堆优化</td></tr>
+                <tr><td>Boruvka</td><td>并行 / 特殊场景</td><td>$O(m \log n)$</td></tr>
+            </tbody>
+        </table>
+    </section>
+</section>

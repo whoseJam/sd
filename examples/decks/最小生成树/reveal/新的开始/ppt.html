@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>新的开始</h1>
+        <p>luogu U274081</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个矿井都要供电：</p>
+        <ul>
+            <li>第 $i$ 矿井建电网代价 $v_i$</li>
+            <li>$i, j$ 间电线代价 $p_{i, j}$</li>
+        </ul>
+        <p class="fragment">最小化总代价。</p>
+    </section>
+    <section>
+        <h2>超级源</h2>
+        <p>建超源 $s$，向每个矿井连边权 $v_i$ 的边。</p>
+        <sd-animation src="../../animation/新的开始/建图.js" class="fragment"
+            style="margin: 0 auto; width: 400px; height: 220px;"></sd-animation>
+        <p class="fragment">所有矿井被供电 $\Leftrightarrow$ 新图 $G'$ 连通 — 跑 MST。</p>
+    </section>
+</section>

@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>Kruskal</h1>
+        <p>稀疏图的 MST 算法</p>
+    </section>
+    <section>
+        <h2>算法</h2>
+        <ol>
+            <li class="fragment">所有边按权值升序排序</li>
+            <li class="fragment">依次取，若加入会成环则舍弃，否则加入 $T$</li>
+            <li class="fragment">直到 $T$ 有 $n - 1$ 条边</li>
+        </ol>
+        <sd-animation src="../../animation/Kruskal概述/Kruskal实现.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>实现 — 并查集</h2>
+        <codeblock>
+            <script type="text/template">
+                void Kruskal() {
+                    sort(e + 1, e + 1 + m, cmp);
+                    for (int i = 1; i <= n; i++) fa[i] = i;
+                    for (int i = 1; i <= m; i++) {
+                        if (find(e[i].x) == find(e[i].y)) continue;
+                        merge(e[i].x, e[i].y);
+                        ans += e[i].v;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
