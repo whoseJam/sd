@@ -5,23 +5,11 @@ const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
 
-// P5816 internal-white-point: a white lattice point P(x,y) turns black iff
-// there are black points on both sides of P along row y AND along column x.
-// Equivalently P sits at the crossing of a horizontal axis (the segment
-// between leftmost and rightmost black dots in row y, requires ≥2 dots) and
-// a vertical axis (column x, ≥2 dots). The scanline below counts how many
-// crossings exist; the ones that aren't already black are the new black
-// points (the process terminates after exactly one round).
 const GRID_W = 13;
 const GRID_H = 4;
 const { UNIT, gx, gy } = gridHelpers(GRID_W, GRID_H, 32);
 
-// 11 points laid out so the counter ticks twice across two distinct rows:
-// row 1 has H axis [0,11] crossing V columns 1 (span [0,2]) and 4 (span
-// [0,3]), giving new whites (1,1) and (4,1); row 2 has H axis [1,12]
-// crossing V columns 4 and 11 (span [0,3]), giving (4,2) and (11,2).
-// Mixed axis lengths (col 1 is short, col 8 is short and offset) give
-// the trackers visible entry/exit beats at different rows.
+// Counter ticks 0 → 2 → 4 across rows 1 and 2.
 const data: [number, number][] = [
   [1, 0],
   [4, 0],
@@ -232,7 +220,6 @@ sd.main(async () => {
 
   await sd.pause();
 
-  // Horizontal axes: connect leftmost ↔ rightmost dot in every row that has ≥2 dots.
   for (let i = 0; i < horizAxes.length; i++) {
     const { y, xl, xr } = horizAxes[i];
     const ln = new sd.Line({

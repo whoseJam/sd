@@ -1,87 +1,14 @@
 // Shared helpers for sd-animation-snapshot / sd-ppt-snapshot:
-//   - tiny static file server (lets chromium load deck assets by URL)
 //   - per-tile label SVG
 //   - sqrt-grid PNG stitcher
 //   - browser-issue collector (pageerror + console + network failures)
+// Static file serving used to live here; both tools now consume URLs
+// directly from a pre-existing dev server.
 
-import http from "node:http";
-import { promises as fs, existsSync } from "node:fs";
+import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Page } from "playwright";
 import sharp from "sharp";
-
-// Built sd HTML may live at <root>/<entry>/foo.html and reference `../sd.js`.
-// The static server's root must be the dir holding sd.js, not the html's own
-// dir, otherwise up-relative requests 404. Walk up until we find sd.js.
-export function findDocRoot(htmlAbs: string): string {
-  let dir = path.dirname(htmlAbs);
-  for (let depth = 0; depth < 5; depth++) {
-    if (existsSync(path.join(dir, "sd.js"))) return dir;
-    const parent = path.dirname(dir);
-    if (parent === dir) break;
-    dir = parent;
-  }
-  return path.dirname(htmlAbs);
-}
-
-export interface ServerHandle {
-  url: string;
-  close: () => Promise<void>;
-}
-
-const MIME: Record<string, string> = {
-  ".html": "text/html",
-  ".js": "text/javascript",
-  ".mjs": "text/javascript",
-  ".css": "text/css",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".webp": "image/webp",
-  ".json": "application/json",
-  ".woff": "font/woff",
-  ".woff2": "font/woff2",
-  ".ttf": "font/ttf",
-  ".otf": "font/otf",
-  ".map": "application/json",
-};
-
-export function startStaticServer(rootDir: string): Promise<ServerHandle> {
-  return new Promise((resolve) => {
-    const server = http.createServer(async (req, res) => {
-      try {
-        const urlPath = decodeURIComponent((req.url ?? "/").split("?")[0]);
-        const normalized = path.normalize(urlPath).replace(/^([./\\])+/, "");
-        const fullPath = path.join(rootDir, normalized);
-        if (!fullPath.startsWith(rootDir)) {
-          res.statusCode = 403;
-          res.end();
-          return;
-        }
-        const data = await fs.readFile(fullPath);
-        const ext = path.extname(fullPath).toLowerCase();
-        res.setHeader("Content-Type", MIME[ext] ?? "application/octet-stream");
-        res.end(data);
-      } catch {
-        res.statusCode = 404;
-        res.end();
-      }
-    });
-    server.listen(0, "127.0.0.1", () => {
-      const addr = server.address();
-      const port = typeof addr === "object" && addr ? addr.port : 0;
-      resolve({
-        url: `http://127.0.0.1:${port}`,
-        close: () =>
-          new Promise<void>((done) => {
-            server.close(() => done());
-          }),
-      });
-    });
-  });
-}
 
 export function labelSvg(width: number, height: number, label: string): Buffer {
   return Buffer.from(

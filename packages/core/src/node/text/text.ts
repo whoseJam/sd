@@ -99,12 +99,7 @@ export class Text extends BaseText {
       "text-anchor": "start",
       "dominant-baseline": "text-before-edge",
     });
-    // SVG default collapses consecutive whitespace; opentype path
-    // morphing does not. Without preserve, setText("a  b") renders one
-    // space statically and two during the morph — visible as a jump on
-    // the trailing chars. Go through .style directly because sd's
-    // setAttribute plumbing has no namespaced/style routing for either
-    // xml:space="preserve" or the white-space CSS property.
+    // Match opentype layout: don't collapse consecutive whitespace.
     (this.renderer.element() as SVGElement).style.whiteSpace = "pre";
     this.refreshY();
 

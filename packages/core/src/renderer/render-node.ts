@@ -247,12 +247,8 @@ export class RenderNode {
     return this;
   }
 
-  // Reorder this node among its direct siblings under targetLayer.
-  // SVG paints last-drawn on top, so raise() goes on top of siblings,
-  // lower() goes behind them. NOT cross-layer — `raise` does not put
-  // this above siblings of any ancestor.
-  // TODO: route through pushLifecycle like remove() so reverse playback
-  // restores the prior order.
+  // Sibling-only (does not escape parent layer). TODO: pushLifecycle so
+  // reverse playback restores order.
   raise() {
     if (!this.targetLayer) return this;
     this.targetLayer.__appendChild(this);

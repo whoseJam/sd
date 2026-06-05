@@ -1,32 +1,25 @@
 #!/usr/bin/env bun
-// Drive a built sd deck (reveal / webslides / impress) through every slide,
-// screenshot each at its initial state (no pause advance inside iframes),
-// stitch into one labeled grid PNG.
+// Drive a built sd deck (reveal / webslides / impress) at a running dev
+// server URL through every slide, screenshot each at its initial state,
+// stitch into one labeled grid PNG. The dev loop already runs a server
+// (gulp serve / serve.py); this tool just points chromium at it.
 //
 // Usage:
-//   bun .claude/tools/sd-ppt-snapshot.ts <deck-html-path>
-//   bun .claude/tools/sd-ppt-snapshot.ts <deck-html-path> --slide 3
-//   bun .claude/tools/sd-ppt-snapshot.ts <deck-html-path> --from 5 --to 8
-//   bun .claude/tools/sd-ppt-snapshot.ts <deck-html-path> --idle 600
-//   bun .claude/tools/sd-ppt-snapshot.ts <deck-html-path> -o /tmp/foo.png
-//
-// Output:
-//   stdout = absolute path of the stitched PNG (only line printed)
-//   stderr = browser issues (pageerror + console.error/warn + failed
-//            requests + 4xx/5xx responses) collected during the run
-//   exit 0 = no error-level issues; exit 1 = at least one error
-//   (PNG is always written)
+//   bun .claude/tools/sd-ppt-snapshot.ts <deck-url>
+//   bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --slide 3
+//   bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --from 5 --to 8
+//   bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --idle 600
+//   bun .claude/tools/sd-ppt-snapshot.ts <deck-url> -o /tmp/foo.png
 
-import { promises as fs } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 
-import { attachIssueCollector, findDocRoot, openInViewer, startStaticServer, stitchGrid } from "./grid";
+import { attachIssueCollector, openInViewer, stitchGrid } from "./grid";
 
 type Framework = "reveal" | "webslides" | "impress";
 
 interface Args {
-  htmlPath: string;
+  url: string;
   from: number;
   to?: number;
   output?: string;
@@ -47,7 +40,7 @@ const IDLE_DEFAULT_BY_FW: Record<Framework, number> = {
 const READY_TIMEOUT_DEFAULT = 10000;
 
 function printHelp(): void {
-  process.stderr.write(`Usage: sd-ppt-snapshot <deck-html-path> [flags]
+  process.stderr.write(`Usage: sd-ppt-snapshot <deck-url> [flags]
 
 Flags:
   --from N            First slide (1-indexed, default 1)
@@ -63,7 +56,7 @@ Flags:
 }
 
 function parseArgs(argv: string[]): Args {
-  let htmlPath: string | undefined;
+  let url: string | undefined;
   let from = 1;
   let to: number | undefined;
   let count: number | undefined;
@@ -86,11 +79,11 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "-h" || arg === "--help") {
       printHelp();
       process.exit(0);
-    } else if (!arg.startsWith("-")) htmlPath = arg;
+    } else if (!arg.startsWith("-")) url = arg;
     else throw new Error(`Unknown flag: ${arg}`);
   }
 
-  if (!htmlPath) {
+  if (!url) {
     printHelp();
     process.exit(1);
   }
@@ -109,7 +102,7 @@ function parseArgs(argv: string[]): Args {
     throw new Error("--to must be an integer >= --from");
   }
 
-  return { htmlPath, from, to, output, idleMs, timeoutMs, open };
+  return { url, from, to, output, idleMs, timeoutMs, open };
 }
 
 type Page = Awaited<ReturnType<typeof chromium.prototype.newPage>>;
@@ -201,14 +194,25 @@ async function gotoSlide(page: Page, fw: Framework, index: number): Promise<void
   );
 }
 
+// Use the URL's last meaningful path segment (skipping a generic "index"
+// basename) as the filename stem so output names mirror the deck route.
+function stemFromUrl(rawUrl: string): string {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return "deck";
+  }
+  const segments = parsed.pathname.split("/").filter(Boolean);
+  if (segments.length === 0) return "deck";
+  const last = segments[segments.length - 1];
+  const base = last.replace(/\.[^.]+$/, "");
+  if (base === "index" && segments.length >= 2) return segments[segments.length - 2];
+  return base || "deck";
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  const htmlAbs = path.resolve(args.htmlPath);
-  await fs.access(htmlAbs);
-  const docRoot = findDocRoot(htmlAbs);
-  const urlPath = path.relative(docRoot, htmlAbs).split(path.sep).join("/");
-
-  const server = await startStaticServer(docRoot);
   const browser = await chromium.launch();
   let collector: ReturnType<typeof attachIssueCollector> | undefined;
 
@@ -216,7 +220,7 @@ async function main(): Promise<void> {
     const page = await browser.newPage({ viewport: VIEWPORT });
     collector = attachIssueCollector(page);
 
-    await page.goto(`${server.url}/${urlPath}`, { waitUntil: "load" });
+    await page.goto(args.url, { waitUntil: "load" });
     const framework = await detectFramework(page, args.timeoutMs);
     const total = await getTotal(page, framework);
 
@@ -231,9 +235,7 @@ async function main(): Promise<void> {
     const output =
       args.output ??
       (() => {
-        const base = path.basename(args.htmlPath, path.extname(args.htmlPath));
-        const parent = path.basename(path.dirname(path.resolve(args.htmlPath)));
-        const stem = base === "index" ? parent : base;
+        const stem = stemFromUrl(args.url);
         const range = from === to ? `s${from}` : `s${from}-${to}`;
         return `/tmp/sd-ppt-snapshot-${framework}-${stem}-${range}.png`;
       })();
@@ -264,7 +266,6 @@ async function main(): Promise<void> {
     if (args.open) await openInViewer(resolved);
   } finally {
     await browser.close();
-    await server.close();
   }
 
   if (collector && collector.issues.length > 0) {

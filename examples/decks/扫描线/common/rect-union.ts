@@ -1,11 +1,5 @@
 import * as sd from "@/sd";
 
-// Shared layout + animation for 思路转换 and 反例: array row up top, (l, r)-
-// plane with visible axes below, contribution rect per i drawn into the
-// plane, running union-area counter to the right. Boring vs not-boring is
-// implicit in whether any upper-triangle cells remain uncovered at the end;
-// uncovered cells are painted red as the literal "gap".
-
 export function rectUnion(data: number[]): void {
   const svg = sd.svg();
   const C = sd.color();
@@ -27,14 +21,14 @@ export function rectUnion(data: number[]): void {
   const PLANE_W = N * PLANE;
   const PLANE_H = N * PLANE;
 
-  const ARR_Y = 0;
+  // sd is math-y (larger = up). Bottom-to-top: L axis, plane, array.
+  const L_AXIS_Y = 0;
   const PLANE_X0 = 0;
-  const PLANE_Y0 = CELL + GAP_V + AXIS_PAD + ARROW + 12;
+  const PLANE_Y0 = L_AXIS_Y + AXIS_PAD;
+  const PLANE_TOP_Y = PLANE_Y0 + PLANE_H;
+  const ARR_BOT_Y = PLANE_TOP_Y + AXIS_PAD + ARROW + 12 + GAP_V;
   const ARR_X0 = PLANE_X0 + (PLANE_W - ARR_W) / 2;
   const PANEL_X = PLANE_X0 + PLANE_W + GAP_H;
-  const PANEL_Y0 = PLANE_Y0;
-
-  const L_AXIS_Y = PLANE_Y0 + PLANE_H + AXIS_PAD;
   const R_AXIS_X = PLANE_X0 - AXIS_PAD;
 
   const TEXT_DARK = C.black;
@@ -49,7 +43,7 @@ export function rectUnion(data: number[]): void {
   const arrLeft = (i: number) => ARR_X0 + i * CELL;
   const arrMid = (i: number) => ARR_X0 + (i + 0.5) * CELL;
   const planeX = (l: number) => PLANE_X0 + l * PLANE;
-  const planeY = (r: number) => PLANE_Y0 + (N - r) * PLANE;
+  const planeY = (r: number) => PLANE_Y0 + r * PLANE;
 
   const cells: sd.Rect[] = [];
   const labels: sd.Text[] = [];
@@ -67,7 +61,7 @@ export function rectUnion(data: number[]): void {
           x1: planeX(i),
           y1: PLANE_Y0,
           x2: planeX(i),
-          y2: PLANE_Y0 + PLANE_H,
+          y2: PLANE_TOP_Y,
           stroke: C.silver,
           strokeWidth: 0.8,
           strokeDashArray: [2, 3],
@@ -106,7 +100,7 @@ export function rectUnion(data: number[]): void {
         x1: lAxisXEnd,
         y1: L_AXIS_Y,
         x2: lAxisXEnd - ARROW,
-        y2: L_AXIS_Y - 3,
+        y2: L_AXIS_Y + 3,
         stroke: AXIS_INK,
         strokeWidth: 1.4,
         opacity: 0,
@@ -116,7 +110,7 @@ export function rectUnion(data: number[]): void {
         x1: lAxisXEnd,
         y1: L_AXIS_Y,
         x2: lAxisXEnd - ARROW,
-        y2: L_AXIS_Y + 3,
+        y2: L_AXIS_Y - 3,
         stroke: AXIS_INK,
         strokeWidth: 1.4,
         opacity: 0,
@@ -132,12 +126,12 @@ export function rectUnion(data: number[]): void {
       }),
     );
 
-    const rAxisYEnd = PLANE_Y0 - AXIS_PAD - ARROW;
+    const rAxisYEnd = PLANE_TOP_Y + AXIS_PAD + ARROW;
     axisNodes.push(
       new sd.Line({
         targetNode: svg,
         x1: R_AXIS_X,
-        y1: PLANE_Y0 + PLANE_H + AXIS_PAD,
+        y1: L_AXIS_Y,
         x2: R_AXIS_X,
         y2: rAxisYEnd,
         stroke: AXIS_INK,
@@ -149,7 +143,7 @@ export function rectUnion(data: number[]): void {
         x1: R_AXIS_X,
         y1: rAxisYEnd,
         x2: R_AXIS_X - 3,
-        y2: rAxisYEnd + ARROW,
+        y2: rAxisYEnd - ARROW,
         stroke: AXIS_INK,
         strokeWidth: 1.4,
         opacity: 0,
@@ -159,7 +153,7 @@ export function rectUnion(data: number[]): void {
         x1: R_AXIS_X,
         y1: rAxisYEnd,
         x2: R_AXIS_X + 3,
-        y2: rAxisYEnd + ARROW,
+        y2: rAxisYEnd - ARROW,
         stroke: AXIS_INK,
         strokeWidth: 1.4,
         opacity: 0,
@@ -168,7 +162,7 @@ export function rectUnion(data: number[]): void {
         targetNode: svg,
         text: "r",
         cx: R_AXIS_X,
-        cy: rAxisYEnd - 12,
+        cy: rAxisYEnd + 12,
         fontSize: 18,
         fill: AXIS_INK,
         opacity: 0,
@@ -182,7 +176,7 @@ export function rectUnion(data: number[]): void {
           x1: planeX(i),
           y1: L_AXIS_Y,
           x2: planeX(i),
-          y2: L_AXIS_Y + TICK,
+          y2: L_AXIS_Y - TICK,
           stroke: AXIS_INK,
           strokeWidth: 1,
           opacity: 0,
@@ -191,7 +185,7 @@ export function rectUnion(data: number[]): void {
           targetNode: svg,
           text: String(i),
           cx: planeX(i),
-          cy: L_AXIS_Y + TICK + 10,
+          cy: L_AXIS_Y - TICK - 10,
           fontSize: 10,
           fill: TEXT_DIM,
           opacity: 0,
@@ -223,7 +217,7 @@ export function rectUnion(data: number[]): void {
         new sd.Rect({
           targetNode: svg,
           x: arrLeft(i),
-          y: ARR_Y,
+          y: ARR_BOT_Y,
           width: CELL,
           height: CELL,
           fill: C.white,
@@ -237,7 +231,7 @@ export function rectUnion(data: number[]): void {
           targetNode: svg,
           text: String(data[i]),
           cx: arrMid(i),
-          cy: ARR_Y + CELL / 2,
+          cy: ARR_BOT_Y + CELL / 2,
           fontSize: 18,
           fill: TEXT_DARK,
           opacity: 0,
@@ -249,7 +243,7 @@ export function rectUnion(data: number[]): void {
       targetNode: svg,
       text: `target  ${TARGET}`,
       cx: PANEL_X,
-      cy: PANEL_Y0 + 20,
+      cy: PLANE_TOP_Y - 20,
       fontSize: 16,
       fill: TEXT_DIM,
       textAnchor: "start",
@@ -259,7 +253,7 @@ export function rectUnion(data: number[]): void {
       targetNode: svg,
       text: "Σ area  0",
       cx: PANEL_X,
-      cy: PANEL_Y0 + 52,
+      cy: PLANE_TOP_Y - 52,
       fontSize: 18,
       fill: RECT_STROKE,
       textAnchor: "start",
@@ -267,12 +261,12 @@ export function rectUnion(data: number[]): void {
     });
   });
 
-  function bracket(a: number, b: number, side: "top" | "bottom", label: string) {
+  function bracket(a: number, b: number, side: "above" | "below", label: string) {
     const x1 = arrLeft(a);
     const x2 = arrLeft(b) + CELL;
-    const baseY = side === "top" ? ARR_Y + CELL + 8 : ARR_Y - 8;
-    const tickDir = side === "top" ? -5 : 5;
-    const labelY = side === "top" ? baseY + 14 : baseY - 14;
+    const baseY = side === "above" ? ARR_BOT_Y + CELL + 8 : ARR_BOT_Y - 8;
+    const tickDir = side === "above" ? -5 : 5;
+    const labelY = side === "above" ? baseY + 14 : baseY - 14;
     const items: sd.SDNode[] = [
       new sd.Line({ targetNode: svg, x1, y1: baseY, x2, y2: baseY, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
       new sd.Line({ targetNode: svg, x1, y1: baseY, x2: x1, y2: baseY + tickDir, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
@@ -333,8 +327,8 @@ export function rectUnion(data: number[]): void {
       labels[i].startAnimate({ duration: 260, easing: E.easeOut }).setFill(C.red).endAnimate();
       await sd.pause();
 
-      const top = bracket(L + 1, i, "top", "[L+1, i]");
-      const bot = bracket(i, R - 1, "bottom", "[i, R-1]");
+      const above = bracket(L + 1, i, "above", "[L+1, i]");
+      const below = bracket(i, R - 1, "below", "[i, R-1]");
       await sd.pause();
 
       const lo = L + 1;
@@ -344,7 +338,7 @@ export function rectUnion(data: number[]): void {
       new sd.Rect({
         targetNode: svg,
         x: planeX(lo),
-        y: planeY(rhi + 1),
+        y: planeY(ro),
         width: (hi - lo + 1) * PLANE,
         height: (rhi - ro + 1) * PLANE,
         fill: RECT_FILL,
@@ -371,8 +365,8 @@ export function rectUnion(data: number[]): void {
         .setText(`Σ area  ${areaCount}`)
         .endAnimate();
 
-      fadeOut(top);
-      fadeOut(bot);
+      fadeOut(above);
+      fadeOut(below);
       await sd.pause();
     }
 
@@ -387,7 +381,7 @@ export function rectUnion(data: number[]): void {
           new sd.Rect({
             targetNode: svg,
             x: planeX(l) + 1,
-            y: planeY(r + 1) + 1,
+            y: planeY(r) + 1,
             width: PLANE - 2,
             height: PLANE - 2,
             fill: GAP_INK,

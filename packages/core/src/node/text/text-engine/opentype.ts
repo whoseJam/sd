@@ -39,12 +39,9 @@ export class FontManager {
         }
         const buf = await res.arrayBuffer();
         this.fonts[family] = opentype.parse(buf);
-        // Register the same TTF as a CSS FontFace so the browser renders
-        // <text> with these exact outlines. Without this, font-family
-        // "Times New Roman" falls through to the system font; its stem
-        // widths and advance widths differ from the bundled TTF, so the
-        // instant a setText morph swaps in path-based glyphs the text
-        // visibly jumps to a new position and looks thinner.
+        // Otherwise <text> falls back to the system font with the same
+        // family name; different metrics than the bundled TTF break path
+        // morph alignment.
         const fontFace = new FontFace(family, buf);
         await fontFace.load();
         document.fonts.add(fontFace);

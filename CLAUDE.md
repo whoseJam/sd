@@ -159,29 +159,31 @@ Default style for animations written in `examples/decks/<deck>/animation/*.ts`. 
 
 ## Snapshot tools (visual feedback for AI agents)
 
-Two tools under `.claude/tools/`, both stitch per-frame screenshots into one labeled grid PNG via headless chromium. Shared helpers (static server, label SVG, grid stitcher) live in `.claude/tools/grid.ts`.
+Two tools under `.claude/tools/`, both stitch per-frame screenshots into one labeled grid PNG via headless chromium. Shared helpers (label SVG, grid stitcher, browser-issue collector) live in `.claude/tools/grid.ts`. The tools do NOT spawn their own HTTP server — point them at the URL of an already-running dev server (the canonical deck loop above).
 
-`sd-animation-snapshot.ts` — drives a built animation HTML through its `sd.pause()` boundaries. Relies on `sd.Window.PUPPETEER` (toggles iframe-sizing chatter) and `sd.device().keyDown("N")` (programmatic frame advance) — both exposed via `sd.ts` re-exports of `Window` / `Animate` / `device`.
+`sd-animation-snapshot.ts` — drives a built animation through its `sd.pause()` boundaries. Relies on `sd.Window.PUPPETEER` (toggles iframe-sizing chatter) and `sd.device().keyDown("N")` (programmatic frame advance).
 
-`sd-ppt-snapshot.ts` — drives a built deck (reveal / webslides / impress) through every slide and screenshots each at its initial state (no per-iframe pause advance). Auto-detects the framework from window globals: `Reveal` (set explicitly by `packages/reveal/src/reveal.ts`), `ws` (set by `packages/webslides/src/main.ts`), or `impress`. Idle wait per slide defaults to 300ms for reveal/webslides and 1100ms for impress (transitionDuration is 1000ms).
+`sd-ppt-snapshot.ts` — drives a built deck (reveal / webslides / impress) through every slide and screenshots each at its initial state (no per-iframe pause advance). Auto-detects the framework from window globals: `Reveal`, `ws`, or `impress`. Idle wait per slide defaults to 1000ms; override with `--idle`.
 
 ```bash
 # one-time setup
 cd .claude/tools && pnpm install --ignore-workspace && npx playwright install chromium
 
 # animations: default 5×5 grid of pauses 1-25
-bun .claude/tools/sd-animation-snapshot.ts <html-path>
-bun .claude/tools/sd-animation-snapshot.ts <html-path> --pause 7
-bun .claude/tools/sd-animation-snapshot.ts <html-path> --from 10 --to 14
+bun .claude/tools/sd-animation-snapshot.ts <url>
+bun .claude/tools/sd-animation-snapshot.ts <url> --pause 7
+bun .claude/tools/sd-animation-snapshot.ts <url> --from 10 --to 14
 
 # decks: default = all slides
-bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html>
-bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html> --slide 3
-bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html> --from 5 --to 8
-bun .claude/tools/sd-ppt-snapshot.ts <deck/index.html> --idle 1500
+bun .claude/tools/sd-ppt-snapshot.ts <deck-url>
+bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --slide 3
+bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --from 5 --to 8
+bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --idle 1500
 ```
 
-stdout = output PNG absolute path (only line). stderr = `pageerror` traces collected during the run, if any. Exit 0 = clean run; exit 1 = errors collected (PNG still produced for partial-state inspection).
+E.g. with the canonical loop running, `bun .claude/tools/sd-ppt-snapshot.ts http://127.0.0.1:8765/reveal/index.html --slide 16`.
+
+stdout = output PNG absolute path (only line). stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean run; exit 1 = errors (PNG still produced for partial-state inspection).
 
 ## Loader / Plugin Hoisting
 

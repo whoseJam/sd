@@ -1,32 +1,25 @@
 #!/usr/bin/env bun
-// Drive a built @sd/core animation through its pauses, screenshot each, stitch
-// into one labeled grid PNG. Designed for AI agents / humans who need quick
-// visual feedback against an already-built `gulp animation` output.
+// Drive a built @sd/core animation at a running dev server URL through its
+// pauses, screenshot each, stitch into one labeled grid PNG. The dev loop
+// already runs a server (gulp serve / serve.py); this tool just points
+// chromium at it.
 //
 // Usage:
-//   bun .claude/tools/sd-animation-snapshot.ts <html-path>
-//   bun .claude/tools/sd-animation-snapshot.ts <html-path> --pause 7
-//   bun .claude/tools/sd-animation-snapshot.ts <html-path> --from 10 --to 14
-//   bun .claude/tools/sd-animation-snapshot.ts <html-path> --from 26 --count 25
-//   bun .claude/tools/sd-animation-snapshot.ts <html-path> -o /tmp/foo.png
-//
-// Output:
-//   stdout = absolute path of the stitched PNG (only line printed)
-//   stderr = browser issues (pageerror + console.error/warn + failed
-//            requests + 4xx/5xx responses) collected during the run
-//   exit 0 = no error-level issues; exit 1 = at least one error
-//   (PNG is always written)
+//   bun .claude/tools/sd-animation-snapshot.ts <url>
+//   bun .claude/tools/sd-animation-snapshot.ts <url> --pause 7
+//   bun .claude/tools/sd-animation-snapshot.ts <url> --from 10 --to 14
+//   bun .claude/tools/sd-animation-snapshot.ts <url> --from 26 --count 25
+//   bun .claude/tools/sd-animation-snapshot.ts <url> -o /tmp/foo.png
 
-import { promises as fs } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 import type { Page } from "playwright";
 import sharp from "sharp";
 
-import { attachIssueCollector, findDocRoot, openInViewer, startStaticServer, stitchGrid } from "./grid";
+import { attachIssueCollector, openInViewer, stitchGrid } from "./grid";
 
 interface Args {
-  htmlPath: string;
+  url: string;
   from: number;
   to: number;
   output: string;
@@ -41,7 +34,7 @@ const STEP_TIMEOUT_DEFAULT = 15000;
 const MAX_ADVANCES = 500;
 
 function printHelp(): void {
-  process.stderr.write(`Usage: sd-animation-snapshot <html-path> [flags]
+  process.stderr.write(`Usage: sd-animation-snapshot <url> [flags]
 
 Flags:
   --from N            First pause to capture (1-indexed, default 1)
@@ -55,8 +48,21 @@ Flags:
 `);
 }
 
+function stemFromUrl(rawUrl: string): string {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return "animation";
+  }
+  const segments = parsed.pathname.split("/").filter(Boolean);
+  if (segments.length === 0) return "animation";
+  const last = segments[segments.length - 1];
+  return last.replace(/\.[^.]+$/, "") || "animation";
+}
+
 function parseArgs(argv: string[]): Args {
-  let htmlPath: string | undefined;
+  let url: string | undefined;
   let from = 1;
   let to: number | undefined;
   let count: number | undefined;
@@ -77,11 +83,11 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "-h" || arg === "--help") {
       printHelp();
       process.exit(0);
-    } else if (!arg.startsWith("-")) htmlPath = arg;
+    } else if (!arg.startsWith("-")) url = arg;
     else throw new Error(`Unknown flag: ${arg}`);
   }
 
-  if (!htmlPath) {
+  if (!url) {
     printHelp();
     process.exit(1);
   }
@@ -104,12 +110,12 @@ function parseArgs(argv: string[]): Args {
 
   const outputExplicit = output !== undefined;
   if (!output) {
-    const base = path.basename(htmlPath, path.extname(htmlPath));
+    const stem = stemFromUrl(url);
     const range = from === to ? `p${from}` : `p${from}-${to}`;
-    output = `/tmp/sd-animation-snapshot-${base}-${range}.png`;
+    output = `/tmp/sd-animation-snapshot-${stem}-${range}.png`;
   }
 
-  return { htmlPath, from, to, output, outputExplicit, timeoutMs, open };
+  return { url, from, to, output, outputExplicit, timeoutMs, open };
 }
 
 interface Bbox {
@@ -343,12 +349,6 @@ async function runFlushPass(
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  const htmlAbs = path.resolve(args.htmlPath);
-  await fs.access(htmlAbs);
-  const docRoot = findDocRoot(htmlAbs);
-  const urlPath = path.relative(docRoot, htmlAbs).split(path.sep).join("/");
-
-  const server = await startStaticServer(docRoot);
   const browser = await chromium.launch();
   let collector: ReturnType<typeof attachIssueCollector> | undefined;
   let captureError: unknown;
@@ -356,7 +356,7 @@ async function main(): Promise<void> {
   try {
     const flushCollector = await runFlushPass(
       browser,
-      `${server.url}/${urlPath}`,
+      args.url,
       Math.min(args.timeoutMs, 15000),
     );
     if (flushCollector.hasErrors()) {
@@ -365,14 +365,13 @@ async function main(): Promise<void> {
       );
       process.stderr.write(flushCollector.format());
       await browser.close();
-      await server.close();
       process.exit(1);
     }
 
     const page = await browser.newPage({ viewport: VIEWPORT });
     collector = attachIssueCollector(page);
 
-    await page.goto(`${server.url}/${urlPath}`, { waitUntil: "load" });
+    await page.goto(args.url, { waitUntil: "load" });
     await page.waitForFunction(
       () => {
         const sd = (globalThis as unknown as {
@@ -397,9 +396,9 @@ async function main(): Promise<void> {
     let outputPath = args.output;
     if (reachedEnd && !args.outputExplicit) {
       const actualTo = args.from + shots.length - 1;
-      const base = path.basename(args.htmlPath, path.extname(args.htmlPath));
+      const stem = stemFromUrl(args.url);
       const range = args.from === actualTo ? `p${args.from}` : `p${args.from}-${actualTo}`;
-      outputPath = `/tmp/sd-animation-snapshot-${base}-${range}.png`;
+      outputPath = `/tmp/sd-animation-snapshot-${stem}-${range}.png`;
     }
 
     const finalShots = clip ? await cropShots(shots, clip, VIEWPORT) : shots;
@@ -423,7 +422,6 @@ async function main(): Promise<void> {
     captureError = err;
   } finally {
     await browser.close();
-    await server.close();
   }
 
   // Always surface collected page-level issues — a hidden action-list throw

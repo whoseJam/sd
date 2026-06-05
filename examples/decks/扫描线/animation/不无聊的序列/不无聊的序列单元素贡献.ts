@@ -1,12 +1,5 @@
 import * as sd from "@/sd";
 
-// For each a_i in the row, highlight the cell and draw two brackets that
-// trace the left-endpoint range [L_i+1, i] above the array and the right-
-// endpoint range [i, R_i-1] below. The two brackets visualize the rule
-// "a_i uniquely witnesses any subinterval with left in one range and right
-// in the other" — the rectangle that the next slide plots in the (l, r)-
-// plane comes from exactly these two ranges.
-
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
