@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>可持久化并查集</h1>
+        <p>基于可持久化数组（基于可持久化线段树）</p>
+    </section>
+    <section>
+        <h2>核心思路</h2>
+        <p>用可持久化数组维护 $\text{fa}$：</p>
+        <ul>
+            <li class="fragment">find — 在当前版本上链式查询</li>
+            <li class="fragment">merge — 单点修改新建版本</li>
+            <li class="fragment">回退 — 切到旧版本</li>
+        </ul>
+    </section>
+    <section>
+        <h2>不能用路径压缩</h2>
+        <p>路径压缩是<b>均摊</b> $O(\log n)$ — 持久化场景下会被卡。</p>
+        <p class="fragment">举例：第 2 个版本 <code>getFa(2)</code> 触发 1000 次链跳并把整条链压平。但接下来构造一组都基于第 2 个版本的查询 — 每次都从原始未压缩的状态开始，崩溃。</p>
+    </section>
+    <section>
+        <h2>按秩合并</h2>
+        <p>用<b>按秩合并</b>（按子树深度）让 find 严格 $O(\log n)$：</p>
+        <ul>
+            <li>初始 $\text{dep}_x = 1$</li>
+            <li>merge $u, v$：根 $f_u, f_v$，假设 $\text{dep}_{f_u} \ge \text{dep}_{f_v}$ — 把 $f_v$ 挂到 $f_u$ 下，$\text{dep}_{f_u} \gets \max(\text{dep}_{f_u}, \text{dep}_{f_v} + 1)$</li>
+        </ul>
+        <p class="fragment">整体复杂度 $O(\log n)$ per op，可持久化是稳的。</p>
+    </section>
+</section>

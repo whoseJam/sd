@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>ALO</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>子序列 $[l, r]$ 价值 = $\max_{i \in [l, r]} \{\text{次大值} \oplus a_i\}$，求所有子序列最大价值。</p>
+    </section>
+    <section>
+        <h2>枚举次大值</h2>
+        <p>对每个 $a_i$ 当作次大值，能让它当次大值的 $[l, r]$ 范围：</p>
+        <ul>
+            <li>左侧第 1, 2 个比 $a_i$ 大的位置 $l_1, l_2$</li>
+            <li>右侧第 1, 2 个比 $a_i$ 大的位置 $r_1, r_2$</li>
+        </ul>
+        <p class="fragment">$l \in [l_2 + 1, l_1]$, $r \in [i, r_1 - 1]$ — 用<b>可持久化 01Trie</b> 在 $[l, r]$ 内找与 $a_i$ 异或最大值。</p>
+    </section>
+</section>

@@ -1,3 +1,0 @@
-#386.最大异或和：https://www.luogu.com.cn/problem/P4735
-#1084.ALO：https://www.luogu.com.cn/problem/P4098
-#1063.异或：https://www.luogu.com.cn/problem/P4592

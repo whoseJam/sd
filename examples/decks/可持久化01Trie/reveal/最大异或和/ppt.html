@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>最大异或和</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <ol>
+            <li><code>A x</code>：序列末尾追加 $x$</li>
+            <li><code>Q l r x</code>：找 $p \in [l, r]$ 使 $a_p \oplus a_{p+1} \oplus \dots \oplus a_n \oplus x$ 最大</li>
+        </ol>
+    </section>
+    <section>
+        <h2>前缀异或</h2>
+        <p>令 $\text{sum}_i = a_1 \oplus \dots \oplus a_i$，则 $a_p \oplus \dots \oplus a_n = \text{sum}_n \oplus \text{sum}_{p-1}$。</p>
+        <p class="fragment">原式 $= (\text{sum}_n \oplus x) \oplus \text{sum}_{p-1} = C \oplus \text{sum}_{p-1}$。</p>
+        <p class="fragment">即在 $\text{sum}_{l-1}, \dots, \text{sum}_{r-1}$ 中找与 $C$ 异或最大的 — 可持久化 01Trie 上做区间查询。</p>
+    </section>
+</section>
