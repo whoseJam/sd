@@ -1,7 +1,7 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "./char-row";
-import { Pointer } from "./pointer";
+import { CharRow } from "../char-row";
+import { Pointer } from "../pointer";
 
 const svg = sd.svg();
 const C = sd.color();

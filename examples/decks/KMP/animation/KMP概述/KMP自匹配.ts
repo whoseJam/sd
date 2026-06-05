@@ -1,8 +1,8 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "./char-row";
-import { buildLen } from "./kmp";
-import { Pointer } from "./pointer";
+import { CharRow } from "../char-row";
+import { buildLen } from "../kmp";
+import { Pointer } from "../pointer";
 
 // t self-matching: scan t against itself, j-indexed pointer starts at the
 // same string offset by 1. Each cemented (mis)match writes into the len row.

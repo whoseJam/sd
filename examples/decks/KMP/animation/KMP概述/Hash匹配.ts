@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "./char-row";
+import { CharRow } from "../char-row";
 
 const svg = sd.svg();
 const C = sd.color();

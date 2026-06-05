@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>无线传输</h1>
+        <p>luogu P4391</p>
+    </section>
+    <section>
+        <h2>无线传输</h2>
+        <p>给定一个串 $A$（长度 $n$），求最小循环节长度。</p>
+        <p class="fragment">如果原串恰好是完整的周期串，那么周期长度就是 $n - \textit{len}_n$。</p>
+        <sd-animation src="../../animation/无线传输/周期串.js"
+            style="margin: 0 auto; width: 720px; height: 260px;"></sd-animation>
+        <p class="fragment quote">如果不是完整的周期串，这个结论还成立吗？</p>
+    </section>
+    <section>
+        <h2>无线传输</h2>
+        <p>对非完整周期串，结论同样成立。</p>
+        <sd-animation src="../../animation/无线传输/非完整周期串.js"
+            style="margin: 0 auto; width: 720px; height: 260px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                scanf("%d%s", &n, A + 1);
+                Prepare();            // 预处理 len 数组
+                cout << n - len[n];
+            </script>
+        </codeblock>
+    </section>
+</section>

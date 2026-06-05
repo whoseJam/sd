@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>KMP（模板）</h1>
+        <p>luogu P3375</p>
+    </section>
+    <section>
+        <h2>KMP（模板）</h2>
+        <p>把前面的 $\textit{len}$ 数组准备 + 匹配两个过程粘起来即可。</p>
+        <codeblock>
+            <script type="text/template">
+                void Prepare() {
+                    int j = 0;
+                    for (int i = 2; i <= n; i++) {
+                        while (t[j + 1] != t[i] && j) j = len[j];
+                        if (t[j + 1] == t[i]) j++;
+                        len[i] = j;
+                    }
+                }
+                void Match() {
+                    int j = 0;
+                    for (int i = 1; i <= m; i++) {
+                        while (t[j + 1] != s[i] && j) j = len[j];
+                        if (t[j + 1] == s[i]) j++;
+                        if (j == n) 找到了一个匹配点;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
