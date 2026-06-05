@@ -1,0 +1,39 @@
+<section>
+    <section>
+        <h1>SAM 实现</h1>
+    </section>
+    <section>
+        <h2>增量构造</h2>
+        <codeblock>
+            <script type="text/template">
+                void build(string s) {
+                    for (char c : s) insert(c);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$\text{len}(u)$ = $u$ 节点等价类里最长子串的长度。</p>
+    </section>
+    <section>
+        <h2>插入：新节点 + 沿 fail 链补转移</h2>
+        <p>记 $\text{last}$ = 上次插入的节点。新建 $u$，沿 $\text{last} \to \dots \to 1$ 把缺 $\to u$ 转移的祖先补上。</p>
+        <codeblock>
+            <script type="text/template">
+                void insert(int c) {
+                    int p = last, u = ++tot; len[u] = len[p] + 1; last = u;
+                    for (; p && !ch[p][c]; p = fa[p]) ch[p][c] = u;
+                    if (!p) { fa[u] = 1; return; }
+                    int q = ch[p][c];
+                    if (len[p] + 1 == len[q]) { fa[u] = q; return; }
+                    // 否则需要拆分 q：新建 uu
+                    int uu = ++tot;
+                    len[uu] = len[p] + 1;
+                    memcpy(ch[uu], ch[q], sizeof ch[q]);
+                    fa[uu] = fa[q];
+                    fa[q] = fa[u] = uu;
+                    for (; p && ch[p][c] == q; p = fa[p]) ch[p][c] = uu;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">总节点数 $\le 2n - 1$，总转移数 $\le 3n - 4$，构造 $O(n \cdot |\Sigma|)$。</p>
+    </section>
+</section>

@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>后缀自动机</h1>
+        <p>SAM</p>
+    </section>
+    <section>
+        <h2>双视图</h2>
+        <p>SAM 是构建在<b>一个</b>字符串上的自动机，每个节点同时挂在两个视图上：</p>
+        <ul>
+            <li><b>转移视图</b>（DAG）— 沿转移边走识别子串</li>
+            <li><b>失配视图（parent / link 树）</b>— 用于结构分析</li>
+        </ul>
+        <p class="fragment">节点 1 = 空串；其他节点 $u$ 代表"从 1 → $u$ 的所有路径"对应的字符串集合。</p>
+    </section>
+    <section>
+        <h2>endpos 等价类</h2>
+        <p>子串 $s$ 在母串中所有结束位置的集合 — $\text{endpos}(s)$。</p>
+        <p class="fragment">SAM 上每个节点代表一个 $\text{endpos}$ <b>等价类</b>：同节点上的子串拥有相同的 $\text{endpos}$。</p>
+        <ul class="fragment">
+            <li>parent 树往下走 — 字符串变长，$|\text{endpos}|$ 变小</li>
+            <li>往上走 — 字符串变短，$|\text{endpos}|$ 变大</li>
+        </ul>
+    </section>
+    <section>
+        <h2>识别任意子串</h2>
+        <p>原串的<b>任意</b>子串都能在转移视图上被识别 — 子串有右端点，必被某个 $\text{endpos}$ 等价类覆盖。</p>
+    </section>
+</section>
