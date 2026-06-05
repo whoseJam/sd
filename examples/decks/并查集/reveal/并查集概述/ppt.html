@@ -1,0 +1,55 @@
+<section>
+    <section>
+        <h1>并查集</h1>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>$n$ 个对象分成若干组，支持：</p>
+        <ul>
+            <li>查：$a, b$ 是否在同一组</li>
+            <li>合：把 $a, b$ 所在的两组合并</li>
+        </ul>
+        <sd-animation src="../../animation/并查集概述/问题描述.js" class="fragment"
+            style="margin: 0 auto; width: 600px; height: 320px;"></sd-animation>
+    </section>
+    <section>
+        <h2>集合 $\Leftrightarrow$ 树</h2>
+        <p>把每个集合表示为一棵以"代表元"为根的树。</p>
+        <sd-animation src="../../animation/并查集概述/树与集合.js"
+            style="margin: 0 auto; width: 720px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>并查集</h2>
+        <p>$\text{fa}[i] = i$ 的父亲（自己 $=$ 根）。</p>
+        <ul>
+            <li>$\text{find}(x)$：沿 $\text{fa}$ 走到根</li>
+            <li>$\text{merge}(x, y)$：让 $\text{find}(x)$ 的根指向 $\text{find}(y)$ 的根</li>
+        </ul>
+        <sd-animation src="../../animation/并查集概述/并查集.js" class="fragment"
+            style="margin: 0 auto; width: 660px; height: 360px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int find(int x) { return fa[x] == x ? x : find(fa[x]); }
+                void merge(int x, int y) { fa[find(x)] = find(y); }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>路径压缩 — 为什么</h2>
+        <p>若树退化成链，$\text{find}$ 是 $O(n)$ 的。</p>
+        <sd-animation src="../../animation/并查集概述/路径压缩原因.js"
+            style="margin: 0 auto; width: 540px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>路径压缩</h2>
+        <p>沿途的所有点都直接挂到根上去。</p>
+        <sd-animation src="../../animation/并查集概述/路径压缩.js"
+            style="margin: 0 auto; width: 540px; height: 320px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int find(int x) { return fa[x] == x ? x : fa[x] = find(fa[x]); }
+            </script>
+        </codeblock>
+        <p class="fragment">加上按秩合并 / 路径压缩后，均摊近似 $O(\alpha(n))$。</p>
+    </section>
+</section>

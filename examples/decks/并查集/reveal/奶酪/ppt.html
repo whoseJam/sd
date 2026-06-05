@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>奶酪</h1>
+        <p>luogu P3958</p>
+    </section>
+    <section>
+        <h2>奶酪</h2>
+        <p>奶酪中有 $n$ 个球形空洞 $(x_i, y_i, z_i, r_i)$。老鼠能否从 $z = 0$ 到 $z = h$？</p>
+        <sd-animation src="../../animation/奶酪/样例解释.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 320px;"></sd-animation>
+        <p class="fragment quote">把"底"和"顶"两个虚空洞加入图，判它们是否连通。</p>
+    </section>
+    <section>
+        <h2>空洞相交</h2>
+        <p>两空洞 $A, B$ 相交 $\Leftrightarrow$ $d(A, B) \le r_A + r_B$。</p>
+        <sd-animation src="../../animation/奶酪/空洞相交.js"
+            style="margin: 0 auto; width: 480px; height: 220px;"></sd-animation>
+        <ul>
+            <li class="fragment">$z \le r$：与"底"相切，合并</li>
+            <li class="fragment">$z + r \ge h$：与"顶"相切，合并</li>
+        </ul>
+    </section>
+    <section>
+        <h2>连通性</h2>
+        <sd-animation src="../../animation/奶酪/连通性构建.js"
+            style="margin: 0 auto; width: 480px; height: 360px;"></sd-animation>
+        <p class="fragment">查"顶"和"底"是否同一连通块。</p>
+    </section>
+</section>

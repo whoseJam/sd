@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>格子游戏</h1>
+        <p>luogu U513724</p>
+    </section>
+    <section>
+        <h2>格子游戏</h2>
+        <p>$n \times n$ 棋盘，玩家依次在格点间连边。形成闭环时游戏结束 — 第几条边？</p>
+        <sd-animation src="../../animation/格子游戏/题目理解.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <p class="fragment quote">新边两端原本已连通 $\Rightarrow$ 这条边成环。</p>
+    </section>
+    <section>
+        <h2>建模</h2>
+        <p>每个格点编号，依次合并。新边连接前用 $\text{find}$ 检查。</p>
+        <sd-animation src="../../animation/格子游戏/建模过程.js"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+    </section>
+</section>

@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>星球大战</h1>
+        <p>luogu P1197</p>
+    </section>
+    <section>
+        <h2>星球大战</h2>
+        <p>$n$ 个星球、$m$ 条边。每次摧毁一个星球，问剩下多少连通块？</p>
+        <sd-animation src="../../animation/星球大战/样例解释.js"
+            style="margin: 0 auto; width: 480px; height: 300px;"></sd-animation>
+        <p class="fragment quote">并查集只能加边，不能删边。</p>
+    </section>
+    <section>
+        <h2>时间倒流</h2>
+        <p>把所有摧毁记录缓存，倒序处理 — 摧毁变成"加回去"。</p>
+        <sd-animation src="../../animation/星球大战/星球大战.js"
+            style="margin: 0 auto; width: 480px; height: 300px;"></sd-animation>
+        <p class="fragment">每次加回一个星球及其边，并查集合并即可。</p>
+    </section>
+</section>
