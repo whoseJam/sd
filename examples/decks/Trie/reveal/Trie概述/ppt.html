@@ -1,0 +1,52 @@
+<section>
+    <section>
+        <h1>Trie</h1>
+        <p>字典树</p>
+    </section>
+    <section>
+        <h2>用户存储与查找</h2>
+        <p>$n$ 个用户，每个用户有名字 + 一堆属性，要按名字查、修改属性。</p>
+        <p class="fragment">数组 $O(nm)$，慢且费空间。</p>
+    </section>
+    <section>
+        <h2>用户存储与查找 — Trie</h2>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <ul>
+                <li class="fragment">$26$ 叉树，每条边一个字符</li>
+                <li class="fragment">每个节点 $=$ 一个串</li>
+                <li class="fragment">用户信息挂在路径终点</li>
+                <li class="fragment">查询 $O(m)$，公共前缀压缩空间</li>
+            </ul>
+            <sd-animation src="../../animation/Trie概述/用户存储和查找.js" class="fragment"
+                style="margin: 0; width: 50%; height: 440px;"></sd-animation>
+        </div>
+    </section>
+    <section>
+        <h2>数据结构</h2>
+        <codeblock>
+            <script type="text/template">
+                int ch[N][26];    // ch[u][c] = u 沿 c 边走到的儿子
+                int flg[N];       // 终止标记
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>插入操作</h2>
+        <p>沿路下行，缺哪个儿子就 ++tot 新建一个；走到串尾打终止标记。</p>
+        <sd-animation src="../../animation/Trie概述/插入操作.js"
+            style="margin: 0 auto; width: 700px; height: 440px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void insert(const string& s) {
+                    int u = 1;
+                    for (char c : s) {
+                        int d = c - 'A';
+                        if (!ch[u][d]) ch[u][d] = ++tot;
+                        u = ch[u][d];
+                    }
+                    flg[u] = 1;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

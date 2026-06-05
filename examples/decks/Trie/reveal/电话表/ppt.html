@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>电话表</h1>
+        <p>UVa 11362</p>
+    </section>
+    <section>
+        <h2>电话表</h2>
+        <p>$n$ 个串，判是否存在 $s, t$ 满足 $s$ 是 $t$ 的前缀。</p>
+        <p class="fragment">"$s$ 是 $t$ 前缀" $\Leftrightarrow$ trie 上 $s$ 终点是 $t$ 终点的祖先。</p>
+        <sd-animation src="../../animation/电话表/前缀关系.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 360px;"></sd-animation>
+        <p class="fragment">判任意终止节点之间有无祖先-后代关系即可。</p>
+    </section>
+    <section>
+        <h2>电话表 — 插入时判</h2>
+        <codeblock>
+            <script type="text/template">
+                void insert(const string& s) {
+                    int u = 1;
+                    for (char c : s) {
+                        int d = c - '0';
+                        if (!ch[u][d]) ch[u][d] = ++tot;
+                        u = ch[u][d];
+                        if (flg[u]) Ans = true;    // 路径上有更短的串
+                    }
+                    if (u != tot) Ans = true;       // 终点不是新点 → 有更长的串
+                    flg[u] = 1;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>自动补全</h1>
+        <p>luogu P2237</p>
+    </section>
+    <section>
+        <h2>自动补全</h2>
+        <p>能给串 $s$ 当自动补全的单词 $=$ trie 上 $s$ 的后代。</p>
+        <sd-animation src="../../animation/自动补全/自动补全.js" class="fragment"
+            style="margin: 0 auto; width: 880px; height: 440px;"></sd-animation>
+        <p class="fragment">每个节点维护子树中终止节点个数 $\text{siz}$，就能在 trie 上找字典序第 $k$ 小的后代。</p>
+    </section>
+    <section>
+        <h2>找第 $k$ 个 — 子树分类</h2>
+        <sd-animation src="../../animation/自动补全/分类讨论.js"
+            style="margin: 0 auto; width: 540px; height: 240px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int find(int u, int k) {
+                    if (siz[u] < k) return -1;
+                    if (flg[u] && k == 1) return flg[u];
+                    if (flg[u]) k--;
+                    int acc = 0;
+                    for (int c = 0; c < 26; c++) {
+                        int v = ch[u][c];
+                        if (!v) continue;
+                        if (acc + siz[v] >= k) return find(v, k - acc);
+                        acc += siz[v];
+                    }
+                    return -1;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
