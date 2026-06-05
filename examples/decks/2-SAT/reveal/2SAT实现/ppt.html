@@ -1,0 +1,45 @@
+<section>
+    <section>
+        <h1>2-SAT 实现</h1>
+    </section>
+    <section>
+        <h2>建图</h2>
+        <p>每个变量 $i$ 在图上有两个节点：$Y_i$（取 Y）和 $N_i$（取 N）。</p>
+        <p class="fragment">每条约束 "$x_i = A \Rightarrow x_j = B$" 翻译为有向边 $A_i \to B_j$。</p>
+        <p class="fragment">同时对偶："$\neg B_j \Rightarrow \neg A_i$" 也建一条边。</p>
+    </section>
+    <section>
+        <h2>逻辑链</h2>
+        <p>取值的确定性沿着边传播：</p>
+        <sd-animation src="../../animation/2SAT实现/逻辑链.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <p class="fragment">$V_1$ 成立 $\Rightarrow V_2 \Rightarrow V_3 \Rightarrow \dots \Rightarrow V_m$。</p>
+    </section>
+    <section>
+        <h2>无解判定</h2>
+        <p>若 $Y_i$ 与 $N_i$ 在<b>同一个 SCC</b>里，矛盾 — 无解。</p>
+        <sd-animation src="../../animation/2SAT实现/无解.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 160px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                bool Check() {
+                    for (int i = 1; i <= n; i++)
+                        if (bel[Y(i)] == bel[N(i)]) return false;
+                    return true;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>构造解</h2>
+        <p>Tarjan 的拓扑序：bel 小的在"后端"。取 bel 小的当作变量的值：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    if (bel[Y(i)] < bel[N(i)]) cout << "x_" << i << " = Y\n";
+                    else                       cout << "x_" << i << " = N\n";
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

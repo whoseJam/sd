@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>2-SAT</h1>
+        <p>SAT, Satisfiability — 适定性</p>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>$n$ 个变量，每个有两种取值。若干条件形如：</p>
+        <p style="text-align: center;"><b>"如果 $x_i = A$，则 $x_j = B$"</b></p>
+        <p class="fragment">判定所有条件是否能同时满足。</p>
+    </section>
+    <section>
+        <h2>例子：分团</h2>
+        <p>$n$ 位候选人，分两个团队。约束如"候选人 1 进 A 队 → 候选人 2 必进 B 队"（反之不一定）。</p>
+    </section>
+    <section>
+        <h2>复杂度</h2>
+        <p>把每个变量的两种取值当作图上的节点，每条约束当作有向边，用 Tarjan 求 SCC — $O(n + m)$。</p>
+        <p class="fragment quote">3-SAT 及以上 NP 完全。</p>
+    </section>
+</section>
