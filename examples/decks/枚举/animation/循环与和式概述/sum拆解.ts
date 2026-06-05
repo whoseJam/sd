@@ -9,22 +9,19 @@ const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
 
-// Math width isn't known at construction (MathJax lays out async), so
-// nodes get explicit fixed x. sum on the left, code on the right of a
-// fat gap that fits any reasonable LaTeX expression we use in this deck.
 const sumNode = new sd.Math({
   targetNode: svg,
   text: "\\sum_{i=1}^n i",
-  x: 0,
-  y: 0,
+  cx: 30,
+  cy: 0,
   fontSize: 28,
   fill: C.darkButtonGrey,
 });
 const codeNode = new sd.Text({
   targetNode: svg,
   text: "for(int i=1; i<=n; i++) ans += i;",
-  x: 160,
-  y: 0,
+  cx: 280,
+  cy: 0,
   fontSize: 20,
   fill: C.darkButtonGrey,
 });

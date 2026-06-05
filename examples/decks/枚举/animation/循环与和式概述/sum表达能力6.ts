@@ -10,16 +10,16 @@ const E = sd.easing();
 const sumNode = new sd.Math({
   targetNode: svg,
   text: "\\sum",
-  x: 0,
-  y: 0,
+  cx: 30,
+  cy: 0,
   fontSize: 28,
   fill: C.darkButtonGrey,
 });
 const codeNode = new sd.Text({
   targetNode: svg,
   text: "for(int i=1; i<=n; i++) ans += G(i);",
-  x: 160,
-  y: 0,
+  cx: 280,
+  cy: 0,
   fontSize: 20,
   fill: C.darkButtonGrey,
 });
@@ -33,6 +33,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}")
+    .setCy(0)
     .setSubtextFill("i=1", C.orange)
     .endAnimate();
   await sd.pause();
@@ -41,6 +42,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}^n")
+    .setCy(0)
     .setSubtextFill("n", C.textBlue)
     .endAnimate();
   await sd.pause();
@@ -49,6 +51,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}^n G(i)")
+    .setCy(0)
     .setSubtextFill("G(i)", C.red)
     .endAnimate();
   await sd.pause();

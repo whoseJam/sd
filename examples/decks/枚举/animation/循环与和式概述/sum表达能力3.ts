@@ -11,16 +11,16 @@ const E = sd.easing();
 const sumNode = new sd.Math({
   targetNode: svg,
   text: "\\sum",
-  x: 0,
-  y: 0,
+  cx: 30,
+  cy: 0,
   fontSize: 28,
   fill: C.darkButtonGrey,
 });
 const codeNode = new sd.Text({
   targetNode: svg,
   text: "for(int i=2; i<=n; i+=2) ans += i;",
-  x: 160,
-  y: 0,
+  cx: 280,
+  cy: 0,
   fontSize: 20,
   fill: C.darkButtonGrey,
 });
@@ -34,6 +34,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=2}")
+    .setCy(0)
     .setSubtextFill("i=2", C.orange)
     .endAnimate();
   await sd.pause();
@@ -42,6 +43,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=2}^n")
+    .setCy(0)
     .setSubtextFill("n", C.textBlue)
     .endAnimate();
   await sd.pause();
@@ -50,6 +52,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=2}^n i")
+    .setCy(0)
     .setSubtextFill("i", C.red, 1)
     .endAnimate();
   await sd.pause();
@@ -58,6 +61,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=2}^n i\\, [i\\text{ is even}]")
+    .setCy(0)
     .setSubtextFill("[i\\text{ is even}]", C.green)
     .endAnimate();
   await sd.pause();

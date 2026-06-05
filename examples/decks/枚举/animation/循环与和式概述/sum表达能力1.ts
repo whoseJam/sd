@@ -9,19 +9,21 @@ const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
 
+const ROW_CY = 0;
+
 const sumNode = new sd.Math({
   targetNode: svg,
   text: "\\sum",
-  x: 0,
-  y: 0,
+  cx: 30,
+  cy: ROW_CY,
   fontSize: 28,
   fill: C.darkButtonGrey,
 });
 const codeNode = new sd.Text({
   targetNode: svg,
   text: "for(int i=1; i<=n; i++) ans += i*i;",
-  x: 160,
-  y: 0,
+  cx: 280,
+  cy: ROW_CY,
   fontSize: 20,
   fill: C.darkButtonGrey,
 });
@@ -40,6 +42,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}")
+    .setCy(ROW_CY)
     .setSubtextFill("i=1", C.orange)
     .endAnimate();
   await sd.pause();
@@ -53,6 +56,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}^n")
+    .setCy(ROW_CY)
     .setSubtextFill("n", C.textBlue)
     .endAnimate();
   await sd.pause();
@@ -66,6 +70,7 @@ sd.main(async () => {
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}^n i^2")
+    .setCy(ROW_CY)
     .setSubtextFill("i^2", C.red)
     .endAnimate();
   await sd.pause();
