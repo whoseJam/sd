@@ -1,0 +1,51 @@
+<section>
+    <section>
+        <h1>棋盘游戏</h1>
+        <p>luogu P4576 — MinMax 板子</p>
+    </section>
+    <section>
+        <h2>状态</h2>
+        <p>$f(t, k, x_1, y_1, x_2, y_2)$：</p>
+        <ul>
+            <li>$t \in \{0, 1\}$ — 当前走子方（0 白，1 黑）</li>
+            <li>$k$ — 已走步数</li>
+            <li>$(x_1, y_1), (x_2, y_2)$ — 白 / 黑位置</li>
+        </ul>
+        <p class="fragment">值 = 剩余步数。</p>
+        <ul class="fragment">
+            <li>$t = 0$：白想拖时间 → $f$ 是它能走的<b>最多</b>步数</li>
+            <li>$t = 1$：黑想速胜 → $f$ 是它需要的<b>最少</b>步数</li>
+        </ul>
+    </section>
+    <section>
+        <h2>白棋转移</h2>
+        <p>
+            $$
+            f(0, k, x_1, y_1, x_2, y_2) = \max \begin{cases}
+            f(1, k + 1, x_1 - 1, y_1, x_2, y_2) \\
+            f(1, k + 1, x_1 + 1, y_1, x_2, y_2) \\
+            f(1, k + 1, x_1, y_1 - 1, x_2, y_2) \\
+            f(1, k + 1, x_1, y_1 + 1, x_2, y_2)
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>黑棋转移</h2>
+        <p>
+            $$
+            f(1, k, x_1, y_1, x_2, y_2) = \min \begin{cases}
+            f(0, k + 1, x_1, y_1, x_2 \pm 1, y_2) \\
+            f(0, k + 1, x_1, y_1, x_2, y_2 \pm 1) \\
+            f(0, k + 1, x_1, y_1, x_2 \pm 2, y_2) \\
+            f(0, k + 1, x_1, y_1, x_2, y_2 \pm 2)
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>MinMax 搜索</h2>
+        <p>对 $f(0, \dots)$ 取 $\max$；对 $f(1, \dots)$ 取 $\min$。转移沿 $0 \to 1 \to 0 \to 1 \to \dots$ 交替。</p>
+        <p class="fragment">这就是<b>对抗搜索</b>（MinMax 搜索）。</p>
+    </section>
+</section>
