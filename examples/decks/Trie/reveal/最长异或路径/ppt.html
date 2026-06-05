@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>最长异或路径</h1>
+        <p>luogu P4551</p>
+    </section>
+    <section>
+        <h2>最长异或路径</h2>
+        <p>带权树。$\text{dis}(u, v) = $ 路径上所有边权的异或和。求</p>
+        <p>$$\max_{1 \le u, v \le n} \text{dis}(u, v)$$</p>
+    </section>
+    <section>
+        <h2>转化</h2>
+        <p>预处理 $\text{sum}(u) = $ 根到 $u$ 路径的异或和。则</p>
+        <p>$$\text{dis}(u, v) = \text{sum}(u) \oplus \text{sum}(v)$$</p>
+        <p class="quote">$\text{sum}(u) \oplus \text{sum}(v) =$ 根 $\to u, v$ 共同前缀 $\to \text{lca}$ 部分异或两次抵消，剩 $\text{lca} \to u$ 与 $\text{lca} \to v$。</p>
+        <p class="fragment">于是问题变成：$n$ 个数两两异或最大值 — 直接套上一题。</p>
+    </section>
+</section>

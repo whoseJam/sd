@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>01 Trie</h1>
+        <p>字符集 $\{ 0, 1 \}$ 的特殊 trie — 位运算题的常客</p>
+    </section>
+    <section>
+        <h2>01 Trie</h2>
+        <p>把若干个二进制数（高位在前）插入 trie：</p>
+        <sd-animation src="../../animation/01Trie概述/01trie.js"
+            style="margin: 0 auto; width: 720px; height: 380px;"></sd-animation>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <codeblock>
+            <script type="text/template">
+                void insert(unsigned v) {
+                    int u = 1;
+                    for (int i = 31; i >= 0; i--) {
+                        int d = (v >> i) & 1;
+                        if (!ch[u][d]) ch[u][d] = ++tot;
+                        u = ch[u][d];
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">擅长处理<b style="color: red;">异或</b>类问题。</p>
+    </section>
+</section>

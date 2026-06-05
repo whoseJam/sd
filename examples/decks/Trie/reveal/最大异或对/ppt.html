@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>最大异或对</h1>
+        <p>loj 10050</p>
+    </section>
+    <section>
+        <h2>最大异或对</h2>
+        <p>$n$ 个数字，挑两个使异或和最大。</p>
+        <p class="fragment">把它们插进 01 trie。查 $v$ 的最大异或对手：每一位尽量走<b>相反</b>的方向。</p>
+        <sd-animation src="../../animation/最大异或对/最大异或对.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 380px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                uint query(uint v) {
+                    int u = 1;
+                    uint ans = 0;
+                    for (int i = 31; i >= 0; i--) {
+                        int d = (v >> i) & 1;
+                        if (ch[u][d ^ 1]) { u = ch[u][d ^ 1]; ans |= 1u << i; }
+                        else u = ch[u][d];
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
