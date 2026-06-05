@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>线性基</h1>
+        <p>从异或线性空间开始</p>
+    </section>
+    <section>
+        <h2>异或线性空间</h2>
+        <p>把每个整数看作 $\mathbb{F}_2$ 上的位向量。加法 = 异或 $\oplus$；数乘 = 0/1 选不选。</p>
+        <ul class="fragment">
+            <li>$\oplus$ 满足结合 / 交换</li>
+            <li>$0$ 是零元，$a \oplus a = 0$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>张成 / 基</h2>
+        <p>给一组数 $\{a_1, \dots, a_n\}$，它们能异或出的所有数构成<b>张成空间</b>。</p>
+        <p class="fragment">取一组线性无关的数（其中任何一个不能被其它的异或表出）做<b>基</b>。基中 $k$ 个数能表出 $2^k$ 个不同的数。</p>
+    </section>
+    <section>
+        <h2>建基</h2>
+        <p>贪心：维护 $b[60..0]$，$b[i]$ 是首高位为 $i$ 的基元素。插入 $x$：</p>
+        <codeblock>
+            <script type="text/template">
+                bool insert(ll x) {
+                    for (int i = 60; i >= 0; i--) {
+                        if (!((x >> i) & 1)) continue;
+                        if (!b[i]) { b[i] = x; return true; }
+                        x ^= b[i];
+                    }
+                    return false;  // x 被线性表出了
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

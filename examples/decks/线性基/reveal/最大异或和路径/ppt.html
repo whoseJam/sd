@@ -1,0 +1,14 @@
+<section>
+    <section>
+        <h1>最大异或和路径</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>无向图 $1 \to n$ 的最大异或和路径。</p>
+    </section>
+    <section>
+        <h2>环异或基</h2>
+        <p>固定一条 $1 \to n$ 的路径 $P_0$。其它任何 $1 \to n$ 的路径都可以表示为 $P_0$ 异或上若干<b>简单环</b>。</p>
+        <p class="fragment">DFS 找到所有简单环的异或值，扔进线性基。答案 = 用基对 $P_0$ 取最大异或。</p>
+    </section>
+</section>
