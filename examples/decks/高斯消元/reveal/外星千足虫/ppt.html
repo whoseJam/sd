@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>外星千足虫</h1>
+        <p>luogu P2447 — 异或方程组</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>把每只虫子的奇偶性当作 0/1 变量。每次实验得到一组虫子腿数之和 $\bmod 2$ — 即异或方程。</p>
+    </section>
+    <section>
+        <h2>异或高斯消元</h2>
+        <p>把 +/- 换成 ⊕。可以用 bitset 加速：</p>
+        <codeblock>
+            <script type="text/template">
+                bitset<N> a[M];
+                for (int i = 1, r; i <= n; i++) {
+                    r = -1;
+                    for (int j = i; j <= m; j++) if (a[j][i]) { r = j; break; }
+                    if (r == -1) { /* 无法确定 */ break; }
+                    swap(a[i], a[r]);
+                    for (int j = 1; j <= m; j++)
+                        if (j != i && a[j][i]) a[j] ^= a[i];
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">复杂度 $O(nm \cdot n / 64)$。可以增量做（每加一个方程做一次消元）找出"能确定全部"的最小实验次数。</p>
+    </section>
+</section>

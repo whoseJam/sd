@@ -1,0 +1,48 @@
+<section>
+    <section>
+        <h1>高斯消元</h1>
+        <p>解方程组</p>
+    </section>
+    <section>
+        <h2>增广矩阵</h2>
+        <p>方程组写成增广矩阵：</p>
+        <p>
+            $$
+            \left[ \begin{array}{cccc|c}
+            a_{1,1} & a_{1,2} & \cdots & a_{1,n} & b_1 \\
+            \vdots & & & & \vdots \\
+            a_{m,1} & a_{m,2} & \cdots & a_{m,n} & b_m
+            \end{array} \right]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>三种初等变换</h2>
+        <ul>
+            <li>某行乘非零常数</li>
+            <li>两行交换</li>
+            <li>某行加上另一行的常数倍</li>
+        </ul>
+        <p class="fragment">用这三种变换把矩阵化为阶梯形 / 行最简形 — 解就出来了。</p>
+    </section>
+    <section>
+        <h2>消元 + 回代</h2>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1, r; i <= n; i++) {
+                    r = i;
+                    for (int j = i + 1; j <= n; j++)
+                        if (fabs(a[j][i]) > fabs(a[r][i])) r = j;
+                    if (r != i) swap(a[i], a[r]);
+                    if (fabs(a[i][i]) < eps) { /* 无解 / 多解 */ }
+                    for (int j = 1; j <= n; j++) if (j != i) {
+                        double t = a[j][i] / a[i][i];
+                        for (int k = i; k <= n + 1; k++) a[j][k] -= t * a[i][k];
+                    }
+                }
+                // 此时 a[i][n+1] / a[i][i] 就是 x_i
+            </script>
+        </codeblock>
+        <p class="fragment">$O(n^3)$。带主元选择避免数值精度崩溃。</p>
+    </section>
+</section>

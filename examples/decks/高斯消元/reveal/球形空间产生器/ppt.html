@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>球形空间产生器</h1>
+        <p>luogu P4035</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 维空间中给出 $n + 1$ 个球面上的点，求球心。</p>
+    </section>
+    <section>
+        <h2>消除二次项</h2>
+        <p>$|x - a_i|^2 = |x - a_j|^2$ 展开后 $x_k^2$ 项相互抵消，得到 $n$ 个关于 $x_1, \dots, x_n$ 的线性方程。</p>
+        <p class="fragment">取相邻 $j = i + 1$ 得到 $n$ 个本质不同方程 — 高斯消元。</p>
+    </section>
+</section>
