@@ -1,0 +1,92 @@
+<section>
+    <h1>FWT</h1>
+    <p>whoseJam</p>
+</section>
+
+<section>
+    <section>
+        <h1>FWT</h1>
+        <p>快速沃尔什变换 — 对集合卷积的快速算法</p>
+    </section>
+    <section>
+        <h2>三种集合卷积</h2>
+        <ul>
+            <li class="fragment">按位或：$C_x = \sum_{i \cup j = x} A_i B_j$</li>
+            <li class="fragment">按位与：$C_x = \sum_{i \cap j = x} A_i B_j$</li>
+            <li class="fragment">按位异或：$C_x = \sum_{i \oplus j = x} A_i B_j$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>复杂度</h2>
+        <p>朴素 $O(2^{2n})$：</p>
+        <codeblock>
+            <script type="text/template">
+                int All = (1 << n);
+                for (int i = 0; i < All; i++)
+                    for (int j = 0; j < All; j++)
+                        C[i | j] += A[i] * B[j];
+            </script>
+        </codeblock>
+        <p class="fragment">FWT 把它降到 $O(n \cdot 2^n)$，代码非常短。</p>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>按位或卷积</h1>
+        <p>$$C_x = \sum_{i \cup j = x} A_i B_j$$</p>
+    </section>
+    <section>
+        <h2>构造变换</h2>
+        <p>定义 $\text{FWT}(A)_i = \sum_{j \cap i = j} A_j$。</p>
+        <p class="fragment">推得 $\text{FWT}(C)_y = \text{FWT}(A)_y \cdot \text{FWT}(B)_y$。</p>
+    </section>
+    <section>
+        <h2>分治</h2>
+        <p>把 $A$ 分成等长的 $A_0$ 和 $A_1$ 两段。</p>
+        <p class="fragment">对任意 $i \le n / 2$，$A_i$ 对 $A_{i + n/2}$ 产生贡献。$O(n \cdot 2^n)$ 完成。</p>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>按位与卷积</h1>
+        <p>$$C_x = \sum_{i \cap j = x} A_i B_j$$</p>
+    </section>
+    <section>
+        <h2>构造变换</h2>
+        <p>定义 $\text{FWT}(A)_i = \sum_{j \cap i = i} A_j$。</p>
+        <p class="fragment">同样 $\text{FWT}(C)_y = \text{FWT}(A)_y \cdot \text{FWT}(B)_y$。</p>
+    </section>
+    <section>
+        <h2>分治</h2>
+        <p>把 $A$ 分两段后，$A_{i + n/2}$ 对 $A_i$ 产生贡献（与按位或方向相反）。</p>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>按位异或卷积</h1>
+        <p>$$C_x = \sum_{i \oplus j = x} A_i B_j$$</p>
+    </section>
+    <section>
+        <h2>反向构造</h2>
+        <p>假设 $\text{FWT}(A)_i = \sum_{j=0}^{n-1} c(i, j) A_j$，希望 $\text{FWT}(C)_i = \text{FWT}(A)_i \cdot \text{FWT}(B)_i$。</p>
+        <p class="fragment">推导出 $c(i, j) c(i, k) = c(i, j \oplus k)$。</p>
+    </section>
+    <section>
+        <h2>逐位分解</h2>
+        <p>按位无关 — $c(i, j)$ 拆成各位上的 $c(i_l, j_l)$ 的乘积。</p>
+        <p class="fragment">递归得到 $\text{FWT}(A)_i = c(i_0, 0) \text{FWT}(A_0)_i + c(i_0, 1) \text{FWT}(A_1)_i$。</p>
+    </section>
+    <section>
+        <h2>位矩阵</h2>
+        <p>构造 $2 \times 2$ 位矩阵 $c$ 满足 $c(i, j) c(i, k) = c(i, j \oplus k)$ 且可逆：</p>
+        <p class="fragment">
+            $$
+            c = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \qquad
+            c^{-1} = \begin{bmatrix} 0.5 & 0.5 \\ 0.5 & -0.5 \end{bmatrix}
+            $$
+        </p>
+    </section>
+</section>
