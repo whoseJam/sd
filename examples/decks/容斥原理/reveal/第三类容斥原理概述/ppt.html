@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>第三类容斥原理</h1>
+        <p>一般形式</p>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <ul>
+            <li>第一类：算"没有任何属性"的元素数</li>
+            <li>第二类：算"至少有一种属性"的元素数</li>
+            <li>...还有"恰好 $k$ 种属性"、"至少 $k$ 种属性" 呢？</li>
+        </ul>
+    </section>
+    <section>
+        <h2>形式</h2>
+        <p>设 $g(k)$ = 恰好有 $k$ 种属性的元素数，$h(k)$ = 选出 $k$ 种属性、含这些属性的元素数：</p>
+        <p class="fragment">
+            $$g(k) = \sum_{j = k}^{n} (-1)^{j - k} \binom{j}{k} h(j)$$
+        </p>
+    </section>
+</section>

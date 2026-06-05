@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>硬币购物</h1>
+        <p>luogu P1450</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>4 种面值的硬币，每种有上限 $c_i$。多次询问购买 $s$ 的方案数。</p>
+    </section>
+    <section>
+        <h2>无限版 + 容斥</h2>
+        <p>先用完全背包算"硬币无限"时凑 $s$ 的方案数 $f(s)$。</p>
+        <p class="fragment">考虑用了 $\ge c_i + 1$ 个第 $i$ 种硬币的不合法方案 = $f(s - d_i (c_i + 1))$。</p>
+        <p class="fragment">$2^4 = 16$ 个子集容斥即可：</p>
+        <p class="fragment">
+            $$\text{ans}(s) = \sum_{T \subseteq \{1, 2, 3, 4\}} (-1)^{|T|} f\!\left(s - \sum_{i \in T} d_i (c_i + 1)\right)$$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>幸运数字</h1>
+        <p>luogu P2567</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>找 $[1, B]$ 范围内"近似幸运数字"个数 — 即"至少是某个幸运数字的倍数"。</p>
+    </section>
+    <section>
+        <h2>容斥</h2>
+        <p>枚举幸运数字子集，奇加偶减：</p>
+        <p class="fragment">
+            $$\text{ans} = \sum_{\emptyset \ne T} (-1)^{|T| + 1} \left\lfloor \frac{B}{\text{lcm}(T)} \right\rfloor$$
+        </p>
+        <p class="fragment">先把"$b$ 是 $a$ 的倍数"的 $b$ 剔除掉，剩下的幸运数字大约 $\le 1000$ 个，可行。</p>
+    </section>
+</section>

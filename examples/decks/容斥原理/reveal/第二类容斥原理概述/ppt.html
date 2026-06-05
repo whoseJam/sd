@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>第二类容斥原理</h1>
+        <p>加加加减减减加</p>
+    </section>
+    <section>
+        <h2>三集合</h2>
+        <sd-animation src="../../animation/概述/三元维恩图.js" class="fragment"
+            style="margin: 0 auto; width: 240px; height: 200px;"></sd-animation>
+        <p class="fragment">
+            $$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$
+        </p>
+        <p class="fragment">奇加偶减。</p>
+    </section>
+    <section>
+        <h2>一般形式</h2>
+        <p>设全集中元素有 $n$ 种属性 $P_i$，拥有 $P_i$ 的元素集合 $S_i$：</p>
+        <p class="fragment">
+            $$
+            \left| \bigcup_{i = 1}^{n} S_i \right| = \sum_{\emptyset \ne T \subseteq [n]} (-1)^{|T| + 1} \left| \bigcap_{i \in T} S_i \right|
+            $$
+        </p>
+    </section>
+</section>

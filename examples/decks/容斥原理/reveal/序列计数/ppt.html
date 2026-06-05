@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>序列计数</h1>
+        <p>luogu P3702</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <ul>
+            <li>长 $n$ 的序列，每位 $\in [1, m]$</li>
+            <li>序列和是 $p$ 的倍数</li>
+            <li><b>至少有一个质数</b></li>
+        </ul>
+    </section>
+    <section>
+        <h2>正难则反</h2>
+        <p>
+            $$\text{至少一个质数} = \text{随便填} - \text{全是合数}$$
+        </p>
+        <p class="fragment">两个子问题都可以用同一种 DP 框架 ($f_{i, j}$ = 前 $i$ 位和 $\bmod p = j$) 算出来。</p>
+    </section>
+</section>
