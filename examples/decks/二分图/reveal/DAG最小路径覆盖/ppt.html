@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>DAG 最小路径覆盖</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>DAG 的最少路径数，使每个节点恰好被一条路径覆盖一次。</p>
+    </section>
+    <section>
+        <h2>拆点 + 二分图</h2>
+        <p>每个节点 $u$ 拆成 $A_u$ 和 $B_u$。每条有向边 $u \to v$ 在二分图中变成 $A_u \to B_v$ 的边。</p>
+        <p class="fragment">
+            $$\text{最小路径覆盖} = n - \text{二分图最大匹配}$$
+        </p>
+        <p class="fragment">每条匹配边把两条原路径接成一条，每接一条路径数 $-1$。</p>
+    </section>
+</section>
