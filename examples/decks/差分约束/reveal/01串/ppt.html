@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>01 串</h1>
+        <p>luogu P5751</p>
+    </section>
+    <section>
+        <h2>建模</h2>
+        <p>令 $X_i$ = 前 $i$ 个字符中 1 的个数。$X_0 = 0$，$0 \le X_i - X_{i-1} \le 1$。</p>
+        <p class="fragment">条件 1（每段长度 $L_0$，0 的个数 $\in [A_0, B_0]$ → 1 的个数 $\in [L_0 - B_0, L_0 - A_0]$）：</p>
+        <p class="fragment">
+            $$L_0 - B_0 \le X_{i + L_0 - 1} - X_{i - 1} \le L_0 - A_0$$
+        </p>
+        <p class="fragment">条件 2（每段长度 $L_1$，1 的个数 $\in [A_1, B_1]$）类似。</p>
+    </section>
+    <section>
+        <h2>最大化 $X_n$</h2>
+        <p>1 的总数要最大 — $X_n$ 大 — 跑<b>最短路</b>取上界。</p>
+    </section>
+</section>

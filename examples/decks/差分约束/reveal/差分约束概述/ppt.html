@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>差分约束</h1>
+        <p>SPFA 的一个经典应用</p>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>$n$ 个整数变量 $x_1, \dots, x_n$，$m$ 个不等式
+            $$x_i \le x_j + k$$
+        </p>
+        <p class="fragment">判定是否有解 / 构造任意一组解。</p>
+    </section>
+    <section>
+        <h2>转化为最短路</h2>
+        <p>不等式 $x_j \le x_i + k$ 跟松弛 $\text{dis}_v \le \text{dis}_u + w(u, v)$ 同形。</p>
+        <sd-animation src="../../animation/差分约束概述/最短路不等式.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 200px;"></sd-animation>
+        <p class="fragment">把每个变量当节点，对每个 $x_j \le x_i + k$ 建边 $i \to j$ 权 $k$ — 对图跑最短路，$\text{dis}_i$ 就是一组合法 $x_i$。</p>
+    </section>
+    <section>
+        <h2>无解</h2>
+        <p>最短路不存在 $\Leftrightarrow$ 原图有<b>负环</b>。</p>
+        <p class="fragment">SPFA 判负环：某点入队次数 $\ge n$ 或松弛边数 $\ge n - 1$。</p>
+    </section>
+    <section>
+        <h2>解的平移</h2>
+        <p>$\{x_i\}$ 是一组解 → $\{x_i + w\}$ 也是。差分约束有无限组解，SPFA 跑出的只是其中一个。</p>
+    </section>
+</section>

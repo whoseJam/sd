@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>区间</h1>
+        <p>AcWing 364</p>
+    </section>
+    <section>
+        <h2>建模</h2>
+        <p>$\text{sum}(x)$ = $[1, x]$ 中属于 $Z$ 集合的整数个数。约束 $[a_i, b_i]$ 至少 $c_i$ 个：</p>
+        <p class="fragment">
+            $$\text{sum}(b_i) \ge \text{sum}(a_i - 1) + c_i$$
+        </p>
+        <p class="fragment">每个整点最多被选一次：</p>
+        <p class="fragment">
+            $$\text{sum}(j) + 0 \le \text{sum}(j + 1) \le \text{sum}(j) + 1$$
+        </p>
+    </section>
+    <section>
+        <h2>最小化 $\text{sum}(n)$</h2>
+        <p>跑<b>最长路</b>（SPFA 改 $\ge$）取下界。</p>
+    </section>
+</section>

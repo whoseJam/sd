@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>工程规划</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个任务有先后顺序约束 $T_j \ge T_i + d$（$j$ 必须在 $i$ 之后至少 $d$ 单位）。求合法时刻表。</p>
+    </section>
+    <section>
+        <h2>对齐起点</h2>
+        <p>SPFA 给出的解一般不从 0 开始。题目要求"最早任务从 0 开始"：</p>
+        <codeblock>
+            <script type="text/template">
+                int offset = 0;
+                for (int i = 1; i <= n; i++) offset = min(offset, dis[i]);
+                for (int i = 1; i <= n; i++) dis[i] -= offset;
+            </script>
+        </codeblock>
+    </section>
+</section>
