@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { Trie } from "../../../AC自动机/animation/trie";
+import { Trie } from "../lib/trie";
 
 // Phone numbers: ["2354", "2364", "23", "1454"]. "23" is a proper
 // prefix of "2354" — the trie terminal for "23" sits along the path

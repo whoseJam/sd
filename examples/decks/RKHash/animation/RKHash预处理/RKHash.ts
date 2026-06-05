@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // Static: "abbaaca" with the hash of each prefix written above each
 // cell — pre-computing prefix hashes is what makes O(1) substring

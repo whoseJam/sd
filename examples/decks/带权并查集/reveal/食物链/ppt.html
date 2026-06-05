@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>食物链</h1>
+        <p>NOI2001</p>
+    </section>
+    <section>
+        <h2>三类生物</h2>
+        <p>$A$ 吃 $B$，$B$ 吃 $C$，$C$ 吃 $A$。</p>
+        <sd-animation src="../../animation/食物链/食物链关系1.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>用 $d \bmod 3$ 编码关系</h2>
+        <p>把每个个体到根的距离 $d$ 模 $3$ 表示关系。</p>
+        <sd-animation src="../../animation/食物链/食物链关系2.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 280px;"></sd-animation>
+        <p class="fragment">同类 $\Leftrightarrow$ $(d_x - d_y) \bmod 3 = 0$；$x$ 吃 $y$ $\Leftrightarrow$ $(d_x - d_y) \bmod 3 = 1$。</p>
+    </section>
+</section>

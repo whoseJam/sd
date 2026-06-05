@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // Manacher on "abacaba": for each center i, paint the cells inside the
 // palindrome of radius p[i] and print p[i] below the cell. The

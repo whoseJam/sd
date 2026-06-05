@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // Two stacks of cow gene strings (spotted vs non-spotted). A specific
 // column range is highlighted — that's the "distinguishing window"

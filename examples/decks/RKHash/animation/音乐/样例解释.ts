@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // Sliding-window discretized match: scan B's length window across A
 // and check whether the discretization (rank pattern) matches B's.

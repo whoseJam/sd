@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { Grid } from "../../../枚举/animation/grid";
+import { Grid } from "../lib/grid";
 
 // 5×5 grid with X^i row labels and Y^j column labels — the 2D RK
 // hash weights each cell by X^i · Y^j, building a 2D prefix hash.

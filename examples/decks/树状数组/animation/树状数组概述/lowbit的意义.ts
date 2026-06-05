@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // lowbit(i) = the size of the segment that BIT node i covers. Show
 // six i values and the segment each one represents.

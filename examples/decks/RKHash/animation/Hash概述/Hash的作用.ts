@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { arrow } from "../../../枚举/animation/arrow";
+import { arrow } from "../lib/arrow";
 
 // Left column: objects o_1..o_n. Right column: hashes h_1..h_n. The
 // f function maps objects to hashes; comparing objects via their

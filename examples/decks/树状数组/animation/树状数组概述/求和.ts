@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // BIT prefix-sum query: sum(1..7) visits BIT nodes 7, 6, 4 — at each
 // step i -= lowbit(i). Visualised on a 12-element array with the BIT

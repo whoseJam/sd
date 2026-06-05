@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // Walk through a handful of substring queries on "awkdklsafiewla";
 // each beat highlights a different (l, r) range.

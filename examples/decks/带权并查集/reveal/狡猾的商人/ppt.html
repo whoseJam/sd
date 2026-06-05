@@ -1,0 +1,11 @@
+<section>
+    <section>
+        <h1>狡猾的商人</h1>
+    </section>
+    <section>
+        <h2>狡猾的商人</h2>
+        <p>账本记录区间 $[l, r]$ 的总和。判断是否存在矛盾。</p>
+        <p class="fragment">前缀和 $S$：区间 $[l, r] = w$ $\Leftrightarrow$ $S_r - S_{l-1} = w$。</p>
+        <p class="fragment">带权并查集维护"$S_r - S_{l-1}$" 的相对差 — 矛盾 $\Leftrightarrow$ 同集合内推出的两个 $S_r - S_{l-1}$ 不一致。</p>
+    </section>
+</section>

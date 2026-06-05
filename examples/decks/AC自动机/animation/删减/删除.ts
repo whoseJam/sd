@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 import { Trie } from "../trie";
 
 // Walk an input sequence on the trie graph. Whenever the walk lands on

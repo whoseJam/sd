@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // BIT structure for n = 12: original array on the bottom, BIT nodes
 // above with their covered ranges. Each BIT node i covers [i-lowbit(i)+1, i]

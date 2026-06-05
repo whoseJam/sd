@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 import { Trie } from "../trie";
 
 // AC walk of "abaabba" on trie {aba, ba, aa, bb}. Trie on top, string

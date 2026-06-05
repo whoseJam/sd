@@ -1,7 +1,7 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
-import { FailTree } from "../../../KMP/animation/fail-tree";
+import { CharRow } from "../lib/char-row";
+import { FailTree } from "../lib/fail-tree";
 
 // Single-string KMP fail tree: string row up top, fail tree below.
 // Mirrors the AC trie+fail layout on the other half of the slide so

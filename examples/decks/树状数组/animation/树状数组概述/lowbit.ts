@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // lowbit(x) = x & -x. Walk through the 2's-complement chain on
 // x = 00011000 (decimal 24): negate, complement, +1, AND.

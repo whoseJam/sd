@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { Trie } from "../../../AC自动机/animation/trie";
+import { Trie } from "../lib/trie";
 
 const svg = sd.svg();
 const C = sd.color();

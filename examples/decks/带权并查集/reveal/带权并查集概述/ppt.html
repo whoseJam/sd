@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>带权并查集</h1>
+    </section>
+    <section>
+        <h2>相对距离</h2>
+        <p>每个节点 $x$ 维护 $d[x]$ $=$ 从 $x$ 到它在 DSU 中的根的"距离"。</p>
+        <sd-animation src="../../animation/带权并查集概述/相对距离.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 140px;"></sd-animation>
+        <p class="fragment">两点 $x, y$ 若同根则相对距离 $\text{dis}(x \to y) = d[x] - d[y]$（按所选符号方向）。</p>
+    </section>
+    <section>
+        <h2>合并</h2>
+        <p>已知 $\text{dis}(x \to y) = w$，合并 $\text{find}(x)$ 和 $\text{find}(y)$。设根 $rx, ry$ 已存 $d[x], d[y]$。</p>
+        <sd-animation src="../../animation/带权并查集概述/带权并查集合并.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <p class="fragment">$d[rx] = w + d[y] - d[x]$，并 $\text{fa}[rx] = ry$。</p>
+    </section>
+    <section>
+        <h2>路径压缩</h2>
+        <p>压缩到根的同时累加距离。</p>
+        <sd-animation src="../../animation/带权并查集概述/带权并查集路径压缩.js"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int find(int x) {
+                    if (fa[x] == x) return x;
+                    int root = find(fa[x]);
+                    d[x] += d[fa[x]];
+                    return fa[x] = root;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

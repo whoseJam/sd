@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // BIT point update: add d to a[5] propagates to BIT nodes 5, 6, 8 —
 // at each step i += lowbit(i). Same layout as 求和; visited blocks

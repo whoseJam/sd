@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { CharRow } from "../../../KMP/animation/char-row";
+import { CharRow } from "../lib/char-row";
 
 // BIT for n = 8: t8 alone covers [1, 8] (lowbit(8) = 8). Same view as
 // 12 but smaller, emphasising the single big top-level block.

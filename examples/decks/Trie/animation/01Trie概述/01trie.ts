@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { Trie } from "../../../AC自动机/animation/trie";
+import { Trie } from "../lib/trie";
 
 // 01-trie of integers [0, 2, 6, 7] encoded as 3-bit MSB-first strings.
 

@@ -1,7 +1,7 @@
 import * as sd from "@/sd";
 
-import { arrow } from "../../../枚举/animation/arrow";
-import { CharRow } from "../../../KMP/animation/char-row";
+import { arrow } from "../lib/arrow";
+import { CharRow } from "../lib/char-row";
 
 // "Music" problem: comparing two substrings by the *differences*
 // between successive notes, not by raw values. CBCCA centred above

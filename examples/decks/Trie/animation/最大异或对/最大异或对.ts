@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { Trie } from "../../../AC自动机/animation/trie";
+import { Trie } from "../lib/trie";
 
 // Greedy max-XOR query for value 6 (110) against the trie of {0, 2, 6, 7}.
 // At each bit pick the opposite child if it exists. Path shown in green.

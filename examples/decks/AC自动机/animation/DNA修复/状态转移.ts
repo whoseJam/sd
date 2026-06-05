@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { arrow } from "../../../枚举/animation/arrow";
+import { arrow } from "../lib/arrow";
 
 const svg = sd.svg();
 const C = sd.color();
