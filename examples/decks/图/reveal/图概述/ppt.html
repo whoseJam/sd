@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>图</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>图由点和边组成。</p>
+        <sd-animation src="../../animation/图概述/示例图.js" class="fragment"
+            style="margin: 0 auto; width: 400px; height: 180px;"></sd-animation>
+        <p class="fragment">$G = (V, E)$。$V$ 是节点集合，$E$ 是边集合：</p>
+        <p class="fragment">
+            $$
+            V = \{1, 2, 3, 4, 5, 6\}, \quad
+            E = \{\{1, 2\}, \{1, 3\}, \{2, 4\}, \{3, 5\}, \{5, 6\}\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>邻接</h2>
+        <p>若边 $e$ 两端是 $u, v$，则 $u, v$ <b>邻接</b>，互为<b>邻居</b>。</p>
+        <p class="fragment">$u$ 的邻居集合记 $N_G(u)$（或 $N(u)$）。</p>
+    </section>
+    <section>
+        <h2>完全图</h2>
+        <p>所有节点两两邻接 — 完全图，$n$ 个点记 $K^n$。</p>
+        <sd-animation src="../../animation/图概述/完全图.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 160px;"></sd-animation>
+        <p class="fragment">$K^n$ 有 $C_n^2 = \dfrac{n(n - 1)}{2}$ 条边。</p>
+    </section>
+    <section>
+        <h2>度</h2>
+        <p>$d_G(u)$ = 节点 $u$ 的邻边数 = 邻居数。</p>
+        <p class="fragment">度为 $0$ — <b>孤立点</b>。</p>
+        <p class="fragment">所有节点的度之和 $= 2 |E|$（每条边贡献两个度）。</p>
+    </section>
+</section>
