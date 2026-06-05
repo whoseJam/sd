@@ -3,6 +3,7 @@ import type { RenderNode } from "@/renderer/render-node";
 import { Action } from "@/animate/action";
 import { ParametricAction } from "@/animate/parametric-action";
 import { Window } from "@/animate/window";
+import { Root } from "@/interact/root";
 import { SDNode } from "@/node/node";
 import { SDSVGNode } from "@/node/svg-node";
 
@@ -360,9 +361,13 @@ export class ActionList {
     other.enabled = true;
     return other;
   }
-  // Every entity that has any action queued — not just size-related ones —
-  // contributes its math bounds, so animations whose geometry is set
-  // statically at construction still register.
+  // Every entity in the scene contributes its math bounds — animated AND
+  // purely static. The actionsMap walk catches animated entities (still
+  // useful because parametric / mid-tween coverage is registered there);
+  // the Root.group walk picks up the static rest. Without the latter, a
+  // purely-static anim never registered any geometry and the viewBox fell
+  // back to the default centered (-600, -300, 1200, 600) — content placed
+  // in any quadrant of math space drifted off-canvas.
   updateWindowSize() {
     this.actionsMap.forEach((_, entity) => {
       if (entity instanceof SDSVGNode && visible(entity)) {
@@ -373,6 +378,17 @@ export class ActionList {
         Window.MATH_MAXY = Math.max(Window.MATH_MAXY, box.y + box.height);
       }
     });
+    const rootBox = Root.group.getWorldAABB();
+    if (
+      isFinite(rootBox.x) &&
+      isFinite(rootBox.y) &&
+      (rootBox.width > 0 || rootBox.height > 0)
+    ) {
+      Window.MATH_MINX = Math.min(Window.MATH_MINX, rootBox.x);
+      Window.MATH_MINY = Math.min(Window.MATH_MINY, rootBox.y);
+      Window.MATH_MAXX = Math.max(Window.MATH_MAXX, rootBox.x + rootBox.width);
+      Window.MATH_MAXY = Math.max(Window.MATH_MAXY, rootBox.y + rootBox.height);
+    }
     // tween contributes a world-space bbox directly when bounds is set —
     // entity at fn(1) is already in actionsMap via push, so the endpoint
     // bbox is covered above; bounds only needs to add mid-tween extremes.

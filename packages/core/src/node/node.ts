@@ -183,7 +183,14 @@ export abstract class SDNode {
    */
   remove() {
     this.getRootRenderNode().remove();
+    this.parent?.untrackChild(this);
+    this.parent = undefined;
   }
+
+  // No-op on the base class; Group overrides to splice from its nodes[]
+  // list. Putting the hook here avoids node.ts importing Group (circular)
+  // and means SDNode.remove() doesn't have to type-check the parent.
+  untrackChild(_child: SDNode): void {}
 
   raise() {
     this.getRootRenderNode().raise();
