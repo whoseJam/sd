@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>Dijkstra</h1>
+        <p>怎么想的</p>
+    </section>
+    <section>
+        <h2>Dijkstra</h2>
+        <p>单源最短路。朴素 $O(n^2)$，堆优化 $O((n + m) \log n)$。要求边权<b>非负</b>。</p>
+    </section>
+    <section>
+        <h2>从 BFS 出发</h2>
+        <p>所有边权都为 $1$ 时，BFS 已经能求最短路。</p>
+        <sd-animation src="../../animation/Dijkstra概述/BFS.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <ul>
+            <li class="fragment">用距离最小的点去松弛邻接点 — 距离最小的点的距离值就是最短路</li>
+            <li class="fragment">边权相同时 FIFO 队列就够了</li>
+        </ul>
+    </section>
+    <section>
+        <h2>普通队列的不足</h2>
+        <p>边权不同时，FIFO 不再保证"先出的距离最小"。</p>
+        <sd-animation src="../../animation/Dijkstra概述/普通队列的不足之处.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>Dijkstra</h2>
+        <p>把队列换成<b>以 dis 为关键字的优先队列</b>，每次取 dis 最小的点松弛。</p>
+        <sd-animation src="../../animation/Dijkstra概述/Dijkstra.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                using pa = pair<int, int>;
+                void Dijkstra(int S) {
+                    for (int i = 1; i <= n; i++) dis[i] = inf;
+                    priority_queue<pa, vector<pa>, greater<pa>> q;
+                    q.push({dis[S] = 0, S});
+                    while (q.size()) {
+                        int u = q.top().second; q.pop();
+                        if (vis[u]) continue; vis[u] = 1;
+                        for (auto& link : G[u]) {
+                            int v = link.to;
+                            int w = link.value;
+                            if (dis[v] > dis[u] + w) {
+                                dis[v] = dis[u] + w;
+                                q.push({dis[v], v});
+                            }
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

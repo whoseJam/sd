@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>农场派对</h1>
+        <p>luogu P1821</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>非负权有向图，对每个 $u$ 求 $\text{dis}(X \to u) + \text{dis}(u \to X)$。</p>
+        <p class="fragment quote">有向图中 $u \to v$ 的最短路不一定等于 $v \to u$。</p>
+    </section>
+    <section>
+        <h2>反图技巧</h2>
+        <p>正图上以 $X$ 为源跑 Dijkstra → 得到 $\text{dis}(X \to u)$。</p>
+        <p class="fragment">把所有边反向，反图上以 $X$ 为源跑 Dijkstra → 得到 $\text{dis}(u \to X)$。</p>
+    </section>
+</section>

@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>新年好</h1>
+        <p>luogu P5764</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>只有 $5$ 个亲戚要拜访。固定顺序 $a_1, \dots, a_5$ 时路程为
+            $$\text{dis}(1 \to a_1) + \text{dis}(a_1 \to a_2) + \cdots + \text{dis}(a_4 \to a_5)$$
+        </p>
+    </section>
+    <section>
+        <h2>预处理 + 枚举</h2>
+        <p>以 $\{1, a, b, c, d, e\}$ 为源各跑一次 Dijkstra — 任意两点距离表 $O(6 \log n + 6m \log n)$。</p>
+        <p class="fragment">枚举 $5!$ 种顺序取最小。总复杂度 $O(5! + 6(n + m) \log n)$。</p>
+    </section>
+</section>
