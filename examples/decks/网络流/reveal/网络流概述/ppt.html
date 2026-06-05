@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>网络流</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>有向带权图 $G$，给定源 $s$、汇 $t$。每条边 $(u, v)$ 有容量 $c(u, v)$。</p>
+        <p class="fragment">流 $f$ 满足：</p>
+        <ul class="fragment">
+            <li>容量约束：$0 \le f(u, v) \le c(u, v)$</li>
+            <li>流量守恒：除 $s, t$ 外每点流入 = 流出</li>
+        </ul>
+        <p class="fragment">$|f| = \sum_v f(s, v) - \sum_v f(v, s)$ — 总流量。</p>
+    </section>
+</section>

@@ -1,0 +1,14 @@
+<section>
+    <section>
+        <h1>最小割</h1>
+    </section>
+    <section>
+        <h2>最大流 = 最小割</h2>
+        <p>把图的顶点分为 $S$（含 $s$）和 $T$（含 $t$）两侧，"割"是从 $S$ 到 $T$ 的边的容量和。</p>
+        <p class="fragment">最大流 = 最小割（MaxFlow-MinCut Theorem）。直接跑 Dinic。</p>
+    </section>
+    <section>
+        <h2>建模</h2>
+        <p>"最小代价让 $A, B$ 分开" / "保留代价最大的方案" 类问题 — 转最小割。</p>
+    </section>
+</section>
