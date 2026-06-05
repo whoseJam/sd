@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>送礼物</h1>
+        <p>luogu P10484</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n \le 40$ 个礼物，每个 0/1 选不选，总重 $\le W$，最大化总重。</p>
+    </section>
+    <section>
+        <h2>折半 + 双指针</h2>
+        <ol>
+            <li class="fragment">左半 $L$、右半 $R$ 分别搜出全部和，排序</li>
+            <li class="fragment">双指针：左 $i$ 增，右 $j$ 降，定位 $L_i + R_j \le W$ 的最大 $j$</li>
+            <li class="fragment">取 $\max L_i + R_j$</li>
+        </ol>
+        <sd-animation src="../../animation/送礼物/送礼物.js" class="fragment"
+            style="margin: 0 auto; width: 400px; height: 220px;"></sd-animation>
+    </section>
+</section>

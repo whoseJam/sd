@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>灯</h1>
+        <p>luogu P2962</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 盏灯按开关后，连带影响一组邻居。求把所有灯点亮的最少操作次数。</p>
+        <sd-animation src="../../animation/灯/样例解释.js" class="fragment"
+            style="margin: 0 auto; width: 380px; height: 140px;"></sd-animation>
+        <p class="fragment">每个开关最多按一次（按两次等于没按）。</p>
+    </section>
+    <section>
+        <h2>折半</h2>
+        <p>把开关分成两半，分别枚举状态，用第一半的"剩余还需取反"作为 key，把第二半哈希进表。</p>
+        <sd-animation src="../../animation/灯/灯.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 200px;"></sd-animation>
+        <p class="fragment">$O(2^{n/2} \cdot n)$ 预处理 + $O(2^{n/2})$ 查询。</p>
+    </section>
+</section>

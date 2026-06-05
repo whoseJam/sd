@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>折半搜索</h1>
+        <p>在中间相遇</p>
+    </section>
+    <section>
+        <h2>决策序列</h2>
+        <p>长度 $n$ 的决策序列，每位 $2 \sim 3$ 种选择，求最优决策。</p>
+        <sd-animation src="../../animation/折半搜索概述/决策序列.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 140px;"></sd-animation>
+        <p class="fragment">暴力 $O(2^n \cdot 决策开销)$。</p>
+    </section>
+    <section>
+        <h2>折半</h2>
+        <p>把决策序列切成两半 — 分别搜，再合并。</p>
+        <sd-animation src="../../animation/折半搜索概述/折半搜索优化效率.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 140px;"></sd-animation>
+        <p class="fragment">$O(2^n) \to O(2 \times 2^{n/2} + \text{合并开销})$。</p>
+        <p class="fragment quote">合并开销常见有 $O(2^n)$ / $O(2^n n)$ / $O(2^n n^2)$ 等。</p>
+    </section>
+</section>
