@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>Floyd</h1>
+        <p>luogu B3647 — 模板</p>
+    </section>
+    <section>
+        <h2>注意点</h2>
+        <p>有重边时初始化要取最小：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++)
+                    for (int j = 1; j <= n; j++)
+                        d[i][j] = (i == j) ? 0 : INF;
+                for (int e = 0; e < m; e++) {
+                    int u, v, w; cin >> u >> v >> w;
+                    d[u][v] = min(d[u][v], w);
+                    d[v][u] = min(d[v][u], w);  // 无向
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

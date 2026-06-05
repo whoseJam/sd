@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>奶牛跳栏</h1>
+        <p>luogu P2888</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>路径得分 = 路径上最高障碍。求任意两点间所有路径中最小的得分。</p>
+    </section>
+    <section>
+        <h2>Floyd 改写</h2>
+        <p>把 sum 换成 max，min 仍是 min：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int k = 1; k <= n; k++)
+                    for (int i = 1; i <= n; i++)
+                        for (int j = 1; j <= n; j++)
+                            G[i][j] = min(G[i][j], max(G[i][k], G[k][j]));
+            </script>
+        </codeblock>
+    </section>
+</section>

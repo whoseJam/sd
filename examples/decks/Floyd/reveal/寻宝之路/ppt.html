@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>寻宝之路</h1>
+        <p>luogu P2910</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个岛，依次访问 $A_1 \to A_2 \to \dots \to A_M$。求总最小危险度。</p>
+    </section>
+    <section>
+        <h2>独立移动</h2>
+        <p>每段 $A_i \to A_{i+1}$ 独立 — Floyd 预处理任意两点最小危险度后累加。</p>
+        <codeblock>
+            <script type="text/template">
+                int ans = 0;
+                for (int i = 1; i < m; i++) ans += d[a[i]][a[i + 1]];
+                cout << ans;
+            </script>
+        </codeblock>
+    </section>
+</section>

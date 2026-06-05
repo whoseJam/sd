@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>传递闭包</h1>
+        <p>Floyd 的小应用</p>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>有向图 $n$ 点 $m$ 边，求任意两点 $i, j$ 间是否存在可达路径。</p>
+        <p class="fragment">$f_{i, j} \in \{0, 1\}$ — 与 / 或 替代 min / + ：</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int k = 1; k <= n; k++)
+                    for (int i = 1; i <= n; i++)
+                        for (int j = 1; j <= n; j++)
+                            f[i][j] = f[i][j] | (f[i][k] & f[k][j]);
+            </script>
+        </codeblock>
+        <p class="fragment quote">实践中常用 bitset 把内层加速到 $O(n / 64)$。</p>
+    </section>
+</section>

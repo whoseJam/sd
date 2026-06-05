@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>灾后重建</h1>
+        <p>luogu P1119</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>边都给好；村庄按时间顺序逐个重建。每次询问只能经过已重建的村庄的两点最短路。</p>
+    </section>
+    <section>
+        <h2>Floyd 的天然结构</h2>
+        <p>Floyd 第 $k$ 轮枚举的中转点就是"允许经过的点集 $\{1, \dots, k\}$"。</p>
+        <p class="fragment">本题按重建顺序排好村庄编号，每次重建就触发对应的一轮中转点更新：</p>
+        <codeblock>
+            <script type="text/template">
+                void recover(int u) {
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                            d[i][j] = min(d[i][j], d[i][u] + d[u][j]);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

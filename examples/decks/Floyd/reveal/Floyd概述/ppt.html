@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>Floyd</h1>
+        <p>基于暴力 dp 的最短路</p>
+    </section>
+    <section>
+        <h2>核心思路</h2>
+        <p>枚举中转点 $k = 1 \dots n$，更新 $d_{i, j}$：</p>
+        <sd-animation src="../../animation/Floyd概述/状态转移.js" class="fragment"
+            style="margin: 0 auto; width: 400px; height: 200px;"></sd-animation>
+        <p class="fragment quote">"当前的最短路"指除起点和终点外只允许经过 $\{1, 2, \dots, k\}$ 的最短路。</p>
+    </section>
+    <section>
+        <h2>代码</h2>
+        <codeblock>
+            <script type="text/template">
+                void Floyd() {
+                    for (int k = 1; k <= n; k++)
+                        for (int i = 1; i <= n; i++)
+                            for (int j = 1; j <= n; j++)
+                                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

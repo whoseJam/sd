@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>牛的旅行</h1>
+        <p>luogu P1522</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>添加一条边连接两个连通块，使<b>新连通块的直径</b>最小。</p>
+    </section>
+    <section>
+        <h2>分析</h2>
+        <p>设连边 $(i, j)$ 后新直径来自三类：</p>
+        <ol>
+            <li>$A$ 原直径</li>
+            <li>$B$ 原直径</li>
+            <li>$\max_{u \in A} d(u, i) + w(i, j) + \max_{v \in B} d(v, j)$</li>
+        </ol>
+        <p class="fragment">Floyd 预处理所有 $d$，枚举所有跨连通块的 $(i, j)$ 对取最小。</p>
+    </section>
+</section>
