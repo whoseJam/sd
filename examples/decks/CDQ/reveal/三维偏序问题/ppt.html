@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>三维偏序问题</h1>
+        <p>luogu P3810</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个三元组 $(a_i, b_i, c_i)$，求每个 $i$ 满足 $a_j \le a_i, b_j \le b_i, c_j \le c_i$ 的 $j$ 个数。</p>
+    </section>
+    <section>
+        <h2>CDQ + BIT</h2>
+        <ol>
+            <li>按 $a$ 升序排序（去掉一维）</li>
+            <li>CDQ 分治 $b$：先递归左半 / 右半，再算"左半 $b$ 偏序右半 $b$"贡献</li>
+            <li>在归并 $b$ 的过程中用 BIT 按 $c$ 维做单点加 / 前缀查</li>
+        </ol>
+        <p class="fragment">$O(n \log^2 n)$。</p>
+    </section>
+</section>

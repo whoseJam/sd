@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>CDQ 分治</h1>
+        <p>陈丹琦分治</p>
+    </section>
+    <section>
+        <h2>核心思想</h2>
+        <p>把对"全体操作"的影响拆为：</p>
+        <ul>
+            <li>左半操作 → 左半操作 — 递归</li>
+            <li>右半操作 → 右半操作 — 递归</li>
+            <li>左半操作 → 右半操作 — 跨段贡献 $O(n)$ 算</li>
+        </ul>
+        <p class="fragment">类似归并排序，$T(n) = 2 T(n/2) + O(n \log n)$ → $O(n \log^2 n)$。</p>
+    </section>
+    <section>
+        <h2>常见用途</h2>
+        <ul>
+            <li>三维偏序（$a, b, c$ 三关键字数点）</li>
+            <li>动态问题转离线（"时间"作为一维）</li>
+            <li>带修莫队 / 主席树的替代</li>
+        </ul>
+    </section>
+</section>
