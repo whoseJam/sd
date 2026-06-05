@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>二维差分</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>二维前缀和：$a_{i,j} = \sum_{1 \le x \le i, 1 \le y \le j} d_{x, y}$。</p>
+        <p class="fragment">反过来 $d_{i,j} = a_{i,j} - a_{i-1, j} - a_{i, j-1} + a_{i-1, j-1}$。</p>
+        <sd-animation src="../../animation/二维差分概述/增量.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>差分对前缀和的影响</h2>
+        <p>修改 $d_{i,j}$ 会同时改变所有 $i' \ge i, j' \ge j$ 的 $a_{i',j'}$。</p>
+        <sd-animation src="../../animation/二维差分概述/差分对前缀和的影响.js" class="fragment"
+            style="margin: 0 auto; width: 700px; height: 280px;"></sd-animation>
+    </section>
+</section>

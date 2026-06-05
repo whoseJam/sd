@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>树上差分</h1>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <ul>
+            <li>序列上的区间加法 $\Rightarrow$ 序列差分</li>
+            <li class="fragment">树上的路径加法 $\Rightarrow$ 树上差分</li>
+        </ul>
+        <p class="fragment">树上的路径加法有两种：路径上每个点的点权 $+1$、或者路径上每条边的边权 $+1$，分别对应<b>点差分</b>和<b>边差分</b>。</p>
+    </section>
+    <section>
+        <h2>点差分</h2>
+        <p>路径 $u \to v$ 上每点 $+1$。设 $g = \text{lca}(u, v)$：
+            $$d[u]\mathrel{+}{=}1,\ d[v]\mathrel{+}{=}1,\ d[g]\mathrel{-}{=}1,\ d[\text{fa}(g)]\mathrel{-}{=}1$$
+        </p>
+        <p class="fragment">子树和 $s_u = \sum_{v \in \text{sub}(u)} d_v$ 即为原序列上 $u$ 的点权。</p>
+        <sd-animation src="../../animation/树上差分概述/点差分.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 340px;"></sd-animation>
+    </section>
+    <section>
+        <h2>边差分</h2>
+        <p>路径 $u \to v$ 上每条边 $+1$，记到孩子上：
+            $$d[u]\mathrel{+}{=}1,\ d[v]\mathrel{+}{=}1,\ d[g]\mathrel{-}{=}2$$
+        </p>
+        <sd-animation src="../../animation/树上差分概述/边差分.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 340px;"></sd-animation>
+    </section>
+</section>

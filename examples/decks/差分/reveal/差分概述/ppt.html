@@ -1,0 +1,66 @@
+<section>
+    <section>
+        <h1>差分</h1>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <p>$\{a\}=\{a_1, a_2, \dots, a_n\}$ 的差分数组 $\{d\}$ 定义为
+            $$d_i = a_i - a_{i-1}$$
+            其中 $a_0$ 看作 $0$，所以 $d_1 = a_1$。</p>
+        <sd-animation src="../../animation/差分概述/差分数组的计算.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 220px;"></sd-animation>
+    </section>
+    <section>
+        <h2>差分与前缀和</h2>
+        <p>用 $\{d\}$ 表示 $\{a\}$
+            $$a_i = \sum_{k=1}^i d_k$$
+        </p>
+        <ul>
+            <li>站在 $\{a\}$ 的角度，$\{d\}$ 是 $\{a\}$ 的差分</li>
+            <li>站在 $\{d\}$ 的角度，$\{a\}$ 是 $\{d\}$ 的前缀和</li>
+        </ul>
+        <sd-animation src="../../animation/差分概述/差分与前缀和.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>差分对前缀和的影响</h2>
+        <p>修改 $\{d\}$ 中一个元素，$\{a\}$ 中所有后续元素都跟着变化 — 这正是快速区间修改的基础。</p>
+        <sd-animation src="../../animation/差分概述/差分对前缀和的影响.js" class="fragment"
+            style="margin: 0 auto; width: 520px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>形式化定义</h2>
+        <p>差分 $D$ 和前缀和 $S$ 是一对互逆运算：
+            $$\{d\} = D(\{a\}), \qquad \{a\} = S(\{d\})$$
+        </p>
+        <p>它们都是 $O(n)$ 的。</p>
+        <p class="fragment">$\{a\} = S(D(\{a\}))$。</p>
+    </section>
+    <section>
+        <h2>序列加法</h2>
+        <p>定义 $\{a\} + \{b\}$ 为 $c_i = a_i + b_i$。</p>
+        <sd-animation src="../../animation/差分概述/序列加法.js" class="fragment"
+            style="margin: 0 auto; width: 500px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>区间加法 = 增量序列加法</h2>
+        <p>对 $[l, r]$ 全体加 $k$，相当于加一个增量序列 $\{0,\dots,0,k,\dots,k,0,\dots,0\}$。</p>
+        <sd-animation src="../../animation/差分概述/序列加法的现实意义.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>$D$ 对序列加法满足分配律</h2>
+        <p>$D(\{a\} + \{b\}) = D(\{a\}) + D(\{b\})$</p>
+        <p class="fragment">同样 $S(\{a\} + \{b\}) = S(\{a\}) + S(\{b\})$。</p>
+        <p class="fragment">所以若 $\{a\} = \{c_1\} + \dots + \{c_m\}$，可以先对每个 $c_i$ 差分再求和再前缀和。</p>
+    </section>
+    <section>
+        <h2>稀疏化</h2>
+        <sd-animation src="../../animation/差分概述/变换.js"
+            style="margin: 0 auto; width: 480px; height: 120px;"></sd-animation>
+        <p class="fragment" style="margin-top: 12px;">每个 $D(\{c_i\})$ 通常很稀疏 — 区间加法的 $D$ 只在两点非零。</p>
+        <sd-animation src="../../animation/差分概述/稀疏与稠密.js" class="fragment"
+            style="margin: 0 auto; width: 440px; height: 180px;"></sd-animation>
+        <p class="fragment">时间复杂度被压缩到 $O(n + m)$。</p>
+    </section>
+</section>

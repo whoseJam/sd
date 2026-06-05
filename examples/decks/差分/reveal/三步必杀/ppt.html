@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>三步必杀</h1>
+        <p>luogu P4231</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>每次给 $[l, r]$ 加一个等差数列，首项 $s$、末项 $e$、公差 $d = (e - s) / (r - l)$。</p>
+    </section>
+    <section>
+        <h2>二阶差分</h2>
+        <p>增量序列 $\{c\} = \{0,\dots,0,s,s+d,s+2d,\dots,e,0,\dots,0\}$。</p>
+        <p class="fragment">$D(\{c\})$ 是常数 $d$ 在 $[l+1, r]$ 上的稠密块。</p>
+        <p class="fragment">$D^2(\{c\})$ 只在 $l, l+1, r+1, r+2$ 四点非零。</p>
+        <sd-animation src="../../animation/三步必杀/二阶差分.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 280px;"></sd-animation>
+    </section>
+</section>

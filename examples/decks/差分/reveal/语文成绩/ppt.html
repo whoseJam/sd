@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>语文成绩</h1>
+        <p>luogu P2367</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$p$ 次区间加，每次给 $[l, r]$ 的学生加 $z$ 分；最后输出最低分。</p>
+    </section>
+    <section>
+        <h2>差分</h2>
+        <p>每次加法的增量序列 $\{A_i\}$ 形如 $\{0,\dots,0,z,\dots,z,0,\dots,0\}$，差分后只有两个非零位：
+            $$D(\{A_i\})_{l_i} = z_i, \qquad D(\{A_i\})_{r_i+1} = -z_i$$
+        </p>
+        <sd-animation src="../../animation/差分概述/差分对前缀和的影响.js" class="fragment"
+            style="margin: 0 auto; width: 520px; height: 280px;"></sd-animation>
+        <p class="fragment">把每个 $D(\{A_i\})$ 累加进差分数组，最后做一次前缀和即可。</p>
+    </section>
+</section>
