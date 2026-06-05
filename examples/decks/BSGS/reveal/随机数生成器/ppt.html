@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>随机数生成器</h1>
+        <p>luogu P5147</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$x_{i+1} \equiv a x_i + b \pmod p$，给定 $x_1, a, b, p, t$，求最小 $i$ 使 $x_i \equiv t$。</p>
+    </section>
+    <section>
+        <h2>通项</h2>
+        <p>矩阵形式：</p>
+        <p>
+            $$
+            \begin{pmatrix} x_{n+1} \\ 1 \end{pmatrix} =
+            \begin{pmatrix} a & b \\ 0 & 1 \end{pmatrix}^n
+            \begin{pmatrix} x_1 \\ 1 \end{pmatrix}
+            $$
+        </p>
+        <p class="fragment">推出 $x_n = a^{n-1} x_1 + \dfrac{a^{n-1} - 1}{a - 1} b$（$a \ne 1$）。</p>
+        <p class="fragment">化简成 $a^{n-1} \equiv \text{const} \pmod p$ — BSGS 求 $n$。</p>
+    </section>
+</section>

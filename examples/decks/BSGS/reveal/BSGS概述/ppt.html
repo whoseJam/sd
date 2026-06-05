@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>BSGS</h1>
+        <p>Baby Step, Giant Step</p>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>给定质数 $p$、$\gcd(a, p) = 1$，求 $x$ 使
+            $$a^x \equiv b \pmod{p}$$
+        </p>
+    </section>
+    <section>
+        <h2>分块</h2>
+        <p>令 $m = \lceil \sqrt{p} \rceil$，写 $x = i m - j$（$0 \le j < m$，$1 \le i \le m$）：
+            $$a^{i m - j} \equiv b \pmod p \Rightarrow a^{i m} \equiv b \cdot a^j \pmod p$$
+        </p>
+        <ol class="fragment">
+            <li>预处理所有 $j$ 的 $b \cdot a^j$，存哈希表（baby step）</li>
+            <li>枚举 $i$，算 $a^{im}$，在哈希表里查匹配（giant step）</li>
+        </ol>
+        <p class="fragment">总复杂度 $O(\sqrt{p})$。</p>
+    </section>
+    <section>
+        <h2>欧拉定理铺垫</h2>
+        <p>$\gcd(a, p) = 1 \Rightarrow a^{\varphi(p)} \equiv 1 \pmod p$。</p>
+        <p class="fragment">所以解集有周期 $\varphi(p)$：找一个最小非负解就够。</p>
+    </section>
+</section>

@@ -1,3 +1,0 @@
-#327.破解DH协议：https://www.luogu.com.cn/problem/P4454
-#245.计算器：https://www.luogu.com.cn/problem/P2485
-#291.随机数生成器：https://www.luogu.com.cn/problem/P5147

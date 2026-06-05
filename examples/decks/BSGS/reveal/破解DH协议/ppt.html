@@ -1,0 +1,14 @@
+<section>
+    <section>
+        <h1>破解 D-H 协议</h1>
+        <p>luogu P4454</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>给质数 $p$、原根 $g$，已知 $A \equiv g^a, B \equiv g^b \pmod p$（$a, b$ 未知），求 $K \equiv g^{ab} \pmod p$。</p>
+    </section>
+    <section>
+        <h2>做法</h2>
+        <p>对 $g^a \equiv A$ 跑 BSGS 解出 $a$，$K = B^a \bmod p$。</p>
+    </section>
+</section>
