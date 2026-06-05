@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>雨天的尾巴</h1>
+        <p>luogu P4556</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>多次 "$u \to v$ 路径上每点物品 $z$ +1"，最后查询每点出现次数最多的物品。</p>
+    </section>
+    <section>
+        <h2>差分 + 合并</h2>
+        <p>树上路径差分：四点 $u, v, \text{lca}, \text{fa}(\text{lca})$ 上动态开点线段树 +1 / -1。</p>
+        <p class="fragment">DFS 时把所有孩子的线段树合并到自己，每个点查"出现次数最多的物品编号"。</p>
+    </section>
+</section>

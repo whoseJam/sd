@@ -1,0 +1,13 @@
+<section>
+    <section>
+        <h1>晋升者计数</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>员工组成树形结构，每个员工有等级。多次查询某子树内等级在 $[L, R]$ 的人数。</p>
+    </section>
+    <section>
+        <h2>DSU on tree 替代</h2>
+        <p>每个员工建一棵动态开点的"等级线段树"；递归子树时合并孩子的线段树到自己上，查询时区间求和。</p>
+    </section>
+</section>

@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>线段树合并</h1>
+        <p>与动态开点线段树</p>
+    </section>
+    <section>
+        <h2>动态开点</h2>
+        <p>插入次数远小于值域时，只在用到的位置分配节点 — 空间 $O(k \log V)$。</p>
+    </section>
+    <section>
+        <h2>合并</h2>
+        <p>把两棵动态开点线段树并起来 — 节点同时存在时累加，否则继承单边：</p>
+        <codeblock>
+            <script type="text/template">
+                int Merge(int x, int y) {
+                    if (!x || !y) return x + y;
+                    t[x].sum += t[y].sum;
+                    t[x].lc = Merge(t[x].lc, t[y].lc);
+                    t[x].rc = Merge(t[x].rc, t[y].rc);
+                    return x;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>复杂度</h2>
+        <p>值域为 $n$ 的若干线段树共 $k$ 次单点插入 — 合并总复杂度 $O(k \log n)$。</p>
+        <p class="fragment">每个被合并掉的节点之前必然来自一次插入，所以分摊合理。</p>
+    </section>
+</section>

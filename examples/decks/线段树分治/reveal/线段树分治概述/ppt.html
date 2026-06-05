@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>线段树分治</h1>
+        <p>把操作挂在时序线段树上</p>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <p>数据结构 $S$ 只支持插入不支持删除。但操作序列里有插入、删除、查询。</p>
+        <p class="fragment">把每条"$[t_l, t_r]$ 区间内有效"的事件挂在时序线段树的对应节点上。DFS 整棵线段树：进入节点时 push 事件，回溯时按可撤回栈 pop — 自然完成"删除"。</p>
+    </section>
+    <section>
+        <h2>复杂度</h2>
+        <p>每个事件挂 $O(\log T)$ 个节点；DFS 每个节点都执行所有事件的"push + 撤回"，单次插入 $O(K)$ — 总 $O(n K \log T)$。</p>
+    </section>
+</section>

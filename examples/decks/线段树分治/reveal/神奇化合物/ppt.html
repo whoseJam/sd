@@ -1,0 +1,13 @@
+<section>
+    <section>
+        <h1>神奇化合物</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>动态加 / 减边的图，问连通块数。</p>
+    </section>
+    <section>
+        <h2>线段树分治 + 可撤回并查集</h2>
+        <p>每条边的存在区间挂时序线段树。DFS 节点用按秩合并并查集 push 边，离开节点时撤回。叶子处输出当前连通块数。</p>
+    </section>
+</section>
