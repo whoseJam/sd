@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>Catalan 数</h1>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>两种操作 $A$ / $B$，任意时刻 $B$ 的累计数不超过 $A$。$2n$ 时刻后做了 $n$ 次 $A$ 和 $n$ 次 $B$，求合法序列数。</p>
+        <p class="fragment quote">$A$ 和 $B$ 在序列中是一一对应的。</p>
+    </section>
+    <section>
+        <h2>递推</h2>
+        <p>令 $H_n$ 表示答案：</p>
+        <p class="fragment">
+            $$
+            H_n = \begin{cases}
+            \sum_{i=1}^{n} H_{i-1} H_{n-i} & n \ge 2 \\
+            1 & n = 0, 1
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">"第一个 $A$ 对应的 $B$ 在第 $2i$ 位"切两段：</p>
+        <sd-animation src="../../animation/Catalan数概述/递推.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 140px;"></sd-animation>
+    </section>
+</section>
