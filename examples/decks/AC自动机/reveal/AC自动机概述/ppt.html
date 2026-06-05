@@ -1,0 +1,58 @@
+<section>
+    <section>
+        <h1>AC 自动机</h1>
+        <p>$=$ Trie $+$ KMP $?$</p>
+    </section>
+    <section>
+        <h2>单串 vs 多串</h2>
+        <div style="display: flex; justify-content: space-around; gap: 12px;">
+            <div style="width: 48%;">
+                <p class="quote">$\{ abbabaab \}$ — 一个串</p>
+                <sd-animation src="../../animation/AC自动机概述/KMP.js"
+                    style="margin: 0 auto; width: 95%; height: 280px;"></sd-animation>
+                <p class="fragment">KMP 拆成 $n$ 个节点，每个节点 $=$ 原串的一个前缀。</p>
+            </div>
+            <div style="width: 48%;">
+                <p class="quote">$\{ aba, bab \}$ — 多个串的 trie</p>
+                <sd-animation src="../../animation/AC自动机概述/AC自动机1.js"
+                    style="margin: 0 auto; width: 95%; height: 280px;"></sd-animation>
+                <p class="fragment">trie 把多串合并为 $m$ 个节点；每节点 $=$ 某串的一个前缀。</p>
+            </div>
+        </div>
+        <p class="fragment">对每个节点找最长的 border，连一条<b style="color: red;">失配边</b>。</p>
+    </section>
+    <section>
+        <h2>AC 自动机 — 失配边构造</h2>
+        <p>BFS 逐层算每个节点的失配边：父节点的失配链上找一个仍有相同字符出口的节点。</p>
+        <sd-animation src="../../animation/AC自动机概述/AC自动机2.js"
+            style="margin: 0 auto; width: 880px; height: 460px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void build() {
+                    queue<int> q; q.push(1);
+                    while (!q.empty()) {
+                        int u = q.front(); q.pop();
+                        for (int c = 0; c < 26; c++) {
+                            int v = ch[u][c];
+                            if (!v) continue;
+                            int f = fa[u];
+                            while (f && !ch[f][c]) f = fa[f];
+                            fa[v] = (ch[f][c] && ch[f][c] != v) ? ch[f][c] : 1;
+                            q.push(v);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>AC 自动机 — 双视图</h2>
+        <p>AC 自动机 $=$ trie $\oplus$ 失配树。</p>
+        <ul>
+            <li class="fragment">沿 trie 树向下：字符串<b>延拓</b></li>
+            <li class="fragment">沿失配树向上：字符串<b>切削</b>（取后缀）</li>
+        </ul>
+        <sd-animation src="../../animation/AC自动机概述/双视图.js"
+            style="margin: 0 auto; width: 880px; height: 460px;"></sd-animation>
+    </section>
+</section>
