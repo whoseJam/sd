@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>教室</h1>
+        <p>CF 519E</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>无根树多次查询：给定 $x, y$，问到 $x$ 和到 $y$ 距离相等的点有多少个。</p>
+    </section>
+    <section>
+        <h2>分析</h2>
+        <p>令 $L = d(x, y)$。若 $L$ 是奇数，答案 $0$。</p>
+        <p class="fragment">否则中点 $m$ 在 $x \to y$ 上，距 $x$ 为 $L/2$：</p>
+        <ul>
+            <li class="fragment">$x$ 是 $y$ 的祖先：$m$ 是 $y$ 的 $L/2$ 级祖先，答案 = $\text{size}(m) - \text{size}(\text{child}_m \text{ 通向 } y)$。</li>
+            <li class="fragment">否则 $m$ 在 $\text{LCA}(x, y)$ 一侧（不妨设 $x$ 一侧深），$m$ 是 $x$ 的 $L/2$ 级祖先，答案 = $n - \text{size}(\text{child}_m \text{ 通向 } x) - \text{size}(\text{child}_m \text{ 通向 } y)$。</li>
+        </ul>
+    </section>
+</section>

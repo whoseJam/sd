@@ -1,0 +1,93 @@
+<section>
+    <section>
+        <h1>LCA</h1>
+        <p>Lowest Common Ancestor</p>
+    </section>
+    <section>
+        <h2>$k$ 级祖先</h2>
+        <p>$u$ 的 $k$ 级祖先 = $u$ 沿父链上跳 $k$ 步到达的节点。</p>
+        <sd-animation src="../../animation/LCA概述/k级祖先.js" class="fragment"
+            style="margin: 0 auto; width: 220px; height: 280px;"></sd-animation>
+        <p class="fragment quote">特别地 $u$ 是自己的零级祖先。</p>
+    </section>
+    <section>
+        <h2>公共祖先 & LCA</h2>
+        <p>$x$ 和 $y$ 的公共祖先中深度最大的那个，记为 $\text{LCA}(x, y)$。</p>
+        <sd-animation src="../../animation/LCA概述/LCA概念.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>暴力 LCA</h2>
+        <p>先把深度较大的一方跳上去对齐，然后一起向上跳直到相遇。</p>
+        <sd-animation src="../../animation/LCA概述/暴力LCA.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int LCA(int x, int y) {
+                    if (dep[x] < dep[y]) swap(x, y);
+                    while (dep[x] > dep[y]) x = fa[x];
+                    while (x != y) { x = fa[x]; y = fa[y]; }
+                    return x;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>暴力 LCA 的退化</h2>
+        <p>退化成链时复杂度 $O(n)$。</p>
+        <sd-animation src="../../animation/LCA概述/暴力LCA不足之处.js" class="fragment"
+            style="margin: 0 auto; width: 100px; height: 440px;"></sd-animation>
+        <p class="fragment quote">一次只跳一个父亲太慢 — 自然想到一次跳很多个父亲。</p>
+    </section>
+    <section>
+        <h2>倍增预处理</h2>
+        <p>预处理 $fa_{u, j}$ = $u$ 的 $2^j$ 级祖先。</p>
+        <sd-animation src="../../animation/LCA概述/LCA预处理.js" class="fragment"
+            style="margin: 0 auto; width: 200px; height: 380px;"></sd-animation>
+    </section>
+    <section>
+        <h2>倍增递推</h2>
+        <p>$fa_{u, j} = fa_{fa_{u, j-1},\ j-1}$ — 跳 $2^j$ 步 = 连续跳两次 $2^{j-1}$ 步。</p>
+        <sd-animation src="../../animation/LCA概述/LCA预处理递推.js" class="fragment"
+            style="margin: 0 auto; width: 200px; height: 380px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                fa[u][0] = parent of u;
+                for (int j = 1; (1 << j) <= n; j++)
+                    fa[u][j] = fa[fa[u][j - 1]][j - 1];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>二进制拆分</h2>
+        <p>任意 $d$ 可以拆为 $\le \log_2 d$ 个 $2^k$ 之和 — 跳任意 $d$ 步降到 $O(\log d)$。</p>
+        <sd-animation src="../../animation/LCA概述/二进制拆分.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 140px;"></sd-animation>
+    </section>
+    <section>
+        <h2>倍增 LCA 查询</h2>
+        <ol>
+            <li class="fragment">先让 $x$ 倍增跳至 $y$ 同深度</li>
+            <li class="fragment">若 $x = y$，已经是 LCA</li>
+            <li class="fragment">否则 $x, y$ 同时倍增向上，最大不超过 LCA — 终止时父亲就是 LCA</li>
+        </ol>
+        <sd-animation src="../../animation/LCA概述/LCA查询.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int LCA(int x, int y) {
+                    if (dep[x] < dep[y]) swap(x, y);
+                    for (int j = lim; j >= 0; j--)
+                        if (dep[fa[x][j]] >= dep[y]) x = fa[x][j];
+                    if (x == y) return x;
+                    for (int j = lim; j >= 0; j--)
+                        if (fa[x][j] != fa[y][j]) {
+                            x = fa[x][j];
+                            y = fa[y][j];
+                        }
+                    return fa[x][0];
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>树上询问</h1>
+        <p>luogu P6374</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个点的无根树，每次给出 $(a, b, c)$，问把哪些点当根时 $\text{LCA}(a, b) = c$。</p>
+    </section>
+    <section>
+        <h2>分析</h2>
+        <p>$c$ 必须在 $a \to b$ 的简单路径上。</p>
+        <p class="fragment">把 $c$ 当一棵无根树的内部点，断掉 $c$ 通向 $a$ 和 $b$ 的两个分支 — 剩下从 $c$ 出发的所有子树就是合法根集合。</p>
+        <ul class="fragment">
+            <li>$c$ 为 $\text{LCA}(a, b)$（有根树 root = 1）时，合法根 = 整棵树减去 $c$ 通向 $a$ 的分支、减去 $c$ 通向 $b$ 的分支</li>
+            <li>$c$ 不为 root LCA 时，类似分类讨论</li>
+        </ul>
+    </section>
+</section>

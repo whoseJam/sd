@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>传送带</h1>
+        <p>luogu P9433</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>多次询问 $(s, t)$，求 $s \to t$ 经过所有关键节点的最短路径长度。</p>
+    </section>
+    <section>
+        <h2>思路</h2>
+        <p>关键点集合 $K$ 固定。预处理 $K$ 在 DFS 序中的顺序，构造 $K$ 的"虚树"。</p>
+        <p class="fragment">对查询 $(s, t)$，把 $s, t$ 一起合并到 $K$ 中，按虚树边走一遍即可 — 距离都用 LCA 公式算。</p>
+    </section>
+</section>
