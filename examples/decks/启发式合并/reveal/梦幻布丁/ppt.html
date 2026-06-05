@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>梦幻布丁</h1>
+        <p>luogu P3201</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>每种颜色维护一组位置 $\text{pos}[c]$；操作 "颜色 $x \to y$" 时，把 $\text{pos}[x]$ 拆开塞入 $\text{pos}[y]$。</p>
+        <sd-animation src="../../animation/梦幻布丁/梦幻布丁.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 140px;"></sd-animation>
+        <p class="fragment">合并时检查每个被迁位置左右邻是否为目标颜色，更新连续段数。</p>
+    </section>
+    <section>
+        <h2>启发式</h2>
+        <p>若 $|\text{pos}[x]| > |\text{pos}[y]|$，交换两边的"真实颜色 → 实际存储"映射 — 始终把小的拆。</p>
+        <sd-animation src="../../animation/梦幻布丁/梦幻布丁映射.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 180px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                if (pos[now[x]].size() > pos[now[y]].size())
+                    swap(now[x], now[y]);
+                Merge(now[x], now[y]);
+            </script>
+        </codeblock>
+    </section>
+</section>

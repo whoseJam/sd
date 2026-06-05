@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>DP 一般看规律</h1>
+        <p>LOJ 516</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>序列 $\{a\}$，求任意值相同对的最小下标距离。支持"把所有 $x$ 改成 $y$"，每次改动后输出答案。</p>
+    </section>
+    <section>
+        <h2>启发式合并</h2>
+        <p>每个值 $v$ 用 set 维护所有出现位置。新增 $i$ 时，找前驱 $p$ / 后继 $q$，用 $\min(i - p, q - i)$ 更新答案。</p>
+        <p class="fragment">"把所有 $x$ 改成 $y$" — 把小集合插入大集合的 set，按启发式做。</p>
+    </section>
+</section>

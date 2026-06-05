@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>永无乡</h1>
+        <p>luogu P3224</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <ul>
+            <li><code>B x y</code>：合并 $x$ 和 $y$ 所在集合</li>
+            <li><code>Q x k</code>：查询 $x$ 所在集合中权值第 $k$ 小</li>
+        </ul>
+    </section>
+    <section>
+        <h2>启发式合并 + Splay</h2>
+        <p>每个集合用 Splay 维护权值序，自然支持"第 $k$ 小"。</p>
+        <p class="fragment">合并时把 Splay 小的拆开往 Splay 大的里插。</p>
+    </section>
+</section>

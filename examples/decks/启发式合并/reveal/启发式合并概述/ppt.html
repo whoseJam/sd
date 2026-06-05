@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>启发式合并</h1>
+        <p>高级的名字，朴素的思想</p>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>$n$ 个数据结构，每个最初只有 $1$ 个元素，要合并任意两个。</p>
+        <p class="fragment">没有 $O(1)$ 合并办法 — 只能把一个拆开往另一个里塞。单次插入 $O(K)$，朴素 $O(n^2 K)$。</p>
+    </section>
+    <section>
+        <h2>启发式优化</h2>
+        <p>每次合并时<b>把小的拆开塞进大的</b>。</p>
+        <p class="fragment">每个元素最多被迁移 $\log n$ 次（每迁一次所在结构至少翻倍）。总复杂度 $O(n K \log n)$。</p>
+    </section>
+</section>
