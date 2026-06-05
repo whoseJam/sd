@@ -28,6 +28,14 @@ const SIZE_RELATED_KEY = new Set([
   "top",
 ]);
 
+const entityLabel = (entity: unknown): string => {
+  if (entity && typeof entity === "object") {
+    const ctor = (entity as { constructor?: { name?: string } }).constructor;
+    if (ctor && ctor.name) return ctor.name;
+  }
+  return "entity";
+};
+
 const visible = (element: SDNode): boolean => {
   if (!(element instanceof SDNode)) return false;
   if (element.getOpacity() === 0) return false;
@@ -181,7 +189,7 @@ export class ActionList {
     }
     if (isPartialOverlap(action1, action2)) {
       throw new Error(
-        `Action conflict on ${action1.animatedKey} when [${action1.l}, ${action1.r}] and [${action2.l}, ${action2.r}]`,
+        `Action conflict on ${entityLabel(action1.entity)}.${action1.animatedKey} when [${action1.l}, ${action1.r}] and [${action2.l}, ${action2.r}]`,
       );
     }
   }
@@ -229,7 +237,7 @@ export class ActionList {
             const conflictedAction = intersectCheck(actionMap[key]);
             if (conflictedAction)
               throw new Error(
-                `Action conflict on ${action.animatedKey} and ${key} when [${action.l}, ${action.r}] and [${conflictedAction.l}, ${conflictedAction.r}]`,
+                `Action conflict on ${entityLabel(action.entity)}.${action.animatedKey} and ${key} when [${action.l}, ${action.r}] and [${conflictedAction.l}, ${conflictedAction.r}]`,
               );
           }
         }

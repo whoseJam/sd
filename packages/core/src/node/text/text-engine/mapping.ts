@@ -12,7 +12,12 @@ function locateUnmatchedSubtext(
   deleted: Array<boolean>,
   pattern: TextMappingLocation,
 ): SubtextView {
-  if (typeof pattern === "string") {
+  // Treat `string` and `Array<string>` uniformly: both expose `.length`
+  // and indexed access, with each unit being one glyph identifier.
+  // Math glyph streams use hex codepoints ("3F" for "?"), so the caller
+  // (Math.setText) converts string patterns via parseToHTML before
+  // handing them off; this branch accepts the converted array form too.
+  if (typeof pattern === "string" || Array.isArray(pattern)) {
     for (let i = 0; i < textView.text.length; i++) {
       let matched = true;
       for (let j = 0; j < pattern.length && matched; j++)
@@ -28,6 +33,15 @@ function locateUnmatchedSubtext(
         return SubtextView.range(textView, i, i + pattern.length - 1);
       }
     }
+    // Include source text snippet in the error so callers can see what
+    // the matcher was actually working against (hex codepoints for Math,
+    // raw chars for Text); much easier to diagnose than a bare pattern.
+    const preview = Array.isArray(textView.text)
+      ? textView.text.slice(0, 30).join(" ")
+      : String(textView.text).slice(0, 60);
+    throw new Error(
+      `Subtext not found: ${JSON.stringify(pattern)} (in: "${preview}${textView.text.length > 30 ? "..." : ""}")`,
+    );
   }
   throw new Error(`Subtext not found: ${JSON.stringify(pattern)}`);
 }

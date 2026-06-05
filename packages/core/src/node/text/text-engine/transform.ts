@@ -1,4 +1,8 @@
-import type { BaseText, TextMapping } from "@/node/text/base-text";
+import type {
+  BaseText,
+  TextMapping,
+  TextMappingArray,
+} from "@/node/text/base-text";
 import type {
   PathStyle,
   SubtextView,
@@ -13,9 +17,13 @@ import { mapSubtextsBetweenViews } from "@/node/text/text-engine/mapping";
 import { getPaths } from "@/node/text/text-engine/path";
 import { RenderNode } from "@/renderer/render-node";
 
-export function transformProcess(mapping: TextMapping) {
+export function transformProcess(mapping: TextMapping | TextMappingArray | undefined) {
   return function (source: TextView, target: TextView) {
-    return mapSubtextsBetweenViews(source, target, processMapping(mapping));
+    if (mapping === undefined) return mapSubtextsBetweenViews(source, target, []);
+    const array = Array.isArray(mapping) && mapping.length > 0 && typeof mapping[0] === "object" && "source" in mapping[0]
+      ? (mapping as TextMappingArray)
+      : processMapping(mapping as TextMapping);
+    return mapSubtextsBetweenViews(source, target, array);
   };
 }
 

@@ -13,9 +13,10 @@ type TextMappingItem =
   | TextMappingObjectSubtextItem
   | TextMappingObjectItem;
 export type TextMappingLocation =
-  | { i: number; subtext: string }
-  | { object: BaseText; subtext: string }
+  | { i: number; subtext: string | Array<string> }
+  | { object: BaseText; subtext: string | Array<string> }
   | string
+  | Array<string>
   | BaseText;
 export type TextMappingObject = {
   source: TextMappingLocation;

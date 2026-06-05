@@ -1,10 +1,15 @@
 import type { Group } from "@/node/other/group";
-import type { BaseTextAttributes, TextMapping } from "@/node/text/base-text";
+import type {
+  BaseTextAttributes,
+  TextMapping,
+  TextMappingArray,
+  TextMappingLocation,
+} from "@/node/text/base-text";
 import type { SDAllColor, SDColor } from "@/utility/color";
 
 import { Interp } from "@/animate/interp";
 import { SDSVGNode } from "@/node/svg-node";
-import { BaseText } from "@/node/text/base-text";
+import { BaseText, processMapping } from "@/node/text/base-text";
 import { buildAnimation } from "@/node/text/text-engine/animation";
 import { matchSubtext } from "@/node/text/text-engine/mapping";
 import { MathManager } from "@/node/text/text-engine/mathjax";
@@ -182,11 +187,14 @@ export class Math extends BaseText {
     if (this.attributes.string === latex) return this;
     const [html, glyphs] = parseToHTML(this, latex);
     const box = MathManager.boundingBox(this.attributes.y, html);
+    // Math glyphs are hex codepoints ("3F" for "?"); convert string
+    // patterns in the mapping to glyph arrays before matching.
+    const glyphMapping = convertMappingToGlyphs(this, mapping);
     const styles = buildAnimation(
       this,
       { text: this.attributes.text, styles: this.attributes.subtextStyles },
       { text: glyphs },
-      transformProcess(mapping),
+      transformProcess(glyphMapping),
       transformPostProcess(this, this.getRootRenderNode()),
       "transform",
     );
@@ -269,6 +277,29 @@ export class Math extends BaseText {
     );
     return this;
   }
+}
+
+function convertMappingToGlyphs(
+  node: Math,
+  mapping: TextMapping | undefined,
+): TextMappingArray | undefined {
+  if (mapping === undefined) return undefined;
+  const processed = processMapping(mapping);
+  return processed.map(({ source, target }) => ({
+    source: convertLocation(node, source),
+    target: convertLocation(node, target),
+  }));
+}
+
+function convertLocation(node: Math, location: TextMappingLocation): TextMappingLocation {
+  if (typeof location === "string") return parseToHTML(node, location)[1];
+  if (Array.isArray(location)) return location;
+  if (location instanceof BaseText) return location;
+  if ("subtext" in location) {
+    const sub = location.subtext;
+    return { ...location, subtext: typeof sub === "string" ? parseToHTML(node, sub)[1] : sub };
+  }
+  return location;
 }
 
 function parseToHTML(
