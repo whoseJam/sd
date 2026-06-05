@@ -1,0 +1,100 @@
+<section>
+    <section>
+        <h1>KMP</h1>
+        <p>一种字符串匹配算法</p>
+    </section>
+    <section>
+        <h2>KMP</h2>
+        <p>KMP 算法可以在线性时间内找出字符串 $s$ 中所有出现的子串 $t$</p>
+        <code class="fragment">t = ababab</code><br>
+        <code class="fragment">s = abababaabababab</code><br>
+        <code class="fragment">s = <span style="color: red;">ababab</span>aabababab</code><br>
+        <code class="fragment">s = abababa<span style="color: red;">ababab</span>ab</code><br>
+        <code class="fragment">s = abababaab<span style="color: red;">ababab</span></code>
+        <p class="fragment quote">较长的串称为<b>母串</b>，较短的串称为<b>模式串</b>。</p>
+    </section>
+    <section>
+        <h2>在 KMP 以前 —— 暴力匹配</h2>
+        <p>把 $t$ 和 $s$ 的每个起始位置 $s[i..i+|t|-1]$ 对齐，逐字符比较。</p>
+        <sd-animation src="../../animation/KMP概述/暴力匹配.js"
+            style="margin: 0 auto; width: 880px; height: 220px;"></sd-animation>
+        <p>时间复杂度 $O(|s||t|)$。</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= len(s) - len(t) + 1; i++) {
+                    bool flag = true;
+                    for (int j = 1; j <= len(t); j++) {
+                        if (s[i + j - 1] != t[j]) { flag = false; break; }
+                    }
+                    if (flag) 找到了一个匹配点;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>在 KMP 以前 —— Hash 匹配</h2>
+        <p>$O(|s|+|t|)$ 预处理前缀 Hash，$O(1)$ 查任意子串 Hash。</p>
+        <sd-animation src="../../animation/KMP概述/Hash匹配.js"
+            style="margin: 0 auto; width: 880px; height: 240px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= len(s) - len(t) + 1; i++) {
+                    if (Hash(t, 1, len(t)) == Hash(s, i, i + len(t) - 1))
+                        找到一个匹配点;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">这能解决匹配，但看不到字符串的<b>"结构"</b><span class="fragment">——而 KMP 在匹配的同时还能给出结构信息。</span></p>
+    </section>
+    <section>
+        <h2>KMP 的思路</h2>
+        <p>KMP 沿用暴力的扫描方式，在它上面做优化。</p>
+        <sd-animation src="../../animation/KMP概述/KMP概览.js"
+            style="margin: 0 auto; width: 880px; height: 220px;"></sd-animation>
+        <p class="fragment">让主串指针只前进不回退；失配时通过<b style="color: red;">合理移动模式串</b>跳过那些显然匹配不上的位置。</p>
+        <p class="fragment quote">怎么知道能跳多少？</p>
+    </section>
+    <section>
+        <h2>失配的利用</h2>
+        <p>设 $t[1..j]$ 已匹配上 $s$ 的某段，$t[j+1]$ 处失配……</p>
+        <sd-animation src="../../animation/KMP概述/失配利用.js"
+            style="margin: 0 auto; width: 880px; height: 260px;"></sd-animation>
+        <p class="fragment">能跳过的距离与 $t[1..j]$ 中<b>前缀等于后缀</b>的最长长度有关。</p>
+        <p class="fragment">记 $\textit{len}_j$ 为 $t[1..j]$ 最长 border 长度；失配时让 $t[\textit{len}_j+1]$ 接着对 $s[i]$。</p>
+    </section>
+    <section>
+        <h2>KMP 匹配</h2>
+        <sd-animation src="../../animation/KMP概述/KMP匹配.js"
+            style="margin: 0 auto; width: 880px; height: 320px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void Match(char* s, char* t, int ls, int lt) {
+                    int j = 0;
+                    for (int i = 1; i <= ls; i++) {
+                        while (t[j + 1] != s[i] && j) j = len[j];
+                        if (t[j + 1] == s[i]) j++;
+                        if (j == lt) 找到一个匹配点;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>构造 $\textit{len}$</h2>
+        <p>让 $t$ 跟自己做一次匹配即可。</p>
+        <sd-animation src="../../animation/KMP概述/KMP自匹配.js"
+            style="margin: 0 auto; width: 880px; height: 320px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void Prepare() {                  // len[1] = 0
+                    int j = 0;
+                    for (int i = 2; i <= n; i++) {
+                        while (t[j + 1] != t[i] && j) j = len[j];
+                        if (t[j + 1] == t[i]) j++;
+                        len[i] = j;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

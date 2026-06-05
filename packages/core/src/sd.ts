@@ -37,6 +37,15 @@ export { Composite } from "@/node/filter/composite";
 export { Blend } from "@/node/filter/blend";
 export { init, inter, main, make1d, make2d, loopUpdate } from "@/utility/base";
 export { color } from "@/utility/color";
+export type {
+  SDAllColor,
+  SDColor,
+  SDHEXColor,
+  SDLiteralColor,
+  SDPacketColor,
+  SDRGBAColor,
+  SDRGBColor,
+} from "@/utility/color";
 export { rand } from "@/utility/random";
 export { input } from "@/utility/reader";
 export { trim } from "@/utility/trim";
