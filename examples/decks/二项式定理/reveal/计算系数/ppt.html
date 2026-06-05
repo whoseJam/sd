@@ -1,17 +1,16 @@
 <section>
     <section>
         <h1>计算系数</h1>
+        <p>luogu P1313</p>
     </section>
-    <problem data-problemset="luogu" data-problemid="P1313"></problem>
     <section>
-        <h2>计算系数</h2>
+        <h2>展开 + 代回</h2>
         <p>
             $$
-            (by+ax)^k=\sum_{i=0}^k C_k^i (by)^i (ax)^{k-i}
+            (a x + b y)^k = \sum_{i = 0}^{k} C_k^i (a x)^i (b y)^{k - i}
             $$
         </p>
-        <p>求 $x^ny^m$ 前面的系数</p>
-        <p class="fragment">其中 $k\le 1000$，暴力递推出组合数，带入可知系数为 $C_k^m a^n b^m$</p>
+        <p class="fragment">求 $x^n y^m$ 的系数 — 取 $i = n$，系数 $= C_k^n a^n b^m$。</p>
         <codeblock class="fragment">
             <script type="text/template">
                 cin >> A >> B >> K >> N >> M; Pre();
