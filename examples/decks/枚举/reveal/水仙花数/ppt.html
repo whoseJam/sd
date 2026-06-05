@@ -1,0 +1,37 @@
+<section>
+    <section>
+        <h1>水仙花数</h1>
+    </section>
+    <section>
+        <h2>水仙花数</h2>
+        <p>求所有三位数 $\overline{abc}$ 满足 $a^3 + b^3 + c^3 = \overline{abc}$。</p>
+    </section>
+    <section>
+        <h2>水仙花数</h2>
+        <p>样本空间取 $[100, 999]$，逐个检查。</p>
+        <sd-animation src="../../animation/水仙花数/样本空间1.js" class="fragment"
+            style="margin: 0 auto; width: 760px; height: 240px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int abc = 100; abc <= 999; abc++)
+                    if (check(abc)) 找到了一个水仙花数;
+            </script>
+        </codeblock>
+        <p class="fragment">缺点：得从 $\overline{abc}$ 里把百/十/个位拆出来。</p>
+    </section>
+    <section>
+        <h2>水仙花数</h2>
+        <p>等价地，把样本空间分解为 $a \times b \times c$。</p>
+        <sd-animation src="../../animation/水仙花数/样本空间2.js" class="fragment"
+            style="margin: 0 auto; width: 760px; height: 260px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int a = 1; a <= 9; a++)
+                    for (int b = 0; b <= 9; b++)
+                        for (int c = 0; c <= 9; c++)
+                            if (check(a, b, c)) 找到了一个水仙花数;
+            </script>
+        </codeblock>
+        <p class="fragment">同一个样本空间，换一种枚举方式。</p>
+    </section>
+</section>
