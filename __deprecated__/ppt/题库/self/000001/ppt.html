@@ -1,0 +1,84 @@
+<section>
+    <section>
+        <h1>区间删除</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000001"></problem>
+    <section>
+        <h2>区间删除</h2>
+        <p>对于 $10\%$ 的数据，$n\le 10$ 并且 $a_i\le 10$</p>
+        <p class="fragment">暴力枚举区间，把两边乘起来，检查末尾有多少个 $0$，是否符合要求</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int l = 1; l <= n; l++) {
+                    for (int r = l; r <= n; r++) {
+                        ll tmp = 1;
+                        for (int i = 1; i < l; i++) tmp *= a[i];
+                        for (int i = r + 1; i <= n; i++) tmp *= a[i];
+                        if (zeroCount(tmp) >= k) ans++;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>区间删除</h2>
+        <p>对于 $30\%$ 的数据，$n\le 100$</p>
+        <p class="fragment">容易发现末尾有多少个 $0$，取决于乘数中因子 $2$ 的个数和因子 $5$ 的个数</p>
+        <sd-animation src="./区间删除.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">假设整个数组有 $tot_2$ 个因子 $2$，有 $tot_5$ 个因子 $5$</p>
+        <p class="fragment">枚举一个待删除的区间 $[l,r]$，设这个区间内有 $cnt_2$ 个因子 $2$，有 $cnt_5$ 个因子 $5$</p>
+        <p class="fragment">删掉该区间后剩下的数字的乘积的末尾的 $0$ 的个数，就应该为：
+            $$
+            min(tot_2 - cnt_2, tot_5 - cnt_5)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>区间删除</h2>
+        <codeblock>
+            <script type="text/template">
+                for (int l = 1; l <= n; l++) {
+                    for (int r = l; r <= n; r++) {
+                        int cnt2 = 0, cnt5 = 0;
+                        for (int i = l; i <= r; i++) {
+                            把 a[i] 中因子 2 的个数加到 cnt2
+                            把 a[i] 中因子 5 的个数加到 cnt5
+                        }
+                        if (min(tot2 - cnt2, tot5 - cnt5) >= k) ans++;
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">时间复杂度 $O(n^3|多一点|)$</p>
+    </section>
+    <section>
+        <h2>区间删除</h2>
+        <p>对于 $50\%$ 的数据，$n\le 1000$</p>
+        <p class="fragment">显然我们可以预处理因子 $2$ 个数的前缀和，以及因子 $5$ 个数的前缀和</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int l = 1; l <= n; l++) {
+                    for (int r = l; r <= n; r++) {
+                        // 通过前缀和快速计算一段区间内的因子 2 和因子 5 个数的个数
+                        int cnt2 = sum2[r] - sum2[l - 1];
+                        int cnt5 = sum5[r] - sum5[l - 1];
+                        if (min(tot2 - cnt2, tot5 - cnt5) >= k) ans++;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>区间删除</h2>
+        <p>对于 $100\%$ 的数据，$n,k\le 10^5$ 且 $a_i\le 10^9$</p>
+        <sd-animation src="./二分.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">当中间删掉的数字越多，留下的数字的乘积的末尾的 $0$ 的个数就越少，这个东西具有单调性</p>
+        <p class="fragment">所以我们可以对于每个左端点，二分找到<b style="color: purple;">其能删掉的最右端点</b>，直接得到可行区间数量</p>
+        <ul>
+            <li class="fragment">用二分实现，时间复杂度 $O(nlogn)$，可以通过本题</li>
+            <li class="fragment">更进一步，还能用双指针实现，时间复杂度 $O(n)$，亦可通过本题</li>
+        </ul>
+    </section>
+</section>

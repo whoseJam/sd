@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>青蛙的约会</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1516"></problem>
+    <section>
+        <h2>青蛙的约会</h2>
+        <p>两只青蛙在一条长 $L$ 的环形数轴上同向而行，一只青蛙 $A$ 从 $x$ 出发，每个单位时间跳 $m$ 个单位距离；一个青蛙 $B$ 从 $y$ 点出发，每个单位时间跳 $n$ 个单位距离</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>现在需要求出两只青蛙在几个单位时间后恰好第一次到达相同的位置上，或者判断它们永远无法相遇</p>
+    </section>
+    <section>
+        <h2>青蛙的约会</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>假设两只青蛙在 $t$ 个单位时间后相遇</p>
+        <ul>
+            <li class="fragment">青蛙 $A$ 的坐标应该为 $(x+tm)\% L$</li>
+            <li class="fragment">青蛙 $B$ 的坐标应该为 $(y+tn)\% L$</li>
+        </ul>
+        <p class="fragment">所以有
+            $$
+            \begin{aligned}
+            x+tm\equiv y+tn(mod\ L) \\
+            (n-m)t\equiv x-y(mod\ L)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

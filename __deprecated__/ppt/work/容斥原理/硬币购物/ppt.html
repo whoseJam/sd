@@ -1,0 +1,55 @@
+<section>
+    <section>
+        <h1>硬币购物</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1450"></problem>
+    <section>
+        <h2>硬币购物</h2>
+        <p>先考虑一个弱化版的问题，假设我有 $4$ 种面值的硬币，想要购买价值 $s$ 的物品，每种硬币可以<b>无限次使用</b>，有多少种付款方式</p>
+        <p class="fragment">这显然是一个完全背包问题</p>
+        <ul>
+            <li class="fragment">设 $f(i)$ 表示面值 $i$ 能被多少种方案凑出来</li>
+            <li class="fragment">每次询问一个 $s$，就输出 $f(s)$</li>
+            <li class="fragment">时间复杂度 $O(maxS+n)$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>硬币购物</h2>
+        <p>但现在硬币并非可以无限次使用的</p>
+        <p class="fragment">我们稍微让购物变难一点<span class="fragment">，假设只有第一种硬币有限制 $c_1$，别的硬币都还可以无限次使用</span></p>
+        <ul>
+            <li class="fragment">我们沿用完全背包求出来的数组 $\{f\}$</li>
+            <li class="fragment">由于硬币 $1$ 最多只能使用 $c_1$ 次，而 $f(s)$ 所记录的方案数中没有对硬币 $1$ 的使用次数做任何限定，所以 $f(s)$ 内一定包含某些不合法的方案</li>
+            <li class="fragment">如果一个方案使用了 $c_1+1,c_1+2,c_1+3,...$ 枚硬币 $1$，那么这个方案就不合法</li>
+            <li class="fragment">如果一个方案使用了<b>至少</b> $c_1+1$ 枚硬币 $1$，那么这个方案就不合法</li>
+        </ul>
+        <p class="fragment">
+            $$
+            不合法的方案数=f(s-d_1(c_1+1))
+            $$
+        </p>
+        <p class="fragment quote">
+            $f(s-d_1(c_1+1))$ 里面的方案可能合法，可能不合法；我们在其基础上又增加了 $c_1+1$ 枚硬币 $1$，就让每一种方案变得一定不合法了
+        </p>
+        <p class="fragment">现在我们能算，在某个硬币的限制<b>一定被打破</b>的情况下的面值组合方案数了</p>
+    </section>
+    <section>
+        <h2>硬币购物</h2>
+        <p>
+            $$
+            \begin{aligned}
+            不合法的方案数=&某一个硬币的限制被打破的方案数+\\
+            &某两个硬币的限制被打破的方案数-\\
+            &某三个硬币的限制被打破的方案数+\\
+            &四个硬币的限制全被打破的方案数
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            合法的方案数=总方案数f(s)-不合法的方案数
+            $$
+        </p>
+        <p class="fragment">本题其实是一个第一类容斥原理加上一个第二类容斥原理</p>
+    </section>
+</section>

@@ -1,0 +1,61 @@
+<section>
+    <section>
+        <h1>历史的研究</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/AT_joisc2014_c"></problem>
+    <section>
+        <h2>历史的研究</h2>
+        <p>连续 $N$ 天，每天都有发生事件，第 $i$ 天发生的事件的种类为 $X_i$</p>
+        <p class="fragment quote">$X_i$ 越大，就认为事件的规模越大</p>
+        <p class="fragment">我们将多次选择连续的若干天 $[L,R]$ 进行分析</p>
+        <p class="fragment">
+            定义事件 $A$ 的重要程度 $W_A=A\times T_A$，其中 $T_A$ 表示该时间在 $[L,R]$ 中出现的次数
+        </p>
+        <p class="fragment">你需要回答每次分析区间中重要度最大的事件，并输出其重要度</p>
+    </section>
+    <section>
+        <h2>历史的研究</h2>
+        <p>区间延长的时候很好维护</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Add(int i) {
+                    T[X[i]]++;                      // 事件 X[i] 多出现了一次
+                    ans = max(ans, X[i] * T[X[i]]); // 用 X[i] 的重要度更新答案
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">但区间变短的时候，如果最大值发生了改变，我们并不方便 $O(1)$ 维护次大值是多少</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Del(int i) {
+                    if (ans == X[i] * T[X[i]]) {
+                        新的 ans 应该是多少呢？
+                    }
+                    T[X[i]]--;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">此时就能用回滚莫队</p>
+    </section>
+    <section>
+        <h2>历史的研究</h2>
+        <sd-animation src="../回滚莫队/回滚.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                for (左端点落在 blockId 块内的询问 Q[i]) {
+                    if (右端点也落在 blockId 块内) 暴力计算答案
+                    else {
+                        while (r <= Q[i].r) r++, Add(r);
+                        int R = blockId 块内的最后一个元素;
+                        int last = ans;
+                        for (int i = R; i >= Q[i].l; i--) Add(l);
+                        计算 Q[i] 的答案为 ans
+                        for (int i = R; i >= Q[i].l; i--) T[X[i]]--;
+                        ans = last;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,17 @@
+基础树状数组：
+#731.序列和：https://www.luogu.com.cn/problem/P2068
+
+统计偏序对：
+#843.夜空星辰：http://poj.org/problem?id=2352
+#845.逆序对：https://www.luogu.com.cn/problem/P1908
+#851.五元组问题：http://43.143.204.105/problem/851
+#470.HH的项链：https://www.luogu.com.cn/problem/P1972
+
+树状数组维护差分数组：
+#848.Color the Ball：https://acm.hdu.edu.cn/showproblem.php?pid=1556
+#849.区间操作：http://poj.org/problem?id=3468
+#904.区间操作plus：http://43.143.204.105/problem/904
+
+Min/Max/Xor树状数组：
+#850.密码机：http://43.143.204.105/problem/850
+

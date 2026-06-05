@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>拿水果</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000009"></problem>
+    <section>
+        <h2>拿水果</h2>
+        <ul>
+            <li>$A$ 拿 $2$ 的倍数个</li>
+            <li>$B$ 拿 $5$ 的倍数个</li>
+            <li>$C$ 最多拿 $4$ 个</li>
+            <li>$D$ 最多拿 $1$ 个</li>
+        </ul>
+        <p class="fragment">对四种水果进行组合，将它们的生成函数相乘</p>
+        <p class="fragment math-fragment">
+            \begin{aligned}
+            A&=1+x^2+x^4+x^6+...=\frac{1}{1-x^2} \\
+            B&=1+x^5+x^{10}+x^{15}+...=\frac{1}{1-x^5} \\
+            C&=1+x+x^2+x^3+x^4 \\
+            D&=1+x
+            \end{aligned}
+        </p>
+        <p class="fragment">
+            $$
+            G=A\times B\times C\times D=\frac{1}{(1-x)^2}
+            $$
+        </p>
+        <p class="fragment">相当于两个箱子，每个箱子里面可以取 $\{0,1,2,3,...\}$ 个小球，一共要取出 $N$ 个小球来，求方案数<span class="fragment">——显然是 $N+1$</span></p>
+    </section>
+    <section>
+        <h2>拿水果</h2>
+        <p class="quote">这个题只是为了带领大家领略生成函数的威力，接下来为了系统性学习生成函数，我们要补充很多知识点</p>
+    </section>
+</section>

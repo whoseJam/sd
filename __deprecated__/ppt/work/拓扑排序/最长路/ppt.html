@@ -1,0 +1,47 @@
+<section>
+    <section>
+        <h1>最长路</h1>
+        <p>有向无环图最长路</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1807"></problem>
+    <section>
+        <h2>最长路</h2>
+        <p>求一个有向无环图中，从 $1$ 到 $n$ 的最长路</p>
+        <p class="fragment">设 $dis(u)$ 表示从节点 $1$ 走到节点 $u$ 的最长路...</p>
+        <sd-animation src="./最长路.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">
+            $$
+            dis(u)+w_{u,v}\stackrel{max}{\rightarrow} div(v)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>最长路</h2>
+        <p>需要处理的细节</p>
+        <ul>
+            <li class="fragment">可能有多个入度为 $0$ 的点</li>
+            <li class="fragment">起点入度不一定为 $0$</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Toposort() {
+                    queue < int > q;
+                    for (int i = 1; i <= n; i++) dis[i] = -inf;
+                    dis[1] = 0;
+                    for (int i = 1; i <= n; i++)
+                        if (!ind[i]) q.push(i);
+                    while (q.size()) {
+                        int u = q.front(); q.pop();
+                        for (auto& link : G[u]) {
+                            int v = link.to;
+                            int w = link.value;
+                            if (dis[u] != -inf) dis[v] = max(dis[v], dis[u] + w);
+                            if (!(--ind[v])) q.push(v);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

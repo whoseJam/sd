@@ -1,0 +1,147 @@
+<section>
+    <section>
+        <h1>莫比乌斯函数 $\mu$</h1>
+        <p>又是一个积性函数</p>
+    </section>
+    <section>
+        <h2>莫比乌斯函数</h2>
+        <p>$\mu(n)$ 定义如下</p>
+        <ul>
+            <li class="fragment">如果 $n$ 存在两个相同的质因子，则 $\mu(n)=0$，例如 $12=2\times 2\times 3$</li>
+            <li class="fragment">否则，设 $n$ 由 $k$ 种不同的质因子构成，即 $n=p_1p_2...p_k$，则 $\mu(n)=(-1)^k$</li>
+        </ul>
+        <p class="fragment quote">对于 $1$ 来说，我们认为它有 $0$ 个质因子，所以 $\mu(1)=(-1)^0=1$</p>
+    </section>
+    <section>
+        <h2>莫比乌斯函数</h2>
+        <p>当 $p$ 是质数时，显然 $\mu(p)=-1$</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                如果 i 是质数
+                prim[++tot] = i;
+                mu[i] = -1;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>莫比乌斯函数</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中不包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+            $$x=p_1p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$\mu(i)=\mu(p_2^{a_2})\mu(p_3^{a_3})...\mu(p_n^{a_n})$$
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \mu(x)&=\mu(p_1)\mu(p_2^{a_2})\mu(p_3^{a_3})...\mu(p_n^{a_n})\\
+            &=(-1)\mu(p_2^{a_2})\mu(p_3^{a_3})...\mu(p_n^{a_n})
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] != 0 时
+                mu[x] = -mu[i];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>莫比乌斯函数</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_1^{a_1}p_2^{a_2}...p_n^{a_n}$$
+            $$x=p_1^{a_1+1}p_2^{a_2}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$\mu(i)=\mu(p_1^{a_1})\mu(p_2^{a_2})...\mu(p_n^{a_n})$$
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \mu(x)&=\mu(p_1^{a_1+1})\mu(p_2^{a_2})...\mu(p_n^{a_n})\\
+            &=0
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] == 0 时
+                mu[x] = 0;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>莫比乌斯函数</h2>
+        <codeblock>
+            <script type="text/template">
+                void Sieve(int n = 100000) {
+                    mu[1] = 1;
+                    for (int i = 2; i <= n; i++) {
+                        if (!vis[i]) mu[prim[++tot] = i] = -1;
+                        for (int j = 1; j <= tot && i * prim[j] <= n; j++) {
+                            vis[i * prim[j]] = 1;
+                            if (i % prim[j] == 0) {
+                                mu[i * prim[j]] = 0;
+                                break;
+                            } else mu[i * prim[j]] = mu[i] * (-1);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+
+    <section>
+        <h2>莫比乌斯函数重要性质</h2>
+        <p>
+            $$
+            [n=1]=\sum_{d|n}\mu(d)
+            $$
+        </p>
+        <p class="fragment">
+            当 $n=1$ 时，左侧 $[n=1]=1$，右侧 $\sum_{d|1}\mu(d)=\mu(1)=1$，等式显然满足
+        </p>
+        <p class="fragment">
+            当 $n\gt 1$ 时，我们设 $n=p_1^{a_1}p_2^{a_2}...p_k^{a_k}$
+            <span class="fragment">，我们可以从这 $k$ 种质因子中<b>任选 $r$ 种出来，提供恰好一个质因子</b>，构成一个因子 $d=p_{i_1}p_{i_2}...p_{i_r}$</span>
+            <span class="fragment">，并且我们知道 $\mu(d)=(-1)^r$，且我能选出 $C_k^r$ 种本质不同的 $d$</span>
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \sum_{d|n}\mu(d)&=\sum_{r=0}^k(-1)^rC_k^r\\
+            &=\sum_{r=0}^k(-1)^r 1^{k-r} C_k^r \\
+            &=(1-1)^k \\
+            &=0
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>莫比乌斯函数重要性质</h2>
+        <p>上述重要性质是莫比乌斯反演的一种特殊形式，但一般来说也就会用到这种特殊形式</p>
+        <p>莫比乌斯反演告诉我们
+            $$
+            f(n)=\sum_{d|n}g(d) \Rightarrow g(n)=\sum_{d|n}f(d)\mu(\frac{n}{d})
+            $$
+        </p>
+        <div class="fragment">
+            取
+            <li>$f(x)=1$</li>
+            <li>$g(x)=[x=1]$</li>
+        </div>
+        <p class="fragment">经验证
+            $$
+            f(n)=1=\sum_{d|n}[d=1]=\sum_{d|n}g(d)
+            $$
+        </p>
+        <p class="fragment">所以
+            $$
+            [n=1]=g(n)=\sum_{d|n}f(d)\mu(\frac{n}{d})=\sum_{d|n}\mu(\frac{n}{d})
+            $$
+        </p>
+    </section>
+</section>

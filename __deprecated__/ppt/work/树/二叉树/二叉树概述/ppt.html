@@ -1,0 +1,92 @@
+<section>
+    <section>
+        <h1>二叉树的表述</h1>
+        <p>或者 $k$ 叉树的表示</p>
+    </section>
+    <section>
+        <h2>二叉树</h2>
+        <p>二叉树是保证了每个节点最多有 $2$ 子节点的树</p>
+        <p class="fragment">那么完全可以用一个 $n\times 2$ 的数组来保存每个节点的左儿子和右儿子</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int ch[N][2];
+            </script>
+        </codeblock>
+        <p class="fragment">同理，如果是 $k$ 叉树，则可以用一个 $n\times k$ 的数组来保存每个节点的所有儿子</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int ch[N][K];
+            </script>
+        </codeblock>
+    </section>
+
+    <section>
+        <h2>存储一棵二叉树</h2>
+        <codeblock>
+            <script type="text/template">
+                int son[N][2];
+                for (int i = 1; i <= n; i++) {
+                    cin >> son[i][0] >> son[i][1];
+                }
+            </script>
+        </codeblock>
+        <sd-animation src="./完全二叉树.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>满二叉树</h2>
+        <sd-animation src="./满二叉树.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>完全二叉树</h2>
+        <sd-animation src="./完全二叉树.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">在一棵二叉树中，只有最下面两层节点的度可以小于2，并且最下层的叶节点集中在靠左的若干位置上</p>
+    </section>
+    <section>
+        <h1>遍历二叉树</h1>
+    </section>
+    <section>
+        <h2>前序遍历</h2>
+        <codeblock>
+            <script type="text/template">
+                void Dfs(int u) {
+                    cout << u << ' ';
+                    if (son[u][0]) Dfs(son[u][0]);
+                    if (son[u][1]) Dfs(son[u][1]);
+                }
+            </script>
+        </codeblock>
+        <sd-animation src="./二叉树的前序遍历.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>中序遍历</h2>
+        <codeblock>
+            <script type="text/template">
+                void Dfs(int u) {
+                    if (son[u][0]) Dfs(son[u][0]);
+                    cout << u << ' ';
+                    if (son[u][1]) Dfs(son[u][1]);
+                }
+            </script>
+        </codeblock>
+        <sd-animation src="./二叉树的中序遍历.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>后序遍历</h2>
+        <codeblock>
+            <script type="text/template">
+                void Dfs(int u) {
+                    if (son[u][0]) Dfs(son[u][0]);
+                    if (son[u][1]) Dfs(son[u][1]);
+                    cout << u << ' ';
+                }
+            </script>
+        </codeblock>
+        <sd-animation src="./二叉树的后序遍历.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+</section>

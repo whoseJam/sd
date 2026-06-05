@@ -1,0 +1,80 @@
+<section>
+    <section>
+        <h1>区间的价值</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000002"></problem>
+    <section>
+        <h2>区间的价值</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{1\le l\le r\le n}f(l,r) \\
+            &=\sum_{1\le l\le r\le n}\big(\mathop{min}\limits_{l\le i\le r}(a_i)\times \sum_{l\le i\le r}b_i \big) \\
+            &=\sum_{a}a\times \sum_{1\le l\le r\le n}[[l,r]区间的最小值确实为a]\sum_{l\le i\le r}b_i
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>区间的价值</h2>
+        <sd-animation src="./区间最小值.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p style="margin-top: -20px;">对每个点 $i$</p>
+        <ul>
+            <li>找到其左边的第一个比自己小的位置 $+1$，作为 $L_i$</li>
+            <li>找到其右边的第一个比自己小或者相等的位置 $-1$，作为 $R_i$</li>
+            <li>那么，对于 $l\in [L_i,i]$，$r\in [i,R_i]$ 的所有区间来说，它们的区间最小值都应该是 $a_i$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>区间的价值</h2>
+        <p>
+            $$
+            \begin{aligned}
+            answer&=\sum_{a}a\times \sum_{1\le l\le r\le n}[[l,r]区间的最小值确实为a]\sum_{l\le i\le r}b_i \\
+            &=\sum_{i=1}^na_i\times \sum_{L_i\le l\le i\\i\le r\le R_i}\sum_{l\le j\le r}b_j
+            \end{aligned}
+            $$
+        </p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    int sum = 0;
+                    for (int l = L[i]; l <= i; l++) {
+                        for (int r = i; r <= R[i]; r++) {
+                            for (int j = l; j <= r; j++) {
+                                sum += b[j];
+                            }
+                        }
+                    }
+                    ans = ans + sum * a[i];
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>区间的价值</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{i=1}^na_i\times \sum_{L_i\le l\le i\\i\le r\le R_i}\sum_{l\le j\le r}b_j \\
+            &=\sum_{i=1}^na_i\sum_{L_i\le j\le R_i}b_j[有多少个区间完整包含了b_j] \\
+            &=\sum_{i=1}^na_i\big(\sum_{L_i\le j\le i}b_j(j-L_i+1)(R_i-i+1)+\sum_{i\lt j\le R_i}b_j(i-L_i+1)(R_i-j+1)\big)
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // sm0 维护的是 b[i] 的前缀和
+                // sm1 维护的是 i * b[i] 的前缀和
+                for (int i = 1; i <= n; i++) {
+                    ll l0 = a[i] * (R[i] - i + 1) * (sm0[i] - sm0[L[i] - 1]) * (-L[i] + 1);
+                    ll l1 = a[i] * (R[i] - i + 1) * (sm1[i] - sm1[L[i] - 1]);
+                    ll r0 = a[i] * (i - L[i] + 1) * (sm0[R[i]] - sm0[i]) * (R[i] + 1);
+                    ll r1 = a[i] * (i - L[i] + 1) * (sm1[R[i]] - sm1[i]) * (-1);
+                    ans = (ans + l0 + l1 + r0 + r1);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

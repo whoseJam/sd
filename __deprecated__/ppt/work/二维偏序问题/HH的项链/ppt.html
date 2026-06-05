@@ -1,0 +1,55 @@
+<section>
+    <section>
+        <h1>HH的项链</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1972"></problem>
+    <section>
+        <h2>HH的项链</h2>
+        <p>给出一个数组，多次询问一个区间内<b>有多少种</b>数字</p>
+    </section>
+    <section>
+        <h2>HH的项链</h2>
+        <p class="quote">如何表示一段区间内的不同数字的数量？能不能用数学的语言表述呢？</p>
+        <p class="fragment">当我们对一段区间的数字种类进行统计的时候，假设想要统计 $a_i$，干扰统计的因素是这段区间内与 $a_i$ 相同的数字<span class="fragment">——我们不希望它们被统计多次</span></p>
+        <p class="fragment quote">不妨考虑在每种数字在子区间内<b style="color: purple;">第一次出现</b>的位置上做统计</p>
+        <p class="fragment">记录 <ruby>$p_i$<rt>prev</rt></ruby> 表示和 $a_i$ 相同的上一个数字的位置，如果 $i$ 左边没有和 $a_i$ 相同的数字了，则 $p_i=0$</p>
+        <div style="display: flex; align-items: center;">
+            <sd-animation src="./HH的项链.js" class="fragment"
+                style="width: 1000px; height: 200px;"></sd-animation>
+            <div>
+                <p class="fragment">对于一次询问 $[L_j,R_j]$ 来说，不同数字的数量即为
+                    $$
+                    \sum_{L_j\le i\le R_j}[p_i\lt L_j]
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>HH的项链</h2>
+        <p>对于第 $j$ 次询问 $(L_j,R_j)$，你需要统计有多少个 $i$ 满足</p>
+        <p>
+            $$
+            \begin{cases}
+            L_j\le i\le R_j \\
+            p_i\lt L_j
+            \end{cases}
+            $$
+        </p>
+        <sd-animation src="./HH的项链坐标轴.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>HH的项链</h2>
+        <p>
+            $$
+            \begin{cases}
+            L_j\le i\le R_j \\
+            p_i\lt L_j
+            \end{cases}
+            $$
+        </p>
+        <sd-animation src="./计算过程.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+</section>

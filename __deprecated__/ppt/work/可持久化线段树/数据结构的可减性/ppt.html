@@ -1,0 +1,115 @@
+<section>
+    <section>
+        <h1>数据结构的可减性</h1>
+    </section>
+    <section>
+        <h2>操作视角</h2>
+        <p>我们之前定义了数据结构与操作的加法，一个数据结构 $S$ 可以通过加上一个操作 $M$ 演变成另一个数据结构 $S'$，即：
+            $$
+            S'=S+M
+            $$
+        </p>
+        <p class="fragment">如果数据结构能相加，那我能不能定义数据结构的减法呢？</p>
+    </section>
+    <section>
+        <h2>数据结构可减性的意义</h2>
+        <p>
+        如果我们能定义出数据结构的减法，那么假设一个数据结构经历了 $k$ 次操作：
+        $$
+        S_0\stackrel {M_1}{\rightarrow} S_1 \stackrel{M_2}{\rightarrow} S_2 \stackrel{M_3}{\rightarrow}...\stackrel{M_k}{\rightarrow} S_k
+        $$
+        </p>
+        <p class="fragment">$$T=S_R-S_{L-1}=M_{L}+M_{L+1}+...+M_{R}$$</p>
+        <p class="fragment">
+            $$
+            S'=S_0+T
+            $$
+        </p>
+        <p class="fragment">让一个空数据结构 $S_0$ 加上 $T$，就能<b>重播 $M_L,M_{L+1}...M_R$ 这个范围内的操作</b></p>
+        <sd-animation src="./数据结构可减性的意义.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>数据结构的可减性</h2>
+        <p class="quote">一个操作的本质是什么？</p>
+        <p class="fragment">一个操作 $M$ 可能会对数据结构 $S$ 的每个内部元素都产生一个<b>影响</b></p>
+        <p class="fragment quote">如果某个内部元素没有被影响到，我们也可以认为是产生了一个变化量为 $0$ 的影响</p>
+        <div class="fragment quote">
+            <span>假设 $S$ 是一个数组，包含 $\{e_1,e_2,e_3,e_4,e_5,e_6\}$ 这 $6$ 个元素， $M$ 是一个区间加法</span>
+            <sd-animation src="./数组操作.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
+        </div>
+    </section>
+    <section>
+        <h2>数据结构的可减性</h2>
+        <p>所以一个<b>操作</b>和一个<b>数据结构</b>是<b>同构</b>的</p>
+        <p class="fragment">$S$ 内部有 $k$ 个元素，则 $M$ 内部也有 $k$ 个元素，不过 $S$ 存储的是每个元素的<b>具体数据</b>，而 $M$ 内部存储的是每个元素的<b>变化情况</b></p>
+        <p class="fragment">我们把 $S$ 内的第 $i$ 个元素写作 $S(i)$，$M$ 内的第 $i$ 个元素写作 $M(i)$</p>
+    </section>
+    <section>
+        <h2>数据结构的可减性</h2>
+        <p>我们如下严谨地定义数据结构与操作的加法操作，如果$S'=S+M$，这个数据结构内的元素数量共 $k$ 个，则对于任意 $i\in [1,k]$ 有：
+            $$
+            S'(i)=S(i)\oplus M(i)
+            $$
+        </p>
+        <p class="fragment">这里的 $\oplus$ 是广义加法</p>
+        <p class="fragment quote">我们对整数数组做区间加法操作，那么这里的 $\oplus$ 就是 $+$</p>
+        <p class="fragment quote">我们对整数数组做区间赋值操作，那么这里的 $\oplus$ 就是<b>赋值</b>，即 $a\oplus b=b$</p>
+        <p class="fragment quote">我们对矩阵数组做区间乘一个矩阵的操作，那么这里的 $\oplus$ 就是矩阵乘法</p>
+    </section>
+    <section>
+        <h2>数据结构的可减性</h2>
+        <p>我们分析一个操作的性质，如果这个操作 $M$ 对数据结构 $S$ 的影响是：
+            $$
+            S'(i)=S(i)\oplus M(i)
+            $$
+        </p>
+        <p>并且存在一种逆运算 $\ominus$，使得 $S'(i)\ominus S(i)=M(i)$ 对于任意 $i\in [1,k]$ 恒成立，且 $\oplus$ 和 $\ominus$ 满足交换律，那么我们就说这种操作是<b>可减的</b></p>
+        <div class="fragment quote">
+            $$
+            \begin{aligned}
+            A\oplus B&=B\oplus A \\
+            A\ominus B\ominus C&=A\ominus C\ominus B
+            \end{aligned}
+            $$
+        </div>
+        <p class="fragment quote">之所以需要满足交换律，是因为我们需要利用交换律的性质完成一个操作区间内的操作的<b>提取</b>，这个性质在证明过程中会被使用到</p>
+    </section>
+
+    <section>
+        <h2>数据结构的可减性</h2>
+        <sd-animation src="./数据结构的可减性其一.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
+        <p class="fragment">区间加法操作具有可减性</p>
+    </section>
+    <section>
+        <h2>数据结构的可减性</h2>
+        <sd-animation src="./数据结构的可减性其二.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
+        <p class="fragment">区间赋值操作没有可减性</p>
+    </section>
+
+    <section>
+        <h2>数据结构的可减性</h2>
+        <p>有了操作的可减性，再配合上可持久化的数据结构，我们就能找到任意一个操作区间 $M_L,M_{L+1}...M_R$ 了，我们取 $S_R$ 和 $S_{L-1}$，则：</p>
+        <p class="fragment">
+            $$
+            S_{L-1}=\{S_0(i)\oplus M_1(i)\oplus...\oplus M_{L-1}(i)|i\in [1,k]\}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            S_{R}=\{S_0(i)\oplus M_1(i)\oplus...\oplus M_{R}(i)|i\in [1,k]\}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            S_R-S_{L-1}&=\{S_0(i)\oplus M_1(i)\oplus...\oplus M_{R}(i)\ominus [S_0(i)\oplus M_1(i)\oplus...\oplus M_{L-1}(i)]|i\in [1,k]\} \\
+            &=\{M_{L}(i)\oplus M_{L+1}(i)\oplus ...\oplus M_R(i)|i\in [1,k]\}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

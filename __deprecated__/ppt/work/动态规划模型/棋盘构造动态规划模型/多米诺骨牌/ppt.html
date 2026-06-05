@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>多米诺骨牌</h1>
+    </section>
+    <problem data-source="https://acm.hdu.edu.cn/showproblem.php?pid=1400"></problem>
+    <section>
+        <h2>多米诺骨牌</h2>
+        <p>在 $N\times M$ 的棋盘内填充 $1\times 2$ 或者 $2\times 1$ 的骨牌，求方案数</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>多米诺骨牌</h2>
+        <p>我们逐行构造棋盘，并把网格分成两类</p>
+        <ul>
+            <li>该网格已被来自上一行/当前行的骨牌覆盖<span class="fragment">，设该状态为 $1$</span></li>
+            <li>该网格尚未被来自上一行/当前行的骨牌覆盖，那么一定要在这个网格上放一块竖着的骨牌<span class="fragment">，设该状态为 $0$</span></li>
+        </ul>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f_{i,S}\rightarrow f_{i+1,T},S与T能构成相邻两行
+            $$
+        </p>
+    </section>
+</section>

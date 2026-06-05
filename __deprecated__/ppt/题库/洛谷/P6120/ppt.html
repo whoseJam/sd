@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>Hoof, Paper, Scissor</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P6120"></problem>
+    <section>
+        <h2>Hoof, Paper, Scissor</h2>
+        <sd-animation src="./手势.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <p>允许变换一次手势，相当于 $n$ 轮对抗会被划分成两部分，前面一部分是一个手势，后面一部分是另一个手势</p>
+        <p class="fragment">不妨枚举前后两部分的分界点在哪里</p>
+        <p class="fragment">贪心来讲，我们只需要分别让前一半获胜最多和后一半获胜最多即可</p>
+        <p class="fragment">最多获胜次数和<b>这一半内对手出的最多手势</b>有关</p>
+        <p class="fragment">我们可以对每种手势做一个前缀和，从而快速得到一个区间内出现次数最多的手势</p>
+        <p class="fragment">时间复杂度 $O(n)$</p>
+    </section>
+</section>

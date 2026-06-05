@@ -1,0 +1,84 @@
+<section>
+    <section>
+        <h1>Emiya家今天的饭</h1>
+        <p>CSP-S2019</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5664"></problem>
+    <section>
+        <h2>Emiya家今天的饭</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li>至少要做一道菜</li>
+            <li>每道菜的烹饪方法互不相同</li>
+            <li>每种食材最多只在一半的菜中被使用</li>
+        </ul>
+        <p class="fragment">求做菜的总方案数</p>
+    </section>
+    <section>
+        <h2>Emiya家今天的饭</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li class="fragment">至少要做一道菜<span class="fragment"> $\Rightarrow$ 至少要从网格图里面选一格出来</span></li>
+            <li class="fragment">每道菜的烹饪方法互不相同<span class="fragment"> $\Rightarrow$ 同一行内，只能选一格出来</span></li>
+            <li class="fragment" style="color: red;">每种食材最多只在一半的菜中被使用</li>
+        </ul>
+        <p class="fragment quote">容易发现，如果我不确定出做菜的总数，那么条件 $3$ 就很难做</p>
+    </section>
+    <section>
+        <h2>Emiya家今天的饭</h2>
+        <p>接下来我们讨论的做菜方案，都是默认满足条件 $1$ 和条件 $2$ 的</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            每种食材最多只在一半的菜中被使用的做菜方案&=所有做菜方案\\
+            &-某种食材出现在超过一半的菜中的做菜方案
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">某种食材使用次数超过一半，那么只有一种食材能实现，不会有两种食材使用次数同时超过一半</p>
+    </section>
+    <section>
+        <h2>Emiya家今天的饭</h2>
+        <p>考虑如何计算所有做菜方案</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li>至少要做一道菜 $\Rightarrow$ 至少要从网格图里面选一格出来</li>
+            <li>每道菜的烹饪方法互不相同 $\Rightarrow$ 同一行内，只能选一格出来</li>
+        </ul>
+        <p class="fragment">设 $s_i=\sum_{j=1}^ma_{i,j}$，也就是第 $i$ 行的做菜方案之和，则答案为：
+            $$
+            \prod_{i=1}^n (s_i+1)-1
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Emiya家今天的饭</h2>
+        <p>考虑如何计算，存在某种食材出现次数超过一半的做菜方案</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">首先枚举具体是哪一种食材出现次数超过了一半，我们称这种食材为<b>禁止食材</b>，假设其对应的列为 $A$</p>
+        <p class="fragment">设 $f_{i,j,k}$ 表示考虑前 $i$ 行，<b>禁止食材</b>对应的菜出现了 $j$ 次，别的食材对应的菜出现了 $k$ 次，有多少种方案</p>
+        <p class="fragment">
+            $$
+            f_{i,j,k}=f_{i-1,j,k}+a_{i,A}f_{i-1,j-1,k}+(s_i-a_{i,A})f_{i-1,j,k-1}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Emiya家今天的饭</h2>
+        <p>我们可以进一步优化状态定义，我们不需要关心 $j$ 和 $k$ 的数值具体是多少，只需要关心它们之间的相对大小即可</p>
+        <ul>
+            <li class="fragment">$j\gt k$<span class="fragment">，$j-k\gt 0$</span><span class="fragment">，说明<b>禁止食材</b>出现次数确实超过了一半</span></li>
+            <li class="fragment">$j\le k$<span class="fragment">，$j-k\le 0$</span><span class="fragment">，说明<b>禁止食材</b>出现次数没有超过一半</span></li>
+        </ul>
+        <p class="fragment">设 $f_{i,t}$ 表示考虑前 $i$ 行，禁止食材出现的次数-别的食材出现的次数等于 $t$ 的情况下，有多少种做菜方案</p>
+        <p class="fragment">
+            $$
+            f_{i,t}=f_{i-1,t}+a_{i,A}f_{i-1,t-1}+(s_i-a_{i,A})f_{i-1,t+1}
+            $$
+        </p>
+    </section>
+</section>

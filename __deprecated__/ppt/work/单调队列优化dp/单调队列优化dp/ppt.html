@@ -1,0 +1,43 @@
+<section>
+    <section>
+        <h1>单调队列优化dp</h1>
+    </section>
+    <section>
+        <h2>单调队列优化dp</h2>
+        <p>假设有这么一类序列 dp</p>
+        <p>
+            $$
+            f(i)=\mathop{max}_{i-t\le j\le i}\{G(j)+H(i)\}
+            $$
+        </p>
+        <ul>
+            <li class="fragment">$G(j)$ 是一个仅和 $j$ 有关，和 $i$ 无关的函数</li>
+            <li class="fragment">$H(i)$ 是一个仅和 $i$ 有关，和 $j$ 无关的函数</li>
+        </ul>
+        <p class="fragment">此时则可以用单调队列优化</p>
+    </section>
+    <section>
+        <h2>单调队列优化dp</h2>
+        <p>
+            $$
+            f(i)=\mathop{max}_{i-t\le j\le i}\{G(j)+H(i)\}
+            $$
+        </p>
+        <p>
+            考虑有两个 $j_1,j_2$ 都满足 $i-t\le j_1,j_2\le i$，其中 $j_1\lt j_2$
+        </p>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <sd-animation src="./优劣性.js"
+                style="width: 500px; height: 400px;"></sd-animation>
+            <div style="width: 50%;">
+                <p class="fragment">
+                    如果 $G(j_1)\le G(j_2)$，那么 $f(i)$ 一定不可能被 $j_1$ 所更新，在这种情况下，<b>$j_1$ 没有任何存在的价值</b>
+                </p>
+                <p class="fragment quote">当然，那些 $j\lt i-t$ 的 $j$ 也是没有任何价值的</p>
+                <p class="fragment">
+                    我们用一个队列来维护那些有价值的 $j$，在排除掉所有没价值的 $j$ 之后，队列在任意时刻一定呈现出单调递减的姿态，此时这个队列就是一个<b style="color: red;">单调队列</b>
+                </p>
+            </div>
+        </div>
+    </section>
+</section>

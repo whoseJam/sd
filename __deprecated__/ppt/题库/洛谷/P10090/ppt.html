@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>幼儿园的新年</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P10090"></problem>
+    <section>
+        <h2>幼儿园的新年</h2>
+        <p>
+            求
+            $$
+            \sum_{x=0}^a\sum_{y=0}^b[n|x+y]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>幼儿园的新年</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{x=0}^a\sum_{y=0}^b[n|x+y] \\
+            &\stackrel{d=x+y}{=}\sum_{n|d}\sum_{x=0}^a[0\le d-x\le b] \\
+            &=\sum_{n|d}|[0,a]\cap[d-b,d]|
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">$[0,a]$ 是一段固定的区间，而 $[d-b,d]$ 是一段变化的区间，可能是 $[n-b,n],[2n-b,2n],[3n-b,3n]...$</p>
+        <sd-animation src="./区间求交1.js" class="fragment"
+            style="width: 1000px; height: 100px;"></sd-animation>
+    </section>
+    <section>
+        <h2>幼儿园的新年</h2>
+        <sd-animation src="./区间求交2.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+</section>

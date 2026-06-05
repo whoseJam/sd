@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>送礼物</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P10484"></problem>
+    <section>
+        <h2>送礼物</h2>
+        <sd-animation src="./送礼物.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <ul>
+            <li class="fragment">搜出左右两侧全部决策可能性并从小到大排序</li>
+            <li class="fragment">双指针扫描，对左边的每个 $i$，定位到 $L_i+R_j\le W$ 的最大的 $j$</li>
+            <li class="fragment">取合法的 $L_i+R_j$ 的最大值</li>
+        </ul>
+    </section>
+</section>

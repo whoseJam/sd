@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>星际竞速</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2469"></problem>
+    <section>
+        <h2>星际竞速</h2>
+        <p>有 $n$ 个行星和 $m$ 条单向星际道路</p>
+        <p class="fragment">每一次旅行可以传送一个起点出发，沿着道路随意行走</p>
+        <p class="fragment">传送到第 $i$ 个行星需要 $A_i$ 个单位时间</p>
+        <p class="fragment">经过道路也需要花费若干单位时间</p>
+        <p class="fragment">可以进行任意次旅行，要求旅行的总时间尽量少的情况下，访问每个行星<b>恰好一次</b></p>
+    </section>
+    <section>
+        <h2>星际竞速</h2>
+        <p>参考有向无环图的路径覆盖建图，每一流决定从当前这个点往哪个<b>“下一跳”</b>走</p>
+        <sd-animation src="./建图.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+</section>

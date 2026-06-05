@@ -1,0 +1,112 @@
+<section>
+    <section>
+        <h1>第三类容斥原理</h1>
+        <p>容斥原理的一般形式</p>
+    </section>
+    <section>
+        <h2>回顾</h2>
+        <p class="fragment quote">第一类容斥原理在干什么？</p>
+        <sd-animation src="../维恩图/一元维恩图.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment quote">第二类容斥原理在干什么？</p>
+        <sd-animation src="../维恩图/三元维恩图.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>第三类容斥原理</h2>
+        <sd-animation src="../维恩图/三元维恩图.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li class="fragment">第一类容斥原理告诉了我们，如何计算维恩图上<b>没有被覆盖</b>的区域的面积</li>
+            <li class="fragment">第二类容斥原理告诉了我们，如何计算维恩图上<b>至少被覆盖一次</b>的区域的面积</li>
+        </ul>
+        <p class="fragment">在这张维恩图上还有很多地方我们没有讨论到</p>
+        <ul>
+            <li class="fragment">如果我想计算<b>恰好被覆盖一次</b>的区域的面积呢？</li>
+            <li class="fragment">如果我想计算<b>至少被覆盖两次</b>的地方的面积呢？</li>
+        </ul>
+        <p class="fragment">第三类容斥原理表示，它能解决一切容斥（不过也最复杂）</p>
+    </section>
+    <section>
+        <h2>拥有恰好 $k$ 种属性的元素个数</h2>
+        <sd-animation src="../维恩图/三元维恩图.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>设全集 $U$ 中的元素有 $n$ 种不同的属性，第 $i$ 种属性称为 $P_i$</p>
+        <p>我们能计算拥有至少 $0,1,2,3,...,n$ 种属性的元素个数</p>
+        <p>我们需要容斥出拥有恰好 $k$ 种属性的元素个数</p>
+    </section>
+    <section>
+        <h2>拥有恰好 $k$ 种属性的元素个数</h2>
+        <div style="display: flex;">
+            <sd-animation src="../维恩图/三元维恩图.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
+            <div style="width: 60%;">
+                <p>设拥有至少 $i$ 种属性的元素对答案的贡献为 $P(i)$</p>
+                <ul>
+                    <li class="fragment">对于 $i\lt k$，$P(i)=0$</li>
+                    <li class="fragment">对于 $i=k$，$P(i)=1$</li>
+                    <li class="fragment">对于 $i\gt k$，这部分元素最终对答案的贡献应该是 $0$，但在我们计算<b>拥有至少 $k$ 种属性的元素</b>时，不小心把它们也算进去了</li>
+                </ul>
+                <p class="fragment" style="margin-bottom: 0px;">$P(k+1)=0-C_{k+1}^kP(k)$</p>
+                <span class="fragment">$P(k+2)=0-C_{k+2}^kP(k)-C_{k+2}^{k+1}P(k+1)$</span>
+                <span class="fragment">$......$</span><br>
+                <span class="fragment">$P(i)=0-\sum_{k\le j\lt i}C_i^jP(j)$</span>
+            </div>
+        </div>
+        <p class="fragment">
+            $$
+            P(i)=[i=k]-\sum_{0\le j\lt i}C_i^jP(j)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>拥有恰好 $k$ 种属性的元素个数</h2>
+        <p>设拥有至少 $i$ 种属性的元素对答案的贡献为 $P(i)$</p>
+        <p>
+            $$
+            P(i)=[i=k]-\sum_{0\le j\lt i}C_i^jP(j)
+            $$
+        </p>
+        <p>这个式子已经可以 $O(n^2)$ 递推出来，对于相当一部分题目来说已经足够了</p>
+        <p class="fragment">不过借助<b>二项式反演</b>，我们也能求出 $\{P_i\}$ 的通项</p>
+        <p class="fragment quote">我们先把二项式反演的结论给出，随后再证明</p>
+    </section>
+    <section>
+        <h2>二项式反演</h2>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <span>$$f(n)=\sum_{i=0}^n(-1)^iC_n^ig(i)$$</span>
+            <span class="fragment">$$\Leftrightarrow$$</span>
+            <span class="fragment">$$g(n)=\sum_{i=0}^n(-1)^iC_n^if(i)$$</span>
+        </div>
+        <div style="display: flex; justify-content: space-around; align-items: center; margin-top: -30px;">
+            <span class="fragment">$$f(n)=\sum_{i=0}^nC_n^ig(i)$$</span>
+            <span class="fragment">$$\Leftrightarrow$$</span>
+            <span class="fragment">$$g(n)=\sum_{i=0}^n(-1)^{n-i}C_n^if(i)$$</span>
+        </div>
+        <div>
+            <span class="fragment">$$P(i)=[i=k]-\sum_{0\le j\lt i}C_i^jP(j)$$</span>
+            <span class="fragment">$$[i=k]=\sum_{0\le j\le i}C_i^jP(j)$$</span>
+            <span class="fragment">$$P(i)=\sum_{0\le j\le i}(-1)^{i-j}C_i^j[j=k]=(-1)^{i-k}C_i^k$$</span>
+        </div>
+        <p class="fragment quote">这玩意它对吗？</p>
+    </section>
+    <section>
+        <h2>拥有恰好 $k$ 种属性的元素个数</h2>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <sd-animation src="../维恩图/三元维恩图.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
+            <p>
+                $$
+                P(i)=(-1)^{i-k}C_i^k
+                $$
+            </p>
+        </div>
+        <p>我们不妨假设我们想要计算被恰好覆盖一次的区域，即 $k=1$</p>
+        <ul class="fragment">
+            <li>$P(1)=1$</li>
+            <li>$P(2)=-2$</li>
+            <li>$P(3)=3$</li>
+        </ul>
+        <p class="fragment quote">可以发现 $\{P_i\}$ 成功把我们不想要的区域消掉了，它有一个更广为流传的名字——<b style="color: red;">容斥系数</b></p>
+    </section>
+</section>

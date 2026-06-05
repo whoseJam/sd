@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>售票系统</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/U308154"></problem>
+    <section>
+        <h2>售票系统</h2>
+        <p>有一排 $C$ 个城市，被列车顺次连接</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
+        <p class="fragment">列车上共有 $S$ 个座位</p>
+        <p class="fragment">有 $R$ 个请求，每个请求形如 $(O\rightarrow D,N)$，表示要购买 $N$ 张从 $O$ 城市出发，到 $D$ 城市为止的票，如果</p>
+        <ul>
+            <li class="fragment">当前 $O\rightarrow D$ 有足够多的空座位满足该请求，则请求被接受</li>
+            <li class="fragment">当前 $O\rightarrow D$ 中途空座位不足，则请求被拒绝</li>
+        </ul>
+        <p class="fragment">你需要模拟这个过程，回答每次请求是否被接受</p>
+    </section>
+    <section>
+        <h2>售票系统</h2>
+        <sd-animation src="./售票系统.js"
+            style="width: 1000px; height: 150px;"></sd-animation>
+        <p>我们把城市当作一排序列，序列上的第 $i$ 个元素的值为经过第 $i$ 座城市到第 $i+1$ 座城市的总人数</p>
+        <ol>
+            <li class="fragment">查询区间最小值</li>
+            <li class="fragment">把区间的限制整体减少一个数字</li>
+        </ol>
+        <codeblock class="fragment">
+            <script type="text/template">
+                n = read(); UP = read(); m = read();
+                Build(1, 1, n - 1); Add(1, 1, n - 1, UP);
+                for (int i = 1, l, r, need; i <= m; i++) {
+                    l = read();
+                    r = read() - 1;
+                    need = read();
+                    if (Ask(1, l, r) >= need) {
+                        Add(1, l, r, -need);
+                        printf("YES\n");
+                    } else printf("NO\n");
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

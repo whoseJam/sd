@@ -1,0 +1,74 @@
+<section>
+    <section>
+        <h1>概率</h1>
+    </section>
+    <section>
+        <h2>古典概型</h2>
+        <ul>
+            <li >有一个<b style="color: red;">随机试验</b></li>
+            <li class="fragment">随机试验会导致随机结果，每个随机结果被称为<b style="color: purple;">单位事件</b></li>
+            <li class="fragment">每个单位事件发生的可能性相等</li>
+            <li class="fragment">单位事件的数量是<b style="color: cadetblue;">有限的</b></li>
+        </ul>
+        <p class="fragment">满足以上条件的概率模型，就叫古典概型</p>
+        <div class="fragment quote">
+            <h3>投一个骰子</h3>
+            <span>会导致 $6$ 种不同的点数，<del>（在不出千的情况下）</del>我们认为投出这六种点数的概率没有区别，投骰子这个过程就是<b style="color: red;">随机试验</b>，其中每一种点数就是一个<b style="color: purple;">单位事件</b></span>
+        </div>
+        <div class="fragment quote">
+            <h3>投两个骰子</h3>
+            <span>会导致 $12$ 种不同的点数，我们能认为每一种点数是一个<b style="color: purple;">单位事件</b>吗？</span>
+        </div>
+        <ul style="margin-top: 20px;">
+            <li class="fragment">任何两个单位事件是互斥的</li>
+            <li class="fragment">任何<b>事件</b>都可以表示为<b>单位事件</b>的和</li>
+        </ul>
+    </section>
+    <section>
+        <h2>基本概率公式</h2>
+        <p>刻画一个事件 $A$ 发生的概率</p>
+        <p class="math-fragment" style="font-size: 20px;">
+            $$
+            \begin{aligned}
+            P(A)&=\frac{事件A发生的次数}{单位事件的总数} \\
+            &=\frac{\sum_{e\in A} 1}{\sum_{e\in U} 1} \\
+            &=\frac{|A|}{|U|}
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">下面两个式子站在集合的角度看待概率，由于我们讨论的古典概型...</p>
+        <ul>
+            <li class="fragment">把所有<b style="color: purple;">单位事件</b>构成的集合叫做 $U$</li>
+            <li class="fragment">把所有属于 $A$ 事件的<b style="color: purple;">单位事件</b>构成的集合叫做 $A$</li>
+        </ul>
+        <div class="fragment quote">
+            <h3>举个例子，投两个骰子</h3>
+            <p>$A$ 事件为投出骰子之和等于 $3$，则 $A=\{(1,2),(2,1)\}$</p>
+            <span class="fragment">其中 $(1,2)$ 事件代表第一个骰子投出 $1$，第二个骰子投出 $2$；$(2,1)$ 事件代表第一个骰子投出 $2$，第二个骰子投出 $1$</span>
+        </div>
+    </section>
+    <section>
+        <h2>累积概率公式</h2>
+        <p>刻画两个独立随机试验如何组合起来</p>
+        <p>
+            $$
+            P(AB)=P(A)P(B)
+            $$
+        </p>
+        <div class="fragment quote">
+            <h3>举个例子，投两个骰子</h3>
+            <p>两个骰子的投掷显然是相互独立的，一个骰子的试验结果有 $6$ 种，那么两个骰子的试验结果根据乘法原理，就应该有 $36$ 种</p>
+            <p class="fragment">如果 $A$ 代表当前骰子的点数大于等于 $3$，$B$ 代表当前骰子的点数小于等于 $2$...</p>
+            <span class="fragment">同样根据乘法原理，这两者组合的方案数应该等于两边的方案数乘起来</span>
+        </div>
+    </section>
+    <section>
+        <h2>条件概率公式</h2>
+        <p>刻画某个事件在某个条件下发生的概率</p>
+        <p>
+            $$
+            P(A|B)=\frac{P(AB)}{P(B)}
+            $$
+        </p>
+    </section>
+</section>

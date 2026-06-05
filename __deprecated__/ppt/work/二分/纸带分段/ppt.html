@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>纸带分段</h1>
+    </section>
+    <problem data-source="https://oj.aicoders.cn/problem/3294"></problem>
+    <section>
+        <h2>纸带分段</h2>
+        <p>把一条三色纸带分成不超过 $k$ 段，设某一段的三种颜色数量为 $C_r,C_g,C_b$，那么这段的得分就是
+            $$
+            C_rC_gC_b
+            $$
+        </p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">你需要最小化最大得分</p>
+        <p class="fragment quote">又是一个最值的最优化问题，考虑固定最值，把它转化为一个判定性问题</p>
+    </section>
+    <section>
+        <h2>纸带分段</h2>
+        <p>固定最大得分为 $score$...</p>
+        <sd-animation src="./纸带分段.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <sd-animation src="./序列特征.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+</section>

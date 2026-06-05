@@ -1,0 +1,14 @@
+<section>
+    <section>
+        <h1>油滴扩展</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1378"></problem>
+    <section>
+        <h2>油滴扩展</h2>
+        <p>在一个长方形的框内，有 $N$ 个不同的点，在其中任何一个点上放一个很小的油滴，油滴都会一直扩展，直到接触到<b style="color: purple;">其他油滴或者框的边界</b>，一个油滴扩展完毕后才能放置下一个油滴</p>
+        <sd-animation src="./油滴扩展.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment quote">求应该按照什么样的顺序放置油滴，才能让油滴占据的总面积最大</p>
+        <p class="fragment">搜索出每种扩展顺序，看哪种覆盖面积最大即可，时间复杂度 $O(n!n^2)$</p>
+    </section>
+</section>

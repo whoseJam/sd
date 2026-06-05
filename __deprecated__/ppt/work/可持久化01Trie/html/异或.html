@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>异或</h1>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/1063" data-background-interactive>
+    </section>
+    <section>
+        <h2>异或</h2>
+        <p>给定一棵带点权的有根树，需要支持以下两种查询：</p>
+        <ul>
+            <li><code>1 x z</code>：查询节点 $x$ 的子树中，节点权值与 $z$ 异或结果的最大值</li>
+            <li><code>2 x y z</code>：查询节点 $x$ 到节点 $y$ 的简单路径上的节点权值与 $z$ 异或结果最大值</li>
+        </ul>
+    </section>
+    <section>
+        <h2>异或</h2>
+        <p>容易发现每种查询，都是在询问一个常数 $z$ 和一个集合 $S$ 内的元素的异或最大值，只要我们能把这个集合中的元素全部放在一个01Trie中，我们就能在01Trie上做贪心，查到异或结果最大值了</p>
+        <p class="fragment">对于子树的查询，我们可以借助DFS序建立可持久化01Trie，从而把一个子树内的元素插入操作提取出来</p>
+        <p class="fragment">对于树上路径的查询，我们可以借助树上前缀和建立可持久化01Trie，从而把一条路径上的元素插入操作提取出来</p>
+    </section>
+</section>

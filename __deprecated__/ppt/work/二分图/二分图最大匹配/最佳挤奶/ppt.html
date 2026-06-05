@@ -1,0 +1,55 @@
+<section>
+    <section>
+        <h1>最佳挤奶</h1>
+    </section>
+    <problem data-src="http://43.143.204.105/problem/895"></problem>
+    <section>
+        <h2>最佳挤奶</h2>
+        <p>有 $K$ 个挤奶机，$C$ 头奶牛，每个挤奶机最多容纳 $m$ 头奶牛</p>
+        <p class="fragment">有一些路径连接着奶牛和挤奶机所在的地点，题目给出一个 $(K+C)\times (K+C)$ 的邻接矩阵来描述这些路径的长度</p>
+        <p class="fragment">你需要安排每头奶牛去哪个挤奶机，并且让<b>奶牛行走路径长度的最大值最小</b></p>
+    </section>
+    <section>
+        <h2>最佳挤奶</h2>
+        <p class="quote"><b>最大值最小</b>这个描述听上去就很像二分，那么这个题可以二分吗？</p>
+        <div class="fragment">
+            如果我们二分奶牛走的路径的最长长度 $maxlen$，假设奶牛 $i$ 到挤奶机 $j$ 的路径长度为 $d_{i,j}$
+            <br>
+            <ul>
+                <li>若 $d_{i,j}\le maxlen$，那么奶牛 $i$ 是有可能去挤奶机 $j$ 那里产奶的</li>
+                <li>若 $d_{i,j}\gt maxlen$，那么奶牛 $i$ 绝无可能去 $j$ 那里产奶</li>
+            </ul>
+        </div>
+        <p class="fragment quote">所以我们应该如何检验在 $maxlen$ 的限制下，能否让所有奶牛都有地方产奶呢？</p>
+        <p class="fragment quote">如果 $m=1$，即每个挤奶机都只能容纳一头奶牛，那这是不是就是一个标准的二分图最大匹配？</p>
+        <p class="fragment quote">如果 $m\gt 1$ 又应该怎么办呢？</p>
+    </section>
+    <section>
+        <h2>最佳挤奶</h2>
+        <p>我们尝试改造一下二分图最大匹配，让二分图的某一侧的每个点<b>只能参与一次匹配</b>，而对侧点<b>可以参与至多 $m$ 次匹配</b></p>
+        <codeblock style="height: 420px;">
+            <script type="text/template">
+                bool findPath(int u) {
+                    for (int i = h[u], v; i; i = l[i].Nxt) {
+                        v = l[i].to;
+                        if (!vis[v]) {
+                            vis[v] = true;
+                            if (match[v].size() < m) {
+                                match[v].push_back(u);
+                                return true;
+                            } else {
+                                for (int t = 0; t < match[v].size(); t++) {
+                                    if (findPath(match[v][t])) {
+                                        match[v][t] = u;
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

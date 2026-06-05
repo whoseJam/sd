@@ -1,0 +1,52 @@
+<section>
+    <section>
+        <h1>第二类容斥原理</h1>
+        <p>加加加减减减加</p>
+    </section>
+    <section>
+        <h2>第二类容斥原理</h2>
+        <sd-animation src="../维恩图/三元维恩图.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>假设有三个种兴趣爱好，分别是 $A,B,C$</p>
+        <p class="fragment quote">我们把都拥有 $A$ 这种兴趣爱好的人划分到一个集合里面去，对 $B,C$ 也同理这样操作</p>
+        <p class="fragment">我希望知道总共有多少人拥有至少一种爱好</p>
+        <p class="fragment">我们能单纯把 $A$ 集合的大小，$B$ 集合的大小和 $C$ 集合的大小加起来当作答案吗？</p>
+    </section>
+    <section>
+        <h2>第二类容斥原理</h2>
+        <sd-animation src="../维恩图/三元维恩图.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>显然是不行的，会算重</p>
+        <p class="fragment">
+            $$
+            answer=|A|+|B|+|C|-|A\cap B|-|A\cap C|-|B\cap C|+|A\cap B\cap C|
+            $$
+        </p>
+        <p class="fragment">当我们在计算恰好被覆盖一次的区域面积的时候，只要区域被覆盖了奇数次，就加上对应面积，只要被覆盖了偶数次，就减去对应面积</p>
+    </section>
+    <section>
+        <h2>第二类容斥原理</h2>
+        <p>设全集 $U$ 中的元素有 $n$ 种不同的属性，第 $i$ 种属性称为 $P_i$，拥有 $P_i$ 的元素构成的集合为 $S_i$，则：
+            $$
+            \begin{aligned}
+            |\bigcup_{i=1}^nS_i|&=\sum_{i}|S_i|-\sum_{i,j}|S_i\cap S_j|+\sum_{i,j,k}|S_i\cap S_j\cap S_k|...\\
+            &=\sum_{i=1}^n(-1)^{i-1}\sum_{一个i元组}|\bigcap_{这个i元组的每一项x} S_x|
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>与第一类容斥原理的关系</h2>
+        <p>
+            $$
+            合法方案数=总方案数-不合法方案数
+            $$
+        </p>
+        <div style="display: flex;">
+            <sd-animation src="../维恩图/一元维恩图.js"
+                style="width: 1000px; height: 400px;"></sd-animation>
+            <sd-animation src="../维恩图/三元维恩图.js"
+                style="width: 1000px; height: 400px;"></sd-animation>
+        </div>
+    </section>
+</section>

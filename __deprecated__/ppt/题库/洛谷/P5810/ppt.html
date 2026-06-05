@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>文本的输入</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5810"></problem>
+    <section>
+        <h2>文本的输入</h2>
+        <ul>
+            <li>打入一个字母需要 $1$ 个单位的时间</li>
+            <li>将已输入的内容复制下来需要 $5$ 个单位的时间</li>
+            <li>将复制的内容粘贴出来需要 $2$ 个单位的时间</li>
+        </ul>
+        <p class="fragment">如果我们不关心输入文本的内容，只关心输入文本的长度，求要输入一个长度不低于 $n$ 的文本最少需要多少时间</p>
+    </section>
+    <section>
+        <h2>文本的输入</h2>
+        <p>不妨把时间看作一种资源，我们付出时间，收获文本长度</p>
+        <p class="fragment">设 $f_i$ 表示使用 $i$ 个单位的时间，最多能打出多少个字符</p>
+        <p class="fragment">
+            $$
+            f_i=\mathop{max}
+            \begin{cases}
+            f_{i-1}+1 & 添加字符得来 \\
+            (k+1)f_{i-(2k+5)} & 复制粘贴 k 次得来
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">求出 $\{f_i\}$ 后，找到第一个不小于 $n$ 的 $f_{im}$，此处的 $im$ 就是答案</p>
+    </section>
+</section>

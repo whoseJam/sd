@@ -1,0 +1,128 @@
+<section>
+    <section>
+        <h1>工程规划</h1>
+        <p>差分约束的模板题</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1260"></problem>
+    <section>
+        <h2>工程规划</h2>
+        <p>既然每个条件都形如 $T_i-T_j\le b$......</p>
+        <p class="fragment">
+            $$
+            T_i-T_j\le b\Longleftrightarrow T_i\le T_j+b
+            $$
+        </p>
+        <p class="fragment">连一条从 $j\rightarrow i$ 的边，边权为 $b$，跑最短路即可</p>
+        <p class="fragment quote">真的直接跑最短路就行了吗？</p>
+    </section>
+    <section>
+        <h2>工程规划</h2>
+        <p>
+            $$
+            \left\{
+            \begin{aligned}
+            T_2&\le T_1+4 \\
+            T_2&\le T_3-1 \\
+            T_3&\le T_4+2
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <sd-animation src="./不连通例子.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">在运行最短路时，跑不到不连通的区块，导致不等式失效</p>
+    </section>
+    <section>
+        <h2>非连通图问题</h2>
+        <p>我们引入一个超级源点，向每个点连一条长度为 $0$ 的边，从这个超级源点开始跑最短路</p>
+        <sd-animation src="./超级源点例子.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+            <p class="fragment">
+                $$
+                \left\{
+                \begin{aligned}
+                T_2&\le T_1+4 \\
+                T_2&\le T_3-1 \\
+                T_3&\le T_4+2
+                \end{aligned}
+                \right.
+                $$
+            </p>
+            <ul>
+                <li class="fragment">引入超级源点不会带来新的负环，没有破坏原图的性质</li>
+                <li class="fragment">超级源点的存在，额外引入了 $n$ 对不等式，第 $i(1\le i\le n)$ 个为 $T_i\le 0$</li>
+            </ul>
+    </section>
+    <section>
+        <h2>非连通图问题</h2>
+        <p>在代码实现中，我们更多采用<b>隐式增加超级源点</b>的做法，而不建立一个实际的超级源点</p>
+        <codeblock>
+            <script type="text/template">
+                // 隐式建立超级源点
+                bool Spfa() {
+                    queue < int > q;
+                    for (int i = 1; i <= n; i++) {
+                        dis[i] = 0;
+                        q.push(i);
+                        inq[i] = 1;
+                    }
+                    // Spfa主体，求最短路，判断负环
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>负数解问题</h2>
+        <p>添加超级源点后，算出来的 $T_i$ 一定是小于等于 $0$ 的</p>
+        <table class="fragment" style="width: 600px;">
+            <tr>
+                <td>$T_1$</td>
+                <td>$T_2$</td>
+                <td>$T_3$</td>
+                <td>$T_4$</td>
+                <td>$T_5$</td>
+                <td>$T_6$</td>
+            </tr>
+            <tr>
+                <td>$0$</td>
+                <td>$-3$</td>
+                <td>$-2$</td>
+                <td>$0$</td>
+                <td>$-8$</td>
+                <td>$-5$</td>
+            </tr>
+        </table>
+        <table class="fragment" style="width: 600px; margin-top: 50px;">
+            <tr>
+                <td>$T_1$</td>
+                <td>$T_2$</td>
+                <td>$T_3$</td>
+                <td>$T_4$</td>
+                <td>$T_5$</td>
+                <td>$T_6$</td>
+            </tr>
+            <tr>
+                <td>$8$</td>
+                <td>$5$</td>
+                <td>$6$</td>
+                <td>$8$</td>
+                <td>$0$</td>
+                <td>$3$</td>
+            </tr>
+        </table>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int offset = 0;
+                for (int i = 1; i <= n; i++)
+                    offset = min(offset, dis[i]);
+                for (int i = 1; i <= n; i++)
+                    dis[i] -= offset;
+                for (int i = 1; i <= n; i++)
+                    cout << dis[i] << '\n';
+            </script>
+        </codeblock>
+        <p class="fragment quote">
+            正好对应了题目中：“对于有解的情况，要使最早进行的那个任务和整个工程的起始时间相同，也就是说，$T_1,T_2......T_n$ 中至少有一个为 $0$”
+        </p>
+    </section>
+</section>

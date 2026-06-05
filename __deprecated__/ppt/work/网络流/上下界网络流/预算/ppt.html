@@ -1,0 +1,50 @@
+<section>
+    <section>
+        <h1>Budget</h1>
+    </section>
+    <problem data-problemset="poj" data-problemid="2396"></problem>
+    <section>
+        <h2>Budget</h2>
+        <p>给定一个 $m\times n$ 的矩阵 $\{a\}$</p>
+        <p class="fragment">每行元素之和是给定的</p>
+        <p class="fragment">每列元素之和是给定的</p>
+        <p class="fragment">某些网格 $(i,j)$ 有额外的约束，具体来说，有以下三种：</p>
+        <ul>
+            <li class="fragment">$a_{i,j}\gt 某个给定的常数$</li>
+            <li class="fragment">$a_{i,j}\lt 某个给定的常数$</li>
+            <li class="fragment">$a_{i,j}= 某个给定的常数$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Budget</h2>
+        <p class="quote">如果某个元素 $a_{i,j}$ 的值为 $k$，我能否认为是有 $k$ 流流过了该元素？</p>
+        <p class="fragment quote">如何保证每一行元素之和为给定常数？</p>
+        <p class="fragment quote">如何保证每一列元素之和为给定常数？</p>
+    </section>
+    <section>
+        <h2>Budget</h2>
+        <p>我们可以认为我们在为每行和每列的元素分配流，最后每个元素配到了多少流，它的值就是多少</p>
+    </section>
+    <section>
+        <h2>Budget</h2>
+        <p>按照如下方式连边：</p>
+        <ul>
+            <li class="fragment">源点 $S$ 向每行连边，上下界都为该行的和</li>
+            <li class="fragment">每列向汇点 $T$ 连边，上下界都为该列的和</li>
+            <li class="fragment">每行 $r$ 向每列 $c$ 连边，上下界为元素 $(r,c)$ 的取值上下限</li>
+        </ul>
+        <sd-animation src="./Budget.js" class="fragment"
+            style="width: 1000px; height: 400px;">
+        </iframe>
+        <p class="fragment">现在问题成功转为了一个有源汇上下界的可行流问题</p>
+    </section>
+    <section>
+        <h2>Budget</h2>
+        <p>个人感觉上下界网络流用的不是<b>很多</b></p>
+        <div class="fragment quote">
+            <p style="margin-top: 0px;">这个<b>很多</b>有两种见解：</p>
+            <li class="fragment">有些题目虽然可以用上下限网络流做，但是也有不用上下限网络流的建图做法，如果我对普通的网络流技巧掌握熟练的话，就没必要用上下限网络流了，所以在我看来上下限网络流用得就不多</li>
+            <li class="fragment">我不想思考普通的网络流建图法，而且一眼就能看出上下界网络流，那么在我看来上下界网络流就还挺常见的</li>
+        </div>
+    </section>
+</section>

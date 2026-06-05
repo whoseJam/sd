@@ -1,0 +1,59 @@
+<section>
+    <section>
+        <h1>括号染色</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="149D"></problem>
+    <section>
+        <h2>括号染色</h2>
+        <p>给出一个匹配的括号序列，你需要按照如下规则给括号序列染色</p>
+        <ul>
+            <li>一个括号可以被染成红色，蓝色或者不染色</li>
+            <li>考虑一对匹配的括号，需要<b>恰有一个</b>括号被染色</li>
+            <li>相邻两个括号的颜色不能相同</li>
+        </ul>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <p class="fragment">求符合条件的染色方案数，对 $10^9+7$ 取模</p>
+        <p class="fragment quote">一个合法的括号序列，一定暗藏了一棵区间树——我们只需要把匹配的括号做一个连线就能看出来</p>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <p>不妨设 $f_{l,r,cl,cr}$ 表示考虑 $[l,r]$ 这段区间，区间左端点被染成了 $cl$ 色，区间右端点被染成了 $cr$ 色，合法的染色方案数</p>
+        <p class="quote">这里的 $cl,cr\in\{0,1,2\}$，$0$ 对应不染色，$1$ 对应染为红色，$2$ 对应染为蓝色</p>
+        <div class="fragment">
+            <li>如果 $l+1=r$（在 $[l,r]$ 构成的括号序列合法的情况下），则一定是这样的情况</li>
+            <sd-animation src="./状态转移1.js"
+                style="width: 1000px; height: 60px;"></sd-animation>
+            <span class="fragment">$$f_{l,r,1,0}=f_{l,r,0,1}=f_{l,r,2,0}=f_{l,r,0,2}=1$$</span>
+        </div>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <li>如果 $l$ 端点和 $r$ 端点的括号是匹配的，则一定是这样的情况</li>
+        <sd-animation src="./状态转移2.js"
+            style="width: 1000px; height: 60px;"></sd-animation>
+        <span class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            f_{l,r,1,0}&=\sum_{i,j,i\ne 1} f_{l+1,r-1,i,j} \\
+            f_{l,r,2,0}&=\sum_{i,j,i\ne 2} f_{l+1,r-1,i,j} \\
+            f_{l,r,0,1}&=\sum_{i,j,j\ne 1} f_{l+1,r-1,i,j} \\
+            f_{l,r,0,2}&=\sum_{i,j,j\ne 2} f_{l+1,r-1,i,j}
+            \end{aligned}
+            $$
+        </span>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <li>如果 $l$ 端点和 $r$ 端点的括号不是匹配的，则一定是这样的情况</li>
+        <sd-animation src="./状态转移3.js"
+            style="width: 1000px; height: 60px;"></sd-animation>
+        <p>设与 $l$ 端点处的左括号，匹配的右括号的位置为 $m$</p>
+        <span class="fragment">
+            $$
+            f_{l,r,cl,cr}=\sum_{i,j} f_{l,m,cl,i}f_{m+1,r,j,cr}
+            $$
+            需要保证 $cl$ 和 $i$ 恰好有一个颜色，且 $i$ 和 $j$ 不是相同的颜色（可以同时为 $0$，表示都不染色）
+        </span>
+    </section>
+</section>

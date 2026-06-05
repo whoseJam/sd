@@ -1,0 +1,164 @@
+<section>
+    <section>
+        <h1>2-SAT实现</h1>
+        <p>所以2-SAT怎么做呢</p>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <p>
+            我们用图论的视角来看待2-SAT问题
+            <span class="fragment">，假设有 $n$ 个变量</span>
+            <span class="fragment">，每个变量 $a_i$ 有两个取值</span>
+            <span class="fragment">$\{Y,N\}$</span>
+        </p>
+        <p class="fragment">
+            对每个变量而言，我们都在图中为其建立两个节点 $Y_i$ 和 $N_i$：
+        </p>
+        <ul>
+            <li class="fragment">$Y_i$：变量 $i$ 取到了它的<b>第一种取值</b>，即 $Y$ 这种取值</li>
+            <li class="fragment">$N_i$：变量 $i$ 取到了它的<b>第二种取值</b>，即 $N$ 这种取值</li>
+        </ul>
+        <p class="fragment">条件无非就四种情况：</p>
+        <ul>
+            <li class="fragment">当变量 $i$ 取 $Y$ 时，变量 $j$ 必须取值为 $Y$</li>
+            <li class="fragment">当变量 $i$ 取 $Y$ 时，变量 $j$ 必须取值为 $N$</li>
+            <li class="fragment">当变量 $i$ 取 $N$ 时，变量 $j$ 必须取值为 $Y$</li>
+            <li class="fragment">当变量 $i$ 取 $N$ 时，变量 $j$ 必须取值为 $N$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <sd-animation src="./animation/YiYj.html"
+            style="width: 1000px; height: 500px;">
+        </iframe>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <sd-animation src="./animation/YiNj.html"
+            style="width: 1000px; height: 500px;">
+        </iframe>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <sd-animation src="./animation/NiYj.html"
+            style="width: 1000px; height: 500px;">
+        </iframe>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <sd-animation src="./animation/NiNj.html"
+            style="width: 1000px; height: 500px;">
+        </iframe>
+    </section>
+    <section>
+        <h2>2-SAT</h2>
+        <p>将约束问题转化为一张图后，我们讨论如下三个问题：</p>
+        <ul>
+            <li class="fragment">2-SAT问题<b>存在解</b>，在图上意味着什么</li>
+            <li class="fragment">2-SAT问题<b>无解</b>，在图上意味着什么</li>
+            <li class="fragment">2-SAT问题的一组<b>可行解</b>是什么</li>
+        </ul>
+    </section>
+    <section>
+        <h2>2-SAT解的存在性</h2>
+        <p>我们可以把建立好的连边构成的<b>链</b>，视作一条逻辑链，如果存在这样一条路径：</p>
+        <sd-animation src="./animation/逻辑链.html"
+            style="width: 1000px; height: 50px;"></sd-animation>
+        <p class="fragment">
+            如果 $V_1$ 这个取值成立：
+            <ul>
+                <li class="fragment">一定会导致 $V_2$ 这个取值成立</li>
+                <li class="fragment">随后，一定会导致 $V_3$ 这个取值成立</li>
+                <li class="fragment">随后，一定会导致 $V_4$ 这个取值成立</li>
+                <li class="fragment">随后，一定会导致 $V_5$ 这个取值成立</li>
+                <li class="fragment">随后......</li>
+                <li class="fragment">随后，一定会导致 $V_m$ 这个取值成立</li>
+            </ul>
+        </p>
+        <p class="fragment">就像多米诺骨牌一样，<b>变量取值的确定性</b>，就沿着这么一条链传递下去了</p>
+    </section>
+    <section>
+        <h2>2-SAT解的存在性</h2>
+        <p>
+            无解的情况自然就引出了：
+            <span class="fragment"><b>如果存在一条路径，使得 $Y_i$ 可以抵达 $N_i$，且 $N_i$ 也可以抵达 $Y_i$， 则无解</b></span>
+        </p>
+        <sd-animation src="./animation/无解的情况.html" class="fragment"
+            style="width: 1000px; height: 180px;" rate="1.01"></sd-animation>
+        <p class="fragment quote">因为变量 $i$ 不可能同时为 $Y$ 和 $N$，但当 $i$ 取值为 $Y$ 时能推导出 $i$ 取值为 $N$；当 $i$ 取值为 $N$ 时能推导出 $i$ 取值为 $Y$</p>
+        <p class="fragment">换言之，如果 $\exists i \in [1,n]$，满足 $Y_i$ 和 $N_i$ 在<b>同一个强连通分量</b>里面，那么就无解</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool Check() { // 判断是否有解
+                    for (int i = 1; i <= n; i++) {
+                        if (bel[Y(i)] == bel[N(i)]) return false;
+                    }
+                    return true;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>2-SAT解的构造</h2>
+        <p>排除掉不合法的情况，$Y_i$ 和 $N_i$ 之间的连通性还剩下 $3$ 种情况</p>
+        <ol>
+            <li class="fragment">
+                $N_i\rightarrow Y_i$
+                <p class="fragment">
+                    如果第 $i$ 个变量取值为 $N$，一定会推导出第 $i$ 个变量取值为 $Y$，导致矛盾<br>
+                    <span class="fragment">所以第 $i$ 个变量取值只能是 $Y$</span>
+                </p>
+            </li>
+            <li class="fragment">
+                $Y_i\rightarrow N_i$
+                <p class="fragment">
+                    如果第 $i$ 个变量取值为 $Y$，一定会推导出第 $i$ 个变量取值为 $N$，导致矛盾<br>
+                    <span class="fragment">所以第 $i$ 个变量取值只能是 $N$</span>
+                </p>
+            </li>
+            <li class="fragment">
+                $N_i$ 和 $Y_i$ 无法抵达对方
+                <p class="fragment">
+                    此时第 $i$ 个变量随便取值就行
+                </p>
+            </li>
+        </ol>
+    </section>
+    <section>
+        <h2>2-SAT解的构造</h2>
+        <p>不过我们代码实现上，判断 $u\rightarrow v$ 有点难写</p>
+        <p class="fragment">更常见地，我们用Tarjan求出的每个点的 $bel_u$ 来判断2-SAT的解</p>
+        <sd-animation src="./animation/Tarjan的bel.html" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment quote">Tarjan中 $bel$ 小的肯定位于有向路径的末端，$bel$ 大的肯定位于有向路径的前端</p>
+    </section>
+    <section>
+        <h2>2-SAT解的构造</h2>
+        <p>假设变量 $i$ 对应的两个取值点为 $Y_i$ 和 $N_i$</p>
+        <ul>
+            <li class="fragment">
+                如果 $bel_{Y_i}\gt bel_{N_i}$
+                <span class="fragment">，则说明<b>即使</b> $Y_i$ 和 $N_i$ 存在可达性关系，也一定是从 $Y_i\rightarrow N_i$</span>
+                <span class="fragment">，所以此时我们可以把 $N_i$ 当作变量 $i$ 的取值</span>
+            </li>
+            <li class="fragment">
+                如果 $bel_{Y_i}\lt bel_{N_i}$
+                <span class="fragment">，则说明<b>即使</b> $Y_i$ 和 $N_i$ 存在可达性关系，也一定是从 $N_i\rightarrow Y_i$</span>
+                <span class="fragment">，所以此时我们可以把 $Y_i$ 当作变量 $i$ 的取值</span>
+            </li>
+            <li class="fragment">如果 $bel_{Y_i}=bel_{N_i}$，问题无解</li>
+            <codeblock class="fragment">
+                <script type="text/template">
+                    // 简单来说，取 bel 小的那个节点当作解
+                    for (int i = 1; i <= n; i++) {
+                        if (bel[Y(i)] < bel[N(i)]) {
+                            cout << "the value of " << i << " is Y\n";
+                        } else {
+                            cout << "the value of " << i << " is N\n";
+                        }
+                    }
+                </script>
+            </codeblock>
+        </ul>
+    </section>
+</section>

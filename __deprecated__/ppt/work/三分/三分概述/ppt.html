@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>三分</h1>
+        <p>比二分多一分</p>
+    </section>
+    <section>
+        <h2>三分</h2>
+        <p>假设我们希望找到某个凸函数的极值，并且这个凸函数的导数不太好算</p>
+        <sd-animation src="./极值.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (fabs(r - l) > eps) {
+                    double ml = l + (r - l) / 3.0;
+                    double mr = r - (r - l) / 3.0;
+                    if (F(mr) > F(ml)) l = ml;
+                    else r = mr;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

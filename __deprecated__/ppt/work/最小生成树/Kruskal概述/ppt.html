@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>Kruskal</h1>
+        <p>适合稀疏图的最小生成树算法</p>
+    </section>
+    <section>
+        <h2>Kruskal</h2>
+        <p>Kruskal的思路很简单</p>
+        <ol>
+            <li class="fragment">首先把图 $G$ 中的边按权值从小到大排序</li>
+            <li class="fragment">按照权值从小到大依次选边，若当前选取的边加入后使生成树 $T$ 形成环，则舍弃当前边，否则标记当前边为生成树 $T$ 中的边</li>
+            <li class="fragment">重复(2)直到生成树 $T$ 中包含 $n-1$ 条边为止。否则如果遍历完所有的边，都不能选取 $n-1$ 条边，表示最小生成树不存在</li>
+        </ol>
+        <sd-animation src="./Kruskal实现.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>Kruskal</h2>
+        <p>在实现上，我们可以用并查集来判断当前边加入生成树 $T$ 后是否会形成环：</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Kruskal() {
+                    sort(e + 1, e + 1 + m, cmp);
+                    for (int i = 1; i <= n; i++) fa[i] = i;
+                    for (int i = 1; i <= m; i++) {
+                        if (getFa(e[i].x) == getFa(e[i].y)) continue;
+                        Merge(e[i].x, e[i].y);
+                        ans += e[i].v;
+                        tot++;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

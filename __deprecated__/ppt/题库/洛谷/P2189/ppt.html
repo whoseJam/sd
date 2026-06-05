@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>小Z的传感器</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2189"></problem>
+    <section>
+        <h2>小Z的传感器</h2>
+        <p>有 $n$ 个房间，通过 $m$ 条通道相连</p>
+        <div style="display: flex;">
+            <sd-animation src="./样例解释.js"
+                style="width: 1000px; height: 250px;"></sd-animation>
+            <div>
+                <p class="fragment">部分房间有传感器，当<b style="color: red;">第一次</b>有人到访的时候，传感器将会上报信息</p>
+                <p class="fragment">判断上报信息的顺序是否是可能的</p>
+            </div>
+        </div>
+        <p class="fragment quote">将第一个点视作<b style="color: purple;">主点</b><span class="fragment">，顺次遍历后面的每个点，它们必须和主点所在的连通块直接相连</span><span class="fragment">，依次尝试将它们加入到主点连通块</span></p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void add(int u) {
+                    for (int& v : G[u]) {
+                        if (F(v) != F(u) && v 不是一个未解封的传感器) {
+                            merge(u, v);
+                            add(v);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

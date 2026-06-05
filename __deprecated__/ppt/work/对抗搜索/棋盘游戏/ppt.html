@@ -1,0 +1,53 @@
+<section>
+    <section>
+        <h1>棋盘游戏</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4576"></problem>
+    <section>
+        <h2>棋盘游戏</h2>
+        <p>设 $f(t,k,x_1,y_1,x_2,y_2)$ 表示当前是 $t$ 移动<span class="fragment">（$t\in \{0,1\}$，$0$ 表示白棋，$1$ 表示黑棋）</span><span class="fragment">，一共移动了 $k$ 次</span><span class="fragment">，白棋现在位于 $(x_1,y_1)$</span><span class="fragment">，黑棋现在位于 $(x_2,y_2)$</span><span class="fragment">，还需要多少步才能结束游戏</span></p>
+        <ul>
+            <li class="fragment">如果 $t=0$，站在白棋的角度，它希望尽可能延长自己的生存时间，所以此时 $f$ 代表棋手能移动的最多的次数</li>
+            <li class="fragment">如果 $t=1$，站在黑棋的角度，它希望尽快结束比赛，所以此时 $f$ 代表棋手最少需要多少步才能结束比赛</li>
+        </ul>
+    </section>
+    <section>
+        <h2>棋盘游戏</h2>
+        <p>
+            $$
+            f(0,k,x_1,y_1,x_2,y_2)=max\begin{cases}
+            f(1,k+1,x_1-1,y_1,x_2,y_2) \\
+            f(1,k+1,x_1+1,y_1,x_2,y_2) \\
+            f(1,k+1,x_1,y_1-1,x_2,y_2) \\
+            f(1,k+1,x_1,y_1+1,x_2,y_2)
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>棋盘游戏</h2>
+        <p>
+            $$
+            f(1,k,x_1,y_1,x_2,y_2)=min\begin{cases}
+            f(0,k+1,x_1,y_1,x_2-1,y_2) \\
+            f(0,k+1,x_1,y_1,x_2+1,y_2) \\
+            f(0,k+1,x_1,y_1,x_2,y_2-1) \\
+            f(0,k+1,x_1,y_1,x_2,y_2+1) \\
+            f(0,k+1,x_1,y_1,x_2-2,y_2) \\
+            f(0,k+1,x_1,y_1,x_2+2,y_2) \\
+            f(0,k+1,x_1,y_1,x_2,y_2-2) \\
+            f(0,k+1,x_1,y_1,x_2,y_2+2)
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>棋盘游戏</h2>
+        <ul>
+            <li>对 $f(0,k,???)$ 来说<span class="fragment">，由于白棋希望生存时间越长越好</span><span class="fragment">，取 $max\{f(1,k+1,???)\}$</span></li>
+            <li class="fragment">对 $f(1,k,???)$ 来说<span class="fragment">，由于黑棋希望越早结束比赛越好</span><span class="fragment">，取 $min\{f(0,k+1,???)\}$</span></li>
+        </ul>
+        <p class="fragment">并且转移是沿着 $f(0,???)\rightarrow f(1,???)\rightarrow f(0,???)\rightarrow f(1,???)\rightarrow ...$ 这样一条路径走下去的</p>
+        <p class="fragment">所以它叫对抗搜索，我们有时也把它叫做MinMax搜索</p>
+    </section>
+</section>

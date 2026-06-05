@@ -1,0 +1,100 @@
+<section>
+    <section>
+        <h1>二分序列</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/CF1620F"></problem>
+    <section>
+        <h2>二分序列</h2>
+        <p>定义一种由数列生成图的方法如下</p>
+        <ul>
+            <li class="fragment">该图由 $n$ 个顶点组成，分别对应数列的 $n$ 个元素</li>
+            <li class="fragment">如果存在一对顶点 $i$ 和 $j$ 且 $i\lt j$ 并且 $a_i \gt a_j$，则在它们之间连接一条边</li>
+        </ul>
+        <p class="fragment">如果一个数列的生成图是二分图，那么该序列就是<b style="color: red;">二分序列</b></p>
+        <p class="fragment">现在给定一个长度为 $n$ 的排列 $p$，你可以任意把排列中的元素变成相反数</p>
+        <p class="fragment">判断能否通过有限次操作，使得排列成为<b style="color: red;">二分序列</b></p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <p class="quote">不妨考虑一下什么样的序列不是二分序列？</p>
+        <p class="fragment quote">先构造一个简单的不是二分序列的序列？</p>
+        <div class="fragment">
+            3 2 1
+            <sd-animation src="./非二分序列.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
+        </div>
+        <p class="fragment quote">序列中但凡出现了长度为 $3$ 的下降子序列，就必然不是二分序列，这看上去是一个很严格的限制条件</p>
+        <p class="fragment quote">假设序列中从没有出现过长度为 $3$ 的下降子序列，序列可能是什么样的？</p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <sd-animation src="./合法序列.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>一定会形成至多两条上升路径</p>
+        <p class="fragment quote">这种情况下有可能形成非二分图吗？</p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <p>问题转化为，我们需要将原排列中的每个元素调整符号，使得调整后的数组中存在至多两个上升子序列</p>
+        <p class="fragment">动态规划构造两个上升子序列，容易想到子序列动态规划模型和序列构造动态规划模型</p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <p>在动态规划时肯定要记录两个序列的末尾，以及当前考虑到哪个位置了</p>
+        <p class="fragment">设 $f_{i,x,y}$ 表示考虑到第 $i$ 个位置，第一个上升子序列的末尾数值为 $x$，第二个上升子序列的末尾数值为 $y$，是否可行</p>
+        <sd-animation src="./状态定义1.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            f_{i,x,y} \rightarrow f_{i+1,a_{i+1}, y } & x\lt a_{i+1} \\
+            f_{i,x,y} \rightarrow f_{i+1,x, a_{i+1} } & y\lt a_{i+1} \\ 
+            f_{i,x,y} \rightarrow f_{i+1,-a_{i+1}, y } & x\lt -a_{i+1} \\
+            f_{i,x,y} \rightarrow f_{i+1,x, -a_{i+1} } & y\lt -a_{i+1}
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <p>发现其中一个上升子序列的末尾一定是 $a_i$ 或者 $-a_i$</p>
+        <sd-animation src="./状态定义2.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p class="fragment" style="margin-top: -10px;">设 $f_{i,x,0/1}$ 表示考虑到第 $i$ 个位置，第一个上升子序列的末尾为 $x$，第二个上升子序列的末尾为 $a_i$ 或者 $-a_i$，是否可行</p>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            f_{i,x,0} \rightarrow f_{i+1,a_{i},0} & x\lt a_{i+1} \\
+            f_{i,x,0} \rightarrow f_{i+1,x,0} & a_i\lt a_{i+1} \\
+            f_{i,x,0} \rightarrow f_{i+1,a_{i},1} & x\lt -a_{i+1} \\
+            f_{i,x,0} \rightarrow f_{i+1,x,1} & a_{i}\lt -a_{i+1} 
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment quote">当然，第四种转移不可能发生，但为了严谨性还是写出来了</p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <p>时空复杂度仍然是 $O(n^2)$，一个过不去的复杂度</p>
+        <p class="fragment quote">布尔动态规划数组本身存储的信息是很少的，很多时候可以考虑把<b>判定性动态规划</b>转化成<b>最优化动态规划</b>，从而实现优化</p>
+        <p class="fragment">本质上，我们只需要让两个上升子序列末尾越小，肯定是越有利于转移的</p>
+        <p class="fragment">$$f_{i,x,0/1}$$</p>
+        <p class="fragment">别在状态里面记录第一个上升子序列的末尾是谁了<span class="fragment">，把它塞进结果里面去</span></p>
+    </section>
+    <section>
+        <h2>二分序列</h2>
+        <p>设 $f_{i,0/1}$ 表示考虑到第 $i$ 个位置，第二个上升子序列的末尾是 $a_i$ 或者 $-a_i$ 的情况下，第一个上升子序列末尾最小可以是多小</p>
+        <sd-animation src="./状态定义3.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            f_{i,0} \stackrel{min}{\rightarrow} f_{i+1,0} & a_i\lt a_{i+1} \\
+            a_i \stackrel{min}{\rightarrow} f_{i+1,0} & f_{i,0}\lt a_{i+1} \\
+            f_{i,0} \stackrel{min}{\rightarrow} f_{i+1,1} & a_i\lt -a_{i+1} \\
+            a_i \stackrel{min}{\rightarrow} f_{i+1,1} & f_{i,0}\lt -a_{i+1}
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>小行星</h1>
+    </section>
+    <problem data-src="http://43.143.204.105/problem/899"></problem>
+    <section>
+        <h2>小行星</h2>
+        <p>有一个 $n\times n$ 的网格，在这个网格上有一些小行星</p>
+        <p class="fragment">你每次可以对某一行或者某一列进行打击，摧毁这条轴上的所有小行星</p>
+        <p class="fragment">求摧毁所有小行星<b>至少需要执行多少次打击</b></p>
+    </section>
+    <section>
+        <h2>小行星</h2>
+        <p>一个小行星，显然要么被<b>行打击</b>摧毁，要么被<b>列打击</b>摧毁</p>
+        <p class="fragment">行打击总共有 $n$ 种，分别对应于打击第 $1,2,3...n$ 行</p>
+        <p class="fragment">列打击总共有 $n$ 种，分别对应于打击第 $1,2,3...n$ 列</p>
+        <p class="fragment quote">我们能不能把 $n$ 种行打击和 $n$ 种列打击看作二分图中的点？</p>
+    </section>
+    <section>
+        <h2>小行星</h2>
+        <sd-animation src="./小行星网格图.js"
+            style="width: 1000px; height: 250px"></sd-animation>
+        <sd-animation src="./小行星二分图.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+    </section>
+</section>

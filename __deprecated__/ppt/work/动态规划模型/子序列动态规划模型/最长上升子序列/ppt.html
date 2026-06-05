@@ -1,0 +1,55 @@
+<section>
+    <section>
+        <h1>最长上升子序列</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="B3637"></problem>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>给出一个由 $n$ 个正整数组成的序列，请输出这个序列的<b>最长上升子序列</b>的长度</p>
+        <p class="fragment">最长上升子序列是指，从原序列中按顺序取出一些数字排在一起，这些数字是逐渐增大的</p>
+        <div class="fragment quote">
+            $[1,3,6,7]$ 是 $[1,5,3,5,6,5,8,7]$ 的一个上升子序列
+        </div>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>设 $f(i)$ 表示以 $a_i$ 为结尾的最长上升子序列的长度</p>
+        <sd-animation src="./状态转移.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p>子序列中的最后一个元素为 $a_i$，考虑倒数第二个元素为 $a_j$...</p>
+        <p class="fragment">
+            $$
+            f(i)=\mathop{max}_{\begin{aligned}j&\lt i\\ a_j&\lt a_i\end{aligned} }\{f(j)+1\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>
+            $$
+            f(i)=\mathop{max}_{\begin{aligned}j&\lt i\\ a_j&\lt a_i\end{aligned} }\{f(j)+1\}
+            $$
+        </p>
+        <sd-animation src="./最长上升子序列.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>
+            $$
+            f(i)=\mathop{max}_{\begin{aligned}j&\lt i\\ a_j&\lt a_i\end{aligned} }\{f(j)+1\}
+            $$
+        </p>
+        <p>考虑倒数第二个位置的转移可能从什么地方转移过来</p>
+        <sd-animation src="./减少状态转移数量.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) {
+                    f[i] = queryMax(1, a[i] - 1) + 1;
+                    insert(a[i], f[i]);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

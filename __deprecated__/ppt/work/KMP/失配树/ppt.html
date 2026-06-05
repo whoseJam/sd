@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>失配树（模板）</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5829"></problem>
+    <section>
+        <h2>失配树</h2>
+        <p>对于一个字符串 $s$，多次查询，每次查询给出参数 $(i,j)$</p>
+        <p class="fragment">求出 $s[1...i]$ 与 $s[1...j]$ 的最长公共 $border$</p>
+    </section>
+    <section>
+        <h2>失配树</h2>
+        <p>我们把该串对应的失配树建立出来</p>
+        <sd-animation src="./失配树.js"
+            style="width: 1000px; height: 580px;"></sd-animation>
+        <div style="position: absolute; top: 450px; left: 600px;">
+            <p class="fragment">一个前缀的所有 $border$，就是该前缀在失配树上的所有祖先</p>
+            <p class="fragment">要求两个前缀的<b>最长公共 $border$</b>，即失配树上两个节点对应的<b>最近公共祖先</b></p>
+        </div>
+    </section>
+</section>

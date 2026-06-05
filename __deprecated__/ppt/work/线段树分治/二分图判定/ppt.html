@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>二分图判定</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5787"></problem>
+    <section>
+        <h2>二分图判定</h2>
+        <p>有一个 $n$ 个点的图，图上有 $m$ 条边，第 $i$ 条边在 $[l_i,r_i]$ 时间段内存在</p>
+        <p class="fragment">对每一个时间段，判断该图是否为二分图</p>
+    </section>
+    <section>
+        <h2>二分图判定</h2>
+        <p>二分图判定有一个并查集的实现方案</p>
+        <sd-animation src="./并查集判断二分图.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <div class="fragment">
+            <span>那么问题就形如</span>
+            <codeblock>
+                <script type="text/template">
+                    link 2 3
+                    check
+                    link 3 5
+                    check
+                    unlink 3 5
+                    check
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>二分图判定</h2>
+        <p>套线段树分治即可</p>
+        <sd-animation src="./线段树分治.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+</section>

@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>小凯的数字</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4942"></problem>
+    <section>
+        <h2>小凯的数字</h2>
+        <p>以一个数字区间 $[12,14]$ 为例...</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            answer&\equiv\overline{121314} (\mathop{mod} 9) \\
+            &\equiv (10^5\cdot 1+10^4\cdot 2)+(10^3\cdot 1+10^2\cdot 3)+(10\cdot 1+4) (\mathop{mod} 9)\\
+            &\equiv (10\cdot 1+2)+(10\cdot 1+3)+(10\cdot 1 + 4) (\mathop{mod} 9)\\
+            &\equiv \overline{12}+\overline{13}+\overline{14} (\mathop{mod} 9)
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">
+            所以答案直接就是 $\frac{(l+r)(r-l+1)}{2}$
+        </p>
+    </section>
+</section>

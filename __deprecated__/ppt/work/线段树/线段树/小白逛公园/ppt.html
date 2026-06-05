@@ -1,0 +1,94 @@
+<section>
+    <section>
+        <h1>小白逛公园</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P4513"></problem>
+    <section>
+        <h2>小白逛公园</h2>
+        <p>维护一个长度为 $n$ 的序列 $\{A\}$，支持两种操作</p>
+        <ul>
+            <li class="fragment"><code>1 a b</code>：查询 $[a,b]$ 的最大子段和</li>
+            <li class="fragment"><code>2 p s</code>：将 $A_p$ 修改为 $s$</li>
+        </ul>
+        <p class="fragment quote">最大子段和如何用线段树维护呢？</p>
+    </section>
+    <section>
+        <h2>小白逛公园</h2>
+        <p>假设我们在做线段合并，并且左区间和右区间的最大子段和都已经维护好了...</p>
+        <div style="display: flex;">
+            <sd-animation src="./线段合并1.js"
+                style="width: 1000px; height: 150px; margin-right: 30px;"></sd-animation>
+            <sd-animation src="./线段合并2.js"
+                style="width: 1000px; height: 150px;"></sd-animation>            
+        </div>
+        <p class="fragment quote">新区间的最大子段和可能全部来自左区间，或者全部来自右区间...</p>
+        <sd-animation src="./线段合并3.js" class="fragment"
+            style="width: 1000px; height: 150px;"></sd-animation>
+        <p class="fragment quote">还有可能是左区间的一个后缀，和右区间的一个前缀拼起来...</p>
+        <p class="fragment quote">如何处理拼起来的情况呢？</p>
+    </section>
+    <section>
+        <h2>小白逛公园</h2>
+        <sd-animation src="./线段合并静态图.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p>贪心来看，一定是左区间的一个最大后缀，和右区间的一个最大前缀拼起来，所以就目前看来，我们需要维护区间的</p>
+        <ol>
+            <li class="fragment"><ruby>最大前缀和<rt>lmax</rt></ruby></li>
+            <li class="fragment"><ruby>最大后缀和<rt>rmax</rt></ruby></li>
+            <li class="fragment"><ruby>最大子段和<rt>smax</rt></ruby></li>
+        </ol>
+        <codeblock class="fragment">
+            <script type="text/template">
+                struct seg {
+                    int l, r;
+                    int lmax; // 最大前缀和
+                    int rmax; // 最大后缀和
+                    int smax; // 最大子段和
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>小白逛公园</h2>
+        <p>考虑如何计算一个线段的最大前缀和</p>
+        <div style="display: flex;">
+            <sd-animation src="./线段合并4.js"
+                style="width: 1000px; height: 150px; margin-right: 30px;"></sd-animation>
+            <sd-animation src="./线段合并5.js"
+                style="width: 1000px; height: 150px;"></sd-animation>
+        </div>
+        <codeblock class="fragment">
+            <script type="text/template">
+                seg pushUp(seg lc, seg rc) {
+                    if (lc.lmax == lc.sum) ans.lmax = max(lc.lmax, lc.lmax + rc.lmax);
+                    else ans.lmax = lc.lmax;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">对于最大后缀和同理</p>
+    </section>
+    <section>
+        <h2>小白逛公园</h2>
+        <p>再来写最大子段和，就非常轻松了</p>
+        <div style="display: flex;">
+            <sd-animation src="./线段合并1.js"
+                style="width: 1000px; height: 150px; margin-right: 30px;"></sd-animation>
+            <sd-animation src="./线段合并3.js"
+                style="width: 1000px; height: 150px;"></sd-animation>
+        </div>
+        <codeblock class="fragment">
+            <script type="text/template">
+                seg pushUp(seg lc, seg rc) {
+                    ans.smax = max(lc.smax, rc.smax);
+                    ans.smax = max(ans.smax, lc.rmax + rc.lmax);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">对于长度为 $1$ 的区间，可以按照如下代码对其初始化</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                ans.smax = ans.lmax = ans.rmax = ans.sum = A[x];
+            </script>
+        </codeblock>
+    </section>
+</section>

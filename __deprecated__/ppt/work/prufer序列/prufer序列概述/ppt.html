@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>prufer序列</h1>
+        <p>建立起树和序列之间的联系</p>
+    </section>
+    <section>
+        <h2>prufer序列</h2>
+        <p>每次选择一个编号最小的叶节点，并且删除它，然后在序列中记录下它连接到的那个节点，重复 $n-2$ 次</p>
+        <sd-animation src="./树转序列.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <ol>
+            <li class="fragment">在构造完 prufer 序列后会剩下两个节点，其中一个一定是编号最大的节点 $n$</li>
+            <li class="fragment">每个节点在序列中出现的次数是其度数减 $1$</li>
+            <ul>
+                <li class="fragment">叶节点不会在 prufer 序列中出现</li>
+            </ul>
+        </ol>
+    </section>
+    <section>
+        <h2>prufer序列</h2>
+        <sd-animation src="./序列转树.js"
+            style="width: 1000px; height: 450px;"></sd-animation>
+    </section>
+</section>

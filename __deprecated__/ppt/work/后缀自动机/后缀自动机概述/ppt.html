@@ -1,0 +1,47 @@
+<section>
+    <section>
+        <h1>后缀自动机</h1>
+        <p>直观概览</p>
+    </section>
+    <section>
+        <h2>后缀自动机</h2>
+        <p><del>后缀自动机是一种自动机</del></p>
+        <sd-animation src="./后缀自动机双视图切换.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">后缀自动机尝试在<b>一个</b>字符串上构建自动机</p>
+        <p class="fragment">构建出来的自动机有两个视图——<b>转移视图</b>和<b>失配视图</b></p>
+    </section>
+    <section>
+        <h2>后缀自动机</h2>
+        <sd-animation src="./后缀自动机双视图独立.js"
+            style="width: 1000px; height: 450px;"></sd-animation>
+        <ul>
+            <li>$1$ 号节点代表空串</li>
+            <li>其余每个节点 $u$ 代表那些从 $1\rightarrow u$ 的所有路径对应的字符串</li>
+        </ul>
+    </section>
+    <section>
+        <h2>$endpos$</h2>
+        <p>我们把一个子串 $s$ 在母串中的所有结束位置构成的集合，叫做该子串的<b style="color: purple;">结束位置集合</b><span class="fragment">，记作 $endpos(s)$</span></p>
+        <sd-animation src="./endpos.js" class="fragment"
+            style="width: 1000px; height: 350px;"></sd-animation>
+    </section>
+    <section>
+        <h2>后缀自动机</h2>
+        <sd-animation src="./节点含义.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p>后缀自动机上的每个节点代表的字符串，其 $endpos$ 集合都相同<span class="fragment">，我们认为 $endpos$ 相同的子串同属于一个等价类</span></p>
+        <ul>
+            <li class="fragment">在失配树上越往下走，其字符串越长，对应的 $endpos$ 集合大小越小</li>
+            <li class="fragment">在失配树上越往上走，其字符串越短，对应的 $endpos$ 集合大小越大</li>
+        </ul>
+    </section>
+    <section>
+        <h2>后缀自动机</h2>
+        <p>一个字符串 $s$ 的后缀自动机事实上蕴含了 $s$ 的所有子串</p>
+        <p>这也就意味着 $s$ 的任意子串都能被该后缀自动机识别<span class="fragment">，只要在<b>转移视图</b>下一直沿着转移边走就行了</span></p>
+        <sd-animation src="./后缀自动机上匹配.js" class="fragment"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p class="fragment quote" style="margin-top: 0px;">任意一个子串都有其右端点，一定会被后缀自动机的某个 $endpos$ 等价类覆盖到，所以一定能被识别</p>
+    </section>
+</section>

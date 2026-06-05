@@ -1,0 +1,195 @@
+<section>
+    <section>
+        <h1>指数生成函数</h1>
+        <p>Exponential Generating Function，EGF</p>
+    </section>
+    <section>
+        <h2>有标号对象</h2>
+        <picture data-source="./有标号对象.png"
+            style="height: 500px;"></picture>
+    </section>
+    <section>
+        <h2>有标号对象的拼接</h2>
+        <picture data-source="./有标号对象拼接.png"></picture>
+    </section>
+    <section>
+        <h2>有标号对象的拼接</h2>
+        <p>如果现在有一包含 $n$ 个元素的对象，和一个包含 $m$ 个元素的对象，要拼接起来</p>
+        <p class="fragment">
+            则拼接产生的标号重分配的方案数为
+            $$
+            \frac{(n+m)!}{n!m!}
+            $$
+        </p>
+        <ul>
+            <li class="fragment">可以视作先把 $n+m$ 个标号分配给 $n+m$ 个元素</li>
+            <li class="fragment">为前一个对象存在的相对顺序去重，除以 $n!$</li>
+            <li class="fragment">为后一个对象存在的相对顺序去重，除以 $m!$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>指数生成函数</h2>
+        <p>我们希望生成函数的乘积是有标号组合对象的拼接</p>
+        <p class="fragment">
+            $$
+            answer=x^n 与 x^m\stackrel{组合}{\rightarrow} \frac{(n+m)!}{n!m!} x^{n+m}
+            $$
+        </p>
+        <p class="fragment">如果我希望把来自 $A(x)$ 和 $B(x)$ 的有标号对象组合起来，得到 $C(x)$......</p>
+        <p class="fragment">
+            $$
+            \frac{C_k}{k!}=\sum_{i}\frac{A_i}{i!}\frac{B_{k-i} }{(k-i)!} \\
+            $$
+        </p>
+        <p class="fragment" style="margin-top: -20px;">如果我们这样构造</p>
+        <p class="fragment" style="margin-top: -20px;">
+            $$
+            \begin{cases}
+            A(x)=\sum_{i}\frac{A_i}{i!}x^i \\
+            B(x)=\sum_{i}\frac{B_i}{i!}x^i \\
+            C(x)=\sum_{i}\frac{C_i}{i!}x^i
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">容易发现 $C(x)$ 就能被 $A(x)$ 和 $B(x)$ 在组合意义正确的情况下卷积得到</p>
+        <p class="fragment quote">
+            我们相当于把<b>标号组合时遇到的阶乘</b>强行拆开，分别塞给了三个生成函数
+        </p>
+    </section>
+    <section>
+        <h2>指数生成函数</h2>
+        <div class="quote">
+            <p>
+                $$
+                e^x=1+\frac{x}{1!}+\frac{x^2}{2!}+\frac{x^3}{3!}+...
+                $$
+            </p>
+            <ul>
+                <li class="fragment">站在普通生成函数的视角下，$e^x$ 是 $\{1,\frac{1}{1!},\frac{1}{2!},\frac{1}{3!}...\}$ 这个序列的生成函数</li>
+                <li class="fragment">站在指数生成函数的视角下，$e^x$ 是 $\{1,1,1,1,...\}$ 这个序列的生成函数</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+        <h2>全排列问题</h2>
+        <p>比如，我想构造 $n$ 个不同的元素的排列数（记作 $p_n$，特殊地，我们令 $p_0=1$）</p>
+        <div class="fragment quote">能找到用普通生成函数表达的简洁的形式吗？
+            $$
+            P_{普通}(x)=1+1!x+2!x^2+3!x^3+...=???
+            $$
+        </div>
+        <p class="fragment">尝试用指数生成函数表示</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            P_{指数}(x)&=1+\frac{1!}{1!}x+\frac{2!}{2!}x^2+\frac{3!}{3!}x^3+... \\
+            &=\frac{1}{1-x}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>环排列问题</h2>
+        <p>再比如，我想求环排列数的生成函数（环排列就是把元素排列在一个环上）</p>
+        <p class="fragment">我们记 $n$ 个元素的环排列为 $c_n$，特殊地，令 $c_n=0$</p>
+        <p class="fragment">
+            $$
+            C(x)=\frac{0!}{1!}x+\frac{1!}{2!}x^2+\frac{2!}{3!}x^3+...
+            $$
+        </p>
+        <div class="fragment quote">
+            <h3>回顾 $ln(1+x)$ 的泰勒展开</h3>
+            <p>
+                $$
+                ln(1+x)=\frac{x}{1}-\frac{x^2}{2}+\frac{x^3}{3}+...+(-1)^{n+1}\frac{x^n}{n}+...
+                $$
+            </p>
+        </div>
+        <p class="fragment">
+            $$
+            C(x)=-ln(1-x)=ln(\frac{1}{1-x})
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>全排列与环排列</h2>
+        <p>
+            $$
+            \begin{cases}
+            P(x)=\frac{1}{1-x} \\
+            C(x)=ln(\frac{1}{1-x})
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">可以注意到全排列的生成函数，和环排列的生成函数，正好满足
+            $$
+            P(x)=e^{C(x)}
+            $$
+        </p>
+        <p class="fragment">我们尝试由环排列，推导出全排列的生成函数</p>
+    </section>
+    <section>
+        <h2>全排列与环排列</h2>
+        <p>任何一个排列都可以拆分成一些环排列，我们把拆出来的一个环排列称为一个<b>轮换</b></p>
+        <p class="fragment">例如 $(3,6,4,1,2,5)=(3,1,4)(6,2,5)$</p>
+        <p class="fragment">考虑一个排列具体是由几个轮换组成的</p>
+        <p class="fragment">对于一个大小为 $n$ 的排列，其有可能是由</p>
+        <ul>
+            <li class="fragment">一个环排列组成<span class="fragment">——$C(x)$</span></li>
+            <ul>
+                <li class="fragment">一个大小为 $n$ 的环排列</li>
+            </ul>
+            <li class="fragment">两个环排列组成<span class="fragment">——$C^2(x)/2!$</span></li>
+            <ul>
+                <li class="fragment">大小为 $1$ 和大小为 $n-1$ 这两个</li>
+                <li class="fragment">大小为 $2$ 和大小为 $n-2$ 这两个</li>
+                <li class="fragment">......</li>
+                <li class="fragment">大小为 $n-1$ 和大小为 $1$ 这两个</li>
+            </ul>
+            <li class="fragment">三个环排列组成<span class="fragment">——$C^3(x)/3!$</span></li>
+            <li class="fragment">四个环排列组成<span class="fragment">——$C^4(x)/4!$</span></li>
+        </ul>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            P(x)&=1+C(x)+\frac{C^2(x)}{2!}+\frac{C^3(x)}{3!}+\frac{C^4(x)}{4!}+... \\
+            &=e^{C(x)}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>小练习</h2>
+        <p>求错位排列方案数的生成函数 $D(x)$，特殊地令 $d_0=1$</p>
+        <p class="fragment">错位排列也是一个排列，且 $\forall i,i$ 不在第 $i$ 个位置上</p>
+        <p class="fragment">那么我们也可以把错位排列的结果看作是若干轮换，只是不能存在大小为 $1$ 的轮换而已</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            D(x)&=e^{C(x)-x} \\
+            &=e^{ln(\frac{1}{1-x})-x} \\
+            &=\frac{e^{-x} }{1-x}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>小练习</h2>
+        <p>使用生成函数求 $n$ 个点有标号<b>无向连通图</b>的方案数（无重边，无自环）</p>
+        <p class="fragment">令 $A(x)$ 表示有标号无向连通图的生成函数，$B(x)$ 表示有标号无向图的生成函数</p>
+        <p class="fragment">
+            $$
+            B(x)=\sum_{n=0}^{\infty}2^{C_n^2}x^n
+            $$
+        </p>
+        <p class="fragment">一张无向图可以看作若干无向连通图的组合，与排列/轮换之间的关系类似</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            B(x)&=e^{A(x)} \\
+            A(x)&=ln(B(x))
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

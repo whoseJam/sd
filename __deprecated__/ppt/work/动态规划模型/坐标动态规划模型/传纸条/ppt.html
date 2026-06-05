@@ -1,0 +1,120 @@
+<section>
+    <section>
+        <h1>传纸条</h1>
+        <p>一个空间，两个客体</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1006"></problem>
+    <section>
+        <h2>传纸条</h2>
+        <p>容易想到一个做法</p>
+        <ol>
+            <li>求出一个纸条从 $(1,1)$ 到 $(m,n)$ 的路线最大值</li>
+            <li>删除路径上的点值</li>
+            <li>再求出一个纸条从 $(m,n)$ 到 $(1,1)$ 的路线最大值</li>
+            <li>统计两次传递的和</li>
+        </ol>
+        <sd-animation src="./反例1.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>但是这样做是有问题的</p>
+        <sd-animation src="./反例2.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>
+            上述做法错误的原因在于，<b>我们没有考虑两个纸条同时传递时，它们之间的<span style="color: red;">相互影响</span></b>
+        </p>
+        <p class="fragment">
+            由于路径可逆，尽管两个纸条的出发点不同，但都可以被视为从 $(1,1)$ 到 $(m,n)$
+        </p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <sd-animation src="./状态设置.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p>设 $f(x_1,y_1,x_2,y_2)$ 表示纸条 $1$ 到达 $(x_1,y_1)$，纸条 $2$ 到达 $(x_2,y_2)$，所能获得的最大好感度</p>
+        <p class="fragment" style="font-size: 20px;">
+            $$
+            f(x_1,y_1,x_2,y_2)=max
+            \begin{cases}
+            f(x_1-1,y_1,x_2-1,y_2) \\
+            f(x_1,y_1-1,x_2-1,y_2) \\
+            f(x_1-1,y_1,x_2,y_2-1) \\
+            f(x_1,y_1-1,x_2,y_2-1)
+            \end{cases}
+            +C_{x_1,y_1}+C_{x_2,y_2}
+            $$
+        </p>
+        <p class="fragment">保证 $(x_1,y_1)\ne (x_2,y_2)$，以防同一个同学的好感度被两张纸条同时吃到</p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>
+            $$
+            f(x_1,y_1,x_2,y_2)=max
+            \begin{cases}
+            f(x_1-1,y_1,x_2-1,y_2) \\
+            f(x_1,y_1-1,x_2-1,y_2) \\
+            f(x_1-1,y_1,x_2,y_2-1) \\
+            f(x_1,y_1-1,x_2,y_2-1)
+            \end{cases}
+            +C_{x_1,y_1}+C_{x_2,y_2}
+            $$
+        </p>
+        <codeblock style="width: 1060px;">
+            <script type="text/template">
+                void DP() {
+                    f[1][1][1][1] = a[1][1];
+                    for (int x1 = 1; x1 <= m; x1++)
+                        for (int y1 = 1; y1 <= n; y1++)
+                            for (int x2 = 1; x2 <= m; x2++)
+                                for (int y2 = 1; y2 <= n; y2++) {
+                                    int t = 0;
+                                    if (f[x1 - 1][y1][x2 - 1][y2] > t) t = f[x1 - 1][y1][x2 - 1][y2];
+                                    if (f[x1][y1 - 1][x2 - 1][y2] > t) t = f[x1][y1 - 1][x2 - 1][y2];
+                                    if (f[x1 - 1][y1][x2][y2 - 1] > t) t = f[x1 - 1][y1][x2][y2 - 1];
+                                    if (f[x1][y1 - 1][x2][y2 - 1] > t) t = f[x1][y1 - 1][x2][y2 - 1];
+                                    if (x1 != x2 || y1 != y2) f[x1][y1][x2][y2] = t + a[x1][y1] + a[x2][y2];
+                                }
+                    cout << f[m][n - 1][m - 1][n] << endl;
+                }
+            </script>
+        </codeblock>
+    </section>
+
+    <section>
+        <h2>传纸条</h2>
+        <p>注意到我们的状态空间是一个 $m\times n\times m\times n$ 的空间，而这个空间存在大量<b style="color: grey;">不合法的状态</b></p>
+        <ul>
+            <li class="fragment">比如 $f(3,4,3,4)$：两个纸条走到同一个位置上了</li>
+            <li class="fragment">比如 $f(1,5,2,1)$：其中一个纸条走了 $4$ 步，而另一个纸条只走了一步</li>
+        </ul>
+        <sd-animation src="./减小状态空间.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">这启发我们可以定义一种新的状态空间，让这个状态空间中只包含<b style="color: teal;">合法的状态</b></p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>每张纸条都需要 $m+n$ 步才能走到终点，而且两张纸条又是一起走的，设 $f(k,x_1,x_2)$ 表示两张纸条都走了 $k$ 步，第一张纸条横坐标为 $x_1$，第二张纸条横坐标为 $x_2$，收获的最大好感度</p>
+        <ul>
+            <li class="fragment">第一张纸条的纵坐标 $y_1=k-x_1$</li>
+            <li class="fragment">第二张纸条的纵坐标 $y_2=k-x_2$</li>
+        </ul>
+        <p class="fragment">
+            $$
+            f(k,x_1,x_2)=max
+            \begin{cases}
+            f(k-1,x_1,x_2) \\
+            f(k-1,x_1-1,x_2) \\
+            f(k-1,x_1,x_2-1) \\
+            f(k-1,x_1-1,x_2-1)
+            \end{cases}
+            +C_{x_1,k-x_1}+C_{x_2,k-x_2}
+            $$
+        </p>
+        <p class="fragment">时空复杂度被优化为 $O((n+m)n^2)$</p>
+    </section>
+</section>

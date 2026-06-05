@@ -1,0 +1,62 @@
+<section>
+    <section>
+        <h1>筛法其二</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000015"></problem>
+    <section>
+        <h2>筛法其二</h2>
+        <p>定义最大质因子函数 $f(x)=x的最大质因子$，让你把 $[1,n]$ 的 $f$ 函数的值求出来</p>
+        <p class="fragment quote">在线性筛中，一个合数只会被自己最小的质因子筛去，那我如何保留它的最大质因子呢？</p>
+    </section>
+    <section>
+        <h2>筛法其二</h2>
+        <p>当 $p$ 是质数时，显然 $f(p)=p$</p>
+        <codeblock>
+            <script type="text/template">
+                如果 i 是质数
+                prim[++tot] = i;
+                f[i] = i;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>筛法其二</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中不包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+            $$x=p_1p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$f(i)=f(p_2^{a_2}p_3^{a_3}...p_n^{a_n})=p_n$$
+        </p>
+        <p class="fragment">
+            $$f(x)=f(p_1p_2^{a_2}p_3^{a_3}...p_n^{a_n})=p_n$$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] != 0 时
+                f[x] = f[i];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>筛法其二</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_1^{a_1}p_2^{a_2}...p_n^{a_n}$$
+            $$x=p_1^{a_1+1}p_2^{a_2}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$f(i)=f(p_1^{a_1}p_2^{a_2}...p_n^{a_n})=p_n$$
+        </p>
+        <p class="fragment">
+            $$f(x)=f(p_1^{a_1+1}p_2^{a_2}...p_n^{a_n})=p_n$$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] == 0 时
+                f[x] = f[i];
+            </script>
+        </codeblock>
+    </section>
+</section>

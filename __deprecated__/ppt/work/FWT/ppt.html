@@ -1,0 +1,205 @@
+<section>
+    <h1>FWT</h1>
+    <p>whoseJam</p>
+</section>
+
+<section>
+    <section>
+        <h1>FWT</h1>
+        <p>也叫快速沃尔什变换，类比于快速傅里叶变换，快速沃尔什变换着手于<b>快速完成</b>集合上的卷积操作</p>
+    </section>
+    <section>
+        <h2>FWT</h2>
+        <p>我们有以下三种比较常见的集合上的卷积：</p>
+        <ul>
+            <li class="fragment">按位或卷积：$C_x=\sum_{i\cup j=x}A_iB_j$</li>
+            <li class="fragment">按位与卷积：$C_x=\sum_{i\cap j=x}A_iB_j$</li>
+            <li class="fragment">按位异或卷积：$C_x=\sum_{i\bigotimes j=x}A_iB_j$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>FWT</h2>
+        <p>设集合大小为 $n$，最暴力的做法时间复杂度显然是 $O(2^{2n})$ 的</p>
+        <pre class="fragment"><code class="hljs cpp" data-trim data-line-numbers>
+            int All=(1&lt;&lt;n);
+            for(int i=0;i&lt;All;i++)
+                for(int j=0;j&lt;All;j++)
+                    C[i|j]+=A[i]*B[j];
+        </code></pre>
+        <p class="fragment">而快速沃尔什变换，提供了一种以 $O(n2^n)$ 的时间复杂度计算上式的做法，并且代码还非常简单</p>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>按位或卷积</h1>
+        <p>$$ C_x=\sum_{i\cup j=x}A_iB_j $$</p>
+    </section>
+    <section>
+        <h2>按位或卷积</h2>
+        <p>$$ C_x=\sum_{i\cup j=x}A_iB_j $$</p>
+        <p>首先，我们构造一个变换 $FWT(A)_i=\sum_{j\cap i=j}A_j$</p>
+        <p class="fragment">则有：</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            FWT(C)_y&=\sum_{x\cap y=x}C_x \\
+            &=\sum_{x\cap y}\sum_{i\cup j=x}A_iB_j \\
+            &=\sum_{i\cap y=i}A_i\sum_{j\cap y=j}B_j \\
+            &=FWT(A)_yFWT(B)_y
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>按位或卷积</h2>
+        <div style="width: 50%; display: inline-block;">
+            <p>如何实现 $A\rightarrow FWT(A)$呢？</p>
+            <p class="fragment">考虑把 $A$ 划分为等长的两部分 $A_0$ 和 $A_1$</p>
+            <p class="fragment">对于任意 $i\le \frac n 2$，都应该有 $A_i$ 对 $A_{i+\frac n 2}$ 产生贡献</p>
+        </div>
+        <div style="width: 50%; float: right;">
+            <img data-src="./image/分治.png" />
+        </div>
+    </section>
+    <section>
+        <h2>按位或卷积</h2>
+        <div style="width: 50%; display: inline-block;">
+            <p class="fragment">如果我们把这张更新图画出来......</p>
+        </div>
+        <sd-animation src="./animation/按位或卷积.html" class="large"></sd-animation>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>按位与卷积</h1>
+        <p>$$ C_x=\sum_{i\cap j=x}A_iB_j $$</p>
+    </section>
+    <section>
+        <h2>按位与卷积</h2>
+        <p>$$ C_x=\sum_{i\cap j=x}A_iB_j $$</p>
+        <p>首先，我们构造一个变换 $FWT(A)_i=\sum_{j\cap i=i}A_j$</p>
+        <p class="fragment">则有：</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            FWT(C)_y&=\sum_{x\cap y=y}C_x \\
+            &=\sum_{x\cap y=y}\sum_{i\cap j=x}A_iB_j \\
+            &=\sum_{i\cap y=y}A_i\sum_{j\cap y=y}B_j \\
+            &=FWT(A)_yFWT(B)_y
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>按位与卷积</h2>
+        <div style="width: 50%; display: inline-block;">
+            <p>如何实现 $A\rightarrow FWT(A)$呢？</p>
+            <p class="fragment">考虑把 $A$ 划分为等长的两部分 $A_0$ 和 $A_1$</p>
+            <p class="fragment">对于任意 $i\le \frac n 2$，都应该有 $A_{i+\frac n 2}$ 对 $A_i$ 产生贡献</p>
+        </div>
+        <div style="width: 50%; float: right;">
+            <img data-src="./image/分治.png" />
+        </div>
+    </section>
+    <section>
+        <h2>按位与卷积</h2>
+        <div style="width: 50%; display: inline-block;">
+            <p class="fragment">如果我们把这张更新图画出来......</p>
+        </div>
+        <sd-animation src="./animation/按位与卷积.html" class="large"></sd-animation>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>按位异或卷积</h1>
+        <p>$$ C_x=\sum_{i\bigotimes j=x}A_iB_j $$</p>
+    </section>
+    <section>
+        <h2>按位异或卷积</h2>
+        <p>这玩意构造起来有点抽象，我们需要倒着研究一下</p>
+        <p class="fragment">
+            假设我构造出来了一个变换 $FWT(A)_i=\sum_{j=0}^{n-1}c(i,j)A_j$，我肯定希望能有：
+            $$
+            FWT(C)_i=FWT(A)_i FWT(B)_i
+            $$
+        </p>
+        <p class="fragment">既然等式左右两边应该相等，我们就顺着这条路往下推，看看 $c(\cdot,\cdot)$ 应该满足怎样的性质</p>
+    </section>
+    <section>
+        <h2>按位异或卷积</h2>
+        <p>$$FWT(C)_i=FWT(A)_i FWT(B)_i$$</p>
+        <p class="fragment">
+            对于等式左边，有：
+            $$
+            FWT(C)_i=\sum_{p=0}^{n-1}c(i,p)C_p=\sum_{p=0}^{n-1}c(i,p)\sum_{t_1\bigotimes t_2=p}A_{t_1}B_{t_2} \\
+            =\sum_{t_1=0}^{n-1}\sum_{t_2=0}^{n-1}c(i,t_1\bigotimes t_2)A_{t_1}B_{t_2}
+            $$
+        </p>
+        <p class="fragment">
+            对于等式右边，有：
+            $$
+            FWT(A)_iFWT(B)_i=\sum_{j=0}^{n-1}\sum_{k=0}^{n-1}c(i,j)c(i,k)A_j B_k
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>按位异或卷积</h2>
+        <p>所以，我们得到了：$c(i,j)c(i,k)=c(i,j\bigotimes k)$</p>
+        <p class="fragment">又由于位运算可以逐位考虑，各位无关，假设一个十进制数字 $x$ 可以被写作如下的二进制表示：$x=|x_0x_1...x_k|_2$，所以我们可以把 $c(i,j)$ 重写为其二进制表示：</p>
+        <p class="fragment">
+            $$
+            c(i,j)=|c(i_0,j_0)c(i_1,j_1)...c(i_k,j_k)|_2
+            $$
+        </p>
+        <p style="font-size: 20px;" class="fragment">
+            $$
+            \begin{aligned}
+            FWT(A)_i&=\sum_{j=0}^{\frac 1 2 n - 1}c(i,j)A_i+\sum_{j=\frac 1 2 n}^{n-1}c(i,j)A_i \\
+            &=c(i_0,0)\sum_{j=0}^{\frac 1 2 n - 1}c(|i_1i_2...i_k|_2,|j_1j_2...j_k|_2)A_j+c(i_0,1)\sum_{j=\frac 1 2 n}^{n-1}c(|i_1i_2...i_k|_2,|j_1j_2...j_k|_2)A_j\\
+            &=c(i_0,0)FWT(A_0)_i+c(i_0,1)FWT(A_1)_i
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>按位异或卷积</h2>
+        <p>
+            稍微整理一下，即：
+            $$
+            FWT(A)_i=c(i_0,0)FWT(A_0)_i+c(i_0,1)FWT(A_1)_i \\
+            i_0\in \{0, 1\}
+            $$
+        </p>
+        <p class="fragment">所以我们只需要构造出一个 $
+            c=
+            \begin{bmatrix}
+            ?&?\\
+            ?&?\\
+            \end{bmatrix}
+            $ 这样的一个<b>位矩阵</b>，让它满足 $c(i,j)c(i,k)=c(i,j\bigotimes k)$，同时可逆，即可</p>
+    </section>
+    <section>
+        <h2>按位异或卷积</h2>
+        <p>经过精心的构造（此处省略），我们发现以下这个矩阵非常符合我们的要求：
+            $$
+            c=
+            \begin{bmatrix}
+            1&1\\
+            1&-1\\
+            \end{bmatrix}
+            $$
+        </p>
+        <p class="fragment">其逆矩阵为
+            $$
+            inv(c)=
+            \begin{bmatrix}
+            0.5&0.5\\
+            0.5&-0.5\\
+            \end{bmatrix}
+            $$
+        </p>
+    </section>
+</section>

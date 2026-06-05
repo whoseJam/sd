@@ -1,0 +1,86 @@
+<section>
+    <section>
+        <h1>并查集</h1>
+        <p>一种处理集合的数据结构</p>
+    </section>
+    <section>
+        <h2>并查集</h2>
+        <p>给定 $n$ 个元素，最初情况下，每个元素自成一个集合，你需要支持以下两种操作</p>
+        <ol>
+            <li class="fragment"><code>Merge(a, b)</code>：把 $a$ 和 $b$ 所在的集合<b>合并</b>为一个更大的集合</li>
+            <li class="fragment"><code>Query(a, b)</code>：查询元素 $a$ 和元素 $b$ 是否位于同一个集合中</li>
+        </ol>
+        <sd-animation src="./问题描述.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>并查集</h2>
+        <p>我们可以把一棵树看作一个完整的集合，树中的节点代表集合中的元素</p>
+        <sd-animation src="./树与集合.js"
+            description="树和集合是对应的"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>并查集</h2>
+        <sd-animation src="./并查集.js"
+            style="width: 1000px; height: 280px;"></sd-animation>
+        <p class="fragment" style="margin-top: -10px;">把集合的合并转化为<b>树的合并</b></p>
+        <p class="fragment" style="margin-bottom: 0px;">把判断两个元素是否在同一个集合中，转化为判断两个元素所属树的树根是否相同</p>
+        <div style="display: flex; margin-top: -10px;" class="fragment">
+            <codeblock style="width: 400px;">
+                <script type="text/template">
+                    void init() { // 初始化
+                        for (int i = 1; i <= n; i++)
+                            fa[i] = i;
+                    }
+                </script>
+            </codeblock>
+            <codeblock style="width: 400px;">
+                <script type="text/template">
+                    void F(int x) {
+                        if (fa[x] == x) return x;
+                        return F(fa[x]);
+                    }
+                </script>
+            </codeblock>
+        </div>
+        <div style="display: flex; margin-top: -10px;" class="fragment">
+            <codeblock style="width: 400px;">
+                <script type="text/template">
+                    void Merge(int x, int y) {
+                        fa[F(x)] = F(y);
+                    }
+                </script>
+            </codeblock>
+            <codeblock style="width: 400px;">
+                <script type="text/template">
+                    bool Check(int x, int y) {
+                        return F(x) == F(y);
+                    }
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>并查集</h2>
+        <p>但...容易发现如果一棵树非常“瘦长”，那么从当前元素爬到树根会变得非常慢</p>
+        <p class="fragment">而不管是 <code>Merge</code> 操作还是 <code>Query</code> 操作，都会涉及到<b>爬树</b></p>
+        <p class="fragment">但其实我们并不关心树的形态</p>
+        <sd-animation src="./路径压缩原因.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">所以我们引入了<b>路径压缩</b>，用于把左图的树转化为右图的树</p>
+    </section>
+    <section>
+        <h2>并查集</h2>
+        <sd-animation src="./路径压缩.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int F(int x) {
+                    if (fa[x] == x) return x;
+                    return fa[x] = F(fa[x]);
+                } 
+            </script>
+        </codeblock>
+    </section>
+</section>

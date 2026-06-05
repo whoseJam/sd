@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>公平组合游戏</h1>
+    </section>
+    <section>
+        <h2>公平组合游戏</h2>
+        <p>在公平组合游戏中，每个游戏状态要么是先手必胜态（简称必胜态），要么是先手必败态（简称必败态）</p>
+        <ul>
+            <li class="fragment" data-fragment-index="0">一个终止状态是必胜态还是必败态是确定的</li>
+            <li class="fragment" data-fragment-index="1">如果一个状态的某个后继状态是必败态，则该状态是必胜态</li>
+            <li class="fragment" data-fragment-index="3">如果一个状态的全部后继状态都是必胜态，则该状态是必败态</li>
+        </ul>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <sd-animation src="./win.js" class="fragment" data-fragment-index="2"
+                style="width: 1000px; height: 200px; margin-right: 50px;"></sd-animation>
+            <sd-animation src="./lose.js" class="fragment" data-fragment-index="4"
+                style="width: 1000px; height: 200px;"></sd-animation>
+        </div>
+        <p class="fragment" data-fragment-index="5">由如上三条规则，自然能推导出任意状态的胜负性</p>
+    </section>
+</section>

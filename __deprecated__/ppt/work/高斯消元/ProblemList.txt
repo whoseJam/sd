@@ -1,0 +1,6 @@
+实数方程组：
+高斯消元法：https://www.luogu.com.cn/problem/P3389
+线性方程组：https://www.luogu.com.cn/problem/P2455
+
+异或方程组：
+Lights：https://www.luogu.com.cn/problem/P2962

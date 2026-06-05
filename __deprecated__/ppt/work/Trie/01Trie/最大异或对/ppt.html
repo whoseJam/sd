@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>最大异或对</h1>
+    </section>
+    <problem data-source="https://loj.ac/p/10050"></problem>
+    <section>
+        <h2>最大异或对</h2>
+        <p>$n$ 个数字，选两个出来，使之异或和最大</p>
+    </section>
+    <section>
+        <h2>最大异或对</h2>
+        <p>如果我们把这 $n$ 个数字插入到01trie中...</p>
+        <sd-animation src="./最大异或对.js"
+            style="width: 1000px; height: 280px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                uint query(uint v) {
+                    int u = 1;
+                    uint ans = 0;
+                    for (int i = 31; i >= 0; i--) {
+                        int dir = (v >> i) & 1;
+                        if (ch[u][dir ^ 1]) {
+                            u = ch[u][dir ^ 1];
+                            ans |= (1u << i);
+                        } else u = ch[u][dir];
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>最大异或对</h2>
+        <p>通过这道题，我们知道 01Trie 能用来查询一个二进制数，和另外 $n$ 个二进制数的最大异或和，我们只需要把另外 $n$ 个二进制数建立成一个 01Trie 就行了</p>
+    </section>
+</section>

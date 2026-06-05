@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>Rozstaw szyn</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5992"></problem>
+    <section>
+        <h2>Rozstaw szyn</h2>
+        <p>对于 $30\%$ 的数据，除了根节点之外的节点都是叶子节点</p>
+        <p>
+            $$
+            \sum_{i是叶子节点}|v_i-v_{rt}|
+            $$
+        </p>
+        <sd-animation src="./菊花图.js" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">选叶子节点的权值的中位数即可</p>
+    </section>
+    <section>
+        <h2>Rozstaw szyn</h2>
+        <p>对于另外 $20\%$ 的数据，树是一条链</p>
+        <sd-animation src="./链.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <p class="fragment">假设链的其中一个端点为 $S$，另一个端点为 $T$</p>
+        <p class="fragment">显然答案为 $|v_{S}-v_{T}|$</p>
+    </section>
+    <section>
+        <h2>Rozstaw szyn</h2>
+        <p>对于 $100\%$ 的数据，没有特殊限制</p>
+        <p>我们可以发现，如果把两个绝对值函数加起来，形成的函数图形应该如图所示</p>
+        <picture data-source="./合并.png"></picture>
+        <p class="fragment">中间会有一段平着的区域，这段区域就是树根的最优取值范围</p>
+    </section>
+    <section>
+        <h2>Rozstaw szyn</h2>
+        <p>多个绝对值函数合并起来亦如此</p>
+        <picture data-source="./多个合并.png" height="300px"></picture>
+        <div style="text-align: center;">
+            <span class="quote">$\left|x-5\right|+\left|x+5\right|+\left|x-3\right|+\left|x+10\right|$</span>
+        </div>
+    </section>
+    <section>
+        <h2>Rozstaw szyn</h2>
+        <p>对每个非叶子节点来说，当它考虑它每个儿子的权值时，会发现每个儿子的权值会落在某个取值范围内</p>
+        <p>不妨设当前节点为 $u$，设儿子 $c$ 的权值的取值范围为 $v_c\in [l_c,r_c]$</p>
+        <ul>
+            <li class="fragment">如果 $v_u\lt l_c$，那么 $u$ 和 $c$ 之间会产生 $l_c-v_u$ 的代价</li>
+            <li class="fragment">如果 $v_u\gt r_c$，那么 $u$ 和 $c$ 之间会产生 $v_u-r_c$ 的代价</li>
+            <li class="fragment">如果 $l_c\le v_u\le r_c$，那么 $u$ 和 $c$ 之间不会产生代价</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Rozstaw szyn</h2>
+        <sd-animation src="./通用.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">仍然是找拐点的中位数即可</p>
+    </section>
+</section>

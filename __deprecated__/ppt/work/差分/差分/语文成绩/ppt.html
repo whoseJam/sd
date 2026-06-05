@@ -1,0 +1,58 @@
+<section>
+    <section>
+        <h1>语文成绩</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P2367"></problem>
+    <section>
+        <h2>语文成绩</h2>
+        <p>修改 $p$ 次成绩，每次修改指定一个区间 $[l,r]$，让这个区间中的每个学生增加 $z$ 分</p>
+        <p class="fragment">$p$ 次成绩修改完成后，再统计最低分学生的得分</p>
+    </section>
+    <section>
+        <h2>语文成绩</h2>
+        <p>$一个学生的成绩=初始成绩+增量成绩$，初始成绩已知的，我们只需要快速统计出一个学生的增量成绩就好了</p>
+        <p class="fragment">假设老师的一次成绩修改选中了 $[l,r]$ 这个区间的学生，让他们的成绩增加 $z$ 分，我可以看作</p>
+        <ul>
+            <li class="fragment">老师先将 $[1,l-1]$ 这个区间的学生的成绩增加 $0$ 分</li>
+            <li class="fragment">再将 $[l,r]$ 这个区间的学生的成绩增加 $z$ 分</li>
+            <li class="fragment">最后将 $[r+1,n]$ 这个区间的学生的成绩增加 $0$ 分</li>
+        </ul>
+        <p class="fragment">我们把这 $n$ 个学生的成绩看作是一个长度为 $n$ 的序列 $\{s\}=\{s_1,s_2...s_n\}$</p>
+        <p class="fragment">那么经过这一次成绩修改，相当于给 $\{s\}$加上了这么一个序列 $\{0,0...0,z,z...z,0,0...0\}$</p>
+    </section>
+    <section>
+        <h2>语文成绩</h2>
+        <p>假设老师执行了 $p$ 次区间成绩加法，第 $i$ 次成绩加法的增量序列为 $\{A_i\}=\{0,0...0,z_i,z_i...z_i,0,0...0\}$，则有</p>
+        <p class="fragment">
+            $$
+            增量成绩=\{A_1\}+\{A_2\}+...+\{A_p\}
+            $$
+        </p>
+        <p class="fragment">暴力做这 $p$ 次成绩加法的时间复杂度显然为 $O(np)$，我们试试先做一个序列差分，再做一个序列前缀和</p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            增量成绩&=S(D(\{A_1\}+\{A_2\}+...+\{A_p\})) \\
+            &=S(D(\{A_1\})+D(\{A_2\})+...+D(\{A_p\}))
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>语文成绩</h2>
+        <p>而 $\{A_i\}=\{0,0...0,z_i,z_i...z_i,0,0...0\}$（$z_i$ 占领了 $[l_i,r_i]$ 这个区间），所以</p>
+        <p class="fragment">
+            $$
+            D(\{A_i\})=\{0,0...0,z_i,0...0,-z_i,0...0\}
+            $$
+        </p>
+        <p class="fragment">即 $D(\{A_i\})$ 只在第 $l_i$ 位和第 $r_i+1$ 位不为 $0$，且</p>
+        <ul class="fragment">
+            <li>$D(\{A_i\})_{l_i}=z_i$</li>
+            <li>$D(\{A_i\})_{r_i+1}=-z_i$</li>
+        </ul>
+        <p class="fragment">至此，我们已经可以快速计算 $D(\{A_1\})+D(\{A_2\})+...+D(\{A_p\})$</p>
+        <sd-animation src="../差分概述/差分对前缀和的影响.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+</section>

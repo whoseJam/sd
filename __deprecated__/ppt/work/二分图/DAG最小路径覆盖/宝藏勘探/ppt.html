@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>宝藏勘探</h1>
+    </section>
+    <problem data-problemset="poj" data-problemid="2594"></problem>
+    <section>
+        <h2>宝藏勘探</h2>
+        <p>给定一张DAG，求它的最小路径覆盖，注意我们在本题中<b>允许不同路径有交</b></p>
+        <sd-animation src="./宝藏勘探.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">例如上图，在不允许路径有交的时候，最小路径覆盖为 $3$；在允许路径有交的时候，最小路径覆盖为 $2$</p>
+    </section>
+    <section>
+        <h2>宝藏勘探</h2>
+        <p class="quote">能否通过某种手段，把<b>允许不同路径有交的最小路径覆盖</b>，转换为我们熟悉的<b>不允许路径有交的最小路径覆盖</b>呢？</p>
+    </section>
+    <section>
+        <h2>宝藏勘探</h2>
+        <p>先求一个传递闭包，假设 $u$ 能间接到达 $v$，则在原图中添加 $u\rightarrow v$</p>
+        <p class="fragment">至此本题可以当作不允许路径有交的最小路径覆盖做</p>
+    </section>
+</section>

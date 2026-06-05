@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>斐波那契数列</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1962"></problem>
+    <section>
+        <h2>斐波那契数列</h2>
+        <p>
+            $$
+            f_n=f_{n-1}+f_{n-2}
+            $$
+            且 $f_1=f_2=1$，求其第 $n$ 项
+        </p>
+        <p class="fragment quote">满足 $n\lt 2^{63}$</p>
+        <p class="fragment">注意到斐波那契数列的第 $n$ 项实际上是它的前两项元素的<b style="color: red;">线性组合</b>...</p>
+        <p class="fragment">所以我们尝试将递推式改写成矩阵形式，即
+            $$
+            \begin{pmatrix}?&?\\?&?\end{pmatrix}\begin{pmatrix}f_{n-1}\\f_{n-2}\end{pmatrix}=\begin{pmatrix}f_n\\f_{n-1}\end{pmatrix}
+            $$
+        </p>
+        <sd-animation src="./矩阵递推.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>斐波那契数列</h2>
+        <sd-animation src="./矩阵递推例子.js"
+            max-frame="2"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">设 $F=\begin{pmatrix}1&1\\1&0\end{pmatrix}$...</p>
+        <p class="fragment">$$\overbrace{FF...F}^{n-2个}\begin{pmatrix}f_2\\f_1\end{pmatrix}=\begin{pmatrix}f_n\\f_{n-1}\end{pmatrix}$$</p>
+        <p class="fragment">那么只需要算出 $F^{n-2}$，就能轻松求得 $f_n$ 的值了<span class="fragment">，用矩阵快速幂算 $F^{n-2}$</span></p>
+    </section>
+</section>

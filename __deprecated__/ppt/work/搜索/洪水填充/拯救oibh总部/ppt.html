@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>拯救oibh总部</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1506"></problem>
+    <section>
+        <h2>拯救oibh总部</h2>
+        <p>洪水从四面八方来，求地图上有多少个没有被洪水淹没的连通块</p>
+        <sd-animation src="./拯救oibh总部.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p class="fragment quote">如果一个连通块被洪水淹没，意味着什么？</p>
+        <p class="fragment quote">如何判断一个连通块是直接与边界连通的？</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Dfs(int i, int j) {
+                    if (i == 1 || j == 1 || i == x || j == y)
+                        // (i, j) 所属的连通块直接与边界连通;
+                    // ...
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

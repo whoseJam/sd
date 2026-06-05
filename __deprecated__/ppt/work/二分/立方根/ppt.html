@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>立方根</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/B3627"></problem>
+    <section>
+        <h2>立方根</h2>
+        <p>求一个数字 $n$ 的立方根，答案向下取整</p>
+        <p class="fragment">换言之，找到最大的 $x$，满足 $x^3\le n$</p>
+    </section>
+    <section>
+        <h2>立方根</h2>
+        <p>显然 $x^3$ 这个表达式关于 $x$ 是单调的...</p>
+        <sd-animation src="./立方根.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <sd-animation src="./序列特征.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (...) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // l or r ?
+            </script>
+        </codeblock>
+        <ul>
+            <li class="fragment">$mid^3\le n$</li>
+            <li class="fragment">$r$ 是答案</li>
+        </ul>
+    </section>
+</section>

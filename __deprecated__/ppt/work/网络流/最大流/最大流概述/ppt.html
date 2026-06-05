@@ -1,0 +1,198 @@
+<section>
+    <section>
+        <h1>最大流引入</h1>
+    </section>
+    <section>
+        <h2>最大流</h2>
+        <p>给你一个有向图，图上每条边都有自己的容量，我们把 $u\rightarrow v$ 的容量写作 $c(u,v)$</p>
+        <p class="fragment quote">我们习惯用 $c$ 或者 $C$ 来表示<b>容量</b>，因为容量的单词为capacity</p>
+        <p class="fragment quote">容量通常为一个非负整数，有些情况下也可能是非负实数</p>
+        <p class="fragment">图上有两个特殊点，分别叫做<b>源点</b>和<b>汇点</b>，现在有无数水流从<b>源点</b>出发，肆意流走，但每条边上经过的水流不能超过该边的容量，求最终流到<b>汇点</b>的流最多有多少条</p>
+        <p class="fragment quote">大家都挺喜欢用 $S$ 来表示源点，用 $T$ 来表示汇点，至于这个出处在哪里我也不知道</p>
+        <p class="fragment">我们把从源点到汇点最多的流的条数叫做<b>最大流</b></p>
+    </section>
+    <section>
+        <h2>最大流</h2>
+        <sd-animation src="./最大流例子.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p>设源点是 $A$，汇点是 $F$...</p>
+        <p class="fragment">上图的最大流条数就是 $5$ 条</p>
+    </section>
+    <section>
+        <h2>最大流</h2>
+        <p>那么我们如何去找一个图的最大流呢？</p>
+        <p class="fragment">最朴素的思想，自然是不断DFS出源点到汇点的剩余容量不为 $0$ 的道路，找到这条道路的瓶颈，然后在这条道路上放尽可能多的流</p>
+        <sd-animation src="./成功的朴素最大流.js" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">我们把一条从源点到汇点、剩余容量不为 $0$ 的道路，叫做一条<b>增广路</b>，意指这条路可以让当前流变大</p>
+    </section>
+    <section>
+        <h2>最大流</h2>
+        <p>但是这样做是有反例的</p>
+        <sd-animation src="./失败的朴素最大流.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>最大流</h2>
+        <p>于是，我们引入了反悔流</p>
+        <sd-animation src="./反悔最大流.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment" style="margin-top: 0px;">反向边和原图中的边总是成对出现，我们把原图中的边叫做<b>正向弧</b>，每条与正向弧成对出现的方向相反的边叫做<b>反向弧</b><span class="fragment">，可以把走正向弧看作流量的决策，走反向弧看作流量的反悔</span></p>
+        <sd-animation src="./流量的决策和反悔.js" class="fragment"
+            style="width: 1000px; height: 60px;">
+        </iframe>
+    </section>
+    <section>
+        <h2>最大流</h2>
+        <p>在实际写代码的过程中，有若干种最大流的写法，不过思路大体是相同的</p>
+        <p class="fragment">这里我们以ISAP算法为例，来讲解最大流的代码实践</p>
+    </section>
+    <section>
+        <h2>ISAP</h2>
+        <p>理论上来说，我们直接暴力找增广路，已经可以确定最大流了</p>
+        <p class="fragment">不过我们发现找增广路还有很多优化的空间</p>
+    </section>
+    <section>
+        <h2>ISAP多路增广优化</h2>
+        <p>注意到每次搜索如果只找一条增广路，有点浪费...</p>
+        <div style="display: flex;" class="fragment">
+            <div style="width: 60%;">
+                <codeblock>
+                    <script type="text/template">
+                        int Stream(int u, int cur) { // 单路增广
+                            if (u == T) return cur;
+                            for (每一个出点 v) {
+                                设 c 为 u -> v 的剩余容量;
+                                if (c > 0) {
+                                    int output = min(cur, c);
+                                    return Stream(v, output);
+                                }
+                            }
+                            return 0;
+                        }
+                    </script>
+                </codeblock>
+            </div>
+            <div style="width: 40%;">
+                <sd-animation src="./单路增广.js"
+                    style="width: 1000px; height: 250px;"></sd-animation>
+            </div>
+        </div>
+        <div style="display: flex;" class="fragment">
+            <div style="width: 60%;">
+                <codeblock>
+                    <script type="text/template">
+                        int Stream(int u, int cur) { // 多路增广
+                            if (u == T) return cur;
+                            int totalOutput = 0;
+                            for (每一个出点 v) {
+                                设 c 为 u -> v 的剩余容量;
+                                if (c > 0) {
+                                    int output = min(cur, c);
+                                    totalOutput += Stream(v, c);
+                                }
+                            }
+                            return totalOutput;
+                        }
+                    </script>
+                </codeblock>
+            </div>
+            <div style="width: 40%;">
+                <sd-animation src="./多路增广.js"
+                    style="width: 1000px; height: 250px;"></sd-animation>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>ISAP分层优化</h2>
+        <sd-animation src="./ISAP分层优化的必要性.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>ISAP分层优化</h2>
+        <p>为了避免上图中展示的这种情况，我们对原图进行分层，为每一个节点分配一个深度 $dis$</p>
+        <sd-animation src="./ISAP_example_1.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment" style="margin-top: 0px;">每次对某个节点 $u$ 增广完成后，将 $dis_u$ 自增<span class="fragment">；在找增广路的时候，保证如果 $u\rightarrow v$ 是一条增广路上的边，则一定有 $dis_u=dis_v+1$</span></p>
+        <p class="fragment quote">如果 $dis$ 标号在某时刻出现了<b>断层</b>，由于增广路上每一条边 $(u,v)$ 需要满足 $dis_u=dis_v+1$，则显然不存在新的增广路，可直接结束算法</p>
+    </section>
+    <section>
+        <h2>ISAP</h2>
+        <p>首先是连边，新建一条连边时其实涉及到两条连边——正向弧和反向弧</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                struct line {
+                    int Nxt, to, flw;
+                } l[M * 2];
+                int h[N], cnt = 1;
+                void Link(int u, int v, int f) {
+                    l[++cnt] = (line) { h[u], v, f }; h[u] = cnt;
+                    l[++cnt] = (line) { h[v], u, 0 }; h[v] = cnt;
+                }
+            </script>
+        </codeblock>
+        <div class="fragment quote">注意到我们的cnt是从1开始的，因为我们把边的编号两两划为一组，分别为
+            <table>
+                <tr>
+                    <td></td>
+                    <td>第一组边</td>
+                    <td>第二组边</td>
+                    <td>第三组边</td>
+                    <td>......</td>
+                </tr>
+                <tr>
+                    <td>组内第一条边编号</td>
+                    <td>$2=(10)_2$</td>
+                    <td>$4=(100)_2$</td>
+                    <td>$6=(110)_2$</td>
+                    <td>......</td>
+                </tr>
+                <tr>
+                    <td>组内第二条边编号</td>
+                    <td>$3=(11)_2$</td>
+                    <td>$5=(101)_2$</td>
+                    <td>$7=(111)_2$</td>
+                    <td>......</td>
+                </tr>
+            </table>
+            <div class="fragment">这样可以保证任意一条边，假设其编号为 $i$，我可以直接通过计算 $i\otimes 1$，来得到和它同组的另一条边的编号</div>
+        </div>
+    </section>
+    <section>
+        <h2>ISAP</h2>
+        <p>然后是找增广路</p>
+        <codeblock style="height: 505px;">
+            <script type="text/template">
+                int Stream(int u, int cur) {  // 有 cur 流跑到了节点 u
+                    int sum = 0, d;
+                    if (u == T) return cur;
+                    for (int i = h[u], v; i; i = l[i].Nxt) {
+                        v = l[i].to;
+                        if (l[i].flw > 0 && dis[v] + 1 == dis[u]) {
+                            d = Stream(v, min(cur, l[i].flw)); // 流出 d 流
+                            l[i].flw -= d; l[i ^ 1].flw += d;  // 更新正反弧流量
+                            sum += d; cur -= d;
+                            if (dis[S] == tot || !cur) return sum;
+                        }
+                    }
+                    if (!(--gap[dis[u]])) dis[S] = tot; // 出现断层
+                    gap[++dis[u]]++;
+                    return sum;
+                }
+                int ISAP() {
+                    int ans = 0;
+                    memset(gap, 0, sizeof(gap));
+                    memset(dis, 0, sizeof(dis));
+                    gap[0] = tot;
+                    while (dis[S] < tot) ans += Stream(S, inf);
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>ISAP</h2>
+        <sd-animation src="./ISAP_example_2.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
+    </section>
+</section>

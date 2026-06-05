@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>数楼梯</h1>
+        <p>一个客体在一个序列空间中移动</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1255"></problem>
+    <section>
+        <h2>数楼梯</h2>
+        <p>容易发现是一个客体在一个序列空间中移动，并且每次移动是单向往后跳的</p>
+        <sd-animation src="./状态设置.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">不妨设 $f(i)$ 表示客体来到第 $i$ 个楼梯时的方案数</p>
+        <p class="fragment">
+            $$
+            f(i)=f(i-1)+f(i-2)
+            $$
+        </p>
+    </section>
+</section>

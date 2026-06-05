@@ -1,0 +1,60 @@
+<section>
+    <section>
+        <h1>火柴问题</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/U570500"></problem>
+    <section>
+        <h2>火柴问题</h2>
+        <p>使用 $N$ 根火柴，求能拼出的最大整数，要求</p>
+        <ul>
+            <li>整数中的每个数字必须是给定的数组 $A_1,A_2,...,A_M$ 中的一个（保证 $0\le A_i\le 9$）</li>
+            <li>$N$ 根火柴必须恰好用完</li>
+        </ul>
+        <p class="fragment">设 $f_i$ 表示使用 $i$ 根火柴能拼出的最大数字，$A$ 表示<b style="color: purple;">可选数字集</b></p>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 50px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f_i=\mathop{max}\limits_{k\in A}\{f_{i-u_k}\times 10 + k\}
+            $$
+            其中 $u_k$ 表示 $k$ 这个数字会用掉多少根火柴
+        </p>
+        <p class="fragment">但问题是，当 $N$ 很大的时候，$f_i$ 会很大，比如只需要 $60$ 根木棍，就能拼出 $\overbrace{77...7}^{20个7}$ 这样一个超出 <code>long long</code> 范围的数字</p>
+        <p class="fragment quote">高精度？</p>
+    </section>
+    <section>
+        <h2>火柴问题</h2>
+        <p>半高精度，我们只需要记录拼出来的数字，使用了多少个 $9$，多少个 $8$，多少个 $7$...</p>
+        <ul>
+            <li class="fragment">当两种拼法位数不同的时候，位数更大者获胜</li>
+            <li class="fragment">当两种拼法位数相同的时候，拥有 $9$ 多的获胜</li>
+            <li class="fragment">否则，拥有 $8$ 多的获胜</li>
+            <li class="fragment">否则，拥有 $7$ 多的获胜</li>
+            <li class="fragment">...</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                struct Value {
+                    int len;     // 记录位数
+                    int cnt[10]; // 记录每种数码有多少个
+                    Value& operator +(int x) { // 新增一个数位，对应数码为 x
+                        len++; cnt[x]++;
+                    }
+                    bool operator <(const Value& other) const {
+                        根据上述内容，判断两个 Value 的大小;
+                    }
+                    void output() { // 输出用 cnt 内的数码，最大能表示的数字
+                        for (int x = 9; x >= 0; x--) // 从高到低对每一种数码进行输出
+                            for (int j = 1; j <= cnt[x]; j++)
+                                cout << x;
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">
+            $$
+            f_i=\mathop{max}\limits_{k\in A}\{f_{i-u_k}+k\}
+            $$
+        </p>
+    </section>
+</section>

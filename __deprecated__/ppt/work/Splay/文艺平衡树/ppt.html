@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>文艺平衡树</h1>
+        <p>通过这个题，了解Splay如何添加懒标记</p>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/388" data-background-interactive>
+    </section>
+    <section>
+        <h2>文艺平衡树</h2>
+        <p>区间翻转显然可以用一个 $rev$ 标记来做，如果我发现Splay上某个节点 $u$ 上挂载了 $rev$ 标记，就代表这个节点 $u$ 所对应的区间需要被区间翻转，而Splay上的区间翻转可以通过交换节点的左右子树来实现</p>
+        <p class="fragment">而在Splay上维护懒标记的原则和线段树上类似，都是<b>只要需要遍历子树，就一定需要先下放懒标记</b></p>
+        <p class="fragment">不过Splay中多了一个下放懒标记的环节，就是在 <code>void Splay(int x, int & f)</code> 这个函数中，我们也需要做一些标记下放的判断：</p>
+        <pre class="fragment"><code data-trim data-line-numbers class="cpp"><script type="text/template">
+            void Splay(int x, int & f) {
+                while (x != f) {
+                    int y = fa[x], z = fa[y];
+                    if (z) pushDown(z);
+                    pushDown(y); pushDown(x);
+                    if (y != f) {
+                        if ((ch[y][0] == x) ^ (ch[z][0] == y)) rotate(x, f);
+                        else rotate(y, f);
+                    }
+                    rotate(x, f);
+                }
+            }
+        </script></code></pre>
+    </section>
+</section>

@@ -1,0 +1,69 @@
+<section>
+    <section>
+        <h1>大师</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/CF1615F"></problem>
+    <section>
+        <h2>大师</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>对于两个长度为 $n$ 的 $01$ 串，你可以对前者进行两种操作</p>
+        <ul>
+            <li class="fragment">把相邻两个 $0$ 变成 $1$</li>
+            <li class="fragment">把相邻两个 $1$ 变成 $0$</li>
+        </ul>
+        <p class="fragment">定义两个字符串的距离为<b style="color: red;">最少操作次数</b>使得两者相等，无法相等则距离为 $0$</p>
+        <p class="fragment">现在把第一个字符串和第二个字符串的某些字符<b style="color: purple;">掩盖掉</b>，求所有可能性的字符串距离之和</p>
+    </section>
+    <section>
+        <h2>大师</h2>
+        <p>首先字符串的距离应该是有一个简洁的算法的，不然距离之和就很难做了</p>
+        <p class="quote">如何计算字符串的距离？</p>
+        <sd-animation src="./直观感受.js" class="fragment"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <p class="fragment quote">不妨多玩一玩一些例子，感受一下字符串是怎么变化的</p>
+    </section>
+    <section>
+        <h2>大师</h2>
+        <sd-animation src="./人类智慧.js"
+            style="width: 1000px; height: 220px;"></sd-animation>
+        <p>把字符串的奇数位取反...</p>
+        <ul>
+            <li class="fragment">对原始序列的两个相邻的 $0$ 操作，就变成了对当前序列的相邻的 $01$ 执行交换</li>
+            <li class="fragment">对原始序列的两个相邻的 $1$ 操作，就变成了对当前序列的相邻的 $01$ 执行交换</li>
+            <li class="fragment">对当前序列的两个相邻的 $0$ 或者两个相邻的 $1$ 交换没有意义</li>
+            <li class="fragment">可以根据当前序列恢复出原始序列，也可以由原始序列计算得到当前序列</li>
+        </ul>
+        <p class="fragment">我们找到了一个等价的映射</p>
+        <p class="fragment quote">两个 $01$ 串，可以交换相邻元素，求第一个串到第二个串的最短距离</p>
+    </section>
+    <section>
+        <h2>大师</h2>
+        <p>这个问题显然可以 $O(n)$ 算</p>
+        <p class="fragment">设 $\{x_i\}$ 是第一个串的 $1$ 出现的所有位置，$\{y_i\}$ 是第二个串的 $1$ 出现的所有位置</p>
+        <p class="fragment">
+            $$
+            \sum_{i}|x_i-y_i|
+            $$
+        </p>
+        <p class="fragment">但我们实际要计算的是
+            $$
+            \sum_{每一种可能性w}\sum_{i}|x^w_i-y^w_i|
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>大师</h2>
+        <p>设 $f_{i,j}$ 表示考虑前缀 $i$，第一个串的 $1$ 的个数比第二个串的 $1$ 的个数多 $j$ 个的方案数</p>
+        <p>设 $g_{i,j}$ 表示考虑前缀 $i$，所有的可能性的距离之和</p>
+        <p class="fragment">以第一个串末尾添加一个 $0$，第二个串末尾添加一个 $1$ 为例...</p>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            f_{i,j}\rightarrow f_{i+1,j-1} \\
+            g_{i,j}+|j|\rightarrow g_{i+1,j-1}
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

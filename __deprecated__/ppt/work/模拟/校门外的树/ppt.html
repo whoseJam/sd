@@ -1,0 +1,51 @@
+<section>
+    <section>
+        <h1>校门外的树</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1047"></problem>
+    <section>
+        <h2>校门外的树</h2>
+        <p>在一个长度为 $l$ 的区间上初始种满了树，现在需要移走部分区间中的树，区间可能有重合</p>
+        <p>给出移动完后，还有多少棵树</p>
+    </section>
+    <section>
+        <h2>校门外的树</h2>
+        <p>模拟移树过程，用一个数组标记每个位置上是否有树</p>
+        <sd-animation src="./移树.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void remove(int l, int r) {
+                    for (int i = l; i <= r; i++)
+                        arr[i] = false;
+                }
+                int count() {
+                    int ans = 0;
+                    for (int i = 0; i <= l; i++)
+                        if (arr[i]) ans++;
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>校门外的树</h2>
+        <p>稍微改一下数据范围，区间长度不超过 $10^6$，移树次数不超过 $10^5$，保证给出的移树区间长度之和不超过 $10^6$，多组数据，还能做吗？</p>
+        <sd-animation src="./多组数据.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <p class="fragment quote">可以想象，时间瓶颈出现在多组数据<b style="color: green;">重新植树</b>和<b style="color: purple;">统计数量</b>的过程上<span class="fragment">——有没有什么等效的方法，可以更快地完成每一组数据的<b style="color: green;">重新植树</b>和<b style="color: purple;">树的统计</b>过程？</span></p>
+        <sd-animation src="./等效做法.js" class="fragment"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void remove(int l, int r) {
+                    for (int i = l; i <= r; i++)
+                        if (arr[i] != T) ans--, arr[i] = T;
+                }
+                void nextTestCase() {
+                    T++;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

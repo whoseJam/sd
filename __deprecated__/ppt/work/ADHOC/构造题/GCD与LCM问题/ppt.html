@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>GCD与LCM问题</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P11036"></problem>
+    <section>
+        <h2>GCD与LCM问题</h2>
+        <p>给定 $a$，构造 $b,c,d$，使得
+            $$
+            a+b+c+d=gcd(a,b)+lcm(c,d)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>GCD与LCM问题</h2>
+        <p class="quote">未知数也太多了<span class="fragment">，感觉自由度很大，可以考虑假设一些变量的取值</span></p>
+        <p class="fragment quote">假设哪个变量取值多少呢？比较玄学</p>
+        <p class="fragment quote">你不小心假设了 $b=1$</p>
+        <p class="fragment quote">还是好多，再不小心假设了 $d=1$</p>
+        <p class="fragment quote">$d=1$ 显然不行，于是你假设 $d=2$</p>
+        <p class="fragment quote">你发现这样可以处理掉所有 $a$ 是奇数的情况，那么...</p>
+    </section>
+    <section>
+        <h2>GCD与LCM问题</h2>
+        <p>如果 $a$ 是偶数，偶数一定可以被拆成
+            $$
+            2^kv
+            $$
+            这种形式，其中 $v$ 是奇数
+        </p>
+        <p class="fragment">套用奇数时的做法，我们构造
+            $$
+            \begin{cases}
+            b=1 \\
+            c=2^{k}\times (v+2) \\
+            d=2^{k}\times 2
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

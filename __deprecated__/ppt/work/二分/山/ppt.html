@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>山</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1663"></problem>
+    <section>
+        <h2>山</h2>
+        <p>在一个山间放一个灯，使得灯可以照亮山中的所有位置</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment quote">当固定灯的位置后，判断每个斜面能否被灯照到是简单的...但灯的位置由 $x$ 坐标和 $y$ 坐标构成，可能性太多了</p>
+        <p class="fragment quote">试试判断在某个高度上能否找到一个灯，照亮所有的斜面呢？</p>
+    </section>
+    <section>
+        <h2>山</h2>
+        <sd-animation src="./山.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">高度固定后，对每个斜面引一条射线与高度线相交，根据交点，判断在高度线上哪个区域可以放灯照亮该斜面</p>
+        <p class="fragment">如果最终可以放灯的区域的交集不为空，则该高度一定能找到一个位置放灯</p>
+        <sd-animation src="./序列特征.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+</section>

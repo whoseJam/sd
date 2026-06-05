@@ -1,0 +1,71 @@
+<section>
+    <section>
+        <h1>分组</h1>
+    </section>
+    <problem data-problemset="atcoder" data-problemid="dp_u"></problem>
+    <section>
+        <h2>分组</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p>把 $n$ 个物品任意分组（分组的数量不限，每组物品的数量不限）</p>
+        <p class="fragment">如果第 $i$ 个物品和第 $j$ 个物品在一组，则会产生 $a_{i,j}$ 的得分<span class="fragment">，最大化得分</span></p>
+        <p class="fragment quote">分组是如何进行的？</p>
+        <ul>
+            <li class="fragment">先从 $n$ 个物品中选若干个，放到一组去</li>
+            <li class="fragment">再从剩下的选若干个，放到一组去</li>
+            <li class="fragment">再从剩下的选若干个，放到一组去</li>
+            <li class="fragment">...</li>
+        </ul>
+    </section>
+    <section>
+        <h2>分组</h2>
+        <p>设 $f(S)$ 表示把 $S$ 这个集合中的物品都分完组丢一边去了，能获得的最大价值</p>
+        <sd-animation src="./状态转移.html"
+            style="width: 1000px; height: 300px; "></sd-animation>
+        <p class="fragment">$$f(S\lor T)=max\{f(S\lor T),f(S)+v(T)\},S\land T=\emptyset$$</p>
+        <p class="fragment">其中 $v(T)$ 表示把 $T$ 这个集合内的物品分一组，能产生的得分之和</p>
+    </section>
+    <section>
+        <h2>预处理</h2>
+        <p>$v(S)$ 表示把 $S$ 这个集合里面的物品分一组，能产生的得分之和</p>
+        <p class="quote">为了加速转移过程，我们需要提前把 $v(S)$ 预处理出来</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int S = 1; S <= All; S++) {
+                    for (int i = 1; i <= n; i++) {
+                        if (!contain(S, i)) continue;
+                        for (int j = i + 1; j <= n; j++) {
+                            if (!contain(S, j)) continue;
+                            v[S] += a[i][j]; // a[i][j]：i 和 j 分一组能产生的得分
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>枚举子集</h2>
+        <p>$$f(S\lor T)=max\{f(S\lor T),f(S)+v(T)\},S\land T=\emptyset$$</p>
+        <p class="fragment">$T$ 是 $All-S$ 的一个子集，那么应该如何高效地枚举 $T$ 呢？</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int S = 0; S <= All; S++) {
+                    int X = All - S;
+                    for (int T = X; T; T = (T - 1) & X) {
+                        // T 是 X 的一个子集
+                        f[S | T] = max(f[S | T], f[S] + v[T]);
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">这样枚举子集的时间复杂度为 $O(3^n)$</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            \sum_{S\subseteq All}\sum_{T\subseteq (All-S)}1&=\sum_{S\subseteq All}\sum_{T\subseteq S}1=\sum_{S\subseteq All}2^{|All|-|S|}\\
+            &=\sum_{i=0}^{|All|}C_{|All|}^{i}2^{|All|-i}=\sum_{i=0}^nC_n^i2^{n-i}1^i=(2+1)^n=3^n
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

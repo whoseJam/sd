@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>车的放置</h1>
+        <p>综合一些的纯组合题</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1350"></problem>
+    <section>
+        <h2>车的放置</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
+    </section>
+    <section>
+        <h2>车的放置</h2>
+        <div style="display: flex;">
+            <sd-animation src="./样例解释.js"
+                style="width: 70%; height: 500px;"></sd-animation>
+            <div style="width: 600px;">
+                <ul>
+                    <li class="fragment">考虑上面放 $i$ 个车</li>
+                    <li class="fragment">下面则需放 $k-i$ 个车</li>
+                    <li class="fragment">上面选 $i$ 行出来放车，方案数 $C_b^i$</li>
+                    <li class="fragment">每行具体哪一列待确定，方案数 $A_a^i$</li>
+                    <li class="fragment">下面选 $k-i$ 行出来放车，方案数 $C_d^{k-i}$</li>
+                    <li class="fragment">每行具体哪一列待确定，方案数 $A_{c+a-i}^{k-i}$</li>
+                </ul>
+                <p class="fragment">
+                    $$
+                    \sum_{i=0}^k C_b^iA_a^iC_d^{k-i}A_{c+a-i}^{k-i}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+</section>

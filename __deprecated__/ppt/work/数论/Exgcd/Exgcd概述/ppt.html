@@ -1,0 +1,143 @@
+<section>
+    <section>
+        <h1>Exgcd</h1>
+        <p>拓展欧几里得，用来做一件看上去和gcd完全没关系的工作——解二元一次不定方程的整数解</p>
+    </section>
+    <section>
+        <h2>二元一次不定方程</h2>
+        <p>假设我给你一个二元一次方程</p>
+        <p class="fragment">$$3x+5y=17$$</p>
+        <p class="fragment">现在需要你回答这个方程</p>
+        <ul>
+            <li class="fragment">是否存在<b>整数解</b></li>
+            <li class="fragment">如果存在整数解，能否给出一对整数特解</li>
+            <li class="fragment">如果存在整数解，$x$ 的最小非负整数解是多少</li>
+            <li class="fragment">如果存在整数解，$y$ 的最小非负整数解是多少</li>
+        </ul>
+        <p class="fragment quote">对于上述方程，我们采用瞪眼大法发现了一组特解
+            $$
+            \left\{
+            \begin{aligned}
+            x &= 4 \\
+            y &= 1
+            \end{aligned}
+            \right.
+            $$</p>
+    </section>
+    <section>
+        <h2>裴蜀定理</h2>
+        <p class="quote">一个形如 $ax+by=c$ 的方程是否存在整数解？</p>
+        <p class="fragment">对于这个问题，裴蜀定理已经给出了回答</p>
+        <ul>
+            <li class="fragment">如果 $gcd(a,b)|c$，则存在整数解（$x|y$ 表示 $x$ 是 $y$ 的一个约数，$y$ 是 $x$ 的倍数）</li>
+            <li class="fragment">否则，该二元一次方程不存在整数解</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Exgcd</h2>
+        <p>后三问都是在尝试找出 $ax+by=c$ 的一组特解<span class="fragment">，根据裴属定理，如果 $ax+by=c$ 有特解，那么 $c$ 一定是 $gcd(a,b)$ 的倍数</span><span class="fragment">，我们先找 $ax+by=gcd(a,b)$ 的特解</span></p>
+        <p class="fragment">假设 $ax+by=gcd(a,b)$ 的一组特解为
+            $$
+            \begin{cases}
+            x=x_0 \\
+            y=y_0
+            \end{cases}
+            $$
+        </p>
+        <sd-animation src="./特解转换推导.js" class="fragment"
+            style="width: 1000px; height: 50px;"></sd-animation>
+        <p class="fragment">那么 $ax+by=c$ 的一组特解即为
+            $$
+            \begin{cases}
+            x=\frac{c}{gcd(a,b)}x_0 \\
+            y=\frac{c}{gcd(a,b)}y_0
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Exgcd</h2>
+        <p>现在我们借助辗转相除法去求解 $ax+by=gcd(a,b)$ 的一组特解，那按照辗转相除法的思路，我们也要对 $b$ 是否为 $0$ 进行讨论</p>
+        <ol>
+            <li class="fragment">如果 $b=0$
+                <p class="fragment">由于 $gcd(a,b)=gcd(a,0)=a$，原方程退化为 $ax=a$，那么 $\begin{cases}x=1\\y=0\end{cases}$ 一定是一组可行的特解</p>
+            </li>
+            <li class="fragment">如果 $b\ne 0$
+                <p class="fragment">我们先递归求解出 $bx+(a\%b)y=gcd(a,b)$ 的一组特解 $\begin{cases}x=x_1\\y=y_1\end{cases}$ 出来，将这组特解带入化简...</p>
+                <sd-animation src="./特解推导.js" class="fragment"
+                    style="width: 1000px; height: 50px;"></sd-animation>
+                <p class="fragment">所以 $ax+by=gcd(a,b)$ 的一组特解为 $\begin{cases}x=y_1 \\y=x_1-\lfloor\frac a b\rfloor y_1\end{cases}$</p>
+            </li>
+        </ol>
+    </section>
+    <section>
+        <h2>Exgcd</h2>
+        <ul style="font-size: 16px;">
+            <li>如果 $b=0$，则 $ax+by=gcd(a,b)$ 的一组特解为 $\begin{cases}x=1\\y=0\end{cases}$</li>
+            <li>如果 $b\ne 0$，则 $ax+by=gcd(a,b)$ 的一组特解为 $\begin{cases}x=y_1 \\y=x_1-\lfloor\frac a b\rfloor y_1\end{cases}$，其中 $x_1,y_1$ 是 $bx+(a\%b)y=gcd(a,b)$ 的一组特解</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 求解 ax + by = gcd(a, b) 的一组特解 (x0, y0)
+                int Exgcd(int a, int b, int& x0, int& y0) {
+                    if (!b) { x0 = 1; y0 = 0; return a; }
+                    int x1, y1;
+                    // 递归求解 bx + (a % b)y = gcd(a, b) 的一组特解 (x1, y1)
+                    int d = Exgcd(b, a % b, x1, y1);
+                    x0 = y1;
+                    y0 = x1 - (a / b) * y1;
+                    return d;
+                }
+            </script>
+        </codeblock>
+        <ul style="font-size: 16px;">
+            <li class="fragment">$ax+by=c$ 的一组特解为 $\begin{cases}x=\frac{c}{gcd(a,b)}x_0\\y=\frac{c}{gcd(a,b)}y_0\end{cases}$，其中 $x_0,y_0$ 是 $ax+by=gcd(a,b)$ 的一组特解</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Solve(int a, int b, int c) {
+                    int x0, y0;
+                    int d = Exgcd(a, b, x0, y0);
+                    if (c % d != 0) return 方程无解; // 根据裴属定理，方程无解
+                    int x = x0 * c / d;
+                    int y = y0 * c / d;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>Exgcd</h2>
+        <p>现在我们已经求出了 $ax+by=c$ 的一组特解 $\begin{cases}x=x_0 \\y=y_0\end{cases}$ 了</p>
+        <p>通解形式为
+            $$
+            \begin{cases}
+            x=x_0+s\frac{b}{gcd(a,b)} \\
+            y=y_0-s\frac{a}{gcd(a,b)}
+            \end{cases}
+            $$
+            其中 $s$ 是任意整数
+        </p>
+        <div style="display: flex; align-items: center;">
+            <p class="fragment quote" style="font-size: 20px; margin-right: 40px;">
+                $$
+                \begin{aligned}
+                answer&=a(x_0+\frac b {gcd(a,b)})+b(y_0-\frac a {gcd(a,b)}) \\
+                &=ax_0+\frac{ab}{gcd(a,b)}+by_0-\frac{ab}{gcd(a,b)} \\
+                &=ax_0+by_0 \\
+                &=c
+                \end{aligned}
+                $$
+            </p>
+            <codeblock class="fragment">
+                <script type="text/template">
+                    void Solve(int a, int b, int c) {
+                        // 求解 ax + by = c 的一组特解为 (x, y)
+                        int xs = x + s * (b / d);
+                        int ys = y - s * (a / d);
+                        也是 ax + by = c 的一组特解;
+                    }
+                </script>
+            </codeblock>
+        </div>
+    </section>
+</section>

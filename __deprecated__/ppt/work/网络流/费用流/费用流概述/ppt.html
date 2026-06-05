@@ -1,0 +1,85 @@
+<section>
+    <section>
+        <h1>费用流</h1>
+        <p>流啊流，不过流和流之间的价值不同了</p>
+    </section>
+    <section>
+        <h2>费用流</h2>
+        <p>给定一个网络流图，每条边除了有容量限制以外，还有一个额外的属性——<b>开销</b>，代表每一流经过这条边所产生的成本</p>
+        <p class="fragment">我们现在希望知道，在满足最大流的情况下</p>
+        <ul>
+            <li class="fragment">所有流产生的总成本最小是多少，此所谓<b>最小费用最大流</b></li>
+            <li class="fragment">所有流产生的总成本最大是多少，此所谓<b>最大费用最大流</b></li>
+        </ul>
+    </section>
+    <section>
+        <h2>最小费用最大流</h2>
+        <p>建图时，如果存在一条 $u\rightarrow v$ 的连边，容量为 $f$，开销为 $c$，那么我们依次建立如下正向弧和反向弧</p>
+        <ul>
+            <li class="fragment">$u\rightarrow v$，剩余流量为 $f$，代价为 $c$，表示这条边上每经过一流，相当于正向走了一流，会产生 $c$ 的开销</li>
+            <li class="fragment">$v\rightarrow u$，剩余流量为 $0$，代价为 $-c$，表示这条边上每经过一流，相当于退流了一流，会产生 $-c$ 的开销</li>
+        </ul>
+        <p class="fragment">我们不断用<b>最短路算法</b>（点名SPFA）找到从起点到终点的最短路，假设这条路的瓶颈为 $b$ 流，那么就在这条路上放 $b$ 流，并把这 $b$ 流造成的开销累加到答案中去，直到找不到可行流为止</p>
+    </section>
+    <section>
+        <h2>最大费用最大流</h2>
+        <p>建图时，如果存在一条 $u\rightarrow v$ 的连边，容量为 $f$，开销为 $c$，那么我们依次建立如下正向弧和反向弧</p>
+        <ul>
+            <li class="fragment">$u\rightarrow v$，剩余流量为 $f$，代价为 $c$，表示这条边上每经过一流，相当于正向走了一流，会产生 $c$ 的开销</li>
+            <li class="fragment">$v\rightarrow u$，剩余流量为 $0$，代价为 $-c$，表示这条边上每经过一流，相当于退流了一流，会产生 $-c$ 的开销</li>
+        </ul>
+        <p class="fragment">我们不断用<b>最长路算法</b>（点名SPFA）找到从起点到终点的最长路，假设这条路的瓶颈为 $b$ 流，那么就在这条路上放 $b$ 流，并把这 $b$ 流造成的开销累加到答案中去，直到找不到可行流为止</p>
+    </section>
+    <section>
+        <h2>最小费用流代码</h2>
+        <codeblock style="height: 445px;">
+            <script type="text/template">
+                bool MinSpfa() { // 找源点到汇点流量不为 0 的最短路
+                    queue < ll > q;
+                    for (ll i = 1; i <= tot; i++)
+                        dis[i] = inf;
+                    dis[S] = 0; inq[S] = 1; q.push(S);
+                    while (q.size()) {
+                        ll u = q.front(); q.pop(); inq[u] = 0;
+                        for (ll i = h[u], v; i; i = l[i].Nxt) {
+                            v = l[i].to;
+                            if (dis[v] > dis[u] + l[i].val && l[i].flw) {
+                                dis[v] = dis[u] + l[i].val;
+                                prt[v] = i;
+                                if (!inq[v]) {
+                                    inq[v] = 1;
+                                    q.push(v);
+                                }
+                            }
+                        }
+                    }
+                    return dis[T] < inf;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>最小费用流代码</h2>
+        <codeblock>
+            <script type="text/template">
+                void Adjust() { // 增广
+                    ll u, v = T, neck = inf;
+                    while (prt[v]) {
+                        u = l[prt[v] ^ 1].to;
+                        neck = min(neck, l[prt[v]].flw);
+                        v = u;
+                    }
+                    v = T;
+                    while (prt[v]) {
+                        u = l[prt[v] ^ 1].to;
+                        l[prt[v]].flw -= neck;
+                        l[prt[v] ^ 1].flw += neck;
+                        v = u;
+                    }
+                    FLOW += neck;
+                    COST += neck * dis[T];
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

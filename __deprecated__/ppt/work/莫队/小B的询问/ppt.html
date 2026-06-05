@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>小B的询问</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2709"></problem>
+    <section>
+        <h2>小B的询问</h2>
+        <p>设 $cnt_i$ 表示 $i$ 这个数字在区间内的出现次数</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // d = 1 表示数字 x 多出现了一次
+                // d = -1 表示数字 x 少出现了一次
+                void Add(int x, int d) {
+                    ans -= cnt[x] * cnt[x];
+                    cnt[x] += d;
+                    ans += cnt[x] * cnt[x];
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">用上述代码实现 $O(1)$ 转移</p>
+    </section>
+    <section>
+        <h2>小B的询问</h2>
+        <codeblock>
+            <script type="text/template">
+                struct Query {
+                    int l, r;
+                } Q[M];
+                int B = sqrt(n); // 块大小取 sqrt(n) 时间最优
+                // 先按左端点所在块编号排序
+                // 再按右端点位置排序
+                bool cmp(Query a, Query b) {
+                    int blockA = (a.l - 1) / B;
+                    int blockB = (b.l - 1) / B;
+                    if (blockA != blockB) return blockA < blockB;
+                    return a.r < b.r;
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // a 数组为题目给出的原始数组
+                int l = 1, r = 0;
+                for (int i = 1; i <= m; i++) {
+                    while (l < Q[i].l) Add(a[l], -1), l++;
+                    while (l > Q[i].l) l--, Add(a[l], 1);
+                    while (r < Q[i].r) r++, Add(a[r], 1);
+                    while (r > Q[i].r) Add(a[r], -1), r--;
+                    计算 Q[i] 的答案为 ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

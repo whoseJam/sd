@@ -1,0 +1,85 @@
+<section>
+    <section>
+        <h1>Katu Puzzle</h1>
+        <p>这个题还真是个体力活</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P10969"></problem>
+    <section>
+        <h2>Katu Puzzle</h2>
+        <p>给你一张图，图上每个点的权值要么是 $0$，要么是 $1$（需要你自己决定）</p>
+        <p class="fragment">
+            图上有 $m$ 条边，每条边上有一个布尔运算符和一个答案
+            <span class="fragment">，你需要保证每条边两端的端点权值，经过该布尔运算符后，得到的结果和边上的答案吻合</span>
+        </p>
+        <p class="fragment">判断是否可行</p>
+    </section>
+    <section>
+        <h2>Katu Puzzle</h2>
+        <p>每个节点权值 $a_i$ 都有两种可能的取值：$T_i$ 和 $F_i$</p>
+        <p class="fragment">接下来就是又臭又长的分类讨论</p>
+    </section>
+    <section>
+        <h2>Katu Puzzle</h2>
+        <p>对 $AND$ 运算分类讨论：</p>
+        <ul>
+            <li class="fragment">
+                $a\ AND\ b=1$：
+                <ul class="fragment">
+                    <li>$F_a\rightarrow T_a$</li>
+                    <li>$F_b\rightarrow T_b$</li>
+                </ul>
+            </li>
+            <li class="fragment">
+                $a\ AND\ b=0$：
+                <ul class="fragment">
+                    <li>$T_a\rightarrow F_b$</li>
+                    <li>$T_b\rightarrow F_a$</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>Katu Puzzle</h2>
+        <p>对 $OR$ 运算分类讨论：</p>
+        <ul>
+            <li class="fragment">
+                $a\ OR\ b=1$：
+                <ul class="fragment">
+                    <li>$F_a\rightarrow T_b$</li>
+                    <li>$F_b\rightarrow T_a$</li>
+                </ul>
+            </li>
+            <li class="fragment">
+                $a\ OR\ b=0$：
+                <ul class="fragment">
+                    <li>$T_a\rightarrow F_a$</li>
+                    <li>$T_b\rightarrow F_b$</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>Katu Puzzle</h2>
+        <p>对 $XOR$ 运算分类讨论：</p>
+        <ul>
+            <li class="fragment">
+                $a\ XOR\ b=1$：
+                <ul class="fragment">
+                    <li>$T_a\rightarrow F_b$</li>
+                    <li>$F_a\rightarrow T_b$</li>
+                    <li>$T_b\rightarrow F_a$</li>
+                    <li>$F_b\rightarrow T_a$</li>
+                </ul>
+            </li>
+            <li class="fragment">
+                $a\ XOR\ b=0$：
+                <ul class="fragment">
+                    <li>$T_a\rightarrow T_b$</li>
+                    <li>$F_a\rightarrow F_b$</li>
+                    <li>$T_b\rightarrow T_a$</li>
+                    <li>$F_b\rightarrow F_a$</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+</section>

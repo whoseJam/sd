@@ -1,0 +1,82 @@
+<section>
+    <section>
+        <h1>Riddle</h1>
+        <p>大胆建图，小心求证</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P6378"></problem>
+    <section>
+        <h2>Riddle</h2>
+        <p>每个节点显然有两种选择：$\{是关键点,不是关键点\}$</p>
+        <ul>
+            <li class="fragment">一个节点 $u$ <b>是关键点</b>，对应到2-SAT的图中，节点为 $T_u$</li>
+            <li class="fragment">一个节点 $u$ <b>不是关键点</b>，对应到2-SAT的图中，节点为 $F_u$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>对于一条边来说</h2>
+        <p>如果这条边连接了 $u$ 和 $v$ 这两个点，那么这两个点不能全都不是关键点</p>
+        <sd-animation src="./animation/Riddle边限制.html" class="fragment"
+            style="width: 1000px; height: 80px;"></sd-animation>
+        <ul class="fragment">
+            <li>$F_u\rightarrow T_v$</li>
+            <li>$F_v\rightarrow T_u$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>对于一个“部分”来说</h2>
+        <p class="fragment">一个部分 $S$ 包含了若干个点</p>
+        <p class="fragment">这些点中只能恰好诞生一个关键点</p>
+        <p class="fragment">所以如果一个点 $u\in S$，它成为了关键点，那么别的点都不能是关键点</p>
+        <ul class="fragment">
+            <li>$T_u\rightarrow F_v$，满足 $u\in S$ 且 $v\in S$ 且 $v\ne u$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Riddle</h2>
+        <p>从正确性上来讲，这么建图没什么问题</p>
+        <p class="fragment">但是从效率上来看，这么建图效率实在低下</p>
+        <p class="fragment">在连边解决<b>部分约束</b>这一步，可能导致连出数量级 $O(n^2)$ 的边</p>
+        <sd-animation src="./animation/Riddle暴力连边.html" class="fragment"
+            style="width: 1000px; height: 400px;"></sd-animation>
+    </section>
+    <section>
+        <h2>Riddle</h2>
+        <p>我们必须考虑解决<b>边太多</b>这个问题</p>
+        <p>可以发现，对于某个点 $u\in S$ 来说，只要满足 $T_u\Rightarrow F_v$，$v\in S$，$v\ne u$就行（这里的箭头表示的是可达性，而不是直接连边）</p>
+    </section>
+    <section>
+        <h2>Riddle</h2>
+        <sd-animation src="./animation/Riddle优化连边.html"
+            style="width: 1000px; height: 500px;"></sd-animation>
+    </section>
+    <section>
+        <h2>Riddle</h2>
+        <p>建图代码如下：</p>
+        <pre><code style="min-height: 510px;" data-trim data-line-numbers class="cpp"><script type="text/template">
+            for (int i = 1; i <= n; i++) {
+                Link(Pre(i), No(i));
+                Link(Suf(i), No(i));
+            }
+            for (int i = 1, w; i <= k; i++) {
+                w = read();
+                tot = 0;
+                while (w--) {
+                    arr[++tot] = read();
+                    country[arr[tot]] = i;
+                }
+                for (int j = 2; j <= tot; j++) {
+                    Link(Suf(arr[j - 1]), Suf(arr[j]));
+                    Link(Pre(arr[j]), Pre(arr[j - 1]));
+                }
+                for (int j = 1; j <= tot; j++) {
+                    if (j - 1 >= 1) Link(Yes(arr[j]), Pre(arr[j - 1]));
+                    if (j + 1 <= tot) Link(Yes(arr[j]), Suf(arr[j + 1]));
+                }
+            }
+            for (int i = 1; i <= m; i++) {
+                Link(No(st[i]), Yes(en[i]));
+                Link(No(en[i]), Yes(st[i]));
+            }
+        </script></code></pre>
+    </section>
+</section>

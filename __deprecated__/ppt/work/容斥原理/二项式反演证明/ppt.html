@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>二项式反演的证明</h1>
+    </section>
+    <section>
+        <h2>二项式反演</h2>
+        <p>欲证：若 $f(n)=\sum_{i=0}^nC_n^i(-1)^ig(i)$，则 $g(n)=\sum_{i=0}^nC_n^i(-1)^if(i)$</p>
+        <p class="fragment math-fragment" style="font-size: 20px;">
+            $$
+            \begin{aligned}
+            \sum_{i=0}^nC_n^i(-1)^if(i) &=\sum_{i=0}^nC_n^i(-1)^i\sum_{j=0}^iC_i^j(-1)^jg(j) \\
+            &=\sum_{i=0}^n(-1)^i\sum_{j=0}^iC_n^iC_i^j(-1)^jg(j) \\
+            &=\sum_{i=0}^n(-1)^i\sum_{j=0}^iC_n^jC_{n-j}^{n-i}(-1)^jg(j) \\
+            &=\sum_{j=0}^nC_n^j(-1)^jg(j)\sum_{i=j}^n(-1)^iC_{n-j}^{n-i} \\
+            &=\sum_{j=0}^nC_n^j(-1)^jg(j)\sum_{T=0}^{n-j}(-1)^{n-T}C_{n-j}^T \\
+            &=\sum_{j=0}^nC_n^j(-1)^jg(j)(-1)^j\sum_{T=0}^{n-j}(-1)^{(n-j)-T}1^TC_{n-j}^T \\
+            &=\sum_{j=0}^nC_n^j(-1)^jg(j)(-1)^j(-1+1)^{n-j}=g(n) \\
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

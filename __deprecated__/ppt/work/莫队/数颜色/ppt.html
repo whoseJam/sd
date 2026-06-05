@@ -1,0 +1,78 @@
+<section>
+    <section>
+        <h1>数颜色</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1903"></problem>
+    <section>
+        <h2>数颜色</h2>
+        <sd-animation src="./查询与修改.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                struct Query { ... } Q[N];
+                struct Modify { ... } M[N];
+                void input() {
+                    B = pow(n, 0.66);
+                    for (int i = 1; i <= m; i++) {
+                        读入第 i 个操作;
+                        if (是查询操作) Q[++qtot] = { ... };
+                        else M[++mtot] = { ... };
+                    }
+                    sort(Q + 1, Q + 1 + qtot, cmp);
+                    // M 数组不需要排序，因为它已经按照 t 从小到大的顺序放好了
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>数颜色</h2>
+        <sd-animation src="./移动时间.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void Solve() {
+                    int l = 1, r = 0, t = 0;
+                    for (int i = 1; i <= qtot; i++) {
+                        while (Q[i].l < l) l--, Add(a[l]);
+                        while (l < Q[i].l) Del(a[l]), l++;
+                        while (r < Q[i].r) r++, Add(a[r]);
+                        while (Q[i].r < r) Del(a[r]), r--;
+                        while (t < Q[i].t) Upd(++t, l, r, 1);  // 应用修改
+                        while (Q[i].t < t) Upd(t--, l, r, -1); // 撤销修改
+                        计算第 i 个询问的答案为 Ans;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>数颜色</h2>
+        <sd-animation src="./修改.js"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <codeblock style="height: 445px;">
+            <script type="text/template">
+                struct Modify {
+                    int x;   // 修改位置
+                    int t;   // 修改时间
+                    int pre; // 修改前的颜色
+                    int nxt; // 修改后的颜色
+                };
+                void Upd(int t, int l, int r, int f) {
+                    if (f == 1) {
+                        M[t].pre = a[M[t].x]; a[M[t].x] = M[t].nxt;
+                        if (l <= M[t].x && M[t].x <= r) {
+                            Del(M[t].pre); // 删除修改前的颜色
+                            Add(M[t].nxt); // 添加修改后的颜色
+                        }
+                    } else {
+                        a[M[t].x] = M[t].pre;
+                        if (l <= M[t].x && M[t].x <= r) {
+                            Del(M[t].nxt); // 删除修改后的颜色
+                            Add(M[t].pre); // 添加修改前的颜色
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

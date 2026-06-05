@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>洪水填充</h1>
+        <p>Flood Fill</p>
+    </section>
+    <section>
+        <h2>洪水填充</h2>
+        <p>从某个起始节点开始，把附近与其连通的节点<b>提取出或填充为相同颜色</b>，直到封闭区域内所有节点都被处理过为止</p>
+        <p class="fragment quote">因为其思路类似一场洪水从一个区域扩散到所有能到达的区域而得名</p>
+        <div style="display: flex; align-items: center;">
+            <sd-animation src="./洪水填充.js" class="fragment"
+                style="width: 50%; height: 300px; margin-right: 20px;"></sd-animation>
+            <codeblock style="width: 60%;" class="fragment">
+                <script type="text/template">
+                    // 给节点 u 填充上颜色 c
+                    void fill(节点 u, 颜色 c) {
+                        color[u] = c;
+                        // 做与特定题目有关的一些操作
+                        for (节点 u 的所有邻接节点 v) {
+                            if (color[v] != c) {
+                                fill(v, c);
+                            }
+                        }
+                    }
+                </script>
+            </codeblock>
+        </div>
+        <p class="fragment quote">由于每次填充了一个连通块，并且可以在填充的时候顺便统计连通块信息，所以洪水填充可以用于处理一系列和连通块有关的问题</p>
+        <p class="fragment quote">把洪水填充放在问题定义，问题求解和问题边界的视角下看看？</p>
+    </section>
+</section>

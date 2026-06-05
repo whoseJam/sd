@@ -1,0 +1,58 @@
+<section>
+    <section>
+        <h1>过河卒</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1002"></problem>
+    <section>
+        <h2>过河卒</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>给定一张象棋图（上面某位置放了一匹<b>不会移动的</b>敌对马），现在一个<b>过河卒</b>想要从 $(1,1)$ 走到 $(n,m)$ 点，要求</p>
+        <ul>
+            <li>只能向下或者向右行走</li>
+            <li>不能经过马或者马能攻击到的地点</li>
+        </ul>
+        <p class="fragment">求从起点到终点的路径条数</p>
+    </section>
+    <section>
+        <h2>过河卒</h2>
+        <p>容易发现又是一个客体在二维空间中移动，不过新增了少许移动规则</p>
+        <sd-animation src="./过河卒.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">
+            设 $f(i,j)$ 表示从起点走到 $(i,j)$ 的方案数
+        </p>
+        <p class="fragment">
+            $$
+            f(i,j)=\begin{cases}
+            f(i-1,j)+f(i,j-1) & (i,j) 不能被马攻击到 \\
+            0 & (i,j) 能被马攻击到
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>过河卒</h2>
+        <p>
+            $$
+            f(i,j)=f(i-1,j)+f(i,j-1)
+            $$
+        </p>
+        <codeblock>
+            <script type="text/template">
+                if (dp[1][1] != -inf) dp[1][1] = 1;
+                for (ll i = 1; i <= n; i++) {
+                    for (ll j = 1; j <= m; j++) {
+                        if (dp[i][j] == -inf) continue;
+                        if (i == 1 && j == 1) continue;
+                        ll ans = 0;
+                        if (dp[i - 1][j] != -inf) ans += dp[i - 1][j];
+                        if (dp[i][j - 1] != -inf) ans += dp[i][j - 1];
+                        dp[i][j] = ans;
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">Attention，被马攻击到的地方不能参与转移</p>
+    </section>
+</section>

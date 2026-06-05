@@ -1,0 +1,85 @@
+<section>
+    <section>
+        <h1>Again Counting Set</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P9034"></problem>
+    <section>
+        <h2>Again Counting Set</h2>
+        <p>数满足以下四个条件的可重整数集合 $S$ 的数量：</p>
+        <ol>
+            <li>$|S|=k$</li>
+            <li>对于任意 $x\in S$，都有 $0\le x\le n$</li>
+            <li>$\prod_{x\in S}x = \mathop{min}\limits_{x\in S}x$</li>
+            <li>$\sum_{x\in S}x=\mathop{min}\limits_{x\in S}x+\mathop{max}\limits_{x\in S}x+mex(S)$</li>
+        </ol>
+    </section>
+    <section>
+        <h2>Again Counting Set</h2>
+        <p>对于 $10\%$ 的数据点，$T\le 5$，$k\le 5$，$n\le 5$</p>
+        <p class="fragment">暴力搜索出每一种可能性，再检验是否满足上述条件即可</p>
+    </section>
+    <section>
+        <h2>Again Counting Set</h2>
+        <p>对于另外 $10\%$ 的数据，$n=1$</p>
+        <ol class="fragment">
+            <li>$|S|=k$</li>
+            <li>对于任意 $x\in S$，都有 $0\le x\le 1$</li>
+            <li>$\prod_{x\in S}x = \mathop{min}\limits_{x\in S}x$</li>
+            <li>$\sum_{x\in S}x=\mathop{min}\limits_{x\in S}x+\mathop{max}\limits_{x\in S}x+mex(S)$</li>
+        </ol>
+        <p class="fragment quote">但凡集合中出现了 $0$，那么条件3肯定没问题，如果集合全部由 $1$ 构成，条件3也没问题<span class="fragment">——所以可以当条件3不存在</span></p>
+        <p class="fragment">如果集合全部由 $1$ 构成，根据条件4，集合只能是 $\{1,1\}$</p>
+        <p class="fragment">如果集合中有 $0$ 有 $1$，根据条件4，集合只能长得像这样 $\{0,0,...,0,1,1,1\}$</p>
+        <p class="fragment">如果集合中全是 $0$，绝无可能满足条件4</p>
+    </section>
+    <section>
+        <h2>Again Counting Set</h2>
+        <p>对于另外 $10\%$ 的数据，$n=2$</p>
+        <ol class="fragment">
+            <li>$|S|=k$</li>
+            <li>对于任意 $x\in S$，都有 $0\le x\le 2$</li>
+            <li>$\prod_{x\in S}x = \mathop{min}\limits_{x\in S}x$</li>
+            <li>$\sum_{x\in S}x=\mathop{min}\limits_{x\in S}x+\mathop{max}\limits_{x\in S}x+mex(S)$</li>
+        </ol>
+        <div class="fragment quote">
+            <span>仔细揣测条件3，发现它使得序列满足：</span><br>
+            <ul>
+                <li>要么最小值为 $0$</li>
+                <li>要么全部为 $1$<span class="fragment">——这种情况仅当 $k=2$ 时才能让条件4成立，后续我们就不讨论它了</span></li>
+            </ul>
+        </div>
+        <p class="fragment">
+            $$
+            \sum_{x\in S}x=\mathop{max}\limits_{x\in S}x+mex(S)
+            $$
+        </p>
+        <ul>
+            <li class="fragment">$mex(S)=1$<span class="fragment">，不可能</span></li>
+            <li class="fragment">$mex(S)=2$<span class="fragment">，$S=\{0,0,...,0,1,1,1\}$</span></li>
+            <li class="fragment">$mex(S)=3$<span class="fragment">，$S=\{0,0,...,0,1,1,1,2\},\{0,0,...,0,1,2,2\}$</span></li>
+        </ul>
+    </section>
+    <section>
+        <h2>Again Counting Set</h2>
+        <p>对于 $n=3,4,5$ 的情况可以类似讨论</p>
+        <p class="fragment">受限于篇幅我们不展开了</p>
+    </section>
+    <section>
+        <h2>Again Counting Set</h2>
+        <p>对于 $100\%$ 的数据，$T\le 10^6$，$k\le 10^{18}$，$n\le 10^{18}$</p>
+        <p>我们略过 $S$ 集合全是 $1$ 的情况（因为过于简单），讨论 $S$ 中最小值为 $0$ 的情况</p>
+        <p class="fragment">
+            $$
+            \sum_{x\in S}x=\mathop{max}\limits_{x\in S}x+mex(S)
+            $$
+        </p>
+        <p class="fragment">设 $S$ 集合中刨去 $0$ 和最大值之后，剩下的那一坨数字构成的集合为 $T$</p>
+        <ul>
+            <li class="fragment">若 $mex(S)=1$，不可能</li>
+            <li class="fragment">若 $mex(S)=2$，$T=\{1,1\}$，且最大值可以为 $1$ 或者 $3\sim n$ 任意值</li>
+            <li class="fragment">若 $mex(S)=3$，$T=\{1,2\}$，且最大值可以为 $2$ 或者 $4\sim n$ 任意值；又或者为 $\{1,1,1\}$，且最大值为 $2$</li>
+            <li class="fragment">若 $mex(S)=4$，$T=\{1,1,2\}$，且最大值为 $3$</li>
+            <li class="fragment">若 $mex(S)=5$ 或者更大，不可能</li>
+        </ul>
+    </section>
+</section>

@@ -1,0 +1,50 @@
+<section>
+    <section>
+        <h1>干草捆盛宴</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P4085"></problem>
+    <section>
+        <h2>干草捆盛宴</h2>
+        <p>有一排 $n$ 个元素，第 $i$ 个元素有两个属性，香度 $F_i$ 和辣度 $F_i$</p>
+        <p class="fragment">你需要找到一个区间 $[l,r]$，满足</p>
+        <ul>
+            <li class="fragment">区间香度之和至少为 $M$，即 $\sum_{i=l}^rF_i\ge M$</li>
+            <li class="fragment">区间的<b>辣度最大值</b>越小越好</li>
+        </ul>
+    </section>
+    <section>
+        <h2>干草捆盛宴</h2>
+        <p class="quote">在这个题目中对区间有两个要求，香度之和要大于等于给定数字，辣度要尽可能小，我们能不能尝试先满足其中一个要求？</p>
+        <p class="fragment">
+            $$
+            \mathop{min}\limits_{\begin{aligned}1\le l\le n,l\le r\le n\\sum(F_{l},F_{l+1},...,F_r)&\ge M\end{aligned} }max(S_{l},S_{l+1},...,S_r)
+            $$
+        </p>
+        <p class="fragment quote">试试固定区间左端点...</p>
+        <p class="fragment">
+            $$
+            \mathop{min}\limits_{\begin{aligned}l\le r\le n\\sum(F_{l},F_{l+1},...,&F_r)\ge M\end{aligned} }max(S_{l},S_{l+1},...,S_r)
+            $$
+        </p>
+        <sd-animation src="./贪心.js" class="fragment"
+            style="width: 1000px; height: 150px;"></sd-animation>
+    </section>
+    <section>
+        <h2>干草捆盛宴</h2>
+        <p>不难想到用双指针找出所有左端点 $l$ 对应的最近右端点 $r$</p>
+        <sd-animation src="./干草捆盛宴.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">再对每一个区间 $[l,r]$ 求一个辣度最大值即可</p>
+    </section>
+    <section>
+        <h2>干草捆盛宴</h2>
+        <p>再想一想</p>
+        <p>
+            $$
+            \mathop{min}\limits_{\begin{aligned}1\le l\le n,l\le r\le n\\sum(F_{l},F_{l+1},...,F_r)&\ge M\end{aligned} }max(S_{l},S_{l+1},...,S_r)
+            $$
+        </p>
+        <p>这个问题显然是一个最优化问题，优化的合法的区间 $[l,r]$ 的最小的 $max(S_{l},S_{l+1},...,S_r)$</p>
+        <p class="fragment quote">能否把最优化问题转化为判定问题解决？</p>
+    </section>
+</section>

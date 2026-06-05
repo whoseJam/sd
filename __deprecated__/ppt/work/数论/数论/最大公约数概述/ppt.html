@@ -1,0 +1,129 @@
+<section>
+    <section>
+        <h1>最大公约数</h1>
+    </section>
+    <section>
+        <h2><ruby>最大公约数<rt>greeatest common divisor</rt></ruby></h2>
+        <p>我们通常 $gcd$ 表示两个数字的最大公约数，有以下方法可以用于求解 $a$ 和 $b$ 的 $gcd$</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>算法</th>
+                    <th>时间复杂度</th>
+                    <th>描述</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>辗转相减法</td>
+                    <td>$O(max(a,b))$</td>
+                    <td>一般不会用这个方法来求gcd，不过其思想具有一定的借鉴意义</td>
+                </tr>
+                <tr>
+                    <td>辗转相除法</td>
+                    <td>$O(log(max(a,b)))$</td>
+                    <td>一般用它来求gcd，它本质上是基于辗转相减法的一种优化算法</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>辗转相减法</h2>
+        <p>早在西汉时期的《九章算术》中就提出可以用辗转相减法来求解</p>
+        <ol>
+            <li class="fragment">假设我们要求解 $a$ 和 $b$ 的最大公约数</li>
+            <li class="fragment">我们不妨让 $a\ge b$，如果不满足 $a\ge b$，我们可以先交换 $a$ 和 $b$</li>
+            <li class="fragment">我们修改 $a$ 的值，让新的 $a'=a-b$</li>
+            <li class="fragment">重复(1)(2)(3)，递归求解 $a'$ 和 $b$ 的最大公约数</li>
+            <li class="fragment">如果发现要求解最大公约数的 $a$ 或 $b$ 变成 $0$ 了，停止算法，此时不为 $0$ 的那个数字即为最大公约数</li>
+        </ol>
+        <div style="display: flex; align-items: center;">
+            <sd-animation src="./辗转相减法.js" class="fragment"
+                style="width: 1000px; height: 200px;"></sd-animation>
+            <codeblock class="fragment">
+                <script type="text/template">
+                    int gcd(int a, int b) {
+                        if (a < b) return gcd(b, a);
+                        if (!b) return a;
+                        return gcd(a - b, b);
+                    }
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>辗转相除法</h2>
+        <p>辗转相除法是对辗转相减法的一种优化</p>
+        <p class="fragment">
+            假设我们希望计算 $gcd(50000,6)$，我们观察一下辗转相减法的过程
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            gcd(50000,6) &= gcd(49994,6) \\
+            &= gcd(49988,6) \\
+            &= gcd(49982,6) \\
+            &= ...... \\
+            &= gcd(14,6) \\
+            &= gcd(8,6) \\
+            &= gcd(2,6) \\
+            &= ...... \\
+            &= 2
+            \end{aligned} 
+            $$
+        </p>
+        <p class="fragment">容易发现，从 $gcd(50000,6)\rightarrow gcd(2,6)$ 这一步，辗转相减法实在浪费了太多的时间</p>
+    </section>
+    <section>
+        <h2>辗转相除法</h2>
+        <p>又因为 $gcd(50000,6)\rightarrow gcd(2,6)$，无非就是不断的让第一个数字 $-6$，直到第一个数字比 $6$ 小位置</p>
+        <p class="fragment">所以我们完全可以使用取模来加速这个过程</p>
+        <ul>
+            <li class="fragment">$gcd(50000,6)=gcd(50000\%6,6)=gcd(2,6)$，一步到位</li>
+        </ul>
+    </section>
+    <section>
+        <h2>辗转相除法</h2>
+        <p>基于取模加速减法这个思想，辗转相除法诞生了</p>
+        <p>以下是基于辗转相除法的gcd函数的递归定义</p>
+        <p class="fragment">
+            $$
+            gcd(a,b)=
+            \left\{
+            \begin{aligned}
+                & a & 如果 b = 0 \\
+                & gcd(b,a\%b) & 如果 b\ne 0
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <div style="display: flex; align-items: center;">
+            <sd-animation src="./辗转相除法.js" class="fragment"
+                style="width: 1000px; height: 200px"></sd-animation>
+            <codeblock class="fragment">
+                <script type="text/template">
+                    int gcd(int a, int b) {
+                        if (!b) return a;
+                        return gcd(b, a % b);
+                    }
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>最大公约数</h2>
+        <p>如果 $C=gcd(A,B)$，且
+            $$
+            \begin{cases}
+            A=p_1^{a_1}p_2^{a_2}...p_k^{a_k} \\
+            B=p_1^{b_1}p_2^{b_2}...p_k^{b_k} 
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">则
+            $$
+            C=p_1^{min(a_1,b_1)}p_2^{min(a_2,b_2)}...p_k^{min(a_k,b_k)}
+            $$
+        </p>
+    </section>
+</section>

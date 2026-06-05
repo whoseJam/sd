@@ -1,0 +1,80 @@
+<section>
+    <section>
+        <h1>RKHash预处理</h1>
+    </section>
+    <section>
+        <h2>RKHash预处理</h2>
+        <p>假设我有一个长度为 $n$ 的串，有 $m$ 次询问，每次询问查询其某个子串的Hash值</p>
+        <sd-animation src="./多次询问子串Hash值.html"
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <p class="fragment">如果每次重新算，时间复杂度为 $O(nm)$</p>
+        <p class="fragment">能否更快速地完成呢？</p>
+    </section>
+    <section>
+        <h2>RKHash预处理</h2>
+        <div style="display: flex; justify-content: space-around;">
+            <div>
+                <p class="fragment">前缀和数组
+                    $$
+                    S(n)=\sum_{i=1}^n B^{n-i}s[i]
+                    $$
+                </p>
+            </div>
+            <div>
+                <p class="fragment">幂次数组
+                    $$
+                    P(n)=B^n
+                    $$
+                </p>
+            </div>
+        </div>
+        <sd-animation src="./RKHash.js" class="fragment"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p class="fragment">
+            $$
+            Hash(s,l,r)=S(r)-P(r-l+1)S(l-1)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>数学证明</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            Hash(s,l,r)
+            &=\sum_{i=l}^r B^{r-i}s[i] \\
+            &=\sum_{i=1}^r B^{r-i}s[i] - \sum_{i=1}^{l-1}B^{r-i}s[i] \\
+            &=S(r)-B^{r-(l-1)}\sum_{i=1}^{l-1}B^{(l-1)-i}s[i] \\
+            &=S(r)-P(r-l+1)S(l-1)
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                ull Hash(int l, int r) {
+                    return S[r] - P[r - l + 1] * S[l - 1];
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>RKHash预处理</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            S(n)&=\sum_{i=1}^{n} B^{n-i}s[i] \\
+            &=\sum_{i=1}^{n-1} B^{n-i}s[i]+s[n] \\
+            &=B\sum_{i=1}^{n-1}B^{(n-1)-i}s[i]+s[n] \\
+            &=B\times S(n-1)+s[n]
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= len; i++) {
+                    S[i] = S[i - 1] * B + s[i];
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

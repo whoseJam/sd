@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>食物链</h1>
+        <p>在拓扑排序中做动态规划</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3183"></problem>
+    <section>
+        <h2>食物链</h2>
+        <p>统计一个食物网中的食物链的数量，保证食物网是一个有向无环图</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment quote">一条食物链是指，一条从入度为 $0$ 的点为起点，出度为 $0$ 的点为终点的路径，<b style="color: purple;">注意孤立点不算食物链</b></p>
+    </section>
+    <section>
+        <h2>食物链</h2>
+        <p class="quote">如何统计总的食物链数量？</p>
+        <p class="fragment">我们可以设 $f(u)$ 表示，以 $u$ 号点为末尾的食物链有多少条</p>
+        <sd-animation src="./食物链.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f(u)\stackrel{+}{\rightarrow} f(v)
+            $$
+        </p>
+        <p class="fragment">初始化，所有入度为 $0$ 的点 $x$ 的 $f(x)=1$</p>
+    </section>
+</section>

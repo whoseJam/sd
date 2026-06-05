@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>破解D-H协议</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4454"></problem>
+    <section>
+        <h2>破解D-H协议</h2>
+        <p>给出质数 $p$，$p$ 的原根 $g$</p>
+        <p class="fragment">给出 $A\equiv g^a(mod\ p)$，$A$ 已知，但是 $a$ 未知</p>
+        <p class="fragment">给出 $B\equiv g^b(mod\ p)$，$B$ 已知，但是 $b$ 未知</p>
+        <p class="fragment">求解 $K\equiv g^{ab}(mod\ p)$</p>
+    </section>
+    <section>
+        <h2>破解D-H协议</h2>
+        <p>显然把 $a$ 或者 $b$ 解出来就行了，以 $a$ 为例，解出 $a$ 后，$K\equiv g^{ab}\equiv (g^b)^a\equiv B^a(mod\ p)$</p>
+        <p class="fragment">而求解 $a$，则是在解这么一个方程：
+            $$
+            g^a\equiv A(mod\ p)
+            $$
+        </p>
+        <p class="fragment">BSGS模板题</p>
+    </section>
+    <section>
+        <h2>关于D-H协议</h2>
+    </section>
+</section>

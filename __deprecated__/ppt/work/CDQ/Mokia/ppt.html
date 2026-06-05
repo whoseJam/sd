@@ -1,0 +1,46 @@
+<section>
+    <section>
+        <h1>Mokia</h1>
+        <p>从大数据结构题目中，找到偏序问题的影子——做时间的朋友</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4390"></problem>
+    <section>
+        <h2>Mokia</h2>
+        <p>一个 $w\times w$ 的矩阵，需要我们支持</p>
+        <ol>
+            <li>矩阵单点加</li>
+            <li>矩阵区间查</li>
+        </ol>
+        <p class="fragment">$w\le 2\times 10^6$</p>
+        <p class="fragment quote">在需求上来看，可以用二维线段树，但我觉得码量太大——想一想这个题能否转化为偏序问题</p>
+    </section>
+    <section>
+        <h2>Mokia</h2>
+        <sd-animation src="./偏序问题.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>每个修改操作看作一个三元组 $A(t,x,y)$</p>
+        <p class="fragment">把每个查询操作 $(x_1,y_1,x_2,y_2)$ 拆成 $4$ 个前缀和查询，同样用三元组表示</p>
+        <ol>
+            <li class="fragment">$Q(t,x_2,y_2)$：查询并加上 $(1,1,x_2,y_2)$ 的矩形中，先于 $t$ 时刻发生的修改</li>
+            <li class="fragment">$Q(t,x_1-1,y_2)$：查询并减去 $(1,1,x_1-1,y_2)$ 的矩形中，先于 $t$ 时刻发生的修改</li>
+            <li class="fragment">$Q(t,x_2,y_1-1)$：查询并减去 $(1,1,x_2,y_1-1)$ 的矩形中，先于 $t$ 时刻发生的修改</li>
+            <li class="fragment">$Q(t,x_1-1,y_1-1)$：查询并加上 $(1,1,x_1-1,y_1-1)$ 的矩形中，先于 $t$ 时刻发生的修改</li>
+        </ol>
+    </section>
+    <section>
+        <h2>Mokia</h2>
+        <p>那么我们现在有两类数据点，<b style="color: red;">修改类数据点</b> $A(t,x,y)$ 和<b style="color: darkcyan;">查询类数据点</b> $Q(t,x,y)$，某个修改类数据点，可能会对某个查询类数据点产生贡献</p>
+        <p class="fragment">其中，如果一个修改类数据点 $A(t_i,x_i,y_i)$ 能对查询类数据点 $Q(t_j,x_j,y_j)$ 有贡献，则应满足
+            $$
+            \left\{
+            \begin{aligned}
+            t_i &\lt t_j \\
+            x_i &\le x_j \\
+            y_i &\le y_j
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <p class="fragment">发现这就是一个三维偏序问题，可以使用CDQ解决</p>
+    </section>
+</section>

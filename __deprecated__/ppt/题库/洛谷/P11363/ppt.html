@@ -1,0 +1,92 @@
+<section>
+    <section>
+        <h1>树的遍历</h1>
+        <p>T3</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P11363"></problem>
+    <section>
+        <h2>树的遍历</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p class="fragment">在一棵树上，在每一条边上新建一个<b>边点</b>，两个拥有共同节点的边，其边点可以相互抵达，你需要从某个边点开始遍历所有边点</p>
+        <p class="fragment">有 $k$ 个边点可以作为遍历的起点</p>
+        <p class="fragment">如果我们把遍历路径用无向实线连接，那么就得到了一棵生成树</p>
+        <p class="fragment">求最后能走出多少种不同的生成树</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>我们不妨先假定 $k=1$，即只有一个边点可以作为起点</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>如果树是一个菊花图......</p>
+        <sd-animation src="./菊花图.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">假设这个菊花图有 $E$ 个分支，那么答案显然是 $(E-1)!$</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>现在我们把菊花图累成一个一般树</p>
+        <sd-animation src="./一般树.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p class="fragment">在每一个菊花结构上，一定存在一个<b>入口</b></p>
+        <p class="fragment">在一个菊花结构的内部，访问每一个边点的顺序是任意的，并且菊花结构之间是相互独立的</p>
+        <p class="fragment">
+            $$
+            \prod_{u=1}^n (degree_u-1)!
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>当 $k\gt 1$ 的时候，我们如果还是按照之前的做法统计，就会算重<span class="fragment">，我们考虑容斥去重</span></p>
+        <sd-animation src="./重复统计.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">
+            假设能被边点 $i$ 统计到的方案构成的集合为 $S_i$，我们就是在求 $|\bigcup_{i=1}^kS_i|$，又因为：
+            $$
+            |\bigcup_{i=1}^kS_i|=\sum_{i=1}^k(-1)^{i-1}\sum_{一个i元组}|\bigcap_{这个i元组的每一项x} S_x|
+            $$
+        </p>
+        <p class="fragment">所以我们只要能算<b>同时被 $i$ 个起始边点统计到的生成树数量</b>即可</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>考虑如何求同时被 $i$ 个起始边点统计到的生成树数量</p>
+        <p>首先这 $i$ 个起始点必须在一条链上</p>
+        <sd-animation src="./分叉路.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment quote">如果起始边点分布在这样的分岔口上（不一定紧贴在分岔口上），形成了一棵生成树，那么其中一个起始边点肯定是构造不出这种生成树的</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>我们讨论起始边点位于同一条链上的情况，先考虑简单的 $k=2$ 的情况</p>
+        <sd-animation src="./非分叉路_1.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">如果某棵生成树要同时被 $\{x,y\}$ 这两个起始边点统计到，那么<b>这两个起始边点以及中间的所有边点</b>一定在所属菊花结构的头和尾上才行</p>
+        <p class="fragment">考虑 $x\rightarrow y$ 的通路，对于通路上的点 $u$ 来说，它们只剩下 $degree_u-2$ 条分支是可以自由裁定的，而不在通路上的点 $v$ 仍然有 $degree_v-1$ 条分支可以自由裁定</p>
+        <p class="fragment quote">那如果 $k\ge 3$ 呢？</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <p>容易发现当一条链上的起始边点数量 $\ge 3$ 时，它们的对应系数会被抵消掉</p>
+        <sd-animation src="./非分叉路_2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">例如上图，我们钦定最左侧和最右侧的起始边点一定要参与统计......</p>
+        <p class="fragment">所以我们只需要讨论 $k=2$ 且两个起始边点中间的通路上没有别的起始边点的情况即可</p>
+    </section>
+    <section>
+        <h2>树的遍历</h2>
+        <sd-animation src="./树形dp.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>我们把一条从一个起始边点到另一个起始边点，中间不存在别的起始边点的路叫做<b>边点通路</b></p>
+        <p class="fragment">定义一条边点通路 $P$ 的价值为 $v(P)=\prod_{u\in P}\frac{1}{degree_u-1}$</p>
+        <p class="fragment">则该通路造成的容斥贡献即为 $-v(P)\prod_{u}(degree_u-1)!$</p>
+        <p class="fragment">我们用树形dp算出每一条边点通路的价值和</p>
+        <p class="fragment">
+            $$
+            k\prod_{u}(degree_u-1)!-\sum_{P}v(P)\prod_{u}(degree_u-1)!
+            $$
+        </p>
+    </section>
+</section>

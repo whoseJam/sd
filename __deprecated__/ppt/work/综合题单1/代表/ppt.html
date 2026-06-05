@@ -1,0 +1,80 @@
+<section>
+    <section>
+        <h1>代表</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5968"></problem>
+    <section>
+        <h2>代表</h2>
+        <p>定义一个特殊序列</p>
+        <ul>
+            <li class="fragment">$a_1=1$</li>
+            <li class="fragment">$a_2=2$</li>
+            <li class="fragment">奇数项 $a_n=2\times a_{n-1}$</li>
+            <li class="fragment">偶数项 $a_n=a_{n-1}+r_{n-1}$</li>
+        </ul>
+        <p class="fragment">其中 $r_{n-1}=mex(\{|a_i-a_j|,1\le i\le j\le n-1\})$</p>
+        <p class="fragment">定义 $repr(x)$ 是一个二元组 $(p,q)$，满足 $x=a_p-a_q$</p>
+        <p class="fragment">给出 $x$，求 $repr(x)$</p>
+        <p class="fragment quote">不妨先打表感受一下这个序列</p>
+    </section>
+    <section>
+        <h2>代表</h2>
+        <div style="display: flex;">
+            <codeblock style="width: 250px; height: 420px;">
+                <script type="text/template">
+                    i=3 a=4 r=4
+                    i=4 a=8 r=5
+                    i=5 a=16 r=5
+                    i=6 a=21 r=9
+                    i=7 a=42 r=9
+                    i=8 a=51 r=10
+                    i=9 a=102 r=10
+                    i=10 a=112 r=11
+                    i=11 a=224 r=11
+                    i=12 a=235 r=16
+                    i=13 a=470 r=16
+                    i=14 a=486 r=18
+                    i=15 a=972 r=18
+                    i=16 a=990 r=22
+                    i=17 a=1980 r=22
+                    i=18 a=2002 r=23
+                    i=19 a=4004 r=23
+                    i=20 a=4027 r=24
+                    i=21 a=8054 r=24
+                    i=22 a=8078 r=25
+                </script>
+            </codeblock>
+            <div style="width: 600px;">
+                <ul>
+                    <li class="fragment">每过两个数字，$a_i$ 的数值就翻一倍</li>
+                    <li class="fragment">同组之内的两个数字差别不大</li>
+                </ul>
+                <p class="fragment quote">如何对 $x$，构造出 $a_p-a_q=x$ 呢？</p>
+                <p class="fragment quote">题目既然能保证一定有解，虽然没有给出证明，但无疑给了我们许多构造上的信心</p>
+                <p class="fragment quote">$x\le 10^9$</p>
+                <p class="fragment">对于大小超过 $10^9$ 的 $\{a_i\}$，奇数项与前一项偶数项的差值必然大于 $x$，不可能构造成功<span class="fragment">，所以对于这部分 $\{a_i\}$，符合条件的构造只有可能是偶数项和前一位奇数项</span></p>
+                <p class="fragment quote">但具体应该输出哪一组偶数和前位奇数的组合，似乎还得研究 $\{r_i\}$ 的性质</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>代表</h2>
+        <p>
+            $$
+            r_{n}=mex(\{|a_i-a_j|,1\le i\le j\le n\})
+            $$
+        </p>
+        <p>想象一下我有一个长度为 $k$ 的 $\{a_i\}$，我们需要找到 $a_p-a_q=x$</p>
+        <p class="fragment">如果目前还无法从这个长度为 $k$ 的 $\{a_i\}$ 中找到合法的答案，且序列的末尾已经远超过答案范围了...</p>
+        <sd-animation src="./补充差值.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment quote">$\{r_i\}$ 拥有查漏补缺的能力<span class="fragment">，且两个数字可以填一个空</span></p>
+    </section>
+    <section>
+        <h2>代表</h2>
+        <p>筛出 $\{a_i\}$ 中小于 $10^9$ 的项，总共有 $56$ 项</p>
+        <p class="fragment">如果 $x$ 可以由 $a_1$ 到 $a_{56}$ 组合出来，则直接出解</p>
+        <p class="fragment">否则，计算出在 $x$ 的范围内，排除掉 $a_1$ 到 $a_{56}$ 已经填上的空位后，还剩下多少个空位要填，设为 $k$</p>
+        <p class="fragment">答案即为 $56+2k$ 和 $56+2k-1$</p>
+    </section>
+</section>

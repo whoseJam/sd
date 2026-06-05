@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>AC自动机2</h1>
+        <p>AC自动机（简单版Ⅱ）</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3796"></problem>
+    <section>
+        <h2>AC自动机2</h2>
+        <p>给出一个主串 $s$，你需要统计每个模式串分别在主串中出现了多少次</p>
+        <sd-animation src="./匹配.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">考虑匹配到了主串的第 $i$ 个位置，AC自动机上所有<b>可匹配点</b>都在主串的第 $i$ 个位置上出现了一次<span class="fragment">，不妨设此刻的<b>最大匹配点</b>为 $u$，那么只需要让 $u$ 到树根的这条fail链上每个点的出现次数增加一次即可</span></p>
+        <div class="fragment quote">
+            <span>如何让这条链上的每个点的出现次数增加？暴力爬吗？</span>
+            <codeblock>
+                <script type="text/template">
+                    for (int f = u; f; f = fa[f]) vis[f]++;
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>AC自动机2</h2>
+        <sd-animation src="./标记.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li class="fragment">在匹配过程中，标记所有途径点（一个节点可能被标记多次）</li>
+            <li class="fragment">在fail树上，每一个标记到树根的这条树链，都在主串中某位置出现了一次</li>
+            <li class="fragment">统计每个节点其子树内的标记数量，即该节点在主串中出现的<b style="color: purple;">总次数</b></li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 假设 cnt 数组是标记数组
+                // 注意区分fail树和trie树的子节点，它们是两棵不同的树
+                void Dfs(int u) {
+                    for (int v : son[u]) {
+                        Dfs(v);
+                        cnt[u] += cnt[v];
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

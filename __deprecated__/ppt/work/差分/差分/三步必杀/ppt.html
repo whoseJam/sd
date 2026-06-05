@@ -1,0 +1,79 @@
+<section>
+    <section>
+        <h1>三步必杀</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P4231"></problem>
+    <section>
+        <h2>三步必杀</h2>
+        <p>一个长度为 $n$ 的序列，每次给这个序列的 $[l,r]$ 这个子区间，添加一个等差数列 $(s,e)$</p>
+        <ul>
+            <li class="fragment">$s$ 为等差数列的首项</li>
+            <li class="fragment">$e$ 为等差数列的末项</li>
+            <li class="fragment">显然，等差数列的公差 $d=(e-s)/(r-l)$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>三步必杀</h2>
+        <p>那么每次操作，对应的增量序列 $\{c\}$就是
+            $$
+            \{c\}=\{0,0...0,s,s+d,s+2d...e,0,0...0\}
+            $$
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>序列位置</th>
+                    <th>$l$</th>
+                    <th>$l+1$</th>
+                    <th>$l+2$</th>
+                    <th>...</th>
+                    <th>$r-1$</th>
+                    <th>$r$</th>
+                    <th>$r+1$</th>
+                    <th>$r+2$</th>
+                    <th>...</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="fragment">
+                    <th>$\{c\}$</th>
+                    <td>$s$</td>
+                    <td>$s+d$</td>
+                    <td>$s+2d$</td>
+                    <td>...</td>
+                    <td>$e-d$</td>
+                    <td>$e$</td>
+                    <td>$0$</td>
+                    <td>$0$</td>
+                    <td>$0$</td>
+                </tr>
+                <tr class="fragment">
+                    <th>$D(\{c\})$</th>
+                    <td>$s$</td>
+                    <td>$d$</td>
+                    <td>$d$</td>
+                    <td>...</td>
+                    <td>$d$</td>
+                    <td>$d$</td>
+                    <td>$-e$</td>
+                    <td>$0$</td>
+                    <td>$0$</td>
+                </tr>
+                <tr class="fragment">
+                    <th>$D(D(\{c\}))$</th>
+                    <td>$s$</td>
+                    <td>$d-s$</td>
+                    <td>$0$</td>
+                    <td>...</td>
+                    <td>$0$</td>
+                    <td>$0$</td>
+                    <td>$-e-d$</td>
+                    <td>$e$</td>
+                    <td>$0$</td>
+                </tr>
+            </tbody>
+        </table>
+        <sd-animation src="./二维差分.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+    </section>
+</section>

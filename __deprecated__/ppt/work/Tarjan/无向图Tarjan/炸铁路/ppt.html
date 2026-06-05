@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>炸铁路</h1>
+        <p>找找割边</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1656"></problem>
+    <section>
+        <h2>炸铁路</h2>
+        <p>在B国有 $n$ 个城市，这些城市以铁路相连</p>
+        <p class="fragment">为了破坏B国的物流系统，我们需要炸毁<b style="color: purple;">恰好一条</b>铁路，使得B国存在两个城市无法互相到达</p>
+        <p class="fragment">请你求出所有符合要求的<b style="color: red;">关键铁路</b></p>
+    </section>
+    <section>
+        <h2>炸铁路</h2>
+        <p class="quote">翻译翻译，什么叫做<b style="color: red;">关键铁路</b>？</p>
+        <p class="fragment">所谓关键铁路，就是一个无向图中的割边而已<span class="fragment">，返祖边显然都不是割边，考察一条树边 $(u,v)$ 是否是割边...</span></p>
+        <div style="display: flex;">
+            <div class="fragment">
+                <p>如果 $low(v)=dfn(v)$...</p>
+                <sd-animation src="./割边1.js"
+                    style="width: 1000px; height: 300px;"></sd-animation>
+            </div>
+            <div class="fragment">
+                <p>如果 $low(v)\lt dfn(v)$...</p>
+                <sd-animation src="./割边2.js"
+                    style="width: 1000px; height: 300px;"></sd-animation>
+            </div>
+        </div>
+        <p class="fragment" style="text-align: center;">一条树边 $(u,v)$ 是割边 $\Leftrightarrow$ $low(v)=dfn(v)$</p>
+    </section>
+</section>

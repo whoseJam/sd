@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>可持久化线段树2</h1>
+        <p>分析一下可持久化数据结构中，版本之间的信息可减性</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3834"></problem>
+      <section>
+        <h2>可持久化线段树2</h2>
+        <p>对于一个长度为 $n$ 的序列，题目希望多次查询一段区间 $[l,r]$ 的第 $k$ 小</p>
+        <p class="fragment">如果我们能将 $[l,r]$ 这个区间里面的元素，全部插入到一个权值线段树 $S$ 中，用权值线段树来维护一段区间中<b>元素的个数</b>，我们就能在 $S$ 上做二分，来定位到区间第 $k$ 小了</p>
+        <p class="fragment">
+            现在的问题就是，如何快速求出：
+            $$
+            S=\{insert(a_L)\}+\{insert(a_{L+1})\}+...+\{insert(a_R)\}
+            $$
+        </p>
+        <sd-animation src="./可持久化线段树2.html" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>可持久化线段树2</h2>
+        <codeblock>
+            <script type=text/template>
+                int nodeSize(int xl, int xr) {
+                    return t[xr].siz - t[xl].siz;
+                }
+                int query(int xl, int xr, int l, int r, int k) {
+                    if (l == r) return l;
+                    int mid = (l + r) >> 1, siz = nodeSize(t[xl].lc, t[xr].lc);
+                    if (k <= siz) return query(t[xl].lc, t[xr].lc, l, mid, k);
+                    else return query(t[xl].rc, t[xr].rc, mid + 1, r, k - siz);
+                }
+                // 查询 [l,r] 这个范围内的操作对应的权值线段树第 k 小
+                cout << query(rt[l - 1], rt[r], mna, mxa, k) << '\n';
+            </script>
+        </codeblock>
+    </section>
+</section>

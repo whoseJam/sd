@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>Crash的数字表格</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1829"></problem>
+    <section>
+        <h2>Crash的数字表格</h2>
+        <p>给定 $n,m$，欲求
+            $$
+            \sum_{i=1}^n\sum_{j=1}^m lcm(i,j)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Crash的数字表格</h2>
+        <p class="quote">遇见 $lcm$，把它转为 $gcd$</p>
+    </section>
+    <section>
+        <h2>Crash的数字表格</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \sum_{i=1}^n\sum_{j=1}^m lcm(i,j)
+            &=\sum_{i=1}^n\sum_{j=1}^m\frac{ij}{gcd(i,j)} \\
+            &=\sum_{d=1}^{min(n,m)}\frac 1 d\sum_{i=1}^n\sum_{j=1}^m ij[gcd(i,j)=d] \\
+            &=\sum_{d=1}^{min(n,m)}\frac 1 d\sum_{i=1}^{n/d}\sum_{j=1}^{m/d}(id)(jd)[gcd(i,j)=1] \\
+            &=\sum_{d=1}^{min(n,m)}d\sum_{i=1}^{n/d}\sum_{j=1}^{m/d}ij\sum_{k|i\\k|j}\mu(k)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Crash的数字表格</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{d=1}^{min(n,m)}d\sum_{i=1}^{n/d}\sum_{j=1}^{m/d}ij\sum_{k|i\\k|j}\mu(k) \\
+            &=\sum_{d=1}^{min(n,m)}d\sum_{k=1}^{min(n/d,m/d)}\mu(k)\sum_{1\le i\le n/d\\k|i}i\sum_{1\le j\le m/d\\k|j}j \\
+            &=\sum_{d=1}^{min(n,m)}d\sum_{k=1}^{min(n/d,m/d)}\mu(k)k^2S_1(1,\lfloor\frac{n}{kd}\rfloor)S_1(1,\lfloor\frac{m}{kd}\rfloor)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>Crash的数字表格</h2>
+        <p>
+            $$
+            \begin{aligned}
+            answer&=\sum_{d=1}^{min(n,m)}d\sum_{k=1}^{min(n/d,m/d)}\mu(k)k^2S_1(1,\lfloor\frac{n}{kd}\rfloor)S_1(1,\lfloor\frac{m}{kd}\rfloor) \\
+            &=\sum_{T=1}^{min(n,m)}S_1(1,\lfloor\frac n T\rfloor)S_1(1,\lfloor\frac m T\rfloor)\sum_{k|T}\mu(k)k^2(\frac T k) \\
+            &=\sum_{T=1}^{min(n,m)}S_1(1,\lfloor\frac n T\rfloor)S_1(1,\lfloor\frac m T\rfloor)T\sum_{k|T}\mu(k)k
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">设 $F(n)=\sum_{k|n}\mu(k)k$，这竟然是一个积性函数（当然即使不是积性函数也能 $O(nlogn)$ 算出，并且也能通过本题）</p>
+    </section>
+</section>

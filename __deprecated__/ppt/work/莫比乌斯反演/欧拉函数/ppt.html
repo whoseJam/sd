@@ -1,0 +1,135 @@
+<section>
+    <section>
+        <h1>欧拉函数 $\varphi$</h1>
+        <p>一个积性函数</p>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <p>$\varphi(n)$：表示 $[1,n]$ 中与 $n$ 互质的整数个数</p>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <p>当 $p$ 是质数时，显然 $\varphi(p)=p-1$</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                如果 i 是质数：
+                prim[++tot] = i;
+                phi[i] = i - 1;
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <p>当 $n=p^k$ 且 $p$ 是一个质数时，考虑 $[1,n]$ 内与 $n$ 互质的数的个数</p>
+        <ul>
+            <li class="fragment">$1,2,3...p-1$ 显然全部与 $n$ 互质，但 $p$ 与 $n$ 不互质</li>
+            <li class="fragment">$p+1,p+2,p+3...2p-1$ 显然全部与 $n$ 互质，但 $2p$ 与 $n$ 不互质</li>
+            <li class="fragment">$2p+1,2p+2,2p+3...3p-1$ 显然全部与 $n$ 互质，但 $3p$ 与 $n$ 不互质</li>
+            <li class="fragment">......</li>
+        </ul>
+        <p class="fragment">我们可以发现<b>每过 $p$ 个数字就会出现一个与 $n$ 不互质的</b>，所以：
+            $$
+            \varphi(n)=n(\frac{p-1}{p})=p^k(\frac{p-1}{p})=p^{k-1}(p-1)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <p>（在此不证明）$\varphi(n)$ 是积性函数，假设 $n=p_1^{a_1}p_2^{a_2}...p_n^{a_n}$，则
+            $$
+            \begin{aligned}
+            \varphi(n)&=\varphi(p_1^{a_1})\varphi(p_2^{a_2})...\varphi(p_n^{a_n}) \\
+            &=[p_1^{a_1-1}(p_1-1)][p_2^{a_2-1}(p_2-1)]...[p_n^{a_n-1}(p_n-1)]
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">我们发现我们已经把 $\varphi(n)$ 写成和因子有关的函数，那么就可以借用线性筛把它筛出来</p>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中不包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+            $$x=p_1p_2^{a_2}p_3^{a_3}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$\varphi(i)=\varphi(p_2^{a_2})\varphi(p_3^{a_3})...\varphi(p_n^{a_n})$$
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \varphi(x)&=\varphi(p_1)\varphi(p_2^{a_2})\varphi(p_3^{a_3})...\varphi(p_n^{a_n})\\
+            &=(p_1-1)\varphi(p_2^{a_2})\varphi(p_3^{a_3})...\varphi(p_n^{a_n})
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] != 0 时
+                phi[x] = phi[i] * (prim[j] - 1);
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <p>假设我们用 $i$ 和 $p_1$ 筛掉了 $x$，且 $i$ 中包含 $p_1$ 这个因子</p>
+        <p>
+            $$i=p_1^{a_1}p_2^{a_2}...p_n^{a_n}$$
+            $$x=p_1^{a_1+1}p_2^{a_2}...p_n^{a_n}$$
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \varphi(i)&=\varphi(p_1^{a_1})\varphi(p_2^{a_2})...\varphi(p_n^{a_n})\\
+            &=p_1^{a_1-1}(p_1-1)\varphi(p_2^{a_2})...\varphi(p_n^{a_n})
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            \begin{aligned}
+            \varphi(x)&=\varphi(p_1^{a_1+1})\varphi(p_2^{a_2})...\varphi(p_n^{a_n})\\
+            &=p_1^{a_1}(p_1-1)\varphi(p_2^{a_2})...\varphi(p_n^{a_n})
+            \end{aligned}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                当 i % prim[j] == 0 时
+                phi[x] = phi[i] * prim[j];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>欧拉函数</h2>
+        <codeblock>
+            <script type="text/template">
+                void Sieve(int n = 100000) {
+                    phi[1] = 1;
+                    for (int i = 2; i <= n; i++) {
+                        if (!vis[i]) phi[prim[++tot] = i] = i - 1;
+                        for (int j = 1; j <= tot && i * prim[j] <= n; j++) {
+                            vis[i * prim[j]] = 1;
+                            if (i % prim[j] == 0) {
+                                phi[i * prim[j]] = phi[i] * prim[j];
+                                break;
+                            } else phi[i * prim[j]] = phi[i] * (prim[j] - 1);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>欧拉函数的重要性质</h2>
+        <p>
+            $$
+            n=\sum_{d|n}\varphi(d)
+            $$
+        </p>
+        <sd-animation src="./欧拉函数卷积.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">我们把 $\frac{1}{n},\frac{2}{n}...\frac{n}{n}$ 写出来，共 $n$ 个分数<span class="fragment">，把每个分数约到<b>最简形式</b></span></p>
+        <p class="fragment">容易知道分母一定为 $n$ 的因子，且分母为 $d$ 的分数有 $\varphi(d)$ 个</p>
+    </section>
+</section>

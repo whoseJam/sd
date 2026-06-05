@@ -1,0 +1,83 @@
+<section>
+    <section>
+        <h1>由俭入奢易</h1>
+    </section>
+    <section>
+        <h2>由俭入奢易</h2>
+        <ul>
+            <li>何为俭<span class="fragment">：俭，就是朴素的算法，就是各种各样的暴力算法</span></li>
+            <li>何为奢<span class="fragment">：奢，就是华丽的算法，就是各种各样的高级算法</span></li>
+        </ul>
+        <p class="fragment">
+            通常来讲，先写暴力算法，后写高级算法时会更容易
+        </p>
+        <ol style="width: 100%;">
+            <li class="fragment">暴力算法能一定程度上<b>启发</b>高级算法的诞生</li>
+            <p class="fragment quote">写完暴力仔细端详，诶，这个地方好像能优化，优化完好像就变成正解了</p>
+            <li class="fragment">暴力算法能作为高级算法的检验器</li>
+            <p class="fragment quote">比如我写了一个高级算法，没跑过大样例，又好巧不巧跑过了小样例，这时如果我能有一个暴力，就很方便我再造一个高级算法跑不过的小样例</p>
+        </ol>
+    </section>
+    <section>
+        <h1>何为俭</h1>
+    </section>
+    <section>
+        <h2>模拟为俭</h2>
+        <p>这里的模拟不是那种<b>刁钻的大模拟</b></p>
+        <p class="fragment">而是很小清新的、很直白的模拟</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2880"></problem>
+    <section>
+        <h2>模拟为俭</h2>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= q; i++) {
+                    scanf("%d%d", & a, & b);
+                    int min = INT_MAX, max = INT_MIN;
+                    for (int i = a; i <= b; i++) {
+                        if (h[i] < min) min = h[i];
+                        if (h[i] > max) max = h[i];
+                    }
+                    printf("%d\n", max - min);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">如果你发现你写了超过 60 行的模拟，我建议小伙子停停，你先清醒清醒，实在不行推倒重写一遍</p>
+    </section>
+    <section>
+        <h2>搜索为俭</h2>
+        <p>这里的搜索特指深搜，广搜都有点太过复杂了</p>
+        <p class="fragment">深搜最需要考虑的就是搜索函数的参数了</p>
+    </section>
+    <section>
+        <h2>搜索为俭</h2>
+        <p>有一个人在二维平面上移动，每次可以上下左右走，求走到某地的方案数，怎么设？</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 此人当前位于 (x, y) 上
+                void Dfs(int x, int y) {
+                    ......
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">有两个人都在二维平面上移动，也别管他们为啥移动了，怎么设？</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 第一个人位于 (x1, y1)
+                // 第二个人位于 (x2, y2)
+                void Dfs(int x1, int y1, int x2, int y2) {
+                    ......
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">要从一堆物品中选出一些搬走，怎么设？</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 正在考虑要不要搬第 k 个物品
+                void Dfs(int k) {
+                    ......
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

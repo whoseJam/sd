@@ -1,0 +1,43 @@
+<section>
+    <section>
+        <h1>雨伞</h1>
+        <p>USACO 2011 December Contest</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3035"></problem>
+    <section>
+        <h2>雨伞</h2>
+        <ul>
+            <li>数轴上有 $N$ 头奶牛，每头在独特的坐标位置 $X_i$</li>
+            <li>需要购买雨伞来覆盖所有奶牛</li>
+            <li>雨伞宽度为 $W$ 的价格为 $C_W$</li>
+        </ul>
+        <p class="fragment">你需要找到覆盖所有奶牛的最小成本</p>
+        <p class="fragment">宽伞不一定比窄伞贵</p>
+        <sd-animation src="./样例解释.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>动态规划思路</h2>
+        <p>设 $f_i$ 表示覆盖前 $i$ 头奶牛的最小成本</p>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">假设最后一把雨伞覆盖了从第 $j$ 头奶牛开始，到第 $i$ 头奶牛截止的这样一段区间...</p>
+        <p class="fragment">
+            $$
+            f_i=\mathop{min}\limits_{j\le i} \{f_{j-1}+C_{X_i-X_j+1}\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>雨伞</h2>
+        <p>注意到<b>宽伞不一定比窄伞贵</b>，所以在进行 $j\rightarrow i$ 的转移的时候，花费的最优成本不一定是 $C_{X_i-X_j+1}$</p>
+        <p class="fragment">事实上，只要雨伞的宽度比 $X_i-X_j+1$ 大，都可以</p>
+        <p class="fragment quote">如何快速找到最小的成本？</p>
+        <p class="fragment">对 $\{C_i\}$ 求一个后缀最大值 $\{S_i\}$ 即可</p>
+        <p class="fragment">
+            $$
+            f_i=\mathop{min}\limits_{j\le i} \{f_{j-1}+S_{X_i-X_j+1}\}
+            $$
+        </p>
+    </section>
+</section>

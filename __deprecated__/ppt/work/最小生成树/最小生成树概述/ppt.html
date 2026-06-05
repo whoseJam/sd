@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>生成树与最小生成树</h1>
+    </section>
+    <section>
+        <h2>生成树</h2>
+        <p>在一个 $n$ 个点的无向连通图中，取其中 $n-1$ 条边，并连接所有的节点，则为原图的一棵生成树</p>
+        <p class="fragment">而最小生成树，就是在一张带权的无向连通图中，各边权和最小的一棵生成树即为<b>最小生成树</b></p>
+    </section>
+    <section>
+        <h2>最小生成树</h2>
+        <p>假设带权无向图有 $n$ 节点，$m$ 条边</p>
+        <p class="fragment">有 $3$ 种主要的最小生成树算法</p>
+        <table class="fragment">
+            <thead>
+                <tr>
+                    <th>算法</th>
+                    <th>描述</th>
+                    <th>时间复杂度</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Kruskal</td>
+                    <td>适合稀疏图，边数不太多</td>
+                    <td>$O(mlogm)$</td>
+                </tr>
+                <tr>
+                    <td>Prim</td>
+                    <td>适合稠密图，边数接近 $O(n^2)$</td>
+                    <td>$O(n^2)$</td>
+                </tr>
+                <tr>
+                    <td>Boruvka</td>
+                    <td>适合用于配合数据结构魔改，本篇不讲这个算法</td>
+                    <td>$O(mlogn)$</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</section>

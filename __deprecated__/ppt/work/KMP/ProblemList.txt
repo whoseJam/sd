@@ -1,0 +1,5 @@
+普通KMP：
+#941.KMP（模板）：https://www.luogu.com.cn/problem/P3375
+无线传输：https://www.luogu.com.cn/problem/P4391
+#1150.失配树：https://www.luogu.com.cn/problem/P5829
+#545.动物园：https://www.luogu.com.cn/problem/P2375

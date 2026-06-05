@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>折半搜索</h1>
+        <p>在中间相遇</p>
+    </section>
+    <section>
+        <h2>决策序列</h2>
+        <p>在搜索中，我们常常遇到这么一类搜索问题：</p>
+        <ul>
+            <li>我们在一个长度为 $n$ 的序列上做决策</li>
+            <li>序列上的每个位置可能有 $2\sim 3$ 种选择</li>
+            <li>不同的决策会带来不同的收益，我们希望找到最优决策</li>
+        </ul>
+        <sd-animation src="./决策序列.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">我们不妨把这个长度为 $n$ 的序列叫做<b style="color: purple;">决策序列</b></p>
+        <p class="fragment quote">如果直接暴力搜出决策序列的所有可能性，时间复杂度显然为 $O(2^n |计算决策收益的时间复杂度|)$</p>
+    </section>
+    <section>
+        <h2>折半搜索</h2>
+        <p>折半搜索尝试把一个决策序列拆成两半</p>
+        <sd-animation src="./折半搜索优化效率.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <ul>
+            <li class="fragment">首先并列地搜出这两半决策的所有可能性</li>
+            <li class="fragment">再尝试找到一种比较快的方法，去把这两半决策合并起来</li>
+        </ul>
+        <p class="fragment quote">
+            我们先暂时忽略计算决策收益产生的开销，来观察一下时间复杂度的变化：
+            $$O(2^n)\rightarrow O(2\times 2^{ \frac{n}{2} }+合并开销)$$
+            <span class="fragment">一个合理的合并开销可能为 $O(2^n)$，$O(2^nn)$，$O(2^nn^2)$</span>
+        </p>
+    </section>
+</section>

@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>割点</h1>
+        <p>找找割点</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3388"></problem>
+    <section>
+        <h2>割点</h2>
+        <p>找割点板子题<span class="fragment">，考察一个节点 $u$ 是否是割点...</span></p>
+        <div style="display: flex;">
+            <div class="fragment">
+                <p>如果存在 $v$，使得 $low(v)\ge dfn(u)$...</p>
+                <sd-animation src="./割点1.js"
+                    style="width: 1000px; height: 300px;"></sd-animation>
+            </div>
+            <div class="fragment">
+                <p>如果所有 $v$，都有 $low(v)\lt dfn(u)$...</p>
+                <sd-animation src="./割点2.js"
+                    style="width: 1000px; height: 300px;"></sd-animation>
+            </div>
+        </div>
+        <p class="fragment" style="text-align: center;">一个节点 $u$ 是割点 $\Leftrightarrow$ 存在某个子节点满足 $low(v)\ge dfn(u)$</p>
+    </section>
+    <section>
+        <h2>割点</h2>
+        <p>不过有一个特例——树根</p>
+        <sd-animation src="./根是否是割点.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>树根一定满足所有子节点的 $low(v)\ge dfn(u)$，但它不一定是割点...</p>
+        <p class="fragment quote">根据树根的度判断其是否为割点</p>
+    </section>
+</section>

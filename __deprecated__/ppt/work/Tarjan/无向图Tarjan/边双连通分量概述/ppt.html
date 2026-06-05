@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>边双连通分量</h1>
+    </section>
+    <section>
+        <h2>边双连通分量</h2>
+        <div style="display: flex; align-items: center;">
+            <codeblock style="font-size: 20px;">
+                <script type="text/template">
+                    void Tarjan(int u) {
+                        // 先 Tarjan 遍历 u 的所有邻接点
+                        // ......
+                        if (low[u] == dfn[u]) {
+                            ans.push_back({});
+                            while (true) {
+                                int cur = stk.top();
+                                ans[BCC].push_back(cur);
+                                stk.pop();
+                                bel[cur] = BCC;
+                                if (cur == u) break;
+                            }
+                            BCC++;
+                        }
+                    }
+                </script>
+            </codeblock>
+            <sd-animation src="统计思路.js"
+                style="width: 1000px; height: 450px; margin-left: 20px;"></sd-animation>
+        </div>
+        <p>在构建DFS树的同时，对第 $i$ 个边双连通分量 $BCC_i$，我们在 $BCC_i$ 在DFS树中的<b>顶部</b>，处理出所有属于该 $BCC_i$ 的节点</p>
+        <p class="fragment">具体来说，我们用一个栈来维护边双连通分量，每次路过一个节点就把它放入栈内；每找到一个边双连通分量的<b>顶部</b>，就从栈中弹出所有属于该边双连通分量的节点</p>
+    </section>
+</section>

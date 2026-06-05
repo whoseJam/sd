@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>草地排水</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2740"></problem>
+    <section>
+        <h2>草地排水</h2>
+        <p>在一片草地上有若干<b>排水沟</b>，每条排水沟单向连接两个地点，我们知道每个排水沟<b>每分钟排水的流量</b></p>
+        <p class="fragment">约定 $1$ 号地点是<b>水潭</b></p>
+        <p class="fragment">约定 $n$ 号地点是<b>小溪</b></p>
+        <p class="fragment">求从 $1$ 号地点到 $n$ 号地点的最大流量</p>
+    </section>
+    <section>
+        <h2>草地排水</h2>
+        <p class="quote">每分钟每单位的水流，能不能看作网络流图中的一流？</p>
+        <p class="fragment quote">在这个网络流图中，什么是边？边的容量是多少？</p>
+        <p class="fragment quote">在这个网络流图中，起点是谁？终点是谁？</p>
+    </section>
+    <section>
+        <h2>草地排水</h2>
+        <p>我们把排水沟看作边，排水沟的<b>每分钟排水流量</b>即为该边的容量</p>
+        <sd-animation src="./建图.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">跑一个从 $1$ 号地点（即水潭）到 $n$ 号地点（即小溪）的最大流即可</p>
+    </section>
+</section>

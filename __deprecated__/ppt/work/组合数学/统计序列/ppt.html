@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>统计序列</h1>
+    </section>
+    <problem data-problemset="codeforces" data-problemid="1312D"></problem>
+    <section>
+        <h2>统计序列</h2>
+        <p>生成一个长度为 $n$ 的数组 $\{a_i\}$，满足</p>
+        <ul>
+            <li class="fragment">$1\le a_i\le m$</li>
+            <li class="fragment">恰好有一对元素相等</li>
+            <li class="fragment">存在某个位置 $i$，在 $i$ 之前的序列严格单增，在 $i$ 之后的序列严格单减</li>
+        </ul>
+        <p class="fragment">求有多少种不同的数组</p>
+    </section>
+    <section>
+        <h2>统计序列</h2>
+        <p>首先从值域 $[1,m]$ 中选出 $n-1$ 个不同的值，等会再把这些值分配到数组的每个位置上<span class="fragment">，方案数为 $C_m^{n-1}$</span></p>
+        <p class="fragment">假设最大值位于 $i$ 这个位置上，那么它前面就有 $i-1$ 个位置要放数字，后面有 $n-i$ 个位置要放数字</p>
+        <p class="fragment quote">由于恰好相同的那对数字必然要放在不同侧，所以我们能扰动的其实只有前面 $i-2$ 个位置，后面 $n-i-1$ 个位置</p>
+        <ul>
+            <li class="fragment">前面相当于从 $n-2$ 个数中选取 $i-2$ 出来放置</li>
+            <li class="fragment">一旦前面放哪些数字确定后，后面放哪些数字也就随之确定了</li>
+            <li class="fragment">不过后面会出现某个数字和前面相同，有 $n-i$ 种不同的选择</li>
+        </ul>
+        <p class="fragment">
+            $$
+            answer=\sum_{i=2}^{n-1} C_m^{n-1}C_{n-2}^{i-2}(n-i)
+            $$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,51 @@
+<section>
+    <section>
+        <h1>树状数组3</h1>
+        <p>区间查询，区间修改——树状数组与差分数组</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3372"></problem>
+    <section>
+        <h2>树状数组3</h2>
+        <p>给定一个 $n$ 个元素的数组 $A_1,A_2...A_n$，你的任务是设计一种数据结构，支持以下两种操作</p>
+        <ul>
+            <li class="fragment"><code>Add(l, r, d)</code>：让 $A_l,A_{l+1}...A_r$ 的数值增加 $d$</li>
+            <li class="fragment"><code>Query(l, r)</code>：求 $A_l+A_{l+1}+...+A_r$ 的和</li>
+        </ul>
+        <p class="fragment">如何才能让 <code>Add</code> 和 <code>Query</code> 都快速完成呢？</p>
+    </section>
+    <section>
+        <h2>树状数组3</h2>
+        <p>仍然借助差分的思路</p>
+        <p>设 $D_i=A_i-A_{i-1}$，特别的，$D_1=A_1$</p>
+        <p class="fragment">
+            $$
+            S(n)=\sum_{1\le i\le n}A_i
+            $$
+        </p>
+        <p class="fragment">只要 $S(n)$ 可以维护，那么任意的区间和都能算</p>
+    </section>
+    <section>
+        <h2>树状数组3</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            S(n)&=\sum_{1\le i\le n}A_i \\
+            &=\sum_{1\le i\le n}\sum_{1\le j\le i}D_j \\
+            &=\sum_{1\le j\le n}D_j\sum_{j\le i\le n}1 \\
+            &=\sum_{1\le j\le n}D_j(n-j+1) \\
+            &=(n+1)\sum_{1\le j\le n}D_j-\sum_{1\le j\le n}jD_j
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>树状数组3</h2>
+        <p>
+            $$
+            S(n)=(n+1)\sum_{1\le j\le n}D_j-\sum_{1\le j\le n}jD_j
+            $$
+        </p>
+        <p class="fragment">所以我们只需要分别维护 $D_i$ 的前缀和，以及 $iD_i$ 的前缀和即可</p>
+        <p class="fragment">每次某个 $D_i$ 发生变化，也只会影响到单点，不会影响一整个区间</p>
+    </section>
+</section>

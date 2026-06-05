@@ -1,0 +1,69 @@
+<section>
+    <section>
+        <h1>最大或最小</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5797"></problem>
+    <section>
+        <h2>最大或最小</h2>
+        <p>给定一个环形排列的数组，每次操作可以将一个数变为它和相邻两个数中的<b>最小值</b>或<b>最大值</b></p>    
+        <p class="fragment">对于每个 $x\in [1,m]$，计算将所有数变为 $x$ 所需的最少操作次数</p>
+    </section>
+    <section>
+        <h2>最大或最小</h2>
+        <p>数字的具体大小不重要，重要的是与 $x$ 的关系</p>
+        <ul>
+            <li class="fragment">比 $x$ 更大（记为 $+$）</li>
+            <li class="fragment">比 $x$ 更小（记为 $-$）</li>
+            <li class="fragment">和 $x$ 相等（目标状态）</li>
+        </ul>
+        <sd-animation src="./符号表示动画.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment quote">问题转化为考虑每一条由 $o$ 隔开的链的答案</p>
+    </section>
+    <section>
+        <h2>最大或最小</h2>
+        <p class="quote">不妨从特殊的情况开始讨论</p>
+        <p class="fragment quote">假设一条链为 $o+++++o$</p>
+        <p class="fragment">直接逐个修改即可，假设有 $k$ 个 $+$，则需要操作 $k$ 次</p>
+        <sd-animation src="./单调序列动画.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+    </section>
+    <section>
+        <h2>最大或最小</h2>
+        <p>假设一条链为 $o+-+-+-+-+o$</p>
+        <p class="fragment">在相邻操作间插入额外步骤即可，假设长度为 $k$，则需要操作 $k+\lfloor\frac{k}{2}\rfloor$</p>
+        <sd-animation src="./交替序列动画.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+    </section>
+    <section>
+        <h2>最大或最小</h2>
+        <p>对于一般情况 $o+++----++--++++--+-+--o$</p>
+        <sd-animation src="./一般序列动画.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p class="fragment">答案就是
+            $$
+            \sum_{极长+-串}\lfloor\frac{len}{2}\rfloor+n
+            $$
+        </p>
+        <p class="fragment quote">那么在给定 $x$ 的情况下，我们就能 $O(n)$ 求解了</p>
+    </section>
+    <section>
+        <h2>最大或最小</h2>
+        <p>最初情况下，我们让所有元素都是 $+$</p>
+        <p class="fragment">当 $x$ 逐渐增大时...</p>
+        <ul>
+            <li class="fragment">让所有 $a_i=x$ 的 $i$ 的值被修改为 $o$</li>
+            <li class="fragment">让所有 $a_i=x-1$ 的 $i$ 的值被修改为 $-$</li>
+        </ul>
+        <p class="fragment">考虑用线段树维护这个过程</p>
+    </section>
+    <section>
+        <h2>最大或最小</h2>
+        <p>线段树上维护以下几个信息</p>
+        <ul>
+            <li class="fragment">极长 $+-$ 串的最长前缀长度</li>
+            <li class="fragment">极长 $+-$ 串的最长后缀长度</li>
+            <li class="fragment">所有极长 $+-$ 串的 $\lfloor\frac{len}{2}\rfloor$ 之和</li>
+        </ul>
+    </section>
+</section>

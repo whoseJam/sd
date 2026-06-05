@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>同余方程</h1>
+        <p>$ax\equiv b(mod\ m)$</p>
+    </section>
+    <section>
+        <h2>同余方程</h2>
+        <p>给定 $a,b,m$，让你求出最小的非负整数 $x$，满足
+            $$
+            ax\equiv b(mod\ m)
+            $$
+        </p>
+        <p class="fragment">
+            我们知道 $ax$ 和 $b$ 在模 $m$ 意义下同余的话，它们之间一定相差若干个 $m$，假设相差了 $k$ 个 $m$，则有
+            $$ax+mk=b$$
+        </p>
+        <p class="fragment">注意到只有 $x$ 和 $k$ 是未知数，其他都是已知量，并且 $k$ 具体是多少其实不重要，我们只关心 $x$ 这个未知数的最小非负整数解，所以只需要用Exgcd解一个二元一次不定方程就行了</p>
+    </section>
+</section>

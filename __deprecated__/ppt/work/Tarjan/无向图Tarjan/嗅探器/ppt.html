@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>嗅探器</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P5058"></problem>
+    <section>
+        <h2>嗅探器</h2>
+        <p>有一个信息网络，数据包通过网线流通</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>你需要放一个嗅探器，监听到所有从 $a\rightarrow b$ 的数据包，求哪些点可以放嗅探器（嗅探器不能放在 $a$ 点或者 $b$ 点上）</p>
+    </section>
+    <section>
+        <h2>嗅探器</h2>
+        <p>不妨以 $a$ 为根，把DFS树建出来，看看有哪些点是可以放嗅探器的...</p>
+        <div style="display: flex;">
+            <sd-animation src="./嗅探器.js"
+                style="width: 1000px; height: 400px;"></sd-animation>
+            <sd-animation src="./分析.js" class="fragment"
+                data-fragment-index="5"
+                style="width: 1000px; height: 400px;"></sd-animation>
+            <div style="width: 1000px;">
+                <ul>
+                    <li class="fragment" data-fragment-index="0">放嗅探器的位置一定是一个割点</li>
+                    <p class="fragment quote" data-fragment-index="1">割点一定能放嗅探器吗？</p>
+                    <li class="fragment" data-fragment-index="2">割点不一定能放嗅探器<span class="fragment" data-fragment-index="3">，因为割点不一定会割掉 $a\leftrightarrow b$ 之间的通路</span></li>
+                    <li class="fragment" data-fragment-index="4">嗅探器一定在 $a\leftrightarrow b$ 这条树链上</li>
+                    <li class="fragment" data-fragment-index="6">若 $low(u)\ge dfn(fa_u)$ 则 $fa_u$ 上可以放嗅探器</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</section>

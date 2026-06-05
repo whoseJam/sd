@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>抢掠计划</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3627"></problem>
+    <section>
+        <h2>抢掠计划</h2>
+        <p>从路口 $S$ 出发，求最多能抢劫多少钱</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="quote">一个地点被抢劫后，钱数就变成 $0$ 了，以后再经过该路口也不会有任何收益</p>
+    </section>
+    <section>
+        <h2>抢掠计划</h2>
+        <sd-animation src="../强连通分量概述/缩点.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>只要能到某个强连通分量，那么这个强连通分量里面的钱数肯定都能拿到，把它们缩点</p>
+        <p class="fragment">在缩点之后的DAG里面，定义路径的长度为路径上的点的点权之和，做一个最长路即可</p>
+    </section>
+</section>

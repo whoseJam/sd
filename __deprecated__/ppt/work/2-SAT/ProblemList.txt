@@ -1,0 +1,11 @@
+2-SAT：
+#1035.和平委员会：https://www.luogu.com.cn/problem/P5782
+#1146.满汉全席：https://www.luogu.com.cn/problem/P4171
+#64.Katu Puzzle：http://poj.org/problem?id=3678
+#1147.宇航员：https://www.luogu.com.cn/problem/UVA1391
+#63.婚礼：http://poj.org/problem?id=3648
+#66.开门：http://poj.org/problem?id=2723
+#764.Riddle：https://www.luogu.com.cn/problem/P6378
+
+课后练习：
+#62.熊猫的戏法：http://poj.org/problem?id=3207

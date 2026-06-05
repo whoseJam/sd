@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>能量采集</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P1447"></problem>
+    <section>
+        <h2>能量采集</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 380px;"></sd-animation>
+        <p>在一张 $n\times m$ 的网格图上，我们需要从 $(0,0)$ 向每个坐标 $(x,y)$ 引一条线段（其中 $1\le x\le n$，$1\le y\le m$）</p>
+        <p class="fragment">假设这条线段经过了 $k$ 个网格点（不算 $(0,0)$ 和 $(x,y)$），那么就会产生 $2k+1$ 的<b>能量损失</b></p>
+        <p class="fragment">现在给出 $n$ 和 $m$，你需要统计总的损失</p>
+    </section>
+    <section>
+        <h2>能量采集</h2>
+        <p class="quote">从 $(0,0)$ 到 $(x,y)$ 的射线总共会经过多少个网格点呢？</p>
+        <sd-animation src="./能量采集.js"
+            style="width: 1000px; height: 500px;"></sd-animation>
+    </section>
+    <section>
+        <h2>能量采集</h2>
+        <p>从 $(0,0)$ 到 $(x,y)$ 会经历 $gcd(x,y)+1$ 个网格点，去掉首尾两个，还剩下 $gcd(x,y)-1$ 个</p>
+        <p class="fragment math-fragment">那么本题实际上是在算
+            $$
+            \begin{aligned}
+            answer&=\sum_{x=1}^n\sum_{y=1}^m \{2[gcd(x,y)-1]+1\} \\
+            &=\sum_{x=1}^n\sum_{y=1}^m [2gcd(x,y)-1] \\
+            &=2\sum_{x=1}^n\sum_{y=1}^m gcd(x,y) - \sum_{x=1}^n\sum_{y=1}^m 1 \\
+            &=2\sum_{x=1}^n\sum_{y=1}^m gcd(x,y) - nm
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>能量采集</h2>
+        <p>给定 $n$ 和 $m$，欲求
+            $$
+            \sum_{x=1}^n\sum_{y=1}^m gcd(x,y)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>能量采集</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \sum_{x=1}^n\sum_{y=1}^mgcd(x,y)&=\sum_{x=1}^n\sum_{y=1}^m\sum_{d|gcd(x,y)}\varphi(d)\\
+            &=\sum_{d=1}^{min(n,m)}\varphi(d)\sum_{1\le x\le n\\ d|x}\sum_{1\le y\le m\\ d|y}1 \\
+            &=\sum_{d=1}^{min(n,m)}\varphi(d)\lfloor\frac n d \rfloor\lfloor\frac m d \rfloor
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

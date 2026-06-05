@@ -1,0 +1,94 @@
+<section>
+    <section>
+        <h1>有标号资源分配动态规划模型</h1>
+    </section>
+    <section>
+        <h2>有标号资源分配动态规划模型</h2>
+        <p>这一类动态规划要求我们对一类<b>有标号的资源</b>做分配</p>
+        <p class="fragment">一般资源的数量不会很大<span class="fragment">——在 $20$ 左右的量级</span><span class="fragment">，这使得我们可以用一个二进制数去描述每个资源的分配情况</span></p>
+        <sd-animation src="./二进制与分配情况.js" class="fragment"
+            max-frame="0"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <div class="fragment quote" style="display: flex;">
+            <div style="width: 1000px;">
+                <ul>
+                    <li>如何构造大小为 $n$ 的全集？</li>
+                    <li>如何从集合中删去一个元素？</li>
+                    <li>如何添加一个元素到集合中？</li>
+                    <li>如何检验某个元素是否存在？</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>构造大小为 $n$ 的全集</h2>
+        <sd-animation src="./status1.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">我们当然可以用一个循环来实现，不过有没有更简单的方案？<span class="fragment">能用一个表达式解决吗？</span></p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int All = (1 << n) - 1;
+            </script>
+        </codeblock>
+        <p class="fragment quote">其中 <code>a << b</code> 表示一次左移运算，它表示把 $a$ 的二进制表示向左移动 $b$ 位</p>
+        <p class="fragment quote">类似的，<code>a >> b</code> 表示一次右移运算，它表示把 $a$ 的二进制表示向右移动 $b$ 位</p>
+    </section>
+    <section>
+        <h2>从集合中删去一个元素</h2>
+        <sd-animation src="./status2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int remove(int S, int i) {
+                    return S & (~(1 << i - 1));
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">其中 <code>~a</code> 会把 $a$ 的每一个二进制位取反</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int remove(int S, int i) {
+                    return S ^ (1 << i - 1);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>向集合中添加一个元素</h2>
+        <sd-animation src="./status3.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int add(int S, int i) {
+                    return S | (1 << i - 1);
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int add(int S, int i) {
+                    return S ^ (1 << i - 1);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>检验一个元素是否存在</h2>
+        <sd-animation src="./status4.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool check(int S, int i) {
+                    return (S & (1 << i - 1)) != 0;
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool check(int S, int i) {
+                    return (S >> i - 1) & 1;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

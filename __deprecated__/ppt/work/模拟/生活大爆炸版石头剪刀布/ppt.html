@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>生活大爆炸版石头剪刀布</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1328"></problem>
+    <section>
+        <h2>生活大爆炸版石头剪刀布</h2>
+        <p>显然我们需要一个检验器，检查某次猜拳的输赢</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int check(int a, int b) {
+                    if (a == 1 && b == 1) return 平;
+                    if (a == 1 && b == 2) return 输;
+                    if (a == 1 && b == 3) return 赢;
+                    ...
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">可以想象，这里会写出 $5\times 5$ 个if语句</p>
+        <p class="fragment quote">超级多的if是模拟题经常看见的情况<span class="fragment">，我们需要一些代码上的手段来尽量避免大量if的使用</span></p>
+    </section>
+    <section>
+        <h2>生活大爆炸版石头剪刀布</h2>
+        <p>这里可以采用表格化if</p>
+        <codeblock>
+            <script type="text/template">
+                int winLoseTable[][] = {
+                    { 平, 输, 赢, 赢, 输 },
+                    { 输, 平, 输, 赢, 输 },
+                    { 赢, 输, 平, 输, 赢 },
+                    { 赢, 赢, 输, 平, 赢 },
+                    { 输, 输, 赢, 赢, 平 }
+                };
+                int check(int a, int b) {
+                    return winLoseTable[a - 1][b - 1];
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">问题本身的复杂性不会改变，只会转移</p>
+    </section>
+</section>

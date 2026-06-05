@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>最大获利</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P4174"></problem>
+    <section>
+        <h2>最大获利</h2>
+        <p>有 $n$ 个地址，在第 $i$ 个地址上建立中转站会花费 $P_i$</p>
+        <p class="fragment">有 $m$ 个用户群，第 $i$ 个用户群可以用一个三元组 $(A_i,B_i,C_i)$ 来表示：这些用户需要用到中转站 $A_i$ 和 $B_i$ 进行通讯，一旦用户群被满足，公司可以从该用户群上获取 $C_i$ 的收益</p>
+        <p class="fragment">请你决定如何建立中转站，可以让净收益最大
+            $$
+            净收益=从用户群获得的收益之和-投入成本之和
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>最大获利</h2>
+        <p>我们不妨假设所有用户群的收益最初都吃到了，而<b>建立中转站的成本</b>或者<b>因为没有建立中转站而失去的用户群收益</b>都可以当作亏损处理，因而我们只需要求出最小亏损即可</p>
+        <p class="fragment">容易发现上述两种损失是互斥的关系，考虑把这两种损失进行最小割建模</p>
+        <sd-animation src="./建图.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+    </section>
+</section>

@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>统计序列</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P8386"></problem>
+    <section>
+        <h2>统计序列</h2>
+        <p>给定 $n$ 和 $m$，求长度为 $n$ 的序列 $\{a_i\}$ 数目，满足</p>
+        <ol>
+            <li>$a_i\in [1,m]$</li>
+            <li>可以通过<b style="color: red;">删除操作</b>清空序列</li>
+        </ol>
+        <p class="fragment">其中<b style="color: red;">删除操作</b>定义为，选择两个相同元素，删除它们之间的所有元素（包括被选择的元素）</p>
+    </section>
+    <section>
+        <h2>统计序列</h2>
+        <p class="quote">在序列给定的情况下，应该如何判断该序列能否被清空呢？</p>
+        <p class="fragment">可以考虑用动态规划进行判断，设 $f_i$ 表示能否将序列的前 $i$ 项清空</p>
+        <sd-animation src="./前置问题状态定义.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f_i=\mathop{|}\limits_{j\lt i}f_{j-1}\land [a_j=a_i]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>统计序列</h2>
+        <sd-animation src="./构造过程.js"
+            viewbox="-10 0 620 40"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>当我们构造一个序列的时候，我们不断向序列的末尾添加数字，并且当前的 $f$ 数组也会随之浮现</p>
+        <p class="fragment quote">能否在这个合法性动态规划的基础上，套一个用于计数的动态规划？</p>
+    </section>
+    <section>
+        <h2>统计序列</h2>
+        <sd-animation src="./状态定义.js" 
+            style="width: 1000px; height: 100px;"></sd-animation>
+        <ul>
+            <li class="fragment">设 $g_{i,j}$ 表示构造到序列的第 $i$ 位，前面有 $j$ 种数字的 $f=1$，并且当前构造的序列不合法的方案数</li>
+            <li class="fragment">设 $h_{i,j}$ 表示构造到序列的第 $i$ 位，前面有 $j$ 种数字的 $f=1$，并且当前构造的序列合法的方案数</li>
+        </ul>
+        <p class="fragment math-fragment">
+            $$
+            \begin{cases}
+            g_{i-1,j}\times j\rightarrow h_{i,j} \\
+            h_{i-1,j}\times j\rightarrow h_{i,j} \\
+            g_{i-1,j}\times (m-j) \rightarrow g_{i,j} \\
+            h_{i-1,j}\times (m-j+1)\rightarrow g_{i,j}
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

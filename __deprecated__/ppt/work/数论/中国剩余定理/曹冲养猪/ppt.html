@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>曹冲养猪</h1>
+    </section>
+    <section data-background-iframe="http://43.143.204.105/problem/238" data-background-interactive>
+    </section>
+    <section>
+        <h2>曹冲养猪</h2>
+        <p>如果建立 $a_i$ 个猪圈，还有 $b_i$ 头猪没有去，假设总共有 $x$ 头猪，则有：</p>
+        <p class="fragment">$$x\equiv b_i(mod\ a_i)$$</p>
+        <p class="fragment">所以我们列出这么一个同余方程组：
+            $$
+            \left\{
+            \begin{aligned}
+            &x\equiv b_1(mod\ a_1) \\
+            &x\equiv b_2(mod\ a_2) \\
+            &...... \\
+            &x\equiv b_n(mod\ a_n)
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <p class="fragment">由于题目保证了 $a_1,a_2...a_n$ 两两互质，所以我们可以直接套用中国剩余定理，当然要用Exgcd硬解也没问题</p>
+    </section>
+</section>

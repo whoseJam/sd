@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>清理</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2943"></problem>
+    <section>
+        <h2>清理</h2>
+        <p>把一个数列划分成若干段，每一段的价值为<b style="color: purple;">这段区间中不同元素的数量的平方</b>，数列总价值为各段价值之和</p>
+        <p class="fragment">你需要找到一种划分，使得数列的总价值尽可能小</p>
+        <p class="fragment quote">数列划分，最小化总价值，想到什么动态规划模型？</p>
+        <p class="fragment">一个非常经典的子序列动态规划模型</p>
+        <sd-animation src="./状态转移.js" class="fragment"
+            style="width: 1000px; height: 200px"></sd-animation>
+        <p class="fragment">设 $f_i$ 表示对前 $i$ 个元素做划分，最后一个划分区间的结尾在 $i$ 这个位置上，最小的划分价值可以是多少<span class="fragment">，$V_{l,r}$ 表示 $[l,r]$ 内不同元素的数量</span></p>
+        <p class="fragment">
+            $$
+            f_i=\mathop{min}\limits_{j\lt i}\{f_j+V_{j+1,i}^2\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>清理</h2>
+        <p>容易发现这个题中 $\{f_i\}$ 有一个取值上限，显然 $f_i\le n$</p>
+        <p>
+            $$
+            f_i=\mathop{min}\limits_{j\lt i}\{f_j+V_{j+1,i}^2\}
+            $$
+        </p>
+        <p class="fragment">观察到在转移的过程中，如果 $V_{j+1,i}^2$ 比 $\sqrt n$ 更大了，其实就没有必要做转移了<span class="fragment">，我们的优化也从这个观察入手</span></p>
+        <sd-animation src="./优化.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">用 $\sqrt n$ 个桶，分别维护前面 $\sqrt n$ 种价值转移即可，时间复杂度 $O(n\sqrt n)$</p>
+    </section>
+</section>

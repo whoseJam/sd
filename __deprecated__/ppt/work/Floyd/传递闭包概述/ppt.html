@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>传递闭包</h1>
+        <p>Floyd的小应用，从代码实现上来看，是对Floyd的一次降级</p>
+    </section>
+    <section>
+        <h2>传递闭包</h2>
+        <p>给出一张 $n$ 个点 $m$ 条有向边的图</p>
+        <p class="fragment">你需要求出图中任意两个节点之间是否存在<b style="color: red;">可达关系</b><span class="fragment">（这里的可达关系既可以是直接可达，也可以是经过某些中间节点可达）</span></p>
+        <div style="display: flex;">
+            <sd-animation src="./传递闭包.html" class="fragment"
+                style="width: 1000px; height: 200px;"></sd-animation>
+            <div style="width: 800px;">
+                <ul>
+                    <li class="fragment">$1$ 的传递闭包为 $\{1,2,4,5\}$</li>
+                    <li class="fragment">$2$ 的传递闭包为 $\{2,4,5\}$</li>
+                    <li class="fragment">$3$ 的传递闭包为 $\{2,3,4,5,6\}$</li>
+                    <li class="fragment">$4$ 的传递闭包为 $\{2,3,4,5\}$</li>
+                </ul>
+            </div>   
+        </div>
+        <p class="fragment">设 $f_{i,j}$ 表示 $i$ 能否直接或间接走到 $j$，$f_{i,j}\in \{0,1\}$</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int k = 1; k <= n; k++)
+                    for (int i = 1; i <= n; i++)
+                        for (int j = 1; j <= n; j++)
+                            f[i][j] = f[i][j] | (f[i][k] & f[k][j]);
+            </script>
+        </codeblock>
+        <p class="fragment quote">如果 $i$ 能通过中间点 $k$ 抵达 $j$，那么必须要 $i$ 能抵达 $k$ <b style="color: red;">且</b> $k$ 能抵达 $j$</p>        
+    </section>
+</section>

@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>树上查询</h1>
+        <p>NOIP 2024 T4</p>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P11364"></problem>
+    <section>
+        <h2>树上查询</h2>
+        <div style="display: flex;">
+            <sd-animation src="./样例解释.js"
+                style="width: 1000px; height: 400px;"></sd-animation>
+            <div>
+                <p>定义 $LCA^*(l,r)$ 为编号在 $[l,r]$ 中所有节点的最近公共祖先</p>
+                <p class="fragment">给出 $q$ 次询问，每次询问给定 $[l,r]$ 和 $k$，输出
+                    $$
+                    \mathop{max}_\limits{l\le l'\le r'\le r\\ r'-l'+1\ge k}\{dep_{LCA^*(l',r')}\}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>树上查询</h2>
+        <p>
+            $$
+            \mathop{max}_\limits{l\le l'\le r'\le r\\ r'-l'+1\ge k}\{dep_{LCA^*(l',r')}\} \\
+            \mathop{max}_\limits{\begin{aligned}&u \\ 存在某个合法的[l',r']&，满足 LCA^*(l',r')=u\end{aligned} }\{dep_u\}
+            $$
+        </p>
+        <p>我们考虑统计每个节点 $u$ 是哪些区间的 $LCA^*$，然后把这些区间丢到一个表格里面去</p>
+        <div style="display: flex; align-items: center;">
+            <sd-animation src="./LCA贡献.js"
+                style="width: 1000px; height: 250px;"></sd-animation>
+            <div style="margin-left: 10px;">
+                <p class="fragment">只要这个表格能被快速填充出来，问题可以转化为询问表格中某个区域的深度最大值</p>
+                <p class="fragment">肯定不能依次枚举 $[L,R]$，算它的 $LCA^*$，然后填表</p>
+                <p class="fragment">如果 $u$ 想成为某个区间 $[L,R]$ 的 $LCA^*$，那么 $[L,R]$ 一定完全是落在 $u$ 的子树内的...</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>树上查询</h2>
+        <p>本质不同的 $LCA$ 贡献段只有 $O(n)$ 个</p>
+        <p>假设一个节点 $u$ 的子树内有 $[a,b]$ 范围内所有元素，且另一棵子树内有 $[c,d]$ 范围内的所有元素，<b>且 $b+1=c$</b>，那么所有 $l\in [a,b],r\in [c,d]$ 的区间的 $LCA^*$ 都应该是 $u$</p>
+        <sd-animation src="./线段树合并.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <p class="fragment">我们可以用线段树合并全部预处理出来</p>
+    </section>
+    <section>
+        <h2>树上查询</h2>
+        <p>现在问题转化为，在一个平面上有很多权值不一的矩形</p>
+        <sd-animation src="./偏序问题.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">我们需要查询一些斜线区域的最大权值</p>
+        <p class="fragment">用扫描线扫一扫即可</p>
+    </section>
+</section>

@@ -1,0 +1,37 @@
+<section>
+    <section>
+        <h1>分特产</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P5505"></problem>
+    <section>
+        <h2>分特产</h2>
+        <p>对于 $30\%$ 的数据，$n=2$</p>
+        <p class="fragment">这部分得分是特地为正解做提示的</p>
+        <p class="fragment">考虑只有两个人的时候怎么分特产，显然直接求方案不好求，但问题的反面则很简单</p>
+        <ul>
+            <li class="fragment">随便分特产的总方案数：$\prod_{i}(a_i+1)$</li>
+            <li class="fragment">存在某个人一个特产都没拿到的方案数：$1+1$</li>
+        </ul>
+        <p class="fragment">答案即为：
+            $$
+            \prod_{i}(a_i+1)-2
+            $$
+        </p>
+        <p class="fragment quote">这部分得分就是在提示你用容斥原理做这个题</p>
+    </section>
+    <section>
+        <h2>分特产</h2>
+        <p>问题的正面是所有人都分得特产的方案数，问题的反面是至少存在一个人拿不到特产的方案数</p>
+        <sd-animation src="./维恩图.js"
+            style="width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">把 $m$ 个特产分给 $n$ 个人的方案数为 $C_{m+(n-1)}^{n-1}$</p>
+        <ul style="font-size: 20px;">
+            <li class="fragment">至少 $1$ 个人拿不到特产的方案数：<span class="fragment">$C_n^1\prod_iC_{a_i+((n-1)-1)}^{(n-1)-1}$</span></li>
+            <li class="fragment">至少 $2$ 个人拿不到特产的方案数：<span class="fragment">$C_n^2\prod_iC_{a_i+((n-2)-1)}^{(n-2)-1}$</span></li>
+            <li class="fragment">...</li>
+            <li class="fragment">至少 $k$ 个人拿不到特产的方案数：<span class="fragment">$C_n^k\prod_iC_{a_i+((n-k)-1)}^{(n-k)-1}$</span></li>
+        </ul>
+        <p class="fragment">这里显然是第二类容斥，所以容斥系数就配奇加偶减，即可算出不合法的方案</p>
+        <p class="fragment">为了求出合法的方案，运用第一类容斥原理，用总方案减去不合法的方案</p>
+    </section>
+</section>

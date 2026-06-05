@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>农场派对</h1>
+        <p>有向图中，$u\rightarrow v$ 的最短路一定等于 $v\rightarrow u$ 的最短路吗</p>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1821"></problem>
+    <section>
+        <h2>农场派对</h2>
+        <p>本题要我们求的东西比较简单，给定一个带非负权有向图，对于任意一个点 $u$ 来说，你需要求得 $dis(X\rightarrow u) + dis(u\rightarrow X)$，$X$ 为给定的一个常数</p>
+        <p>其中，$dis(i\rightarrow j)$ 表示 $i\rightarrow j$ 的最短路长度</p>
+        <p class="fragment quote">回到开头的那个问题，有向图中，$u\rightarrow v$ 的最短路一定等于 $v\rightarrow u$ 的最短路吗？</p>
+    </section>
+    <section>
+        <h2>农场派对</h2>
+        <p>$$dis(X\rightarrow u) + dis(u\rightarrow X)$$</p>
+        <p class="fragment">首先以 $X$ 为源点，跑一个Dijkstra，就能求出任意 $u$ 的 $dis(X\rightarrow u)$</p>
+        <p class="fragment">$dis(u\rightarrow X)$ 看上去比较难求，我们无法对每个点 $u$ 以其为源点跑一个Dijkstra来求 $dis(u\rightarrow X)$，时间复杂度不可接受</p>
+        <p class="fragment">我们对原图建立其对应的反图，在反图上以 $X$ 为源点，跑一个Dijkstra，就能求出任意 $u$ 的 $dis(u\rightarrow X)$ 了</p>
+    </section>
+</section>

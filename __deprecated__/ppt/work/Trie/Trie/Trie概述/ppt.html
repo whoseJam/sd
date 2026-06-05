@@ -1,0 +1,104 @@
+<section>
+    <section>
+        <h1>trie</h1>
+    </section>
+    <section>
+        <h2>用户存储和查找</h2>
+        <p>假设你在写一个 PVP 联机小游戏，现在有 $n$ 个用户，每个用户有自己的用户名（假设用户名最长长度为 $m$，且用户名全部由大写字母构成），还有一些其他基础信息（像是生命值，战斗力等等属性）</p>
+        <p class="fragment">我们可以把用户抽象为一个二元组：$(name,I)$，其中 $I$ 包含了用户各种各样的基础信息</p>
+        <p class="fragment">我们现在会多次根据用户名，查找到对应用户，然后修改用户的某项信息</p>
+        <ul class="fragment">
+            <li>用户 <code>ZCCCC</code>，生命值 <code>+5</code></li>
+            <li>用户 <code>RRRRR</code>，战斗力 <code>-8</code></li>
+            <li>......</li>
+        </ul>
+        <p class="fragment">你会如何处理这个场景？</p>
+    </section>
+    <section>
+        <h2>用户存储和查找</h2>
+    </section>
+    <section>
+        <h2>用户存储和查找</h2>
+        <p>用一个数组来存放用户的话，单次查找的时间复杂度为 $O(nm)$，空间复杂度也为 $O(nm)$</p>
+        <div style="display: flex;">
+            <div>
+                <ul>
+                    <li class="fragment" data-fragment-index="0">用一棵 $26$ 叉树来存储这 $n$ 个用户的用户名</li>
+                    <li class="fragment">树上的每一个边上存放一个字符，一个节点代表一个字符串</li>
+                    <li class="fragment">用户信息 $I$ 就挂载到路径的终点上去</li>
+                </ul>
+                <p class="fragment">容易发现这么做有以下几点好处</p>
+                <ol>
+                    <li class="fragment">查询一个用户的信息的时间复杂度为 $O(m)$，$m$ 为用户名长度</li>
+                    <li class="fragment">插入一个用户的信息的时间复杂度好像也是 $O(m)$</li>
+                    <li class="fragment">当字符串的公共前缀比较多时，在一定程度上压缩了空间</li>
+                </ol>
+                <p class="fragment">右图这玩意就叫做<ruby>字典树<rt>trie</rt></ruby></p>
+            </div>
+            <sd-animation src="./用户存储和查找.js" class="fragment" data-fragment-index="0"
+                style="width: 500px; height: 500px;"></sd-animation>
+        </div>
+    </section>
+    <section>
+        <h2>代码实现</h2>
+        <p>首先定义一下数据结构，我们先假设所有字符串都是由大写字母构成，那么字符集大小就是 $26$，我们所需要的就是一棵 $26$ 叉树，所以做如下定义</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int ch[N][26];
+            </script>
+        </codeblock>
+        <p class="fragment">我们把一个用户名对应的那个节点叫做<b>终止节点</b>，没有任何用户名与之对应的节点叫做<b>非终止节点</b></p>
+        <p class="fragment">为了对终止节点和非终止节点加以区分，我们再定义一个标记数组来做这个标记</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int flg[N];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>插入操作</h2>
+        <div style="display: flex;">
+            <div style="width: 650px;">
+                <p>顺次遍历字符串中的每一个字符并插入</p>
+                <ul class="fragment">
+                    <li>如果 $u$ <b>没有</b> $c$ 号儿子，则新建一个节点作为 $c$ 号儿子</li>
+                    <li>如果 $u$ <b>已有</b> $c$ 号儿子，则直接走上去</li>
+                </ul>
+                <codeblock class="fragment" style="min-width: 400px;">
+                    <script type="text/template">
+                        void insert(const string& s) {
+                            int u = 1;
+                            for (int i = 0, dir; i < s.length(); i++) {
+                                dir = s[i] - 'A';
+                                if (!ch[u][dir])
+                                    ch[u][dir] = ++tot;
+                                u = ch[u][dir];
+                            }
+                            flg[u] = 1;
+                        }
+                    </script>
+                </codeblock>
+            </div>
+            <sd-animation src="./插入操作.js"
+                style="width: 300px; height: 500px;"></sd-animation>
+        </div>
+    </section>
+    <section>
+        <h2>查询操作</h2>
+        <p>查询操作和插入操作差不多</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int query(const string& s) {
+                    int u = 1;
+                    for (int i = 0, dir; i < s.length(); i++) {
+                        dir = s[i] - 'A';
+                        if (!ch[u][dir])
+                            return 0;
+                        u = ch[u][dir];
+                    }
+                    return u;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

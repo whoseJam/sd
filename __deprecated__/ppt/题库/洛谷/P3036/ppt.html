@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>镜子</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P3036"></problem>
+    <section>
+        <h2>镜子</h2>
+        <p>某一个二维平面上有 $n$ 个透明柱，现在有一束激光从 $(x_L,y_L)$ 出发，要去 $(x_B,y_B)$</p>
+        <p>你可以透明柱上在安装斜 $45°$ 的镜子，引导激光到达目标地点（当然，不安装镜子也是可以的，此时激光会直接穿过该透明柱）</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p class="fragment">你可以任意指定激光的发射方向，求最少要安装多少个镜子，才能让激光到达目标地点</p>
+    </section>
+    <section>
+        <h2>镜子</h2>
+        <p>不难想到当激光转弯的时候，想办法建立一条边权为 $1$ 的边，然后从起点到终点跑最短路</p>
+        <sd-animation src="./大量连边.js"
+            style="width: 1000px; height: 350px;"></sd-animation>
+        <p class="fragment">但是怎么设计这条边的连法呢？它两端的端点是什么？</p>
+    </section>
+    <section>
+        <h2>镜子</h2>
+        <div style="display: flex;">
+            <sd-animation src="./结构.js"
+                style="width: 1000px; height: 300px;"></sd-animation>
+            <sd-animation src="./建图.js" class="fragment"
+                style="width: 1000px; height: 350px;"></sd-animation>
+        </div>
+        <p>如图所示为每一个透明柱建立连边结构，虚线边权设为 $0$，实线边权设为 $1$，表示一旦发生转向，则必须让镜子的使用数量增加</p>
+    </section>
+</section>

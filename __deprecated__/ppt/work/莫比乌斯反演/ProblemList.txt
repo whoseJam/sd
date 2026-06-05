@@ -1,0 +1,7 @@
+#589.Longge的问题：https://www.luogu.com.cn/problem/P2303
+#576.能量采集：https://www.luogu.com.cn/problem/P1447
+#575.ZAP：https://www.luogu.com.cn/problem/P3455
+#484.仪仗队：https://www.luogu.com.cn/problem/P2158
+#574.YY的GCD：https://www.luogu.com.cn/problem/P2257
+#418.约数个数和：https://www.luogu.com.cn/problem/P3327
+#630.Crash的数字表格：https://www.luogu.com.cn/problem/P1829

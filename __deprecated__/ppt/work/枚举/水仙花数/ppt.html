@@ -1,0 +1,63 @@
+<section>
+    <section>
+        <h1>水仙花数</h1>
+    </section>
+    <!-- <problem data-source="https://www.luogu.com.cn/problem/U501166"></problem> -->
+    <section>
+        <h2>水仙花数</h2>
+        <p>求所有的三位数 $\overline{abc}$，满足
+            $$
+            a^3+b^3+c^3=\overline{abc}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>水仙花数</h2>
+        <p>不难想到可以以 $[100,999]$ 为样本空间，去逐个对这些数字进行检查...</p>
+        <sd-animation src="./样本空间1.js" class="fragment"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int abc = 100; abc <= 999; abc++)
+                    if (check(abc)) 找到了一个水仙花数;
+            </script>
+        </codeblock>
+        <p class="fragment">这就意味着在代码实现的时候，需要对一个三位数提取其个位、十位和百位，感觉略显麻烦...</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool check(int abc) {
+                    int a = abc 的百位;
+                    int b = abc 的十位;
+                    int c = abc 的个位;
+                    return abc == a * a * a + b * b * b + c * c * c;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>水仙花数</h2>
+        <p>我们可以选一种等价的样本空间，一个<ruby style="color: orange;">三位数<rt>$\overline {abc}$</rt></ruby>由<ruby style="color: green;">个位<rt>c</rt></ruby>、<ruby style="color: teal;">十位<rt>b</rt></ruby>和<ruby style="color: red;">百位<rt>a</rt></ruby>构成<span class="fragment">，那么把个位、十位和百位各自的样本空间组合起来，即可得到整个三位数对应的样本空间...</span></p>
+        <sd-animation src="./样本空间2.js" class="fragment"
+            style="width: 1000px; height: 250px"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int a = 1; a <= 9; a++)
+                    for (int b = 0; b <= 9; b++)
+                        for (int c = 0; c <= 9; c++)
+                            if (check(a, b, c)) 找到了一个水仙花数;
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool check(int a, int b, int c) {
+                    int abc = 100 * a + 10 * b + c;
+                    return a * a * a + b * b * b + c * c * c == abc;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>水仙花数</h2>
+        <p>我们可以把两个样本空间嵌套起来，也可以把一个样本空间拆为两个更小的样本空间<span class="fragment">——这样做可能会带来一些好处，也有可能什么也不会发生</span></p>
+    </section>
+</section>

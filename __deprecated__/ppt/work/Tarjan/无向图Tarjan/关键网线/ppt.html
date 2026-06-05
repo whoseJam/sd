@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>关键网线</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P7687"></problem>
+    <section>
+        <h2>关键网线</h2>
+        <div style="display: flex;">
+            <sd-animation src="./样例解释.js"
+                style="width: 1000px; height: 500px;"></sd-animation>
+            <div>
+                <p>有一个网络，某些节点提供 <b style="color: teal;">$A$ 类服务</b>，某些节点提供 <b style="color: red;">$B$ 类服务</b></p>
+                <p class="fragment">如果一条网线断开，会导致某些节点无法获取 $A$ 类服务或者 $B$ 类服务，则该网线为关键网线</p>
+                <p class="fragment">求出所有的关键网线</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>关键网线</h2>
+        <div style="display: flex;">
+            <sd-animation src="./关键网线.js"
+                style="width: 1000px; height: 500px"></sd-animation>
+            <sd-animation src="./分析.js" class="fragment"
+                data-fragment-index="2"
+                style="width: 1000px; height: 500px;"></sd-animation>
+            <div style="width: 1000px;">
+                <p>关键网线显然必须是割边，但割边不一定是关键网线</p>
+                <p class="fragment" data-fragment-index="0">一条割边会把图切割为两个连通块，需要快速检验两个连通块内是否同时拥有两种服务</p>
+                <p class="fragment" data-fragment-index="1">在DFS树上，统计子树内的 $A$ 类服务数量 $N_A(u)$、$B$ 类服务数量 $N_B(u)$</p>
+                <p class="fragment">子树内是否拥有两种服务？<span class="fragment">——$N_A(u)\gt 0$ 且 $N_B(u)\gt 0$</span></p>
+                <p class="fragment">子树外是否拥有两种服务？<span class="fragment">——$N_A(r)-N_A(u)\gt 0$ 且 $N_B(r)-N_B(u)\gt 0$</span></p>
+            </div>
+        </div>
+    </section>
+</section>

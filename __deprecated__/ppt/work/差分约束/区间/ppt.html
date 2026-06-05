@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>区间</h1>
+        <p>试一试找出约束条件</p>
+    </section>
+    <problem data-source="https://www.acwing.com/problem/content/description/364/"></problem>
+    <section>
+        <h2>区间</h2>
+        <p>设 $sum(x)$ 表示 $[1,x]$ 这个区间里面的，属于 $Z$ 集合的整数个数</p>
+        <p class="fragment">如果题目要求 $[a_i,b_i]$ 这个区间里面的属于 $Z$ 集合的整数个数不小于 $c_i$ 个，则有：</p>
+        <p class="fragment">
+            $$
+            sum(b_i)-sum(a_i-1)\ge c_i \\
+            sum(b_i)\ge sum(a_i-1)+c_i
+            $$
+        </p>
+        <p class="fragment">又因为元素存在于整点上，每个整点要么属于 $Z$，要么不属于 $Z$，所以：</p>
+        <p class="fragment">
+            $$
+            sum(i)\le sum(i+1)\\
+            sum(i)+1\ge sum(i+1)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>区间</h2>
+        <p>又由于题目希望求 $Z$ 集合中元素的最小值，即希望 $sum(n)$ 尽可能小，所以我们把条件写为最长路的松弛形式：</p>
+        <p class="fragment">
+            $$
+            \left\{
+            \begin{aligned}
+            sum(b_i)&\ge sum(a_i-1)+c_i\\
+            sum(j+1)&\ge sum(j)+0\\
+            sum(j)&\ge sum(j+1)-1
+            \end{aligned}
+            \right.
+            $$
+        </p>
+        <p class="fragment">然后就结束了</p>
+    </section>
+</section>

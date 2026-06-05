@@ -1,0 +1,74 @@
+<section>
+    <section>
+        <h1>树上启发式合并</h1>
+        <p>又叫DSU on Tree</p>
+    </section>
+    <section>
+        <h2>树上启发式合并</h2>
+        <p>树上启发式合并是一种思想，而不是某种具体的数据结构</p>
+        <p class="fragment">有一棵 $n$ 个节点的树，我们需要统计其上<b>每个点</b>的某种<b>子树信息</b></p>
+        <p class="fragment">如果这种子树信息需要用到<b>某个数据结构</b>去统计，且<b>插入信息</b>和<b>删除信息</b>的时间复杂度为 $O(K)$......</p>
+        <sd-animation src="./暴力统计子树.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">这么做时间复杂度显然是 $O(n^2K)$</p>
+    </section>
+    <section>
+        <h2>树上启发式合并</h2>
+        <p>我们在暴力统计子树信息的时候，存在大量的<b>信息浪费和重复统计</b></p>
+        <sd-animation src="./信息浪费和重复统计.js"
+            style="width: 1000px; height: 400px;"></sd-animation>
+        <ul>
+            <li class="fragment">
+                用暴力算法，先算 $1$ 的答案，再算 $2$ 的答案
+                <span class="fragment">：涉及 $12+7$ 次插入，$12+7$ 次删除</span>
+            </li>
+            <li class="fragment">
+                先算 $2$ 的答案，再算 $1$ 的答案
+                <span class="fragment">：涉及 $7+5$ 次插入，$0$ 次删除</span>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>树上启发式合并</h2>
+        <p>把 $u$ 的子节点划分为<b>一个重儿子</b>和<b>一堆轻儿子</b></p>
+        <sd-animation src="./树上启发式合并.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">定义 $DSU(u)$ 函数可以完成 $u$ 子树内每个节点的答案统计，并将每个节点的信息插入到数据结构中<span class="fragment">，考虑如何实现 $DSU(u)$</span></p>
+        <ul>
+            <li class="fragment">
+                使用 $DSU(v)$ 统计轻儿子 $v$ 的答案
+                <span class="fragment">（开始统计下一个轻儿子前，必须<b>暴力删除</b>前一个轻儿子的信息）</span>
+            </li>
+            <li class="fragment">使用 $DSU(s)$ 统计重儿子 $s$ 的答案</li>
+            <li class="fragment">
+                统计 $u$ 的答案
+                <span class="fragment">（需要把轻儿子的信息<b>暴力加回来</b>）</span>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>树上启发式合并</h2>
+        <codeblock>
+            <script type="text/template">
+                void DSU(int u, int f) {
+                    for (int i = h[u], v; i; i = l[i].Nxt) {
+                        v = l[i].to;
+                        if (v != f && v != son[u]) {
+                            DSU(v, u);    // 统计轻儿子的答案
+                            Remove(v, u); // 删除轻儿子内的所有信息
+                        }
+                    }
+                    if (son[u]) DSU(son[u], u);
+                    for (int i = h[u], v; i; i = l[i].Nxt) {
+                        v = l[i].to;
+                        if (v != f && v != son[u]) {
+                            Add(v, u);   // 添加轻儿子的所有信息
+                        }
+                    }
+                    ...... // 添加 u 的信息
+                    ...... // 统计 u 上的答案
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

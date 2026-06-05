@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>$n$ 次剩余</h1>
+    </section>
+    <section>
+        <h2>$n$ 次剩余</h2>
+        <p>给定 $a,b,p$，求解有哪些 $n$ 使得下式成立：
+            $$
+            a^n\equiv b (mod\ p)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>$n$ 次剩余</h2>
+        <p>对于 $a^n\equiv b (mod\ p)$ 这个方程，我们有两种情况：</p>
+        <ul>
+            <li class="fragment">$gcd(a,p)=1$，这是大部分情况，此时可以使用BSGS求解</li>
+            <li class="fragment">$gcd(a,p)\ne 1$，这是少数情况，此时可以用拓展BSGS求解</li>
+        </ul>
+    </section>
+</section>

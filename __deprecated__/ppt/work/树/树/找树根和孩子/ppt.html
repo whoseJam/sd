@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>找树根和孩子</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/T306565"></problem>
+    <section>
+        <h2>找树根和孩子</h2>
+        <codeblock>
+            <script type="text/template">
+                cin >> n;
+                for (int i = 1, x, y; i < n; i++) {
+                    cin >> x >> y;
+                    fa[y] = x;
+                    num[x]++;
+                }
+                for (int i = 1; i <= n; i++) {
+                    if (fa[i] == 0) root = i;
+                    if (num[i] > num[maxx]) maxx = i;
+                }
+                cout << root << '\n';
+                cout << maxx << '\n';
+                for (int i = 1; i <= n; i++)
+                    if (fa[i] == maxx) cout << i << ' ';
+            </script>
+        </codeblock>
+    </section>
+</section>

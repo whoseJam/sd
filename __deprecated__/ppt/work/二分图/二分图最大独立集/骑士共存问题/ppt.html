@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>骑士共存问题</h1>
+    </section>
+    <problem data-src="http://43.143.204.105/problem/309"></problem>
+    <section>
+        <h2>骑士共存问题</h2>
+        <p>给出一个网格棋盘，棋盘上有些位置是障碍物，不能放棋子</p>
+        <p class="fragment">你需要放尽可能多的<b>骑士</b>到棋盘上去，并且要求任意一对骑士不能相互攻击</p>
+        <p class="fragment quote">骑士的攻击范围就和象棋中的马一样</p>
+    </section>
+    <section>
+        <h2>骑士共存问题</h2>
+        <div class="quote">
+            二分图处理棋盘问题的一个常见技巧，就是对棋盘进行01染色：
+            <sd-animation src="./01染色.js"
+                style="width: 800px; height: 200px;"></sd-animation>
+        </div>
+        <p class="fragment">我们会发现，黑点骑士一定只能攻击到白点骑士；白点骑士也一定只能攻击到黑点骑士</p>
+        <p class="fragment quote">我能不能把攻击关系看作边？</p>
+    </section>
+    <section>
+        <h2>骑士共存问题</h2>
+        <p>我们把网格上的点01染色后，把它们看作二分图两侧的点</p>
+        <p class="fragment">把攻击关系看作边</p>
+        <p class="fragment">对于每一条攻击关系来说，它一侧为黑点，另一侧为白点，并且<b>这两个点上不能同时放骑士</b></p>
+        <p class="fragment">发现我们想要尽可能多的放骑士，就是在求该二分图的最大独立集</p>
+    </section>
+</section>

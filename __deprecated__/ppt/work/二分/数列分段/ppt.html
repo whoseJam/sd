@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>数列分段</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P1182"></problem>
+    <section>
+        <h2>数列分段</h2>
+        <p>你需要把一个数列分成 $m$ 段，要求每段连续，且最小化每段和的最大值</p>
+        <div>
+            <sd-animation src="./样例解释.js"
+                style="width: 1000px; height: 200px;"></sd-animation>
+            <p style="text-align: center; font-size: 20px; margin-top: -10px;">$m=7$</p>
+        </div>
+        
+        <p class="fragment quote">又是一个最值的最优化问题，考虑固定最值，把它转化为一个判定性问题</p>
+    </section>
+    <section>
+        <h2>数列分段</h2>
+        <p>固定每段和的最大值 $mx$...</p>
+        <sd-animation src="./数列分段.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <sd-animation src="./序列特征.js" class="fragment"
+            style="width: 1000px; height: 200px;"></sd-animation>
+    </section>
+</section>

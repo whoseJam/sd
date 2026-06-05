@@ -1,0 +1,125 @@
+<section>
+    <section>
+        <h1>人员调度</h1>
+    </section>
+    <problem data-source="https://www.luogu.com.cn/problem/P9168"></problem>
+    <section>
+        <h2>人员调度</h2>
+        <p>一个公司的组织结构是树形的</p>
+        <p class="fragment">有 $k$ 个初始优秀员工，散布在树上（可能有多个优秀员工在同一个节点上），第 $i$ 个优秀员工有一个能力值 $v_i$</p>
+        <p class="fragment">公司希望进行人员调动，在调度时，一个优秀员工可以去往子树内的任意一个节点（包括原地不动）<span class="fragment">，调度后的公司效益等于</span></p>
+        <p class="fragment">
+            $$\sum_{1\le u\le n}u点上所有员工的能力最大值$$
+        </p>
+        <div style="display: flex;">
+            <sd-animation src="./样例解释.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
+            <div>
+                <p class="fragment">支持两类事件</p>
+                <ul class="fragment">
+                    <li>1 x v：在节点 $x$ 上新增一个能力值为 $v$ 优秀员工</li>
+                    <li>2 id：辞退某个编号为 $id$ 的优秀员工</li>
+                </ul>
+                <p class="fragment">求出每次事件发生后，<b style="color: red;">如果</b>公司进行人员调度，所能获得的最大公司效益是多少</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>人员调度</h2>
+        <p>不妨先考虑在没有任何事件的情况下，怎么求出最大公司效益...</p>
+        <p class="fragment">容易想到一个从叶子往上的贪心算法</p>
+        <sd-animation src="./贪心.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">在每个点上维护一个列表，列表最长长度为子树大小，按照能力值降序保存优秀员工<span class="fragment">，每次合并子树的列表后，排序并截断</span></p>
+    </section>
+    <section>
+        <h2>人员调度</h2>
+        <p style="margin-top: -10px;">考虑在节点 $u$ 上新加入一个能力值 $v$ 优秀员工会发生什么...</p>
+        <div style="display: flex;">
+            <sd-animation src="./新增一个优秀员工.js"
+                style="width: 1000px; height: 500px;"></sd-animation>
+            <div style="margin-top: -30px;">
+                <p class="fragment">树上从 $u$ 开始的一条链，由于其列表本身是有空位的，所以可以直接把该员工塞进空位上</p>
+                <p class="fragment">到第一个列表长度等于子树大小的节点 $f$，由于其列表已经满了，考虑新员工能否替换 $f$ 的现有列表中的能力最小者</p>
+                <ol>
+                    <li class="fragment">如果 $v\le min(List_f)$，那么就不必再向上进行替换了</li>
+                    <li class="fragment">如果 $v\gt min(List_f)$，那么新员工可以替换当前能力最小者</li>
+                </ol>
+                <p class="fragment">随后，对 $f$ 到树根的每个节点都这么检查一次，一旦发现不必向上替换就立刻停止检查</p>
+                <p class="fragment quote">But...它还是 $O(n^2)$ 的<span class="fragment">，有没有什么办法可以快速模拟这个过程呢？</p>
+                <p class="fragment quote">真的有必要在每个点上都放一个有序列表吗？</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>人员调度</h2>
+        <p>我们并不关心每个节点上的有序列表的全量信息</p>
+        <ul>
+            <li class="fragment">在统计答案时，只需要知道树根的有序列表全量信息即可</li>
+            <li class="fragment">在新增优秀员工时，也只需要取某个节点上的有序列表中的<b>最小值</b>进行能力比较</li>
+        </ul>
+        <p class="fragment">考虑每个点上只维护<b style="color: purple;">最终对树根的有序列表有贡献的</b>那些优秀员工</p>
+        <p class="fragment">由于需要取有序列表中的最小值，且一个节点的有序列表中的所有元素均来自该点的<b style="color: red;">子树</b>，所有我们维护一下每个节点子树内<b style="color: purple;">对树根有贡献</b>的员工的能力最小值即可</p>
+        <div style="display: flex; align-items: center;">
+            <sd-animation src="./子树最小.js" class="fragment"
+                style="width: 1000px; height: 300px;"></sd-animation>
+            <codeblock class="fragment" style="height: 200px;">
+                <script type="text/template">
+                    multiset< int > Sv[N]; 
+                    // 对每个节点开一个 multiset，维护对树根有贡献的员工
+                    void insert(int u, int v) {
+                        Sv[u].insert(v);
+                        单点修改 u 的点权为 min(Sv);
+                    }
+                    void remove(int u, int v) {
+                        Sv[u].erase(v);
+                        单点修改 u 的点权为 min(Sv);
+                    }
+                </script>
+            </codeblock>
+        </div>
+    </section>
+    <section>
+        <h2>人员调度</h2>
+        <p>由于我们修改了每个节点上有序列表维护的东西的定义，现在重新审视一下在节点 $u$ 上新加入一个能力值 $v$ 优秀员工会发生什么...</p>
+        <div style="display: flex;">
+            <sd-animation src="./重新审视新增一个优秀员工.js"
+                style="width: 1000px; height: 500px;"></sd-animation>
+            <div>
+                <p class="fragment">树上从 $u$ 开始的一条链，由于其列表本身是有空位的，所以可以直接把该员工塞进空位上</p>
+                <p class="fragment">到第一个列表长度等于子树大小的节点 $f$，由于其列表已经满了，考虑新员工能否替换 $f$ 的现有列表中的能力最小者</p>
+                <ol>
+                    <li class="fragment">如果 $v\le min(List_f)$，那么就不必再向上进行替换了</li>
+                    <li class="fragment">如果 $v\gt min(List_f)$，那么新员工可以替换当前能力最小者，且可以一直替换到根</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>人员调度</h2>
+        <p>完整来看，可以写出如下新增优秀员工的代码</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void add(int u, int v) {
+                    int f = 找到 u 向上第一个有序列表满了的点;
+                    if (!f) { // u 可以一直贡献到树根
+                        Ans += v;
+                        treeAdd(u, -1);
+                        nodeAdd(u, v);
+                    } else {
+                        int min = f 的子树内的最小贡献者;
+                        int w = min 对应的节点;
+                        if (value(min) < v) {
+                            Ans += v - value(min);
+                            treeRemove(w, +1);
+                            nodeRemove(w, value(min));
+                            treeAdd(u, -1);
+                            nodeAdd(u, v);
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">最后，由于我们只支持了新增优秀员工，删除优秀员工就用线段树分治转化为撤销即可</p>
+    </section>
+</section>

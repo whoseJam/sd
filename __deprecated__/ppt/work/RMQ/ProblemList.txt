@@ -1,0 +1,8 @@
+无障碍RMQ题：
+#882.ST表：https://www.luogu.com.cn/problem/P3865
+#883.排队：https://www.luogu.com.cn/problem/P2880
+
+基于RMQ的题：
+#99.干草捆盛宴：https://www.luogu.com.cn/problem/P4085
+#458.Frequent Values：http://poj.org/problem?id=3368
+#104.与众不同：https://loj.ac/p/10121

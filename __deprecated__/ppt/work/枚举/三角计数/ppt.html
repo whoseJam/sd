@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>三角计数</h1>
+    </section>
+    <problem data-problemset="self" data-problemid="000026"></problem>
+    <section>
+        <h2>三角计数</h2>
+        <p>有一个 $N\times N$ 的格点图，你需要从格点图上任选三个格点，使得它们的连边构成一个三角形，且三角形存在一条平行于 $x$ 轴的边和一条平行于 $y$ 轴的边</p>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">统计有多少种选法</p>
+    </section>
+    <section>
+        <h2>三角计数</h2>
+        <p>最直接的想法是枚举三角形的<b style="color: purple;"><ruby>三个点<rt>a,b,c</rt></ruby></b>分别在什么位置，然后再判断三角形的形态是否符合要求...</p>
+        <sd-animation src="./样本空间1.js" class="fragment"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">不难发现大部分枚举都是无效的，不妨尝试利用合法三角形的形态，减少枚举范围</p>
+    </section>
+    <section>
+        <h2>三角计数</h2>
+        <sd-animation src="./样本空间2.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>对一个合法的三角形而言...</p>
+        <ul>
+            <li class="fragment">首先需要保证它有一条平行于 $x$ 轴的边</li>
+            <ul>
+                <li class="fragment">设这条边的 $y$ 坐标为 $y$</li>
+                <li class="fragment">设这条边在 $x$ 轴上的左右端点分别为 $l,r$</li>
+            </ul>
+        </ul>
+        <p class="fragment">
+            $$
+            answer=\sum_{y=1}^n\sum_{l=1}^n\sum_{r=l+1}^n(2n-2)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>三角计数</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            answer&=\sum_{y=1}^n\sum_{l=1}^n\sum_{r=l+1}^n(2n-2) \\
+            &=(2n-2)\sum_{y=1}^n\sum_{l=1}^n\sum_{r=l+1}^n1 \\
+            &=(2n-2)(\sum_{y=1}^n1)(\sum_{l=1}^n\sum_{r=l+1}^n1) \\
+            &=(2n-2)n(\sum_{l=1}^n\sum_{r=l+1}^n1) \\
+            &=(2n-2)n(\sum_{l=1}^n(n-l)) \\
+            &\stackrel{t=n-l}{=}(2n-2)n(\sum_{t=0}^{n-1}t) \\
+            &=n^2(n-1)^2
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

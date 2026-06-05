@@ -1,0 +1,113 @@
+<section>
+    <section>
+        <h1>匀速相遇</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P9914"></problem>
+    <section>
+        <h2>匀速相遇</h2>
+        <sd-animation src="./样例解释.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p>有 $n$ 个 $A$ 类点和 $m$ 个 $B$ 类点如图所示排列，从某时刻开始它们同时按指定方向移动</p>
+        <ul>
+            <li class="fragment">第 $i$ 个 $A$ 类点的移动速度为 $a_i$</li>
+            <li class="fragment">第 $j$ 个 $B$ 类点的移动速度为 $b_j$</li>
+        </ul>
+        <p class="fragment">你需要判断有多少对点会在某一刻相遇</p>
+    </section>
+    <section>
+        <h2>匀速相遇</h2>
+        <p>对于 $10\%$ 的数据，$n,m\le 100$</p>
+        <sd-animation src="./整点相遇.js"
+            style="width: 1000px; height: 250px;"></sd-animation>
+        <p class="fragment" style="margin-top: -20px;">
+            考虑 $A_i$ 能否和 $B_j$ 相遇
+            <span class="fragment">，由于它们如果能相遇，则一定是在 $(j,i)$ 这个整点上相遇</span>
+            <span class="fragment">，所以它们<b style="color: purple;">相遇所用的时间一定是整数</b></span>
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool Check(int i, int j) {
+                    for (int t = 1; t <= 100; t++) {
+                        移动 Ai
+                        移动 Bj
+                        if (Ai 和 Bj 相遇了) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>匀速相遇</h2>
+        <p>对于另外 $20\%$ 的数据，$n,m\le 5\times 10^3$</p>
+        <p>这部分数据可以考虑 $O(n^2)$ 的做法</p>
+        <p class="fragment quote">我们可以在第一种做法的基础上，考虑优化 <code>Check</code> 函数，实现 $O(1)$ 判断两个点能否相遇</p>
+    </section>
+    <section>
+        <h2>匀速相遇</h2>
+        <sd-animation src="./优化check.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <div style="display: flex;">
+            <div style="width: 35%;">
+                <p class="fragment">
+                    $$
+                    \frac{j}{a_i}=\frac{i}{b_j}
+                    $$
+                </p>
+                <p class="fragment">
+                    $$
+                    ia_i=jb_j
+                    $$
+                </p>
+            </div>
+            <div style="width: 65%;">
+                <codeblock class="fragment">
+                    <script type="text/template">
+                        int Solve() {
+                            int ans = 0;
+                            for (int i = 1; i <= n; i++) {
+                                for (int j = 1; j <= m; j++) {
+                                    if (i * a[i] == j * b[j]) ans++;
+                                }
+                            }
+                            return ans;
+                        }
+                    </script>
+                </codeblock>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>匀速相遇</h2>
+        <p>对于另外 $30\%$ 的数据，保证 $\forall a_i,b_i\ge 1$</p>
+        <p class="fragment">这是为了提醒你有的 $a_i$ 和 $b_i$ 为 $0$</p>
+        <p class="fragment">
+            由于刚才那个推法利用了这个式子：
+            $$
+            \frac{j}{a_i}=\frac{i}{b_j}
+            $$
+        </p>
+        <p class="fragment">所以需要对 $a_i$ 和 $b_i$ 为 $0$ 的情况做一个特判</p>
+    </section>
+    <section>
+        <h2>匀速相遇</h2>
+        <p>对于全部数据，$n,m\le 10^6$</p>
+        <p class="fragment">现在我们需要统计 $ia_i=jb_j$ 的 $(i,j)$ 对数</p>
+        <p class="fragment">可以用一个桶来帮助我们快速统计<span class="fragment">，用 $H(x)$ 表示 $ia_i=x$ 的 $i$ 的数量</span></p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int Solve() {
+                    int ans = 0;
+                    for (int i = 1; i <= n; i++)
+                        H[i * a[i]]++;
+                    for (int j = 1; j <= m; j++) // 统计有多少个 i 满足 i * a[i] == j * b[j]
+                        ans += H[j * b[j]];
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">时间复杂度 $O(nlogn)$</p>
+    </section>
+</section>

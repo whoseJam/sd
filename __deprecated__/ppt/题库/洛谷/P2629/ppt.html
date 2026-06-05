@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>好消息，坏消息</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P2629"></problem>
+    <section>
+        <h2>好消息，坏消息</h2>
+        <p>对于 $30\%$ 的数据，$n\le 10^3$</p>
+        <p class="fragment">拆坏为链，做前缀和</p>
+        <sd-animation src="./前缀和.js"
+            style="width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">就是在找有多少个长度为 $n$ 的区间，区间内的每一个前缀和都<b>不小于</b>区间的左端点 $-1$ 处的前缀和</p>
+    </section>
+    <section>
+        <h2>好消息，坏消息</h2>
+        <p>对于 $100\%$ 的数据，$n\le 10^6$</p>
+        <p>我们从后往前考虑，那么就是在对一个位置 $x$，检查 $[x+1,x+n]$ 这段区间内的前缀和最小值是否比 $sum(x)$ 小</p>
+        <ul>
+            <li class="fragment">如果 $[x+1,x+n]$ 的前缀和最小值小于 $sum(x)$，那么 $x+1$ 就不能作为一个起始汇报点</li>
+            <li class="fragment">如果 $[x+1,x+n]$ 的前缀和最小值不小于 $sum(x)$，那么 $x+1$ 就能作为一个起始汇报点</li>
+        </ul>
+        <p class="fragment">而一个长度为 $n$ 的滑动窗口内的最小值，可以用单调队列 $O(n)$ 维护</p>
+    </section>
+</section>
