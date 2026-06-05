@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>可持久化线段树 2</h1>
+        <p>luogu P3834 — 静态区间第 K 小</p>
+    </section>
+    <section>
+        <h2>做法</h2>
+        <p>每个前缀 $i$ 建主席树。查 $[l, r]$ 的第 $k$ 小 — 在 root[r] - root[l-1] 上"权值线段树"二分。</p>
+        <codeblock>
+            <script type="text/template">
+                int kth(int x, int y, int l, int r, int k) {
+                    if (l == r) return l;
+                    int leftSum = t[t[y].lc].sum - t[t[x].lc].sum;
+                    int mid = (l + r) >> 1;
+                    if (leftSum >= k) return kth(t[x].lc, t[y].lc, l, mid, k);
+                    return kth(t[x].rc, t[y].rc, mid + 1, r, k - leftSum);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$O((n + m) \log n)$。</p>
+    </section>
+</section>

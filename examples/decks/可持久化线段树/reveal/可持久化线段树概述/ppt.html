@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>可持久化线段树</h1>
+        <p>又叫主席树</p>
+    </section>
+    <section>
+        <h2>结构</h2>
+        <p>每次单点修改，只复制从根到叶的 $O(\log n)$ 个节点 — 共享其他节点。</p>
+        <p class="fragment">每个版本一个 root[v]。空间 $O((n + m) \log n)$。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int update(int prev, int l, int r, int x, int d) {
+                    int u = ++tot;
+                    t[u] = t[prev];
+                    if (l == r) { t[u].sum += d; return u; }
+                    int mid = (l + r) >> 1;
+                    if (x <= mid) t[u].lc = update(t[prev].lc, l, mid, x, d);
+                    else          t[u].rc = update(t[prev].rc, mid + 1, r, x, d);
+                    t[u].sum = t[t[u].lc].sum + t[t[u].rc].sum;
+                    return u;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

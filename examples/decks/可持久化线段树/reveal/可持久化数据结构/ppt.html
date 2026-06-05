@@ -1,0 +1,11 @@
+<section>
+    <section>
+        <h1>可持久化数据结构</h1>
+    </section>
+    <section>
+        <h2>什么是"可持久化"</h2>
+        <p>每次修改后既保留新版本，也<b>不丢失旧版本</b>。任意版本都可以被读取。</p>
+        <p class="fragment">朴素做法：每次完整复制 — 空间 $O(\text{ds} \cdot \text{ops})$。</p>
+        <p class="fragment">优化：只复制被修改路径上的节点，复用未修改部分。</p>
+    </section>
+</section>
