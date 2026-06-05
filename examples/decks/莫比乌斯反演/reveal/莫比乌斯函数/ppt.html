@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>莫比乌斯函数 $\mu$</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <ul>
+            <li>$\mu(1) = 1$</li>
+            <li>$n$ 有平方因子 → $\mu(n) = 0$</li>
+            <li>$n$ 是 $k$ 个不同质因子的乘积 → $\mu(n) = (-1)^k$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>莫比乌斯反演公式</h2>
+        <p>$F(n) = \sum_{d \mid n} f(d) \iff f(n) = \sum_{d \mid n} \mu(d) F(n / d)$。</p>
+        <p class="fragment">"和 $\Leftrightarrow$ 反演" 的代数对偶 — 计数题的核心工具。</p>
+    </section>
+    <section>
+        <h2>关键恒等式</h2>
+        <p>
+            $$[n = 1] = \sum_{d \mid n} \mu(d)$$
+        </p>
+        <p class="fragment">把"是否互质"翻译成可求和的 $\mu$ — 大多数 GCD 计数题的入口。</p>
+    </section>
+</section>

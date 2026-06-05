@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>ZAP</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$\sum_{i=1}^{a} \sum_{j=1}^{b} [\gcd(i, j) = k]$。</p>
+    </section>
+    <section>
+        <h2>反演</h2>
+        <p>令 $a' = \lfloor a/k \rfloor, b' = \lfloor b/k \rfloor$。原式 = $\sum_{i=1}^{a'} \sum_{j=1}^{b'} [\gcd(i, j) = 1]$。</p>
+        <p class="fragment">用 $[\gcd = 1] = \sum_{d \mid \gcd} \mu(d)$ 换元：
+            $$= \sum_d \mu(d) \lfloor a' / d \rfloor \lfloor b' / d \rfloor$$
+        </p>
+        <p class="fragment">数论分块 $O(\sqrt{\min(a', b')})$。</p>
+    </section>
+</section>

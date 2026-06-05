@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>数论分块</h1>
+    </section>
+    <section>
+        <h2>关键观察</h2>
+        <p>$\lfloor n / i \rfloor$ 在 $i \in [1, n]$ 上最多只有 $O(\sqrt{n})$ 种不同取值。</p>
+    </section>
+    <section>
+        <h2>$\sum_{i=1}^n f(i) \lfloor n/i \rfloor$</h2>
+        <p>分块跳 $i$：每段内 $\lfloor n/i \rfloor$ 是定值，用 $f$ 的前缀和 $O(1)$ 算出段和。整体 $O(\sqrt{n})$。</p>
+        <codeblock>
+            <script type="text/template">
+                ll sum = 0;
+                for (int l = 1, r; l <= n; l = r + 1) {
+                    r = n / (n / l);   // 最大保持 floor(n / i) 不变的 i
+                    sum += (sf[r] - sf[l - 1]) * (n / l);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">双数组 $\lfloor n/i \rfloor \cdot \lfloor m/i \rfloor$：取 $r = \min(n/(n/l), m/(m/l))$。</p>
+    </section>
+</section>
