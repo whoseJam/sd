@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>Splay</h1>
+        <p>基于均摊复杂度的自调整 BST</p>
+    </section>
+    <section>
+        <h2>核心操作：splay</h2>
+        <p>每次访问节点 $x$ 后，通过旋转把 $x$ 转到根。</p>
+        <ul class="fragment">
+            <li>zig：$x$ 是根的直接孩子，一次旋转</li>
+            <li>zig-zig：$x$、parent、grandparent 同侧 — 先转 parent 再转 $x$</li>
+            <li>zig-zag：异侧 — 先转 $x$ 一次（让它和 parent 位置反），再转一次</li>
+        </ul>
+        <p class="fragment">均摊 $O(\log n)$ per op。</p>
+    </section>
+    <section>
+        <h2>区间操作</h2>
+        <p>支持区间修改 / 查询 / 删除 / 插入 / 翻转。</p>
+        <p class="fragment">把区间 $[l, r]$ 转为子树：splay($l - 1$) 到根，splay($r + 1$) 到根的右孩子。这时 $r + 1$ 的左子树恰好是 $[l, r]$。</p>
+    </section>
+</section>
