@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>Lucas 定理</h1>
+    </section>
+    <section>
+        <h2>在 Lucas 以前</h2>
+        <p>计算 $C_n^m$：</p>
+        <ul>
+            <li class="fragment">$n, m \le 10$ — 硬算</li>
+            <li class="fragment">$n, m \le 10^3$，对某模数取余 — $O(n^2)$ 预处理杨辉三角</li>
+            <li class="fragment">$n, m \le 10^6$，对大质数模 — 预处理阶乘 + 阶乘逆元</li>
+        </ul>
+        <p class="fragment quote">如果 $n, m$ 继续扩大，而模数 $P$ <b>不是</b>很大的质数呢？</p>
+    </section>
+    <section>
+        <h2>Lucas 定理</h2>
+        <p>$P$ 是 $\le 10^6$ 量级的质数时：
+            $$C_n^m \bmod P = C_{\lfloor n/P \rfloor}^{\lfloor m/P \rfloor} \cdot C_{n \bmod P}^{m \bmod P} \bmod P$$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // 预处理阶乘+阶乘逆元，O(1) 返回上下标 <= 1e6 的组合数
+                int C(int n, int m);
+
+                int Lucas(int n, int m) {
+                    if (n > m) return 0;
+                    if (n == 0) return C(n, m);
+                    return Lucas(n / P, m / P) * C(n % P, m % P) % P;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
