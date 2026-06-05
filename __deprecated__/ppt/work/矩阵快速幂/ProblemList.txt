@@ -1,4 +1,0 @@
-#937.斐波那契数列：https://www.luogu.com.cn/problem/P1962
-#939.广义斐波那契数列：https://www.luogu.com.cn/problem/P1349
-#1095.随机数生成器：https://www.luogu.com.cn/problem/P2044
-#1096.可乐：https://www.luogu.com.cn/problem/P3758

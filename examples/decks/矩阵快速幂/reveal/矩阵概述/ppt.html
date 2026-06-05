@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>矩阵</h1>
+        <p>$n \times m$ 二维数组</p>
+    </section>
+    <section>
+        <h2>矩阵乘法</h2>
+        <p>$A_{n \times m} \cdot B_{m \times p} = C_{n \times p}$，其中
+            $$C_{i, j} = \sum_{k = 1}^{m} A_{i, k} B_{k, j}$$
+        </p>
+        <p class="fragment">必须满足 $C(A) = R(B)$。</p>
+    </section>
+    <section>
+        <h2>性质</h2>
+        <ul>
+            <li>结合律：$(AB)C = A(BC)$</li>
+            <li>不满足交换律</li>
+            <li>有单位阵 $I$：$AI = IA = A$</li>
+        </ul>
+        <p class="fragment">结合律让快速幂可行：</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                Matrix Mpow(Matrix A, ll b) {
+                    Matrix ans = Identity();
+                    while (b) {
+                        if (b & 1) ans = ans * A;
+                        A = A * A;
+                        b >>= 1;
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$n^3 \log b$。</p>
+    </section>
+</section>

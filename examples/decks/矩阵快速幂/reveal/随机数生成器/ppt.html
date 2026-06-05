@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>随机数生成器</h1>
+        <p>luogu P2044</p>
+    </section>
+    <section>
+        <h2>非齐次递推</h2>
+        <p>$X_{n+1} = (a X_n + c) \bmod m$ — 把常数项 $c$ 也塞进列向量：</p>
+        <p class="fragment">
+            $$
+            \begin{pmatrix} a & 1 \\ 0 & 1 \end{pmatrix}
+            \begin{pmatrix} X_n \\ c \end{pmatrix}
+            = \begin{pmatrix} X_{n+1} \\ c \end{pmatrix}
+            $$
+        </p>
+    </section>
+</section>

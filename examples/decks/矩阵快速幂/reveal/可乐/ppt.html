@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>可乐</h1>
+        <p>luogu P3758 — 邻接矩阵幂</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>图上机器人，每时刻自爆 / 走邻边 / 不动。求 $t$ 时刻方案数。</p>
+        <p class="fragment">自爆：新增汇点 $B$，每点连边到 $B$。不动：自环。</p>
+    </section>
+    <section>
+        <h2>邻接矩阵幂</h2>
+        <p>$G$ 是邻接矩阵，$f_t(u)$ = $t$ 步走到 $u$ 的方案数：</p>
+        <p class="fragment">
+            $$f_t = G^T f_{t-1} \Rightarrow f_t = (G^T)^t f_0$$
+        </p>
+        <p class="fragment">用矩阵快速幂算 $(G^T)^t$ — $O(n^3 \log t)$。</p>
+    </section>
+</section>

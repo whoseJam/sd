@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>斐波那契数列</h1>
+        <p>luogu P1962</p>
+    </section>
+    <section>
+        <h2>转移矩阵</h2>
+        <p>
+            $$
+            \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix}
+            \begin{pmatrix} f_{n-1} \\ f_{n-2} \end{pmatrix}
+            = \begin{pmatrix} f_n \\ f_{n-1} \end{pmatrix}
+            $$
+        </p>
+        <p class="fragment">设 $F = \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix}$：</p>
+        <p class="fragment">
+            $$
+            F^{n-2} \begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} f_n \\ f_{n-1} \end{pmatrix}
+            $$
+        </p>
+        <p class="fragment">矩阵快速幂算 $F^{n-2}$ — $O(\log n)$。</p>
+    </section>
+</section>
