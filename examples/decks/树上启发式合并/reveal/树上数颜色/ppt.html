@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>树上数颜色</h1>
+        <p>luogu U41492</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>每个子树内有多少种颜色。</p>
+        <codeblock>
+            <script type="text/template">
+                void Add(int c) {
+                    if (!colCount[c]) colNum++;
+                    colCount[c]++;
+                }
+                void Remove(int c) {
+                    if (colCount[c] == 1) colNum--;
+                    colCount[c]--;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>DSU 框架</h2>
+        <codeblock>
+            <script type="text/template">
+                void DSU(int u) {
+                    for (轻儿子 v) { DSU(v); RemoveSubtree(v); }
+                    if (son[u]) DSU(son[u]);
+                    for (轻儿子 v) AddSubtree(v);
+                    Add(col[u]);
+                    Ans[u] = colNum;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>树上启发式合并</h1>
+        <p>DSU on Tree</p>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <p>对每个点都需要统计<b>子树信息</b>。如果用一个数据结构维护，"插入 / 删除 / 查询"开销都是 $O(K)$：</p>
+        <p class="fragment">每个子树独立做一遍 $O(\text{子树大小})$ — 朴素 $O(n^2 K)$。</p>
+    </section>
+    <section>
+        <h2>重儿子复用</h2>
+        <p>把 $u$ 的孩子分成<b>重儿子</b>（子树最大）和<b>轻儿子</b>。$\text{DSU}(u)$：</p>
+        <ol>
+            <li class="fragment">递归每个轻儿子 $v$ 算 $v$ 的答案，算完后<b>清空</b>数据结构</li>
+            <li class="fragment">递归重儿子 $s$ 算它的答案，<b>保留</b>数据结构里 $s$ 子树的所有元素</li>
+            <li class="fragment">把所有轻儿子子树<b>暴力插回</b>，加上 $u$ 自己 — 此时 ds 里就是 $u$ 子树全部</li>
+        </ol>
+        <p class="fragment">总复杂度 $O(n K \log n)$ — 每个点最多被"暴力插入"$\log n$ 次（每次它所在的轻链长 $\le \log n$）。</p>
+    </section>
+</section>
