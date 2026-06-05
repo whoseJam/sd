@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>NTT</h1>
+        <p>Number Theoretic Transform</p>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <p>FFT 用浮点数会有精度问题。NTT 在模 $p$ 意义下做同样的事。</p>
+    </section>
+    <section>
+        <h2>原根</h2>
+        <p>取 $p = c \cdot 2^k + 1$ 形式的质数（如 998244353），找原根 $g$。$g^{(p-1) / n}$ 充当 $\omega_n$。</p>
+        <p class="fragment">乘法和加法都在模 $p$ 下进行 — 没有精度问题。</p>
+    </section>
+</section>

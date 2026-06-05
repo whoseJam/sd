@@ -1,0 +1,48 @@
+<section>
+    <section>
+        <h1>FFT</h1>
+        <p>Fast Fourier Transform</p>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>两个多项式 $A(x), B(x)$ 度数 $n$，求 $A \cdot B$ — 朴素 $O(n^2)$。</p>
+    </section>
+    <section>
+        <h2>点值表示</h2>
+        <p>$n + 1$ 个点值唯一确定一个 $n$ 次多项式。点值表示下乘法是 $O(n)$（逐点相乘）。</p>
+        <p class="fragment">系数表示 → 点值表示 = <b>求值</b> $O(n^2)$<br>点值表示 → 系数表示 = <b>插值</b> $O(n^2)$。</p>
+    </section>
+    <section>
+        <h2>FFT</h2>
+        <p>选 $n$ 个特殊点：单位根 $\omega_n^k = e^{2\pi i k / n}$。</p>
+        <p class="fragment">利用对称性 $\omega_n^{k + n/2} = -\omega_n^k$ 把求值分治：</p>
+        <p class="fragment">$A(x) = A_e(x^2) + x A_o(x^2)$。$O(n \log n)$。</p>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <p>位逆序蝴蝶变换，迭代 FFT $O(n \log n)$。</p>
+        <codeblock>
+            <script type="text/template">
+                void fft(C* a, int n, int inv) {
+                    for (int i = 0, j = 0; i < n; i++) {
+                        if (i < j) swap(a[i], a[j]);
+                        for (int k = n >> 1; (j ^= k) < k; k >>= 1);
+                    }
+                    for (int len = 2; len <= n; len <<= 1) {
+                        C wn = exp(C(0, 2 * PI * inv / len));
+                        for (int i = 0; i < n; i += len) {
+                            C w(1, 0);
+                            for (int k = 0; k < len / 2; k++) {
+                                C u = a[i + k], v = a[i + k + len / 2] * w;
+                                a[i + k] = u + v;
+                                a[i + k + len / 2] = u - v;
+                                w *= wn;
+                            }
+                        }
+                    }
+                    if (inv == -1) for (int i = 0; i < n; i++) a[i] /= n;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
