@@ -1,0 +1,46 @@
+<section>
+    <section>
+        <h1>斜率优化 dp</h1>
+        <p>概述</p>
+    </section>
+    <section>
+        <h2>典型形式</h2>
+        <p>
+            $$f_i = \min_{j < i} \{ f_j + A_i B_j \}$$
+        </p>
+        <p class="fragment">朴素 $O(n^2)$。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 2; i <= n; i++) {
+                    f[i] = inf;
+                    for (int j = 1; j < i; j++)
+                        f[i] = min(f[i], f[j] + A[i] * B[j]);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>几何视角</h2>
+        <p>把 $f_j + A_i B_j$ 看作直线 $y = A_i x + c$ 在 $x = B_j$ 处的取值 — 等价于"用斜率 $A_i$ 的线扫过点 $(B_j, f_j)$，取最低截距"。</p>
+        <sd-animation src="../../animation/概述/凸包.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>三件事</h2>
+        <ol>
+            <li>从转移方程推出"点 + 直线截距"的形式</li>
+            <li>维护转移点的下凸包</li>
+            <li>用固定斜率的线在凸包上找切点</li>
+        </ol>
+    </section>
+    <section>
+        <h2>维护凸包</h2>
+        <p>转移点 $x$ 单调 — 用栈维护下凸包，新加点 pop 掉违反凸性的栈顶。</p>
+        <p class="fragment">$x$ 不单调 — 用平衡树（不在本节讨论）。</p>
+    </section>
+    <section>
+        <h2>查询切点</h2>
+        <p>下凸包斜率单调 — 给定斜率二分定位最优切点。</p>
+        <p class="fragment">斜率也单调时省掉二分，用指针单调推进。</p>
+    </section>
+</section>

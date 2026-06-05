@@ -1,0 +1,27 @@
+<section>
+    <section>
+        <h1>玩具装箱</h1>
+        <p>luogu P3195</p>
+    </section>
+    <section>
+        <h2>状态</h2>
+        <p>$f_i$ = 装完前 $i$ 个玩具的最小花费。设 $s_i = \sum_{j \le i} (C_j + 1)$, $T = L + 1$：</p>
+        <p class="fragment">
+            $$f_i = \min_{j < i} \{f_j + (s_i - s_j - T)^2\}$$
+        </p>
+    </section>
+    <section>
+        <h2>转化为点 + 直线</h2>
+        <p>展开 $(s_i - s_j - T)^2$，分离与 $i$ / $j$ 单独相关的项和交叉项：</p>
+        <p class="fragment">
+            $$
+            f_i = (s_i^2 - 2 s_i T) + (f_j + (s_j + T)^2) - 2 s_i s_j
+            $$
+        </p>
+        <p class="fragment">取转移点 $(x_j, y_j) = (s_j,\ f_j + (s_j + T)^2)$，对应直线斜率 $2 s_i$，最小化截距即可。</p>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <p>$s$ 单调递增 — 用栈维护下凸包；$2 s_i$ 也单调递增 — 用单调指针在凸包上推进，$O(n)$ 整体。</p>
+    </section>
+</section>
