@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>单调队列优化 dp</h1>
+    </section>
+    <section>
+        <h2>适用 dp 形式</h2>
+        <p>
+            $$f(i) = \max_{i - t \le j \le i} \{ G(j) + H(i) \}$$
+        </p>
+        <ul>
+            <li>$G(j)$ 只跟 $j$ 有关</li>
+            <li>$H(i)$ 只跟 $i$ 有关</li>
+        </ul>
+    </section>
+    <section>
+        <h2>优劣性</h2>
+        <p>$j_1 < j_2$ 且 $G(j_1) \le G(j_2)$ — $j_1$ 永远不会贡献更大的答案，可以扔掉。</p>
+        <sd-animation src="../../animation/单调队列优化dp/优劣性.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 280px;"></sd-animation>
+        <p class="fragment">再加上 $j < i - t$ 的过期 — 留下的 $j$ 形成<b>单调递减</b>队列。</p>
+    </section>
+</section>

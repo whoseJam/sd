@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>修剪草坪</h1>
+        <p>luogu P2627</p>
+    </section>
+    <section>
+        <h2>状态定义</h2>
+        <p>$g(i)$ = 安排完前 $i$ 头，第 $i$ 头不干活的最大效率。</p>
+        <p>$f(i)$ = 安排完前 $i$ 头，第 $i$ 头干活的最大效率。</p>
+        <p class="fragment">$g(i) = \max\{f(i-1), g(i-1)\}$</p>
+        <p class="fragment">
+            $f(i) = \max_{i - k \le j < i} \{g(j) + (S(i) - S(j))\} = \max_{i - k \le j < i} \{g(j) - S(j)\} + S(i)$
+        </p>
+    </section>
+    <section>
+        <h2>单调队列</h2>
+        <p>对 $g(j) - S(j)$ 做窗口长度为 $k$ 的滑动最大值。</p>
+        <sd-animation src="../../animation/修剪草坪/修剪草坪.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 240px;"></sd-animation>
+    </section>
+</section>
