@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>筛法其五</h1>
+        <p>因数之和 $\sigma(n)$</p>
+    </section>
+    <section>
+        <h2>公式</h2>
+        <p>$\sigma(N) = \prod_{i} (1 + p_i + p_i^2 + \cdots + p_i^{a_i})$。</p>
+    </section>
+    <section>
+        <h2>线性筛</h2>
+        <p>维护 $g[x]$ = $x$ 的最小质因子那一段的几何级数 $1 + p + \dots + p^a$。</p>
+        <ul>
+            <li class="fragment"><code>i % p != 0</code>：$\sigma(x) = \sigma(i) \cdot (1 + p)$，$g[x] = 1 + p$</li>
+            <li class="fragment"><code>== 0</code>：$\sigma(x) = \sigma(i) / g[i] \cdot (g[i] \cdot p + 1)$，$g[x] = g[i] \cdot p + 1$</li>
+        </ul>
+    </section>
+</section>

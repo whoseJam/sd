@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>筛法其四</h1>
+        <p>因数个数 $d(n)$</p>
+    </section>
+    <section>
+        <h2>公式</h2>
+        <p>$N = \prod p_i^{a_i}$，$d(N) = \prod (a_i + 1)$。</p>
+    </section>
+    <section>
+        <h2>线性筛</h2>
+        <p>多维护一个 $\text{cnt}[x]$ = $x$ 的最小质因子的指数。</p>
+        <ul>
+            <li class="fragment"><code>i % p != 0</code>：$x = i \cdot p$ 多了一种新质因子，指数为 1 → $d(x) = d(i) \cdot 2$，$\text{cnt}[x] = 1$</li>
+            <li class="fragment"><code>== 0</code>：$x$ 在 $i$ 的最小质因子的指数 +1 → $d(x) = d(i) / (\text{cnt}[i] + 1) \cdot (\text{cnt}[i] + 2)$，$\text{cnt}[x] = \text{cnt}[i] + 1$</li>
+        </ul>
+    </section>
+</section>

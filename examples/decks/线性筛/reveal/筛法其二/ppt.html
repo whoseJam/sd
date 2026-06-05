@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>筛法其二</h1>
+        <p>最大质因子</p>
+    </section>
+    <section>
+        <h2>$f(x) = x$ 的最大质因子</h2>
+        <p>设 $x = i \cdot p_1$（$p_1$ = 当前 prim[j]）。</p>
+        <ul>
+            <li class="fragment">$i$ 不含 $p_1$ 因子 → $i$ 的最小质因子 $\ge p_1$ → $i$ 的最大质因子也是 $x$ 的最大 → <code>f[x] = f[i]</code></li>
+            <li class="fragment">$i$ 已含 $p_1$ → $p_1$ 仍是 $x$ 的最小，最大不变 → <code>f[x] = f[i]</code></li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 2; i <= n; i++) {
+                    if (!vis[i]) { prim[++tot] = i; f[i] = i; }
+                    for (int j = 1; j <= tot && i * prim[j] <= n; j++) {
+                        vis[i * prim[j]] = 1;
+                        f[i * prim[j]] = f[i];
+                        if (i % prim[j] == 0) break;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

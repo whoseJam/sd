@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>质数筛法</h1>
+    </section>
+    <section>
+        <h2>朴素筛</h2>
+        <p>"$i$ 的 $j$ 倍肯定不是质数"：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 2; i <= n; i++) {
+                    if (!vis[i]) prim[++tot] = i;
+                    for (int j = 2; i * j <= n; j++) vis[i * j] = 1;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$O(n \log n)$。但合数 12 被 2、3、4、6 都筛了一遍 — 浪费。</p>
+    </section>
+    <section>
+        <h2>埃氏筛</h2>
+        <p>只让<b>质数</b>参与筛：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 2; i <= n; i++) {
+                    if (vis[i]) continue;
+                    prim[++tot] = i;
+                    for (int j = 2; i * j <= n; j++) vis[i * j] = 1;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$O(n \log \log n)$。仍可能重复 — 比如 12 被 2 和 3 都筛。</p>
+    </section>
+</section>

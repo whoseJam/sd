@@ -1,0 +1,13 @@
+<section>
+    <section>
+        <h1>筛法其三</h1>
+        <p>不同质因子个数</p>
+    </section>
+    <section>
+        <h2>$\omega(x)$</h2>
+        <ul>
+            <li><code>i % prim[j] != 0</code> → $i \cdot p$ 多了一种质因子 → <code>f[x] = f[i] + 1</code></li>
+            <li><code>== 0</code> → $p$ 已是 $i$ 的质因子，种类数不变 → <code>f[x] = f[i]</code></li>
+        </ul>
+    </section>
+</section>

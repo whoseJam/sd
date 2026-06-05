@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>筛法其一</h1>
+        <p>最小质因子</p>
+    </section>
+    <section>
+        <h2>$f(x) = x$ 的最小质因子</h2>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 2; i <= n; i++) {
+                    if (!vis[i]) { prim[++tot] = i; f[i] = i; }
+                    for (int j = 1; j <= tot && i * prim[j] <= n; j++) {
+                        vis[i * prim[j]] = 1;
+                        f[i * prim[j]] = prim[j];  // 被 prim[j] 筛掉，最小质因子就是 prim[j]
+                        if (i % prim[j] == 0) break;
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

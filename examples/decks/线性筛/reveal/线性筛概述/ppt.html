@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>线性筛</h1>
+    </section>
+    <section>
+        <h2>核心思想</h2>
+        <p>每个合数只被它的<b>最小质因子</b>筛一次：</p>
+        <codeblock>
+            <script type="text/template">
+                void Sieve(int n) {
+                    for (int i = 2; i <= n; i++) {
+                        if (!vis[i]) prim[++tot] = i;
+                        for (int j = 1; j <= tot && i * prim[j] <= n; j++) {
+                            vis[i * prim[j]] = 1;
+                            if (i % prim[j] == 0) break;
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">关键是 <code>i % prim[j] == 0</code> 时 break — 保证 <code>i * prim[j]</code> 的最小质因子是 prim[j]。</p>
+        <p class="fragment">$O(n)$。</p>
+    </section>
+</section>
