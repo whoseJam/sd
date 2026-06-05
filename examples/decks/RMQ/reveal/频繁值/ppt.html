@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>频繁值</h1>
+        <p>UVA 11235</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>有序序列中多次查询区间众数出现次数。</p>
+        <sd-animation src="../../animation/频繁值/频繁值.js" class="fragment"
+            style="margin: 0 auto; width: 700px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>做法</h2>
+        <p>把连续相同段编号为 group，每个位置记录所在 group 的左右端点和长度。</p>
+        <p class="fragment">查询区间内最多覆盖一整段中间 + 两端可能截断的段：中间整段用 ST 表区间最大值查"段长"，两端单独算。</p>
+    </section>
+</section>

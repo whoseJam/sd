@@ -1,0 +1,74 @@
+<section>
+    <section>
+        <h1>RMQ</h1>
+        <p>Range Maximum / Minimum Query</p>
+    </section>
+    <section>
+        <h2>区间最大值问题</h2>
+        <p>给定数组 $\{A\}=A_1, \dots, A_n$，多次查询区间最大值
+            $$Q(l, r) = \max\{A_l, A_{l+1}, \dots, A_r\}$$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int Query(int l, int r) {
+                    int mx = 0;
+                    for (int i = l; i <= r; i++) mx = max(mx, A[i]);
+                    return mx;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment quote">$m$ 次查询，总复杂度 $O(nm)$。</p>
+    </section>
+    <section>
+        <h2>SparseTable (ST 表)</h2>
+        <ul>
+            <li class="fragment">预处理 $O(n \log n)$</li>
+            <li class="fragment">单次查询 $O(1)$</li>
+            <li class="fragment">空间 $O(n \log n)$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>ST 表</h2>
+        <p>预处理二维表 $F$：$F_{i,j} = $ 从 $A_i$ 起、长度为 $2^j$ 的区间最大值。</p>
+        <sd-animation src="../../animation/RMQ概述/RMQ.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 320px;"></sd-animation>
+        <p class="fragment">任意区间都可以拆为两个长度 $2^k$ 的区间的并 — 直接查 $F$。</p>
+    </section>
+    <section>
+        <h2>ST 表预处理：第 0 行</h2>
+        <p>$F_{i, 0} = A_i$。</p>
+        <sd-animation src="../../animation/RMQ概述/RMQ预处理第0行.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 340px;"></sd-animation>
+    </section>
+    <section>
+        <h2>ST 表预处理：第 $j$ 行</h2>
+        <p>$F_{i, j} = \max(F_{i, j-1},\ F_{i + 2^{j-1}, j-1})$</p>
+        <sd-animation src="../../animation/RMQ概述/RMQ预处理第j行.js" class="fragment"
+            style="margin: 0 auto; width: 440px; height: 260px;"></sd-animation>
+    </section>
+    <section>
+        <h2>ST 表查询</h2>
+        <p>给定区间长度 $\text{len}$，取 $k = \lfloor \log_2 \text{len} \rfloor$：
+            $$Q(l, r) = \max(F_{l, k},\ F_{r - 2^k + 1, k})$$
+        </p>
+        <codeblock>
+            <script type="text/template">
+                int Query(int l, int r) {
+                    int k = log2(r - l + 1);
+                    return max(F[l][k], F[r - (1 << k) + 1][k]);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>预处理 log₂</h2>
+        <p>系统 $\log_2$ 慢。预处理表：$\text{Log}_2[i] = \text{Log}_2[i / 2] + 1$。</p>
+        <sd-animation src="../../animation/RMQ概述/log2.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 180px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 2; i <= n; i++) Log2[i] = Log2[i >> 1] + 1;
+            </script>
+        </codeblock>
+    </section>
+</section>

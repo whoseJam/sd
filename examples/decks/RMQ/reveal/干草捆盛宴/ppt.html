@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>干草捆盛宴</h1>
+        <p>luogu P4085</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>每个元素有香度 $F_i$ 和辣度 $S_i$，求满足 $\sum F_i \ge M$ 的区间中辣度最大值最小。</p>
+    </section>
+    <section>
+        <h2>双指针：固定左端点求最近右端点</h2>
+        <sd-animation src="../../animation/干草捆盛宴/贪心.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 140px;"></sd-animation>
+        <p class="fragment">对每个 $l$ 求出最小的 $r(l)$ 使 $\sum F \ge M$。</p>
+    </section>
+    <section>
+        <h2>合法区间集合</h2>
+        <sd-animation src="../../animation/干草捆盛宴/干草捆盛宴.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 240px;"></sd-animation>
+        <p class="fragment">对每个 $(l, r(l))$ 用 ST 表查 $\max S$，所有结果取 $\min$。</p>
+    </section>
+</section>
