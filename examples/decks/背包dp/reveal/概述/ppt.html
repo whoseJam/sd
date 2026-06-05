@@ -1,0 +1,38 @@
+<section>
+    <section>
+        <h1>01 背包</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 件物品，第 $i$ 件重 $w_i$ 价值 $v_i$，容量 $W$，每件最多选一次，求最大总价值。</p>
+    </section>
+    <section>
+        <h2>状态</h2>
+        <p>$f_{i, j}$ = 考虑前 $i$ 件，容量恰为 $j$ 的最大价值：</p>
+        <p class="fragment">
+            $$f_{i, j} = \max(f_{i-1, j},\ f_{i-1, j - w_i} + v_i)$$
+        </p>
+        <p class="fragment">$i$ 维可省略，$j$ 倒序枚举即可：</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i <= n; i++)
+                    for (int j = W; j >= w[i]; j--)
+                        f[j] = max(f[j], f[j - w[i]] + v[i]);
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>滚动维护</h2>
+        <sd-animation src="../../animation/概述/01背包.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 140px;"></sd-animation>
+        <p class="fragment">每件物品扫一遍 $f$ — $O(nW)$。</p>
+    </section>
+    <section>
+        <h2>常见变种</h2>
+        <ul>
+            <li><b>完全背包</b>：每件可选无限次 — $j$ <b>正序</b>枚举</li>
+            <li><b>多重背包</b>：每件最多 $k_i$ 次 — 二进制拆分变 01 背包</li>
+            <li><b>分组背包</b>：每组最多选一件 — 组内多个候选轮流转移</li>
+        </ul>
+    </section>
+</section>
