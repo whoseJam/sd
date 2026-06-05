@@ -1,0 +1,64 @@
+<section>
+    <section>
+        <h1>循环与和式</h1>
+        <p>用 $\sum$ 表达遍历</p>
+    </section>
+    <section>
+        <h2>循环</h2>
+        <p>计算 $1 + 2 + \cdots + n$ 的循环代码：</p>
+        <codeblock>
+            <script type="text/template">
+                for (int i = 1; i <= n; i++) ans += i;
+            </script>
+        </codeblock>
+        <p class="fragment">数学上等价于 $\sum$ — 同一段循环的三个槽（下界 / 上界 / 体）一一对应：</p>
+        <sd-animation src="../../animation/循环与和式概述/sum拆解.js" class="fragment"
+            style="margin: 0 auto; width: 880px; height: 140px;"></sd-animation>
+    </section>
+    <section>
+        <h2>$\sum$ 与循环</h2>
+        <sd-animation src="../../animation/循环与和式概述/sum表达能力1.js"
+            style="margin: 0 auto; width: 880px; height: 140px;"></sd-animation>
+        <sd-animation src="../../animation/循环与和式概述/sum表达能力2.js" class="fragment"
+            style="margin: 0 auto; margin-top: 30px; width: 880px; height: 140px;"></sd-animation>
+        <sd-animation src="../../animation/循环与和式概述/sum表达能力3.js" class="fragment"
+            style="margin: 0 auto; margin-top: 30px; width: 880px; height: 140px;"></sd-animation>
+    </section>
+    <section>
+        <h2>$\sum$ 与循环</h2>
+        <sd-animation src="../../animation/循环与和式概述/sum表达能力4.js"
+            style="margin: 0 auto; width: 880px; height: 140px;"></sd-animation>
+        <sd-animation src="../../animation/循环与和式概述/sum表达能力5.js" class="fragment"
+            style="margin: 0 auto; margin-top: 30px; width: 880px; height: 140px;"></sd-animation>
+        <sd-animation src="../../animation/循环与和式概述/sum表达能力6.js" class="fragment"
+            style="margin: 0 auto; margin-top: 30px; width: 880px; height: 140px;"></sd-animation>
+    </section>
+    <section>
+        <h2>$\sum$ 的基本形式</h2>
+        <p>$$ \sum_{k \in K} F(k) $$</p>
+        <ul>
+            <li class="fragment">$K$ 是<b style="color: purple;">集合 / 循环范围</b></li>
+            <li class="fragment">$k$ 是<b style="color: red;">元素 / 循环变量</b></li>
+            <li class="fragment">$F(k)$ 是<b style="color: teal;">计算过程</b></li>
+        </ul>
+        <p class="fragment quote">和枚举的结构同构。</p>
+    </section>
+    <section>
+        <h2>为什么需要 $\sum$</h2>
+        <p>循环已经能算，为什么再写一遍 $\sum$？</p>
+        <p class="fragment">—— <b style="color: red;">分离逻辑和实现</b>。同一份逻辑可以有多种实现。</p>
+        <sd-animation src="../../animation/循环与和式概述/分离逻辑代码.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>利用数学工具</h2>
+        <p>有现成结论可用：</p>
+        <p class="fragment">$$ \sum_{1 \le i \le n} i = \frac{n(n+1)}{2} $$</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // O(1) 而不是 O(n)
+                int Solve(int n) { return n * (n + 1) / 2; }
+            </script>
+        </codeblock>
+    </section>
+</section>

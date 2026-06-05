@@ -1,0 +1,61 @@
+<section>
+    <section>
+        <h1>和式变换</h1>
+    </section>
+    <section>
+        <h2>线性性</h2>
+        <p>$\sum$ 是线性的，求和顺序可以重排：</p>
+        <sd-animation src="../../animation/和式变换概述/trans1.js"
+            style="margin: 0 auto; width: 880px; height: 120px;"></sd-animation>
+        <p class="fragment">$$\sum_{i=1}^n (a_i + b_i) = \sum_{i=1}^n a_i + \sum_{i=1}^n b_i$$</p>
+    </section>
+    <section>
+        <h2>常数提取</h2>
+        <p>常数因子可以提到 $\sum$ 外：</p>
+        <sd-animation src="../../animation/和式变换概述/trans2.js"
+            style="margin: 0 auto; width: 880px; height: 120px;"></sd-animation>
+        <p class="fragment">$$\sum_{i=1}^n c\, a_i = c \sum_{i=1}^n a_i$$</p>
+    </section>
+    <section>
+        <h2>独立求和的乘积</h2>
+        <p>当下标互相独立，两个 $\sum$ 可以合并成乘积：</p>
+        <sd-animation src="../../animation/和式变换概述/trans3.js"
+            style="margin: 0 auto; width: 880px; height: 120px;"></sd-animation>
+        <p class="fragment">$$\sum_{i=1}^n a_i \sum_{j=1}^m b_j = \left(\sum_{i=1}^n a_i\right) \left(\sum_{j=1}^m b_j\right)$$</p>
+    </section>
+    <section>
+        <h2>哪些项依赖求和变量？</h2>
+        <p>$\sum$ 把指标"绑"住 — 只有依赖指标的项才被展开：</p>
+        <sd-animation src="../../animation/和式变换概述/clarify1.js"
+            style="margin: 0 auto; width: 880px; height: 220px;"></sd-animation>
+    </section>
+    <section>
+        <h2>嵌套 $\sum$ 的因式分解</h2>
+        <sd-animation src="../../animation/和式变换概述/clarify2.js"
+            style="margin: 0 auto; width: 880px; height: 120px;"></sd-animation>
+    </section>
+    <section>
+        <h2>交换枚举顺序</h2>
+        <p>同一个样本空间，行扫描和列扫描覆盖相同的格点：</p>
+        <sd-animation src="../../animation/和式变换概述/交换枚举顺序1.js"
+            style="margin: 0 auto; width: 720px; height: 380px;"></sd-animation>
+        <p class="fragment">$$\sum_{i=1}^n \sum_{j=1}^m f(i, j) = \sum_{j=1}^m \sum_{i=1}^n f(i, j)$$</p>
+    </section>
+    <section>
+        <h2>交换枚举顺序 — 三角形</h2>
+        <p>对约束 $j \le i$ 的三角区域：</p>
+        <sd-animation src="../../animation/和式变换概述/交换枚举顺序2.js"
+            style="margin: 0 auto; width: 720px; height: 380px;"></sd-animation>
+        <p class="fragment">$$\sum_{i=1}^n \sum_{j=1}^{i} = \sum_{j=1}^n \sum_{i=j}^n$$</p>
+    </section>
+    <section>
+        <h2>交换枚举顺序 — 因子枚举</h2>
+        <p>枚举 $(i, d)$，要求 $d \mid i$：</p>
+        <sd-animation src="../../animation/和式变换概述/交换枚举顺序3.js"
+            style="margin: 0 auto; width: 720px; height: 380px;"></sd-animation>
+        <p class="fragment">
+            $$\sum_{i=1}^n \sum_{d \mid i} = \sum_{d=1}^n \sum_{i:\, d \mid i, i \le n}$$
+        </p>
+        <p class="fragment">列扫描下，每列正好是 $\lfloor n / d \rfloor$ 个倍数 — 比逐个 $i \% d$ 试更快。</p>
+    </section>
+</section>
