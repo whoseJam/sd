@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>启发式搜索</h1>
+        <p>A*</p>
+    </section>
+    <section>
+        <h2>盲目搜索的局限</h2>
+        <p>DFS / BFS 按固定顺序展开，对最优化问题需要遍历整棵搜索树。</p>
+        <sd-animation src="../../animation/启发式搜索概述/深搜.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>A*</h2>
+        <p>用启发函数 $h(u)$ 估计"从 $u$ 到终点"的代价下界，按 $f(u) = g(u) + h(u)$ 排序展开。</p>
+        <ul class="fragment">
+            <li>$h$ 越紧（接近真实下界）剪枝越强</li>
+            <li>$h$ 必须是<b>可采纳</b>的（$\le$ 真实代价）才保证最优</li>
+        </ul>
+    </section>
+</section>
