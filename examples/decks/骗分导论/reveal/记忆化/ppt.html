@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>记忆化</h1>
+        <p>打表怎么不算记忆化</p>
+    </section>
+    <section>
+        <h2>记忆化搜索</h2>
+        <p>写完 DFS 后，若搜索<b>不依赖外部环境</b>，可以记忆化：</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int f[A][B], vis[A][B];
+                int Dfs(int a, int b) {
+                    if (vis[a][b]) return f[a][b];
+                    int ans = /* 基于 a, b */;
+                    vis[a][b] = 1; f[a][b] = ans;
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>打表</h2>
+        <p>把答案提前算好。$n \le 18$ 时直接预算 $[1..18]$ 的所有答案。</p>
+    </section>
+</section>

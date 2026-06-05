@@ -1,0 +1,45 @@
+<section>
+    <section>
+        <h1>Yes or No</h1>
+    </section>
+    <section>
+        <h2>二元性答案</h2>
+        <p>某些题目答案是二元的：</p>
+        <ul>
+            <li class="fragment">博弈论：先手必胜 / 必败</li>
+            <li class="fragment">求能不能做到某件事</li>
+        </ul>
+        <p class="fragment">答案分布均匀时随机输出可摸到 ~50%。但多组测试时这招就不太行：</p>
+        <div class="quote fragment">
+            <div style="display: flex;">
+                <codeblock style="width: 45%;">
+                    <script type="text/template">
+                        T = 5
+                        // 第一组 ...
+                        // 第二组 ...
+                        // 第三组 ...
+                        // 第四组 ...
+                        // 第五组 ...
+                    </script>
+                </codeblock>
+                <codeblock style="width: 45%;">
+                    <script type="text/template">
+                        Yes
+                        No
+                        Yes
+                        Yes
+                        No
+                    </script>
+                </codeblock>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>... or No</h2>
+        <p>"求答案或者输出无解" 这类题，<b>无解</b>测试点会被覆盖到 — 求不出答案时输出无解还能薅一点。</p>
+    </section>
+    <section>
+        <h2>... or ...</h2>
+        <p>实在没思路 — 把样例输出试试（最后一手）。</p>
+    </section>
+</section>
