@@ -35,7 +35,6 @@ sd.init(() => {
       cy: y,
       fontSize: 14,
       fill: C.darkGrey,
-      textAnchor: "start",
     });
     texts.push(
       new sd.Text({
@@ -45,8 +44,7 @@ sd.init(() => {
         cy: y,
         fontSize: 22,
         fill: C.darkGreen,
-        textAnchor: "start",
-      }),
+        }),
     );
     // Anchor reference: a small fixed dot at the same (cx, cy) so we
     // can SEE whether the text drifts away from its declared anchor

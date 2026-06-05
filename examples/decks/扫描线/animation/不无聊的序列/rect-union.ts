@@ -246,7 +246,6 @@ export function rectUnion(data: number[]): void {
       cy: PLANE_TOP_Y - 20,
       fontSize: 16,
       fill: TEXT_DIM,
-      textAnchor: "start",
       opacity: 0,
     });
     areaText = new sd.Text({
@@ -256,7 +255,6 @@ export function rectUnion(data: number[]): void {
       cy: PLANE_TOP_Y - 52,
       fontSize: 18,
       fill: RECT_STROKE,
-      textAnchor: "start",
       opacity: 0,
     });
   });

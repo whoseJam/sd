@@ -16,7 +16,7 @@ const data = [
   { x: -7, y: -2, w: 5, h: 4, fill: "#a8c8f0" },
   { x: -3, y: -3, w: 4, h: 3, fill: "#f3a87f" },
   { x: 0, y: -1, w: 5, h: 4, fill: "#9fd3a8" },
-];
+] as const;
 
 const rects: sd.Rect[] = [];
 let questionText: sd.Text;
