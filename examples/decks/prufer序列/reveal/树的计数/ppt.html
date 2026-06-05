@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>树的计数</h1>
+        <p>luogu P2290</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>给定每个点度数 $d_i$，求满足的不同标号树个数。</p>
+    </section>
+    <section>
+        <h2>组合</h2>
+        <p>点 $i$ 在 prufer 序列中出现 $d_i - 1$ 次。问题变成有序排列：
+            $$\frac{(n - 2)!}{\prod_{i = 1}^{n} (d_i - 1)!}$$
+        </p>
+    </section>
+</section>

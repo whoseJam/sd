@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>Prufer 序列</h1>
+        <p>建立树和序列之间的联系</p>
+    </section>
+    <section>
+        <h2>树 → 序列</h2>
+        <p>每次选编号最小的叶节点 $v$，记录 $v$ 的唯一邻居，删除 $v$。重复 $n - 2$ 次。</p>
+        <sd-animation src="../../animation/prufer序列概述/树转序列.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 360px;"></sd-animation>
+        <ul>
+            <li class="fragment">最后剩 $2$ 个点，其中一个是 $n$</li>
+            <li class="fragment">每个节点在序列中出现的次数 $=$ 度数 $- 1$（叶不出现）</li>
+        </ul>
+    </section>
+    <section>
+        <h2>序列 → 树</h2>
+        <p>反向：每次从尚未"用完"的节点里取编号最小的、当前度数为 $0$ 的，把它和 prufer 当前项连边。</p>
+        <sd-animation src="../../animation/prufer序列概述/序列转树.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 360px;"></sd-animation>
+    </section>
+</section>
