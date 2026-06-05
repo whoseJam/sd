@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>树的动态存储</h1>
+    </section>
+    <section>
+        <h2>邻接表 (vector)</h2>
+        <codeblock>
+            <script type="text/template">
+                vector<int> G[N];
+                for (int i = 1; i < n; i++) {
+                    int u, v; cin >> u >> v;
+                    G[u].push_back(v);
+                    G[v].push_back(u);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>链式前向星</h2>
+        <p>更紧凑的邻接表：用 head[] + next[]+to[] 链。</p>
+        <codeblock>
+            <script type="text/template">
+                int head[N], nxt[M], to[M], tot;
+                void addEdge(int u, int v) {
+                    nxt[++tot] = head[u]; to[tot] = v; head[u] = tot;
+                }
+                for (int e = head[u]; e; e = nxt[e]) {
+                    int v = to[e]; ...
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

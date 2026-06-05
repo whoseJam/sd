@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>二叉树</h1>
+        <p>$k$ 叉树的特例</p>
+    </section>
+    <section>
+        <h2>表示</h2>
+        <codeblock>
+            <script type="text/template">
+                int son[N][2];  // 0 = left, 1 = right
+                for (int i = 1; i <= n; i++) cin >> son[i][0] >> son[i][1];
+            </script>
+        </codeblock>
+        <p class="fragment">$k$ 叉树相应改成 <code>son[N][K]</code>。</p>
+    </section>
+    <section>
+        <h2>特殊形态</h2>
+        <ul>
+            <li><b>满二叉树</b>：所有非叶节点都恰有 2 个孩子</li>
+            <li><b>完全二叉树</b>：最下面两层节点的度可小于 2，且最下层叶节点集中在靠左</li>
+        </ul>
+    </section>
+    <section>
+        <h2>遍历</h2>
+        <codeblock>
+            <script type="text/template">
+                // 前序
+                void pre(int u) { cout << u << ' '; if (son[u][0]) pre(son[u][0]); if (son[u][1]) pre(son[u][1]); }
+                // 中序
+                void in(int u)  { if (son[u][0]) in(son[u][0]); cout << u << ' '; if (son[u][1]) in(son[u][1]); }
+                // 后序
+                void post(int u){ if (son[u][0]) post(son[u][0]); if (son[u][1]) post(son[u][1]); cout << u << ' '; }
+            </script>
+        </codeblock>
+    </section>
+</section>

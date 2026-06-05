@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>父节点表示法</h1>
+    </section>
+    <section>
+        <h2>表示</h2>
+        <p>用一个 $\text{fa}[i]$ 数组表示每个节点的父亲，根设 $\text{fa}[\text{root}] = 0$ 或 $\text{root}$ 自身。</p>
+        <codeblock>
+            <script type="text/template">
+                int fa[N];
+                for (int i = 1; i <= n; i++) cin >> fa[i];
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>常用操作</h2>
+        <ul>
+            <li>找根：$\text{fa}[i] = 0$ 的 $i$</li>
+            <li>找儿子：扫一遍数组，$\text{fa}[j] = i$ 的 $j$</li>
+            <li>找子树大小 / 权值和：建邻接表后 DFS</li>
+        </ul>
+    </section>
+</section>
