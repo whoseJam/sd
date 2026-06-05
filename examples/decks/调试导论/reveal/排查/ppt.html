@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>排查</h1>
+    </section>
+    <section>
+        <h2>二分定位</h2>
+        <p>RE 不确定来源 — 在中间插 <code>return 0</code> 二分：</p>
+        <codeblock>
+            <script type="text/template">
+                int main() { 步骤1(); 步骤2(); 步骤3(); return 0; }
+                // 第一次试
+                int main() { 步骤1(); 步骤2(); return 0; 步骤3(); }
+                // 缩小后
+                int main() { 步骤1(); return 0; 步骤2(); 步骤3(); }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>意图断言</h2>
+        <p>怀疑某分支会被触发 — 加死循环让它显形：</p>
+        <codeblock>
+            <script type="text/template">
+                void Solve(int l, int r) {
+                    if (l == r) while (1);  // 如果走到这里就明显挂了
+                    ...
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>捏造样例</h2>
+        <p>构造能触发猜测路径的小样例，本地验证。</p>
+    </section>
+</section>
