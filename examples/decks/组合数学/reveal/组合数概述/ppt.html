@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>组合数 $C_n^m$</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>从 $n$ 个不同物品中取 $m$ 个（不计顺序）：
+            $$C_n^m = \frac{n!}{m! (n - m)!}$$
+        </p>
+    </section>
+    <section>
+        <h2>预处理</h2>
+        <ul>
+            <li>杨辉三角：$C_n^m = C_{n-1}^m + C_{n-1}^{m-1}$，$O(n^2)$</li>
+            <li>阶乘 + 逆元：$O(n)$ 预处理后 $O(1)$ 查询（模质数）</li>
+            <li>Lucas 定理：模较小质数时 $n$ 很大可用</li>
+        </ul>
+    </section>
+</section>
