@@ -1,0 +1,19 @@
+<section>
+    <section>
+        <h1>最大公约数</h1>
+    </section>
+    <section>
+        <h2>辗转相除</h2>
+        <p>$\gcd(a, b) = \gcd(b, a \bmod b)$。</p>
+        <codeblock>
+            <script type="text/template">
+                int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
+            </script>
+        </codeblock>
+        <p class="fragment">$\text{lcm}(a, b) = a \cdot b / \gcd(a, b)$。</p>
+    </section>
+    <section>
+        <h2>辗转相减</h2>
+        <p>$\gcd(a, b) = \gcd(b, a - b)$（$a \ge b$）。慢但避免模运算 — 高精度场景用。</p>
+    </section>
+</section>

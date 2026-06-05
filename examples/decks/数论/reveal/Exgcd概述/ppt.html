@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>Exgcd</h1>
+    </section>
+    <section>
+        <h2>裴蜀定理</h2>
+        <p>$ax + by = c$ 有整数解 $\Leftrightarrow$ $\gcd(a, b) | c$。</p>
+    </section>
+    <section>
+        <h2>扩展欧几里得</h2>
+        <codeblock>
+            <script type="text/template">
+                ll exgcd(ll a, ll b, ll& x, ll& y) {
+                    if (!b) { x = 1; y = 0; return a; }
+                    ll d = exgcd(b, a % b, y, x);
+                    y -= (a / b) * x;
+                    return d;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">返回 $\gcd$ 同时给出 $(x, y)$ 使 $ax + by = \gcd$。</p>
+    </section>
+</section>

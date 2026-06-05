@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>逆元</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>$a \cdot a^{-1} \equiv 1 \pmod m$ — 当 $\gcd(a, m) = 1$ 时 $a^{-1}$ 存在。</p>
+    </section>
+    <section>
+        <h2>三种求法</h2>
+        <ul>
+            <li><b>费马小定理</b>（$m$ 是质数）：$a^{-1} = a^{m - 2} \bmod m$（快速幂）</li>
+            <li><b>Exgcd</b>：解 $a x \equiv 1 \pmod m$</li>
+            <li><b>线性递推</b>：$\text{inv}[i] = -(m / i) \cdot \text{inv}[m \bmod i] \bmod m$，$O(n)$ 预处理 $[1, n]$ 的所有逆元</li>
+        </ul>
+    </section>
+</section>

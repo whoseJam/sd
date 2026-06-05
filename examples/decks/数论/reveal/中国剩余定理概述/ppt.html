@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>中国剩余定理 (CRT)</h1>
+    </section>
+    <section>
+        <h2>问题</h2>
+        <p>$x \equiv b_i \pmod{m_i}$ 这一族同余方程组（$m_i$ 两两互质）求 $x$。</p>
+    </section>
+    <section>
+        <h2>构造</h2>
+        <p>令 $M = \prod m_i$，$M_i = M / m_i$，$t_i = M_i^{-1} \bmod m_i$（Exgcd 求）：</p>
+        <p class="fragment">
+            $$x = \sum b_i M_i t_i \bmod M$$
+        </p>
+    </section>
+    <section>
+        <h2>exCRT</h2>
+        <p>$m_i$ 不互质时用 exCRT — 用 Exgcd 逐对合并方程：</p>
+        <p class="fragment">$\begin{cases} x \equiv b_1 \pmod{m_1} \\ x \equiv b_2 \pmod{m_2} \end{cases} \Rightarrow x \equiv \text{lcm}(b_1, b_2) \pmod{\text{lcm}(m_1, m_2)}$</p>
+    </section>
+</section>
