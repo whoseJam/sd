@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>Tarjan（无向）</h1>
+    </section>
+    <section>
+        <h2>边分类</h2>
+        <p>DFS 把无向图分为 DFS 树 + 若干返祖边。</p>
+    </section>
+    <section>
+        <h2>dfn / low</h2>
+        <ul>
+            <li>$\text{dfn}(u)$ — $u$ 的 DFS 序</li>
+            <li>$\text{low}(u)$ — 从 $u$ 出发能回到的最早祖先的 dfn（含自己）</li>
+        </ul>
+        <p class="fragment">$\text{low}(u) = \min$ 之下：自己、$\text{low}(v)$ 若 $v$ 是树边孩子、$\text{dfn}(v)$ 若 $v$ 是返祖目标。</p>
+    </section>
+    <section>
+        <h2>模板</h2>
+        <codeblock>
+            <script type="text/template">
+                void Tarjan(int u, int feid) {
+                    dfn[u] = low[u] = ++tot;
+                    for (auto& [v, id] : G[u]) {
+                        if (id == feid) continue;          // 不走来路同一条无向边
+                        if (!dfn[v]) {
+                            Tarjan(v, id);
+                            low[u] = min(low[u], low[v]);
+                        } else {
+                            low[u] = min(low[u], dfn[v]);  // 返祖
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

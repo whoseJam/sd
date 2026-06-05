@@ -1,0 +1,39 @@
+<section>
+    <section>
+        <h1>Tarjan（有向）</h1>
+    </section>
+    <section>
+        <h2>边分类</h2>
+        <ul>
+            <li>树边</li>
+            <li>前向边 — 祖先→后代</li>
+            <li>返祖边 — 后代→祖先</li>
+            <li>横叉边 — 跨支</li>
+        </ul>
+    </section>
+    <section>
+        <h2>dfn / low + 栈</h2>
+        <p>用栈维护当前正在被探索的祖先链。$\text{low}(u)$ 同无向，但松弛只在 $v$ <b>在栈内</b>时允许（横叉边的目标不一定在栈，不能松弛）。</p>
+        <codeblock>
+            <script type="text/template">
+                void Tarjan(int u) {
+                    dfn[u] = low[u] = ++tot;
+                    stk.push(u); ins[u] = 1;
+                    for (int v : G[u]) {
+                        if (!dfn[v]) { Tarjan(v); low[u] = min(low[u], low[v]); }
+                        else if (ins[v]) low[u] = min(low[u], dfn[v]);
+                    }
+                    if (dfn[u] == low[u]) {
+                        ++scc;
+                        while (true) {
+                            int w = stk.top(); stk.pop(); ins[w] = 0;
+                            bel[w] = scc;
+                            if (w == u) break;
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$\text{dfn}(u) = \text{low}(u)$ 说明 $u$ 是其所在 SCC 在 DFS 树上的根 — 弹出栈中到 $u$ 为止的所有点构成 SCC。</p>
+    </section>
+</section>

@@ -1,0 +1,14 @@
+<section>
+    <section>
+        <h1>边双连通分量</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>极大不含<b>桥</b>的子图 — 任意两点间至少有 2 条边不相交路径。</p>
+    </section>
+    <section>
+        <h2>求法</h2>
+        <p>跑 Tarjan 找出所有桥；去掉桥后剩下的每个连通分量就是一个边双。</p>
+        <p class="fragment">缩点后是棵<b>森林</b>（"桥树"）。</p>
+    </section>
+</section>
