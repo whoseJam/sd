@@ -1,0 +1,39 @@
+<section>
+    <section>
+        <h1>快速幂</h1>
+        <p>$a^3$ 简简单单，$a^{3 \times 10^{17}}$ 复复杂杂</p>
+    </section>
+    <section>
+        <h2>朴素</h2>
+        <codeblock>
+            <script type="text/template">
+                int Pow(int a, int b) {
+                    int ans = 1;
+                    for (int i = 1; i <= b; i++)
+                        ans = ans * a % Mod;
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p>$O(b)$ — $b$ 很大时不可行。</p>
+    </section>
+    <section>
+        <h2>二进制拆分</h2>
+        <p>$a^b = \prod_{i: \text{bit}_i = 1} a^{2^i}$，$O(\log b)$。</p>
+        <sd-animation src="../../animation/快速幂概述/快速幂.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 200px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int Fastpow(int a, int b) {
+                    int ans = 1;
+                    while (b) {
+                        if (b & 1) ans = ans * a % Mod;
+                        a = a * a % Mod;
+                        b >>= 1;
+                    }
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
