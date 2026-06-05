@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>柱子</h1>
+        <p>CF 474E</p>
+    </section>
+    <section>
+        <h2>状态</h2>
+        <p>$f_i$ = 序列最后一根柱子是第 $i$ 根时最大长度。</p>
+        <p class="fragment">
+            $$f_i = \max_{\substack{j < i \\ |h_j - h_i| \ge d}} \{f_j + 1\}$$
+        </p>
+    </section>
+    <section>
+        <h2>转维</h2>
+        <p>令 $hf[h]$ = 前面所有高度为 $h$ 的柱子里最大的 $f$ — 转移变成：</p>
+        <codeblock>
+            <script type="text/template">
+                f[i] = max(hf[1..h[i] - d], hf[h[i] + d..maxH]);
+                hf[h[i]] = max(hf[h[i]], f[i]);
+            </script>
+        </codeblock>
+        <p class="fragment">用线段树维护 $hf$ — $O(n \log n)$。$h \le 10^{15}$ 时离散化或动态开点。</p>
+    </section>
+</section>

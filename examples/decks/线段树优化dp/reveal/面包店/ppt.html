@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>面包店</h1>
+        <p>CF 833B</p>
+    </section>
+    <section>
+        <h2>状态</h2>
+        <p>$f_{i, j}$ = $[1, i]$ 分成 $j$ 段的最大价值，最后段是 $[x + 1, i]$：</p>
+        <p class="fragment">
+            $$f_{i, j} = \max_{x < i} \{f_{x, j-1} + \text{diff}(x + 1, i)\}$$
+        </p>
+    </section>
+    <section>
+        <h2>线段树维护</h2>
+        <p>对每个 $j$ 一棵线段树，维护 $f_{x, j-1} + \text{diff}(x + 1, i)$ 关于 $x$ 的值。</p>
+        <p class="fragment">$i \to i+1$ 时新加面包 $a_{i+1}$，设上一次出现位置 $\text{pre}$：</p>
+        <ul class="fragment">
+            <li>$x \in [1, \text{pre}]$：$\text{diff}$ 不变</li>
+            <li>$x \in [\text{pre} + 1, i]$：$\text{diff}$ 加 1（区间加 1）</li>
+        </ul>
+    </section>
+</section>

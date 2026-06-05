@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>线段树优化 dp</h1>
+        <p>不仅是线段树 — 任何序列结构皆可</p>
+    </section>
+    <section>
+        <h2>形式</h2>
+        <p>序列 dp 的转移如果是"区间内某一族 $j$ 的最优"，把朴素 $O(n)$ 的扫描换成线段树查询 $O(\log n)$。</p>
+        <sd-animation src="../../animation/线段树优化dp概述/形式.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 160px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                // 朴素
+                for (int j = l; j <= r; j++)
+                    f[i] = max(f[i], f[j] + g(j, i));
+
+                // 线段树
+                f[i] = seg.queryMax(l, r, /* +g(j, i) 可能要拆 */);
+            </script>
+        </codeblock>
+    </section>
+</section>

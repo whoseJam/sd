@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>线性王国比赛</h1>
+        <p>CF 115E</p>
+    </section>
+    <section>
+        <h2>状态</h2>
+        <p>$f_{l, r}$ = 最后一个被修复的区间是 $[l, r]$ 时的最大收益。</p>
+        <p>
+            $$f_{l, r} = f_{l, r-1} - a_r + (\text{出现在 } [l, r] \text{ 但不在 } [l, r-1] \text{ 的比赛收益})$$
+        </p>
+        <p class="fragment">
+            $$f_{i+1, i} = \max\left(f_{i, i-1}, \max_{l \le i} f_{l, i}\right)$$
+        </p>
+        <p class="fragment">用线段树维护每个 $r$ 的 $\max_l f_{l, r}$ — 转移 $O(\log n)$。</p>
+    </section>
+</section>
