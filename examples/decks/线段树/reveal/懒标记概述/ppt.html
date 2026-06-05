@@ -1,0 +1,47 @@
+<section>
+    <section>
+        <h1>懒标记</h1>
+        <p>Lazy propagation</p>
+    </section>
+    <section>
+        <h2>区间修改的困境</h2>
+        <p>"区间加" — 最坏 $2n$ 个线段被改 — 单次 $O(n)$ 退化。</p>
+    </section>
+    <section>
+        <h2>核心思想</h2>
+        <p>"本该改后代，但不改 — 标记一下，等不得不访问后代时再下放"。</p>
+        <ul>
+            <li class="fragment">区间修改时只更新顶层覆盖区间和当前节点的标记</li>
+            <li class="fragment">不访问后代时，后代脏数据不影响答案</li>
+            <li class="fragment">需要访问后代时，先 pushDown 标记到子节点</li>
+        </ul>
+    </section>
+    <section>
+        <h2>实现</h2>
+        <codeblock>
+            <script type="text/template">
+                struct Seg { int l, r, sm; ll tag; } t[4 * N];
+                void apply(int u, ll d) {
+                    t[u].sm += (t[u].r - t[u].l + 1) * d;
+                    t[u].tag += d;
+                }
+                void pushDown(int u) {
+                    if (t[u].tag) {
+                        apply(2*u, t[u].tag);
+                        apply(2*u + 1, t[u].tag);
+                        t[u].tag = 0;
+                    }
+                }
+                void rangeAdd(int u, int ql, int qr, ll d) {
+                    if (ql <= t[u].l && t[u].r <= qr) { apply(u, d); return; }
+                    pushDown(u);
+                    int mid = (t[u].l + t[u].r) >> 1;
+                    if (ql <= mid) rangeAdd(2*u, ql, qr, d);
+                    if (qr > mid)  rangeAdd(2*u + 1, ql, qr, d);
+                    pushUp(u);
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">总复杂度仍 $O(\log n)$ per op。</p>
+    </section>
+</section>

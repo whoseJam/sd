@@ -1,0 +1,53 @@
+<section>
+    <section>
+        <h1>线段树</h1>
+    </section>
+    <section>
+        <h2>区间查询问题</h2>
+        <ul>
+            <li><code>Add(x, d)</code>：单点修改</li>
+            <li><code>QueryMax / Min / Sum(l, r)</code>：区间查询</li>
+        </ul>
+        <p class="fragment">朴素 $O(n)$ per query 的 BIT / 暴力都太慢 — 线段树支持 $O(\log n)$ per op。</p>
+    </section>
+    <section>
+        <h2>节点</h2>
+        <p>每个节点维护一段连续区间的聚合信息：</p>
+        <codeblock>
+            <script type="text/template">
+                struct Seg { int l, r, mx, mn, sm; } t[4 * N];
+            </script>
+        </codeblock>
+        <p class="fragment">堆式建树：节点 $u$ 的左孩子 $2u$，右孩子 $2u + 1$。</p>
+    </section>
+    <section>
+        <h2>build / update / query</h2>
+        <codeblock>
+            <script type="text/template">
+                void build(int u, int l, int r) {
+                    t[u] = {l, r, ...};
+                    if (l == r) { /* 叶子 */ return; }
+                    int mid = (l + r) >> 1;
+                    build(2*u, l, mid);
+                    build(2*u + 1, mid + 1, r);
+                    pushUp(u);
+                }
+                void update(int u, int x, int d) {
+                    if (t[u].l == t[u].r) { /* 单点 */ return; }
+                    int mid = (t[u].l + t[u].r) >> 1;
+                    if (x <= mid) update(2*u, x, d);
+                    else update(2*u + 1, x, d);
+                    pushUp(u);
+                }
+                int querySum(int u, int ql, int qr) {
+                    if (ql <= t[u].l && t[u].r <= qr) return t[u].sm;
+                    int mid = (t[u].l + t[u].r) >> 1, ans = 0;
+                    if (ql <= mid) ans += querySum(2*u, ql, qr);
+                    if (qr > mid)  ans += querySum(2*u + 1, ql, qr);
+                    return ans;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">每次操作访问 $O(\log n)$ 个节点。</p>
+    </section>
+</section>

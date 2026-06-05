@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>势能线段树</h1>
+    </section>
+    <section>
+        <h2>动机</h2>
+        <p>一些操作（如<b>区间开根</b>）不能简单地用懒标记延迟下放 — 子项关系不是线性的。</p>
+        <p class="fragment">$\sqrt{a_1 + \dots + a_n} \ne \sqrt{a_1} + \dots + \sqrt{a_n}$。</p>
+    </section>
+    <section>
+        <h2>势能分析</h2>
+        <p>区间开根：</p>
+        <ul>
+            <li>区间最大值 $\le 1$ → 整段都 $\le 1$，开根不变 — 整段跳过</li>
+            <li>否则递归到叶子做单点开根</li>
+        </ul>
+        <p class="fragment">每个元素从 $V$ 开根到 1 最多 $\log \log V$ 次。整体 $O(n \log V \log \log V)$。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void update(int u, int ql, int qr) {
+                    if (t[u].mx <= 1) return;          // 全部 <= 1，跳过
+                    if (t[u].l == t[u].r) {
+                        t[u].mx = t[u].sm = sqrt(t[u].sm);
+                        return;
+                    }
+                    int mid = (t[u].l + t[u].r) >> 1;
+                    if (ql <= mid) update(2*u, ql, qr);
+                    if (qr > mid)  update(2*u + 1, ql, qr);
+                    pushUp(u);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
