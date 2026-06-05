@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>工作安排</h1>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>每个工作有截止时间和收益，在截止前完成可得收益，最大化总收益。</p>
+    </section>
+    <section>
+        <h2>反悔堆</h2>
+        <p>按截止时间从小到大排序，依次枚举：</p>
+        <ul>
+            <li class="fragment">当前工作有时间做 — 直接做，进堆</li>
+            <li class="fragment">没时间做 — 如果堆顶（已选中收益最小的）收益 $<$ 当前，<b>反悔</b>：弹堆顶，换成当前</li>
+            <li class="fragment">否则放弃当前</li>
+        </ul>
+    </section>
+</section>
