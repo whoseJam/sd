@@ -1,0 +1,53 @@
+<section>
+    <section>
+        <h1>树链剖分</h1>
+        <p>把树拍成一条线段</p>
+    </section>
+    <section>
+        <h2>重儿子 / 重链</h2>
+        <p>每个非叶节点的<b>重儿子</b> = 子树大小最大的孩子。</p>
+        <p class="fragment">从节点出发沿重儿子串成的链 = <b>重链</b>。</p>
+        <sd-animation src="../../animation/概述/重链.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>DFS 序</h2>
+        <p>按"先访问重儿子"的 DFS 序给每个节点编号 — <b>同一条重链上的节点在序列中是连续的</b>。</p>
+        <p class="fragment">树上路径 → 序列上 $O(\log n)$ 段区间 → 用线段树 / 树状数组维护。</p>
+    </section>
+    <section>
+        <h2>路径分解</h2>
+        <p>查询路径 $u \to v$：</p>
+        <ol class="fragment">
+            <li>若 $u, v$ 不在同一条重链上，让深度较大的链顶 $\text{top}$ 的那一方跳到 $\text{fa}[\text{top}]$，过程中累计当前重链段的贡献</li>
+            <li>直到 $u, v$ 在同一条重链上，取 $[\min, \max]$ 段</li>
+        </ol>
+        <p class="fragment">每次跳重链深度至少减半 — $O(\log n)$ 段。</p>
+    </section>
+    <section>
+        <h2>预处理</h2>
+        <p>两次 DFS：</p>
+        <ol>
+            <li>算 $\text{size}$ / $\text{son}$（重儿子）/ $\text{dep}$ / $\text{fa}$</li>
+            <li>按"重儿子优先"DFS 算 $\text{dfn}$ / $\text{top}$</li>
+        </ol>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void dfs1(int u, int f) {
+                    fa[u] = f; dep[u] = dep[f] + 1; siz[u] = 1;
+                    for (int v : G[u]) if (v != f) {
+                        dfs1(v, u);
+                        siz[u] += siz[v];
+                        if (siz[v] > siz[son[u]]) son[u] = v;
+                    }
+                }
+                void dfs2(int u, int t) {
+                    dfn[u] = ++ts; top[u] = t;
+                    if (son[u]) dfs2(son[u], t);
+                    for (int v : G[u])
+                        if (v != fa[u] && v != son[u]) dfs2(v, v);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
