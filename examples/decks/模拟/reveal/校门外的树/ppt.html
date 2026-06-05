@@ -1,0 +1,45 @@
+<section>
+    <section>
+        <h1>校门外的树</h1>
+        <p>luogu P1047</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$[0, l]$ 全是树，移走若干区间内的树（区间可重叠），求剩余棵数。</p>
+    </section>
+    <section>
+        <h2>朴素模拟</h2>
+        <sd-animation src="../../animation/校门外的树/移树.js" class="fragment"
+            style="margin: 0 auto; width: 580px; height: 120px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                void remove(int l, int r) {
+                    for (int i = l; i <= r; i++) arr[i] = false;
+                }
+                int count() {
+                    int ans = 0;
+                    for (int i = 0; i <= l; i++) if (arr[i]) ans++;
+                    return ans;
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>多组数据</h2>
+        <p>每组数据需要"重新植树 + 统计" — 总耗时大。</p>
+        <sd-animation src="../../animation/校门外的树/多组数据.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 100px;"></sd-animation>
+        <p class="fragment">用时间戳 $T$ 区分组：</p>
+        <sd-animation src="../../animation/校门外的树/等效做法.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 100px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void remove(int l, int r) {
+                    for (int i = l; i <= r; i++)
+                        if (arr[i] != T) ans--, arr[i] = T;
+                }
+                void nextTestCase() { T++; }
+            </script>
+        </codeblock>
+    </section>
+</section>

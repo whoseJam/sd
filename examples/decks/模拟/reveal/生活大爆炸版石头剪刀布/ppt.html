@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>生活大爆炸版石头剪刀布</h1>
+        <p>luogu P1328</p>
+    </section>
+    <section>
+        <h2>朴素 if</h2>
+        <codeblock>
+            <script type="text/template">
+                int check(int a, int b) {
+                    if (a == 1 && b == 1) return 平;
+                    if (a == 1 && b == 2) return 输;
+                    ...
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">$5 \times 5 = 25$ 个 if — 模拟题常见的丑陋。</p>
+    </section>
+    <section>
+        <h2>表格化</h2>
+        <codeblock>
+            <script type="text/template">
+                int table[5][5] = {
+                    { 平, 输, 赢, 赢, 输 },
+                    { 输, 平, 输, 赢, 输 },
+                    { 赢, 输, 平, 输, 赢 },
+                    { 赢, 赢, 输, 平, 赢 },
+                    { 输, 输, 赢, 赢, 平 }
+                };
+                int check(int a, int b) { return table[a - 1][b - 1]; }
+            </script>
+        </codeblock>
+        <p class="fragment quote">问题本身的复杂性不会改变，只会转移。</p>
+    </section>
+</section>

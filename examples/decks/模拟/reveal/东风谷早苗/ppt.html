@@ -1,13 +1,11 @@
 <section>
     <section>
         <h1>东风谷早苗</h1>
+        <p>luogu P1724</p>
     </section>
-    <problem data-source="https://www.luogu.com.cn/problem/P1724"></problem>
     <section>
-        <h2>东风谷早苗</h2>
-        <p>一个角色可以往四个方向移动，给出命令串，求出命令执行完成后角色的位置</p>
-        <p class="fragment">还是考虑如何实现if优雅一点</p>
-        <codeblock class="fragment">
+        <h2>朴素 if</h2>
+        <codeblock>
             <script type="text/template">
                 void walk(int& x, int& y, char code) {
                     if (code == 'E') x++;
@@ -17,20 +15,22 @@
                 }
             </script>
         </codeblock>
-        <codeblock class="fragment">
+    </section>
+    <section>
+        <h2>查表</h2>
+        <codeblock>
             <script type="text/template">
-                map< char, pair< int, int > > mp = {
+                map<char, pair<int, int>> dir = {
                     { 'E', { +1,  0 } },
                     { 'S', {  0, -1 } },
                     { 'W', { -1,  0 } },
                     { 'N', {  0, +1 } }
                 };
                 void walk(int& x, int& y, char code) {
-                    x += mp[code].first;
-                    y += mp[code].second;
+                    x += dir[code].first;
+                    y += dir[code].second;
                 }
             </script>
         </codeblock>
-        <p class="fragment quote">哪种更优雅一点呢？<span class="fragment">如果突然增加了八种指令，且新增的八种指令是日字形跳跃呢？</span></p>
     </section>
 </section>

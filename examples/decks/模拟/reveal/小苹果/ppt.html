@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>小苹果</h1>
+        <p>luogu P9748</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>每轮从一排苹果中 $3$ 个丢 $1$，$n \le 10^9$。</p>
+        <sd-animation src="../../animation/小苹果/样例解释.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 100px;"></sd-animation>
+        <ol>
+            <li>第几轮丢光</li>
+            <li>第 $i$ 个苹果在第几轮被丢</li>
+        </ol>
+    </section>
+    <section>
+        <h2>问题 1</h2>
+        <p>每轮丢 $\lceil \text{count} / 3 \rceil$ 个，模拟到 0：</p>
+        <codeblock>
+            <script type="text/template">
+                while (count > 0) count -= ceil(count / 3);
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>问题 2</h2>
+        <p>追踪目标苹果的当前位置，看它什么时候被丢。</p>
+        <sd-animation src="../../animation/小苹果/跟踪位置.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 100px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int round = 0;
+                while (true) {
+                    round++;
+                    if ((pos - 1) % 3 == 0) break;
+                    pos -= ceil(pos / 3);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
