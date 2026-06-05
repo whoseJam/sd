@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>百钱买百鸡加强版</h1>
+        <p>luogu T117116</p>
+    </section>
+    <section>
+        <h2>百钱买百鸡加强版</h2>
+        <p>公鸡 $5$ 元、母鸡 $3$ 元、小鸡 $\tfrac{1}{3}$ 元。买 $n$ 只鸡花 $n$ 元，求方案数，$n \le 10^9$。</p>
+        <p class="fragment quote">$O(n^3)$ 和 $O(n^2)$ 都不够。</p>
+    </section>
+    <section>
+        <h2>百钱买百鸡加强版</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            \text{answer}
+              &= \sum_{x=0}^n \sum_{y=0}^n \sum_{z=0}^n
+                  [5x + 3y + \tfrac{1}{3} z = n][x + y + z = n] \\
+              &= \sum_{x=0}^n \sum_{y=0}^n
+                  [5x + 3y + \tfrac{1}{3}(n - x - y) = n][0 \le n - x - y \le n] \\
+              &= \sum_{x=0}^n \sum_{y=0}^n
+                  [7x + 4y = n][0 \le n - x - y \le n] \\
+              &= \sum_{x=0}^n
+                  \bigl[0 \le \tfrac{n - 7x}{4} \le n\bigr]
+                  \bigl[0 \le \tfrac{3(n+x)}{4} \le n\bigr]
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">合法的 $x$ 范围 $= [0, \lfloor n/7 \rfloor]$，且 $n - 7x$ 与 $n + x$ 都得是 $4$ 的倍数。</p>
+        <p class="fragment">记 $r = n \bmod 4$，则 $x$ 一定是 $(4 - r) + 4i$ 的形式 — $O(n / 7)$ 枚举 $i$ 即可。</p>
+    </section>
+</section>

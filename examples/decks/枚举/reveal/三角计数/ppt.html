@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>三角计数</h1>
+    </section>
+    <section>
+        <h2>三角计数</h2>
+        <p>$N\times N$ 格点图，选三个点构成三角形，要求有一条边平行 $x$ 轴、另一条平行 $y$ 轴。</p>
+        <sd-animation src="../../animation/三角计数/样例解释.js"
+            style="margin: 0 auto; width: 760px; height: 320px;"></sd-animation>
+        <p class="fragment">统计方案数。</p>
+    </section>
+    <section>
+        <h2>三角计数</h2>
+        <p>直接枚举三个点的位置：</p>
+        <sd-animation src="../../animation/三角计数/样本空间1.js" class="fragment"
+            style="margin: 0 auto; width: 820px; height: 280px;"></sd-animation>
+        <p class="fragment">绝大多数枚举无效。换个枚举方式。</p>
+    </section>
+    <section>
+        <h2>三角计数</h2>
+        <p>用"底边 + 第三个顶点"参数化：</p>
+        <ul>
+            <li class="fragment">底边水平，$y$ 坐标固定</li>
+            <li class="fragment">底边左右端点 $l, r$</li>
+            <li class="fragment">第三个顶点 — $n - 1$ 个其它行 × 2 列 $= 2n - 2$ 个选择</li>
+        </ul>
+        <sd-animation src="../../animation/三角计数/样本空间2.js" class="fragment"
+            style="margin: 0 auto; width: 820px; height: 280px;"></sd-animation>
+        <p class="fragment">
+            $$\text{answer} = \sum_{y=1}^n \sum_{l=1}^n \sum_{r=l+1}^n (2n - 2)$$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,49 @@
+<section>
+    <section>
+        <h1>棋盘问题</h1>
+        <p>luogu P2241</p>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <sd-animation src="../../animation/棋盘问题/棋盘问题.js"
+            style="margin: 0 auto; width: 760px; height: 320px;"></sd-animation>
+        <p class="fragment">枚举矩形的左上角 $(i, j)$ 和右下角 $(x, y)$ 即可计数。</p>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p>以正方形为例 — 枚举左上角 $(i, j)$ 和边长 $d$：</p>
+        <div style="display: flex; align-items: center; gap: 24px;">
+            <sd-animation src="../../animation/棋盘问题/枚举正方形.js"
+                style="margin: 0; width: 50%; height: 320px;"></sd-animation>
+            <p class="math-fragment">
+                $$
+                \begin{aligned}
+                \text{sqr} &= \sum_{i=1}^n \sum_{j=1}^m \sum_{d=1}^{\min(n-i+1,\, m-j+1)} 1 \\
+                &= \sum_{d=1}^{\min(n,m)} (n-d+1)(m-d+1)
+                \end{aligned}
+                $$
+            </p>
+        </div>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p>换元 $t = d - 1$：</p>
+        <p class="math-fragment">
+            $$
+            \text{sqr} = \sum_{t=0}^{K}(n-t)(m-t)
+                  = (K+1)nm - (n+m) S_1(0,K) + S_2(0,K)
+            $$
+        </p>
+        <p>其中 $S_1(l, r) = \sum_{i=l}^r i$，$S_2(l, r) = \sum_{i=l}^r i^2$，$K = \min(n, m) - 1$。</p>
+    </section>
+    <section>
+        <h2>棋盘问题</h2>
+        <p>长方形 $=$ 所有矩形 $-$ 正方形：</p>
+        <p class="math-fragment">
+            $$
+            \text{rct} = \sum_{i=1}^n \sum_{j=1}^m \sum_{x=i}^n \sum_{y=j}^m 1 - \text{sqr}
+                = S_1(1, n) \cdot S_1(1, m) - \text{sqr}
+            $$
+        </p>
+    </section>
+</section>
