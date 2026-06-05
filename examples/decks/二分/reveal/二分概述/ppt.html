@@ -1,0 +1,82 @@
+<section>
+    <section>
+        <h1>二分</h1>
+        <p>找到一个序列的分界点</p>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <p>序列前半段满足性质 $A$，后半段满足性质 $B$，找出分界点。</p>
+        <sd-animation src="../../animation/二分概述/序列性质.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <p class="fragment">有一个 $classify$ 函数能判断序列点属于 $A$ 还是 $B$。</p>
+    </section>
+    <section>
+        <h2>线性扫</h2>
+        <sd-animation src="../../animation/二分概述/序列性质图片.js"
+            style="margin: 0 auto; width: 540px; height: 120px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int i = L;
+                for (; i <= R; i++) {
+                    if (classify(i) == "A") continue;
+                    break;
+                }
+                // i - 1 是最后一个 A，i 是第一个 B
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>二分查找</h2>
+        <sd-animation src="../../animation/二分概述/二分序列.js"
+            style="margin: 0 auto; width: 540px; height: 180px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (classify(mid) == "A") l = mid + 1;
+                    else r = mid - 1;
+                }
+            </script>
+        </codeblock>
+        <ul>
+            <li class="fragment">退出时 $l = r + 1$</li>
+            <li class="fragment">$r$ 是最后一个 $A$，$l$ 是第一个 $B$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>lower_bound</h2>
+        <p>有序序列里第一个 $\ge x$ 的元素。</p>
+        <sd-animation src="../../animation/二分概述/lower_bound解释.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <sd-animation src="../../animation/二分概述/lower_bound实现.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 180px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (a[mid] < x) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // l 是 lower_bound
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>upper_bound</h2>
+        <p>有序序列里第一个 $> x$ 的元素。</p>
+        <sd-animation src="../../animation/二分概述/upper_bound解释.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <sd-animation src="../../animation/二分概述/upper_bound实现.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 180px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (a[mid] <= x) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // l 是 upper_bound
+            </script>
+        </codeblock>
+    </section>
+</section>

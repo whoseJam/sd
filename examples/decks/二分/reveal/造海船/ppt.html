@@ -1,0 +1,33 @@
+<section>
+    <section>
+        <h1>造海船</h1>
+        <p>luogu U576707</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 根原木切成等长木材，要至少 $k$ 根，求木材长度最大值。</p>
+        <sd-animation src="../../animation/造海船/样例解释.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 260px;"></sd-animation>
+    </section>
+    <section>
+        <h2>判定问题</h2>
+        <p>固定木材长度 $\text{mid}$，可以切出 $F(\text{mid}) = \sum_i \lfloor L_i / \text{mid} \rfloor$ 根 — 检查 $F(\text{mid}) \ge k$。</p>
+        <sd-animation src="../../animation/造海船/造海船.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <sd-animation src="../../animation/常用/序列特征.js"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (F(mid) >= k) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // r 是答案
+            </script>
+        </codeblock>
+    </section>
+</section>

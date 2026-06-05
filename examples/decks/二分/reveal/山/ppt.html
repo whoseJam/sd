@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>山</h1>
+        <p>luogu P1663</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>在山间放一盏灯，使其照亮所有山坡。</p>
+        <sd-animation src="../../animation/山/样例解释.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 260px;"></sd-animation>
+    </section>
+    <section>
+        <h2>二分高度</h2>
+        <p>固定灯的高度 $h$，每个山坡延长得到一条射线和高度线的交点 — 灯必须落在所有交点构成的"可行区间"的交集里。</p>
+        <sd-animation src="../../animation/山/山.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 260px;"></sd-animation>
+        <sd-animation src="../../animation/常用/序列特征.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <p class="fragment">交集非空就是合法 $h$，对 $h$ 二分。</p>
+    </section>
+</section>

@@ -1,0 +1,28 @@
+<section>
+    <section>
+        <h1>立方根</h1>
+        <p>luogu B3627</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>求 $n$ 的立方根向下取整 — 找最大的 $x$ 使 $x^3 \le n$。</p>
+    </section>
+    <section>
+        <h2>二分</h2>
+        <p>$x^3$ 关于 $x$ 单调，对 $x$ 二分。</p>
+        <sd-animation src="../../animation/立方根/立方根.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 120px;"></sd-animation>
+        <sd-animation src="../../animation/常用/序列特征.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 100px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                while (l <= r) {
+                    int mid = (l + r) >> 1;
+                    if (mid * mid * mid <= n) l = mid + 1;
+                    else r = mid - 1;
+                }
+                // r 是答案
+            </script>
+        </codeblock>
+    </section>
+</section>
