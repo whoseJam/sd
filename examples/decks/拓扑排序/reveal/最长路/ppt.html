@@ -1,32 +1,25 @@
 <section>
     <section>
         <h1>最长路</h1>
-        <p>有向无环图最长路</p>
-    </section>
-    <problem data-source="https://www.luogu.com.cn/problem/P1807"></problem>
-    <section>
-        <h2>最长路</h2>
-        <p>求一个有向无环图中，从 $1$ 到 $n$ 的最长路</p>
-        <p class="fragment">设 $dis(u)$ 表示从节点 $1$ 走到节点 $u$ 的最长路...</p>
-        <sd-animation src="./最长路.js" class="fragment"
-            style="width: 1000px; height: 200px;"></sd-animation>
-        <p class="fragment">
-            $$
-            dis(u)+w_{u,v}\stackrel{max}{\rightarrow} div(v)
-            $$
-        </p>
+        <p>luogu P1807 — DAG 最长路</p>
     </section>
     <section>
-        <h2>最长路</h2>
-        <p>需要处理的细节</p>
+        <h2>题意</h2>
+        <p>DAG 中求 $1 \to n$ 的最长路。</p>
+        <p class="fragment">$\text{dis}(u) + w_{u, v} \xrightarrow{\max} \text{dis}(v)$ — 沿拓扑序松弛。</p>
+        <sd-animation src="../../animation/最长路/最长路.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>细节</h2>
         <ul>
-            <li class="fragment">可能有多个入度为 $0$ 的点</li>
-            <li class="fragment">起点入度不一定为 $0$</li>
+            <li>可能有多个入度 $0$ 的点 — 初始 $\text{dis}(i) = -\infty$，$\text{dis}(1) = 0$</li>
+            <li>起点入度不一定为 $0$ — Kahn 队列从所有入度 $0$ 点开始仍然没问题</li>
         </ul>
-        <codeblock class="fragment">
+        <codeblock>
             <script type="text/template">
                 void Toposort() {
-                    queue < int > q;
+                    queue<int> q;
                     for (int i = 1; i <= n; i++) dis[i] = -inf;
                     dis[1] = 0;
                     for (int i = 1; i <= n; i++)

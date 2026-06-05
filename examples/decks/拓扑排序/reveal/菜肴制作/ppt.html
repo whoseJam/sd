@@ -1,0 +1,15 @@
+<section>
+    <section>
+        <h1>菜肴制作</h1>
+        <p>luogu P3243</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>给定 DAG，输出字典序最小的拓扑序。</p>
+    </section>
+    <section>
+        <h2>反向 + 大根堆</h2>
+        <p>"字典序最小" $\ne$ "贪心选最小入度 0 的点"。</p>
+        <p class="fragment">反转所有边，跑大根堆 Kahn — 得到的拓扑序逆序就是答案。</p>
+    </section>
+</section>
