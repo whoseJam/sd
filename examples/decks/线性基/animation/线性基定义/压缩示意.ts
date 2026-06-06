@@ -33,7 +33,10 @@ const REP_STROKE_W = 2;
 const LABEL_COLOR = "#3a3a3a";
 const REP_LABEL_COLOR = "#a04d09";
 
-interface Block { bg: sd.Rect; label: sd.Math; }
+interface Block {
+  bg: sd.Rect;
+  label: sd.Math;
+}
 
 function makeBlock(
   cx: number,
@@ -48,17 +51,22 @@ function makeBlock(
   return {
     bg: new sd.Rect({
       targetNode: svg,
-      x: cx - BLOCK_W / 2, y: cy - BLOCK_H / 2,
-      width: BLOCK_W, height: BLOCK_H,
-      fill, stroke,
+      x: cx - BLOCK_W / 2,
+      y: cy - BLOCK_H / 2,
+      width: BLOCK_W,
+      height: BLOCK_H,
+      fill,
+      stroke,
       strokeWidth,
-      rx: RX, ry: RX,
+      rx: RX,
+      ry: RX,
       opacity: 0,
     }),
     label: new sd.Math({
       targetNode: svg,
       text: labelLatex,
-      cx, cy: cy - 1,
+      cx,
+      cy: cy - 1,
       fontSize: labelSize,
       fill: labelColor,
       opacity: 0,
@@ -69,7 +77,10 @@ function makeBlock(
 function rowXs(count: number, centerX: number): number[] {
   const totalW = count * BLOCK_W + (count - 1) * BLOCK_GAP;
   const x0 = centerX - totalW / 2 + BLOCK_W / 2;
-  return Array.from({ length: count }, (_, i) => x0 + i * (BLOCK_W + BLOCK_GAP));
+  return Array.from(
+    { length: count },
+    (_, i) => x0 + i * (BLOCK_W + BLOCK_GAP),
+  );
 }
 
 const leftXs = rowXs(LEFT_COUNT, LEFT_CX);
@@ -77,19 +88,27 @@ const rightXs = rowXs(RIGHT_COUNT, RIGHT_CX);
 
 const leftBlocks: Block[] = leftXs.map((cx, i) =>
   makeBlock(
-    cx, Y,
+    cx,
+    Y,
     `a_${i + 1}`,
-    SRC_FILL, SRC_STROKE, SRC_STROKE_W,
-    LABEL_COLOR, 18,
+    SRC_FILL,
+    SRC_STROKE,
+    SRC_STROKE_W,
+    LABEL_COLOR,
+    18,
   ),
 );
 
 const rightBlocks: Block[] = rightXs.map((cx, i) =>
   makeBlock(
-    cx, Y,
+    cx,
+    Y,
     `b_${i + 1}`,
-    REP_FILL, REP_STROKE, REP_STROKE_W,
-    REP_LABEL_COLOR, 18,
+    REP_FILL,
+    REP_STROKE,
+    REP_STROKE_W,
+    REP_LABEL_COLOR,
+    18,
   ),
 );
 
@@ -97,21 +116,29 @@ const rightBlocks: Block[] = rightXs.map((cx, i) =>
 const leftCaption = new sd.Math({
   targetNode: svg,
   text: "\\{ a_1, \\dots, a_n \\}",
-  cx: LEFT_CX, cy: -(BLOCK_H / 2) - 22,
-  fontSize: 17, fill: LABEL_COLOR, opacity: 0,
+  cx: LEFT_CX,
+  cy: -(BLOCK_H / 2) - 22,
+  fontSize: 17,
+  fill: LABEL_COLOR,
+  opacity: 0,
 });
 
 const rightCaption = new sd.Math({
   targetNode: svg,
   text: "B",
-  cx: RIGHT_CX, cy: -(BLOCK_H / 2) - 22,
-  fontSize: 22, fill: REP_STROKE, opacity: 0,
+  cx: RIGHT_CX,
+  cy: -(BLOCK_H / 2) - 22,
+  fontSize: 22,
+  fill: REP_STROKE,
+  opacity: 0,
 });
 
 // Compression arrow — one sd.Path so the shaft and the V-head fade in
 // together. Stroke-only, no fill.
-const LEFT_RIGHT_EDGE = LEFT_CX + (LEFT_COUNT * BLOCK_W + (LEFT_COUNT - 1) * BLOCK_GAP) / 2;
-const RIGHT_LEFT_EDGE = RIGHT_CX - (RIGHT_COUNT * BLOCK_W + (RIGHT_COUNT - 1) * BLOCK_GAP) / 2;
+const LEFT_RIGHT_EDGE =
+  LEFT_CX + (LEFT_COUNT * BLOCK_W + (LEFT_COUNT - 1) * BLOCK_GAP) / 2;
+const RIGHT_LEFT_EDGE =
+  RIGHT_CX - (RIGHT_COUNT * BLOCK_W + (RIGHT_COUNT - 1) * BLOCK_GAP) / 2;
 const ARROW_TAIL = LEFT_RIGHT_EDGE + 20;
 const ARROW_TIP = RIGHT_LEFT_EDGE - 20;
 const HEAD_LEN = 12;
@@ -135,14 +162,17 @@ const arrowLabel = new sd.Math({
   text: "\\text{线性基}",
   cx: (ARROW_TAIL + ARROW_TIP) / 2,
   cy: Y - 22,
-  fontSize: 18, fill: REP_STROKE, opacity: 0,
+  fontSize: 18,
+  fill: REP_STROKE,
+  opacity: 0,
 });
 
 const DUR = 340;
 
 function fadeIn(el: sd.Rect | sd.Math | sd.Line | sd.Path, delay = 0) {
   el.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
 }
 
 sd.main(async () => {

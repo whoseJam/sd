@@ -1,7 +1,7 @@
+import type { SDNode } from "@/node/node";
 import type { RenderNode } from "@/renderer/render-node";
 
 import { Window } from "@/animate/window";
-import type { SDNode } from "@/node/node";
 
 export type TweenFn = (t: number) => Record<string, number>;
 export type TweenBounds = { x?: [number, number]; y?: [number, number] };

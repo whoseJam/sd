@@ -3,12 +3,12 @@ import type {
   InterpKind,
   LazyInterpKind,
 } from "@/animate/interp";
+import type { ParametricAction } from "@/animate/parametric-action";
 import type { RenderNode } from "@/renderer/render-node";
 import type { SDNode } from "@/sd";
 
 import { Action } from "@/animate/action";
 import { ActionList } from "@/animate/action-list";
-import type { ParametricAction } from "@/animate/parametric-action";
 import { Window } from "@/animate/window";
 import { Status as S } from "@/interact/status";
 

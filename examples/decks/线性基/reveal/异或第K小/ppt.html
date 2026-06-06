@@ -1,10 +1,23 @@
 <section>
     <section>
         <h1>异或第 $k$ 小</h1>
+        <p>HDU <a href="https://acm.hdu.edu.cn/showproblem.php?pid=3949" target="_blank" data-preview-link>3949</a></p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个非负整数，子集 XOR 排序后求第 $k$ 小。</p>
+        <p>$n \le 10^4$，$k$ 询问次数 $\le 10^4$。</p>
     </section>
     <section>
         <h2>做法</h2>
-        <p>把线性基化为<b>对角形</b>（每个 $b[i]$ 不含其他 $b[j]$ 的高位 1）。然后 $k$ 写成二进制对应基中元素的选 / 不选，凑出第 $k$ 小。</p>
-        <p class="fragment">注意：原数列若<b>线性相关</b>（有数能被基表出），异或集合包含 0 — 需要把 $k$ 减 1 处理。</p>
+        <div style="display: flex; align-items: flex-start; gap: 24px;">
+            <div style="flex: 1 1 0; min-width: 0;">
+                <p>从高位到低位处理每个 $b_i$，每步两个选择：XOR 或不 XOR，一个让 ans 变大、一个变小。</p>
+                <p class="fragment">大分支里<b>所有</b>结果都比小分支里<b>所有</b>结果大（低位的 $b_j$ 影响不到位 $i$）。</p>
+                <p class="fragment">两个分支各 $2^{\text{剩余}-1}$ 个叶子。看 $k$ 落哪边，跨过去 $k$ 减半边大小。</p>
+            </div>
+            <sd-animation src="../../animation/异或第K小/决策树.js"
+                style="flex: 1 1 0; margin: 0; height: 320px;"></sd-animation>
+        </div>
     </section>
 </section>
