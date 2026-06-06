@@ -28,9 +28,15 @@ export abstract class BoxSVGNode extends SDSVGNode {
   setMaxX(maxX: number): this {
     return this.setX(maxX - this.getLocalWidth());
   }
+  setMx(maxX: number): this {
+    return this.setMaxX(maxX);
+  }
 
   setMaxY(maxY: number): this {
     return this.setY(maxY - this.getLocalHeight());
+  }
+  setMy(maxY: number): this {
+    return this.setMaxY(maxY);
   }
 
   setCenter(center: [number, number]): this;
@@ -67,9 +73,15 @@ export abstract class BoxHTMLNode extends SDHTMLNode {
   setMaxX(maxX: number): this {
     return this.setX(maxX - this.getLocalWidth());
   }
+  setMx(maxX: number): this {
+    return this.setMaxX(maxX);
+  }
 
   setMaxY(maxY: number): this {
     return this.setY(maxY - this.getLocalHeight());
+  }
+  setMy(maxY: number): this {
+    return this.setMaxY(maxY);
   }
 
   setCenter(center: [number, number]): this;

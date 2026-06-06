@@ -262,10 +262,16 @@ export abstract class SDNode {
     const b = this.getLocalBox();
     return b.x + b.width / 2;
   }
+  getLocalCx(): number {
+    return this.getLocalCenterX();
+  }
 
   getLocalCenterY(): number {
     const b = this.getLocalBox();
     return b.y + b.height / 2;
+  }
+  getLocalCy(): number {
+    return this.getLocalCenterY();
   }
 
   getLocalCenter(): [number, number] {
@@ -276,10 +282,16 @@ export abstract class SDNode {
     const b = this.getLocalBox();
     return b.x + b.width;
   }
+  getLocalMx(): number {
+    return this.getLocalMaxX();
+  }
 
   getLocalMaxY(): number {
     const b = this.getLocalBox();
     return b.y + b.height;
+  }
+  getLocalMy(): number {
+    return this.getLocalMaxY();
   }
 
   getWorldAABB(): AABB {
