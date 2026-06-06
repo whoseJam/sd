@@ -63,10 +63,10 @@ for (let bit = 0; bit <= 3; bit++) {
   xCells[bit] = makeCell(bitX(bit), WR_Y, "0", NEUTRAL);
 }
 
-const xLabel = new sd.Text({
-  targetNode: svg, text: "x",
+const xLabel = new sd.Math({
+  targetNode: svg, text: "\\mathbf{x}",
   cx: LABEL_X, cy: WR_Y - 1,
-  fontSize: 12, fill: NEUTRAL, opacity: 0,
+  fontSize: 15, fill: NEUTRAL, opacity: 0,
 });
 
 // Beam: vertical line from x bottom to a basis row top. Endpoints animated.
@@ -89,10 +89,10 @@ for (let slot = 3; slot >= 0; slot--) {
     row[bit] = makeCell(bitX(bit), cy, "0", FAINT);
   }
   basis.push(row);
-  slotLabels.push(new sd.Text({
-    targetNode: svg, text: `b[${slot}]`,
+  slotLabels.push(new sd.Math({
+    targetNode: svg, text: `\\mathbf{b}_${slot}`,
     cx: LABEL_X, cy: cy - 1,
-    fontSize: 11, fill: NEUTRAL, opacity: 0,
+    fontSize: 14, fill: NEUTRAL, opacity: 0,
   }));
 }
 basis.reverse();
@@ -136,10 +136,14 @@ function highlightLeadingBit(bit: number, delay = 0) {
   }
 }
 
-function beamTo(bit: number, slot: number, delay = 0, dur = 360) {
-  beam.startAnimate({ delay, duration: dur, easing: E.easeOut })
+function beamTo(bit: number, slot: number, delay = 0, dur = 320) {
+  // Snap endpoints into position while invisible, then fade in. Avoids
+  // the "drifting from a previous endpoint" look.
+  beam.startAnimate({ delay, duration: 1, easing: E.easeOut })
     .setX1(bitX(bit)).setX2(bitX(bit))
     .setY2(basisCy(slot) + CELL_H / 2)
+    .endAnimate();
+  beam.startAnimate({ delay: delay + 4, duration: dur, easing: E.easeOut })
     .setOpacity(1).endAnimate();
 }
 
