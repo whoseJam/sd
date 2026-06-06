@@ -20,7 +20,7 @@ export function StackLayout(arr: Array<BoxNode>, args: StackLayoutParam) {
     } else if (justify === "cy") {
       element.setCy(y + elementHeight * (i + 0.5));
     } else {
-      element.setMy(y + elementHeight * (i + 1));
+      element.setMaxY(y + elementHeight * (i + 1));
     }
 
     if (align === "x") {
@@ -28,7 +28,7 @@ export function StackLayout(arr: Array<BoxNode>, args: StackLayoutParam) {
     } else if (align === "cx") {
       element.setCx(x);
     } else {
-      element.setMx(x);
+      element.setMaxX(x);
     }
   });
 }

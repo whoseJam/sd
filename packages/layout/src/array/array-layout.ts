@@ -20,7 +20,7 @@ export function ArrayLayout(arr: Array<BoxNode>, args: ArrayLayoutParam) {
     } else if (justify === "cx") {
       element.setCx(x + elementWidth * (i + 0.5));
     } else {
-      element.setMx(x + elementWidth * (i + 1));
+      element.setMaxX(x + elementWidth * (i + 1));
     }
 
     if (align === "y") {
@@ -28,7 +28,7 @@ export function ArrayLayout(arr: Array<BoxNode>, args: ArrayLayoutParam) {
     } else if (align === "cy") {
       element.setCy(y);
     } else {
-      element.setMy(y);
+      element.setMaxY(y);
     }
   });
 }

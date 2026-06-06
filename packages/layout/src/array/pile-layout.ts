@@ -16,7 +16,7 @@ export function PileLayout(arr: Array<BoxNode>, args: PileLayoutParam) {
 
   arr.forEach((element, i) => {
     if (justify === "my") {
-      element.setMy(my - elementHeight * i);
+      element.setMaxY(my - elementHeight * i);
     } else if (justify === "cy") {
       element.setCy(my - elementHeight * (i + 0.5));
     } else {
@@ -28,7 +28,7 @@ export function PileLayout(arr: Array<BoxNode>, args: PileLayoutParam) {
     } else if (align === "cx") {
       element.setCx(x);
     } else {
-      element.setMx(x);
+      element.setMaxX(x);
     }
   });
 }

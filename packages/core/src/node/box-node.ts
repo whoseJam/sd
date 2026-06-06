@@ -25,18 +25,12 @@ export abstract class BoxSVGNode extends SDSVGNode {
     return this.setCy(cy);
   }
 
-  setMx(mx: number): this {
-    return this.setX(mx - this.getLocalWidth());
-  }
-  setMaxX(mx: number): this {
-    return this.setMx(mx);
+  setMaxX(maxX: number): this {
+    return this.setX(maxX - this.getLocalWidth());
   }
 
-  setMy(my: number): this {
-    return this.setY(my - this.getLocalHeight());
-  }
-  setMaxY(my: number): this {
-    return this.setMy(my);
+  setMaxY(maxY: number): this {
+    return this.setY(maxY - this.getLocalHeight());
   }
 
   setCenter(center: [number, number]): this;
@@ -70,18 +64,12 @@ export abstract class BoxHTMLNode extends SDHTMLNode {
     return this.setCy(cy);
   }
 
-  setMx(mx: number): this {
-    return this.setX(mx - this.getLocalWidth());
-  }
-  setMaxX(mx: number): this {
-    return this.setMx(mx);
+  setMaxX(maxX: number): this {
+    return this.setX(maxX - this.getLocalWidth());
   }
 
-  setMy(my: number): this {
-    return this.setY(my - this.getLocalHeight());
-  }
-  setMaxY(my: number): this {
-    return this.setMy(my);
+  setMaxY(maxY: number): this {
+    return this.setY(maxY - this.getLocalHeight());
   }
 
   setCenter(center: [number, number]): this;
