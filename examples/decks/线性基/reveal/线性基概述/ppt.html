@@ -8,9 +8,9 @@
         <h2>问题</h2>
         <div style="display: flex; align-items: flex-start; gap: 24px;">
             <div style="flex: 1 1 0; min-width: 0;">
-                <p>给 $n$ 个非负整数 $a_1, \dots, a_n$ — 它们的子集 XOR 能取到哪些值？</p>
+                <p>给 $n$ 个非负整数 $a_1, \dots, a_n$。任取一个子集，XOR 起来可能是哪些值？</p>
                 <p class="fragment">例 $\{3, 5\}$：4 个子集，XOR 取值 $\{0, 3, 5, 6\}$。</p>
-                <p class="fragment">朴素 $O(2^n)$ — $n$ 大不可行。</p>
+                <p class="fragment">朴素做法：枚举每个子集计算 XOR，时间复杂度 $O(2^n)$。</p>
             </div>
             <sd-animation src="../../animation/问题/子集异或.js"
                 style="flex: 1 1 0; margin: 0; height: 460px;"></sd-animation>
@@ -22,9 +22,10 @@
         <div style="display: flex; align-items: flex-start; gap: 24px;">
             <div style="flex: 1 1 0; min-width: 0;">
                 <p>原集合能 XOR 出的所有值构成集合 $S$。</p>
-                <p class="fragment">能否用更少的数代替原集合而 $S$ 不变 — 去掉<b>冗余元素</b>。</p>
-                <p class="fragment">例 $\{3, 5, 6\}$：$\vec{c} = \vec{a} \oplus \vec{b}$ — $\vec{c}$ 冗余。</p>
-                <p class="fragment">压缩到极致 — 一组无冗余的<b>代表</b>。</p>
+                <p class="fragment">希望用更少的数代替原集合并保持 $S$ 不变，等价于去掉<b>冗余元素</b>。</p>
+                <p class="fragment">例 $\{3, 5, 6\}$：$\vec{c} = \vec{a} \oplus \vec{b}$，所以 $\vec{c}$ 是冗余的。</p>
+                <p class="fragment quote">由 XOR 的对称性，「$\vec{c}$ 冗余」「$\vec{a}$ 冗余」「$\vec{b}$ 冗余」三者等价；保留任意两个都行。</p>
+                <p class="fragment">压缩到极致就得到一组无冗余的<b>代表</b>。</p>
             </div>
             <sd-animation src="../../animation/压缩/冗余删除.js"
                 style="flex: 1 1 0; margin: 0; height: 400px;"></sd-animation>
@@ -32,33 +33,13 @@
     </section>
 
     <section>
-        <h2>线性基</h2>
-        <p>原集合的<b>无冗余代表</b> — 任何基元素不能由其它基元素 XOR 表出。</p>
-        <ul>
-            <li class="fragment">原集合能 XOR 出的值 $=$ 线性基能 XOR 出的值</li>
-            <li class="fragment">基大小 $\le \log V$ — 每个最高位至多一个代表</li>
-            <li class="fragment">$n = 10^6$ 个数 $\Rightarrow$ 基大小 $\le 60$</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>建基</h2>
+        <h2>贪心构造</h2>
         <div style="display: flex; align-items: flex-start; gap: 24px;">
             <div style="flex: 1 1 0; min-width: 0;">
-                <p>维护 $b_0, \dots, b_{59}$ — $b_i$ 是首高位为 $i$ 的基元素。</p>
-                <p>插入 $x$：取 $x$ 最高位 $i$，$b_i$ 空则 $b_i := x$，否则 $x \mathrel{\oplus}= b_i$ 后重复。</p>
-                <codeblock>
-                    <script type="text/template">
-                        bool insert(ll x) {
-                            for (int i = 60; i >= 0; i--) {
-                                if (!((x >> i) & 1)) continue;
-                                if (!b[i]) { b[i] = x; return true; }
-                                x ^= b[i];
-                            }
-                            return false;
-                        }
-                    </script>
-                </codeblock>
+                <p>目标：用 $\{a_1, \dots, a_n\}$ 构造一个集合 $B$，$|B| \le n$，且 XOR 可达集不变。</p>
+                <p>按最高位给每个数分槽，每个最高位只留一个代表。</p>
+                <p class="fragment">若一个数能被已有槽位的数 XOR 表出，它就没有进槽的必要，可以直接压缩掉。</p>
+                <p class="fragment quote">用 $\vec{x} \oplus \vec{b}_i$ 替换 $\vec{x}$ 是无损的：$\vec{b}_i$ 还在槽里，再 XOR 一次就能把 $\vec{x}$ 拿回来。</p>
                 <p class="fragment">$O(\log V)$ per insert。</p>
             </div>
             <sd-animation src="../../animation/线性基概述/建基.js"
@@ -67,8 +48,16 @@
     </section>
 
     <section>
+        <h2>线性基</h2>
+        <p>刚才构造的 $B$ 就是 $\{a_1, \dots, a_n\}$ 的<b>线性基</b>。</p>
+        <p class="fragment">原集合能 XOR 出哪些值，$B$ 就能 XOR 出哪些；反之亦然。</p>
+        <p class="fragment">$|B| \le \log V$，跟 $n$ 无关。64 位整数下 $|B| \le 60$。</p>
+        <p class="fragment quote">动画里 $8 = 13 \oplus 6 \oplus 3$，所以被压缩掉。</p>
+    </section>
+
+    <section>
         <h2>判定 $q$</h2>
-        <p>对 $q$ 跑插入流程 — $q$ 能化简为 $0$ $\Leftrightarrow$ $q$ 能由子集 XOR 表出。</p>
+        <p>对 $q$ 跑插入流程。$q$ 能化简为 $0$ 当且仅当 $q$ 能由子集 XOR 表出。</p>
         <codeblock>
             <script type="text/template">
                 bool query(ll q) {
