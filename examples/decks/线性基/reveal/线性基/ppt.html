@@ -1,10 +1,31 @@
 <section>
     <section>
         <h1>线性基</h1>
-        <p>模板</p>
+        <p>模板 — <a href="https://www.luogu.com.cn/problem/P3812" target="_blank" data-preview-link>luogu P3812</a></p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 个非负整数子集 XOR 的最大值。</p>
+        <p>$n \le 50$。</p>
     </section>
     <section>
         <h2>板子</h2>
-        <p>逐个 insert，记录基大小。</p>
+        <div style="display: flex; align-items: flex-start; gap: 20px;">
+            <div style="flex: 2 1 0; min-width: 0;">
+                <p>建出线性基后，从高位贪心。</p>
+                <codeblock>
+                    <script type="text/template">
+                        ll query_max() {
+                            ll ans = 0;
+                            for (int i = 60; i >= 0; i--)
+                                if ((ans ^ b[i]) > ans) ans ^= b[i];
+                            return ans;
+                        }
+                    </script>
+                </codeblock>
+            </div>
+            <sd-animation src="../../animation/线性基/贪心.js"
+                style="flex: 1 1 0; margin: 0; height: 320px;"></sd-animation>
+        </div>
     </section>
 </section>
