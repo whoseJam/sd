@@ -6,11 +6,17 @@
 
     <section>
         <h2>问题</h2>
-        <p>给 $n$ 个非负整数 $a_1, a_2, \dots, a_n$。</p>
-        <p class="fragment">询问 $q$：能否从中选出<b>某个子集</b>，使它们 XOR 起来 $= q$？</p>
-        <p class="fragment">例：$\{3, 5\}$ 的所有子集 XOR：$\emptyset = 0$，$\{3\} = 3$，$\{5\} = 5$，$\{3, 5\} = 6$。</p>
-        <p class="fragment">所以 $q = 6$ 能，$q = 4$ 不能。</p>
-        <p class="fragment">朴素：枚举 $2^n$ 个子集。$n = 60$ 寄。</p>
+        <div style="display: flex; align-items: flex-start; gap: 24px;">
+            <div style="flex: 1 1 0; min-width: 0;">
+                <p>给 $n$ 个非负整数 $a_1, a_2, \dots, a_n$。</p>
+                <p class="fragment">询问 $q$：能否选出某个子集 XOR 起来 $= q$？</p>
+                <p class="fragment">例：$\vec{a}_1 = 3$，$\vec{a}_2 = 5$。能 XOR 出 $\{0, 3, 5, 6\}$。</p>
+                <p class="fragment">所以 $q = 6$ 能，$q = 4$ 不能。</p>
+                <p class="fragment">朴素：$2^n$ 个子集。$n = 60$ 寄。</p>
+            </div>
+            <sd-animation src="../../animation/问题/子集异或.js" class="fragment"
+                style="flex: 1 1 0; margin: 0; height: 380px;"></sd-animation>
+        </div>
     </section>
 
     <section>
