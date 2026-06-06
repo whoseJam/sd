@@ -1,18 +1,16 @@
 <section>
     <section>
         <h1>线性基</h1>
-        <p>一组数的"无损压缩" — 能 XOR 出来的东西一模一样</p>
+        <p>一组数的无损压缩</p>
     </section>
 
     <section>
         <h2>问题</h2>
         <div style="display: flex; align-items: flex-start; gap: 24px;">
             <div style="flex: 1 1 0; min-width: 0;">
-                <p>给 $n$ 个非负整数 $a_1, a_2, \dots, a_n$。</p>
-                <p class="fragment">询问 $q$：能否选出某个子集 XOR 起来 $= q$？</p>
-                <p class="fragment">例：$\vec{a}_1 = 3$，$\vec{a}_2 = 5$。能 XOR 出 $\{0, 3, 5, 6\}$。</p>
-                <p class="fragment">所以 $q = 6$ 能，$q = 4$ 不能。</p>
-                <p class="fragment">朴素：$2^n$ 个子集。$n = 60$ 寄。</p>
+                <p>给 $n$ 个非负整数 $a_1, \dots, a_n$ 与询问 $q$ — 是否存在子集 XOR 为 $q$？</p>
+                <p class="fragment">例 $\{3, 5\}$：子集 XOR 取值 $\{0, 3, 5, 6\}$。$q = 6$ 可，$q = 4$ 不可。</p>
+                <p class="fragment">朴素 $O(2^n)$ — $n$ 大不可行。</p>
             </div>
             <sd-animation src="../../animation/问题/子集异或.js"
                 style="flex: 1 1 0; margin: 0; height: 380px;"></sd-animation>
@@ -20,14 +18,13 @@
     </section>
 
     <section>
-        <h2>关键观察：压缩</h2>
+        <h2>压缩</h2>
         <div style="display: flex; align-items: flex-start; gap: 24px;">
             <div style="flex: 1 1 0; min-width: 0;">
-                <p>这堆数能 XOR 出来的所有可能值是个集合 $S$。</p>
-                <p class="fragment">能不能用<b>更少的数</b>代替原集合，让 $S$ 不变？</p>
-                <p class="fragment">例 $\{3, 5, 6\}$：$\vec{c} = \vec{a} \oplus \vec{b}$，所以 $\vec{c}$ 是冗余的。</p>
-                <p class="fragment">删掉 $\vec{c}$ 后还剩 $\{3, 5\}$，能 XOR 出的值<b>仍然是</b> $\{0, 3, 5, 6\}$。</p>
-                <p class="fragment">原集合做得到的事新集合一样做得到，原集合做不到的事新集合也做不到。</p>
+                <p>原集合能 XOR 出的所有值构成集合 $S$。</p>
+                <p class="fragment">能否用更少的数代替原集合而 $S$ 不变 — 去掉<b>冗余元素</b>。</p>
+                <p class="fragment">例 $\{3, 5, 6\}$：$\vec{c} = \vec{a} \oplus \vec{b}$ — $\vec{c}$ 冗余。</p>
+                <p class="fragment">压缩到极致 — 一组无冗余的<b>代表</b>。</p>
             </div>
             <sd-animation src="../../animation/压缩/冗余删除.js"
                 style="flex: 1 1 0; margin: 0; height: 400px;"></sd-animation>
@@ -36,11 +33,11 @@
 
     <section>
         <h2>线性基</h2>
-        <p>原集合压缩到不能再压的<b>代表</b> — 任何一个基元素都不能被其它基元素 XOR 出来。</p>
+        <p>原集合的<b>无冗余代表</b> — 任何基元素不能由其它基元素 XOR 表出。</p>
         <ul>
-            <li class="fragment">原集合能 XOR 出的值 = 线性基能 XOR 出的值</li>
-            <li class="fragment">线性基大小 $\le \log V$（值域 $V$ 比特数）— 每个最高位最多 1 个代表</li>
-            <li class="fragment">$n = 10^6$ 个数，线性基 $\le 60$ 个</li>
+            <li class="fragment">原集合能 XOR 出的值 $=$ 线性基能 XOR 出的值</li>
+            <li class="fragment">基大小 $\le \log V$ — 每个最高位至多一个代表</li>
+            <li class="fragment">$n = 10^6$ 个数 $\Rightarrow$ 基大小 $\le 60$</li>
         </ul>
     </section>
 
@@ -48,13 +45,8 @@
         <h2>建基</h2>
         <div style="display: flex; align-items: flex-start; gap: 24px;">
             <div style="flex: 1 1 0; min-width: 0;">
-                <p>贪心：维护 $b_0, b_1, \dots, b_{59}$。$b_i$ 是<b>首高位为 $i$</b> 的基元素。</p>
-                <p>插入 $x$：</p>
-                <ol>
-                    <li>找 $x$ 的最高位 $i$</li>
-                    <li>$b_i$ 空 → $b_i := x$，结束</li>
-                    <li>$b_i$ 不空 → $x \mathrel{\oplus}= b_i$，回到第 1 步</li>
-                </ol>
+                <p>维护 $b_0, \dots, b_{59}$ — $b_i$ 是首高位为 $i$ 的基元素。</p>
+                <p>插入 $x$：取 $x$ 最高位 $i$，$b_i$ 空则 $b_i := x$，否则 $x \mathrel{\oplus}= b_i$ 后重复。</p>
                 <codeblock>
                     <script type="text/template">
                         bool insert(ll x) {
@@ -67,6 +59,7 @@
                         }
                     </script>
                 </codeblock>
+                <p class="fragment">$O(\log V)$ per insert。</p>
             </div>
             <sd-animation src="../../animation/线性基概述/建基.js"
                 style="flex: 1 1 0; margin: 0; height: 460px;"></sd-animation>
@@ -74,23 +67,20 @@
     </section>
 
     <section>
-        <h2>回到原问题：判定 $q$</h2>
-        <p>问 $q$ 能不能 XOR 出来 → 直接对 $q$ 跑插入流程。</p>
-        <ul>
-            <li class="fragment">能化简为 $0$ → $q$ 能 XOR 出来</li>
-            <li class="fragment">化简后还剩非 $0$ → $q$ 不行</li>
-        </ul>
-        <codeblock class="fragment">
+        <h2>判定 $q$</h2>
+        <p>对 $q$ 跑插入流程 — $q$ 能化简为 $0$ $\Leftrightarrow$ $q$ 能由子集 XOR 表出。</p>
+        <codeblock>
             <script type="text/template">
                 bool query(ll q) {
                     for (int i = 60; i >= 0; i--) {
                         if (!((q >> i) & 1)) continue;
-                        if (!b[i]) return false;   // 这个最高位没人能消
+                        if (!b[i]) return false;
                         q ^= b[i];
                     }
                     return true;
                 }
             </script>
         </codeblock>
+        <p class="fragment">$O(\log V)$ per query。</p>
     </section>
 </section>
