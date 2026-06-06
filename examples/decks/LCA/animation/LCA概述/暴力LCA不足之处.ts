@@ -28,7 +28,10 @@ sd.main(async () => {
 
   // x climbs all the way up — chain forces O(n).
   for (let cur = N - 1; cur > 1; cur--) {
-    tree.paint(cur, "#dbeefd", C.steelBlue, { delay: (N - 1 - cur) * 120, duration: 200 });
+    tree.paint(cur, "#dbeefd", C.steelBlue, {
+      delay: (N - 1 - cur) * 120,
+      duration: 200,
+    });
   }
   await sd.pause();
 });

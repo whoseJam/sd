@@ -12,8 +12,11 @@ const SIZE = 40;
 const X0 = -(N * SIZE) / 2;
 
 const row = new NumRow({
-  targetNode: svg, values: new Array(N).fill(" "), size: SIZE,
-  x: X0, y: 0,
+  targetNode: svg,
+  values: new Array(N).fill(" "),
+  size: SIZE,
+  x: X0,
+  y: 0,
 });
 
 // Block dividers
@@ -30,7 +33,10 @@ sd.main(async () => {
       stroke: b % 2 === 0 ? C.steelBlue : C.darkOrange,
       strokeWidth: 1.8,
       opacity: 0,
-    }).startAnimate({ delay: 300 + b * 120, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+    })
+      .startAnimate({ delay: 300 + b * 120, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     new sd.Text({
       targetNode: svg,
       text: `block ${b + 1}`,
@@ -39,7 +45,10 @@ sd.main(async () => {
       fontSize: 12,
       fill: b % 2 === 0 ? C.steelBlue : C.darkOrange,
       opacity: 0,
-    }).startAnimate({ delay: 380 + b * 120, duration: 240, easing: E.easeOut }).setOpacity(1).endAnimate();
+    })
+      .startAnimate({ delay: 380 + b * 120, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 });

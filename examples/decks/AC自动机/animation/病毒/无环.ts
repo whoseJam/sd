@@ -19,7 +19,9 @@ const trie = new Trie(svg, {
 trie.buildFail();
 
 for (let i = 1; i < trie.nodes.length; i++) {
-  trie.failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 }).setOpacity(1);
+  trie
+    .failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 })
+    .setOpacity(1);
 }
 
 const TERM_FILL = "#f4cfcf";

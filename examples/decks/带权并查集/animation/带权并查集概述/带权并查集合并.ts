@@ -9,7 +9,11 @@ const C = sd.color();
 
 const R = 22;
 
-interface N { id: string; cx: number; cy: number }
+interface N {
+  id: string;
+  cx: number;
+  cy: number;
+}
 
 const before: N[] = [
   { id: "a", cx: -180, cy: 60 },
@@ -29,7 +33,14 @@ function draw(n: N, isRoot: boolean) {
     stroke: isRoot ? C.darkOrange : C.darkButtonGrey,
     strokeWidth: isRoot ? 2.4 : 1.4,
   });
-  new sd.Text({ targetNode: svg, text: n.id, cx: n.cx, cy: n.cy, fontSize: 14, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: n.id,
+    cx: n.cx,
+    cy: n.cy,
+    fontSize: 14,
+    fill: C.darkButtonGrey,
+  });
 }
 
 for (const n of before) draw(n, n.id === "x" || n.id === "y");

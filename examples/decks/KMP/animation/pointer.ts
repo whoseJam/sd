@@ -10,7 +10,7 @@ const C = sd.color();
 export interface PointerOpts {
   targetNode: sd.Group;
   cx: number;
-  topY: number;     // math-y of the triangle's top vertex
+  topY: number; // math-y of the triangle's top vertex
   size?: number;
   fill?: sd.SDColor;
   opacity?: number;

@@ -8,16 +8,20 @@ const C = sd.color();
 
 const R = 20;
 
-interface N { id: string; cx: number; cy: number }
+interface N {
+  id: string;
+  cx: number;
+  cy: number;
+}
 const left: N[] = [
   { id: "root", cx: -150, cy: 60 },
-  { id: "u",    cx: -150, cy:  0 },
-  { id: "v",    cx: -150, cy: -60 },
+  { id: "u", cx: -150, cy: 0 },
+  { id: "v", cx: -150, cy: -60 },
 ];
 const right: N[] = [
   { id: "root", cx: 150, cy: 60 },
-  { id: "u",    cx: 100, cy: -10 },
-  { id: "v",    cx: 200, cy: -10 },
+  { id: "u", cx: 100, cy: -10 },
+  { id: "v", cx: 200, cy: -10 },
 ];
 
 function place(n: N, isRoot: boolean) {
@@ -30,7 +34,14 @@ function place(n: N, isRoot: boolean) {
     stroke: isRoot ? C.darkOrange : C.darkButtonGrey,
     strokeWidth: isRoot ? 2.4 : 1.4,
   });
-  new sd.Text({ targetNode: svg, text: n.id, cx: n.cx, cy: n.cy, fontSize: 12, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: n.id,
+    cx: n.cx,
+    cy: n.cy,
+    fontSize: 12,
+    fill: C.darkButtonGrey,
+  });
 }
 
 function edge(c: N, p: N, label: string) {
@@ -64,8 +75,22 @@ for (const n of right) place(n, n.id === "root");
 edge(right[1], right[0], "2");
 edge(right[2], right[0], "5");
 
-new sd.Text({ targetNode: svg, text: "before", cx: -150, cy: -100, fontSize: 14, fill: C.darkButtonGrey });
-new sd.Text({ targetNode: svg, text: "after",  cx:  150, cy: -100, fontSize: 14, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "before",
+  cx: -150,
+  cy: -100,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
+});
+new sd.Text({
+  targetNode: svg,
+  text: "after",
+  cx: 150,
+  cy: -100,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
+});
 
 sd.main(async () => {
   await sd.pause();

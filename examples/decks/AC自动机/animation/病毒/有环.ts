@@ -19,7 +19,9 @@ const trie = new Trie(svg, {
 trie.buildFail();
 
 for (let i = 1; i < trie.nodes.length; i++) {
-  trie.failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 }).setOpacity(1);
+  trie
+    .failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 })
+    .setOpacity(1);
 }
 
 const SAFE_FILL = "#cfead0";
@@ -27,7 +29,8 @@ const SAFE_STROKE = C.darkGreen;
 const TERM_FILL = "#f4cfcf";
 const TERM_STROKE = C.darkRed;
 
-const nodeOf = (prefix: string) => trie.nodes.findIndex((n) => n.prefix === prefix);
+const nodeOf = (prefix: string) =>
+  trie.nodes.findIndex((n) => n.prefix === prefix);
 
 sd.main(async () => {
   trie.fadeIn({ delay: 0 });

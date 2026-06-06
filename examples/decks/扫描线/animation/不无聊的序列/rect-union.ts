@@ -259,27 +259,73 @@ export function rectUnion(data: number[]): void {
     });
   });
 
-  function bracket(a: number, b: number, side: "above" | "below", label: string) {
+  function bracket(
+    a: number,
+    b: number,
+    side: "above" | "below",
+    label: string,
+  ) {
     const x1 = arrLeft(a);
     const x2 = arrLeft(b) + CELL;
     const baseY = side === "above" ? ARR_BOT_Y + CELL + 8 : ARR_BOT_Y - 8;
     const tickDir = side === "above" ? -5 : 5;
     const labelY = side === "above" ? baseY + 14 : baseY - 14;
     const items: sd.SDNode[] = [
-      new sd.Line({ targetNode: svg, x1, y1: baseY, x2, y2: baseY, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
-      new sd.Line({ targetNode: svg, x1, y1: baseY, x2: x1, y2: baseY + tickDir, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
-      new sd.Line({ targetNode: svg, x1: x2, y1: baseY, x2, y2: baseY + tickDir, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
-      new sd.Text({ targetNode: svg, text: label, cx: (x1 + x2) / 2, cy: labelY, fontSize: 13, fill: C.blue, opacity: 0 }),
+      new sd.Line({
+        targetNode: svg,
+        x1,
+        y1: baseY,
+        x2,
+        y2: baseY,
+        stroke: C.blue,
+        strokeWidth: 1.5,
+        opacity: 0,
+      }),
+      new sd.Line({
+        targetNode: svg,
+        x1,
+        y1: baseY,
+        x2: x1,
+        y2: baseY + tickDir,
+        stroke: C.blue,
+        strokeWidth: 1.5,
+        opacity: 0,
+      }),
+      new sd.Line({
+        targetNode: svg,
+        x1: x2,
+        y1: baseY,
+        x2,
+        y2: baseY + tickDir,
+        stroke: C.blue,
+        strokeWidth: 1.5,
+        opacity: 0,
+      }),
+      new sd.Text({
+        targetNode: svg,
+        text: label,
+        cx: (x1 + x2) / 2,
+        cy: labelY,
+        fontSize: 13,
+        fill: C.blue,
+        opacity: 0,
+      }),
     ];
     for (const item of items) {
-      item.startAnimate({ duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
+      item
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setOpacity(1)
+        .endAnimate();
     }
     return items;
   }
 
   function fadeOut(items: sd.SDNode[]) {
     for (const item of items) {
-      item.startAnimate({ duration: 260, easing: E.easeOut }).setOpacity(0).endAnimate();
+      item
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setOpacity(0)
+        .endAnimate();
     }
   }
 
@@ -298,31 +344,77 @@ export function rectUnion(data: number[]): void {
     }
     const cellsStart = 240 + axisNodes.length * 8 + 80;
     for (let i = 0; i < N; i++) {
-      cells[i].startAnimate({ delay: cellsStart + i * 45, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
-      labels[i].startAnimate({ delay: cellsStart + 80 + i * 45, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
+      cells[i]
+        .startAnimate({
+          delay: cellsStart + i * 45,
+          duration: 260,
+          easing: E.easeOut,
+        })
+        .setOpacity(1)
+        .endAnimate();
+      labels[i]
+        .startAnimate({
+          delay: cellsStart + 80 + i * 45,
+          duration: 260,
+          easing: E.easeOut,
+        })
+        .setOpacity(1)
+        .endAnimate();
     }
     const panelStart = cellsStart + N * 45 + 120;
-    targetText.startAnimate({ delay: panelStart, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
-    areaText.startAnimate({ delay: panelStart + 120, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
+    targetText
+      .startAnimate({ delay: panelStart, duration: 260, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    areaText
+      .startAnimate({
+        delay: panelStart + 120,
+        duration: 260,
+        easing: E.easeOut,
+      })
+      .setOpacity(1)
+      .endAnimate();
 
     await sd.pause();
 
-    const covered: boolean[][] = Array.from({ length: N }, () => Array(N).fill(false));
+    const covered: boolean[][] = Array.from({ length: N }, () =>
+      Array(N).fill(false),
+    );
     let areaCount = 0;
     for (let i = 0; i < N; i++) {
       let L = -1;
-      for (let k = i - 1; k >= 0; k--) if (data[k] === data[i]) { L = k; break; }
+      for (let k = i - 1; k >= 0; k--)
+        if (data[k] === data[i]) {
+          L = k;
+          break;
+        }
       let R = N;
-      for (let k = i + 1; k < N; k++) if (data[k] === data[i]) { R = k; break; }
+      for (let k = i + 1; k < N; k++)
+        if (data[k] === data[i]) {
+          R = k;
+          break;
+        }
 
       if (i > 0) {
-        cells[i - 1].startAnimate({ duration: 260, easing: E.easeOut }).setStroke(C.grey).endAnimate();
-        labels[i - 1].startAnimate({ duration: 260, easing: E.easeOut }).setFill(TEXT_DARK).endAnimate();
+        cells[i - 1]
+          .startAnimate({ duration: 260, easing: E.easeOut })
+          .setStroke(C.grey)
+          .endAnimate();
+        labels[i - 1]
+          .startAnimate({ duration: 260, easing: E.easeOut })
+          .setFill(TEXT_DARK)
+          .endAnimate();
       }
       cells[i].raise();
       labels[i].raise();
-      cells[i].startAnimate({ duration: 260, easing: E.easeOut }).setStroke(C.red).endAnimate();
-      labels[i].startAnimate({ duration: 260, easing: E.easeOut }).setFill(C.red).endAnimate();
+      cells[i]
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setStroke(C.red)
+        .endAnimate();
+      labels[i]
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setFill(C.red)
+        .endAnimate();
       await sd.pause();
 
       const above = bracket(L + 1, i, "above", "[L+1, i]");
@@ -368,8 +460,14 @@ export function rectUnion(data: number[]): void {
       await sd.pause();
     }
 
-    cells[N - 1].startAnimate({ duration: 260, easing: E.easeOut }).setStroke(C.grey).endAnimate();
-    labels[N - 1].startAnimate({ duration: 260, easing: E.easeOut }).setFill(TEXT_DARK).endAnimate();
+    cells[N - 1]
+      .startAnimate({ duration: 260, easing: E.easeOut })
+      .setStroke(C.grey)
+      .endAnimate();
+    labels[N - 1]
+      .startAnimate({ duration: 260, easing: E.easeOut })
+      .setFill(TEXT_DARK)
+      .endAnimate();
 
     const gaps: sd.Rect[] = [];
     for (let l = 0; l < N; l++) {

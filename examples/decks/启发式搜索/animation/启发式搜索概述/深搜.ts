@@ -18,7 +18,13 @@ const nodes = [
 
 const parent: Record<number, number> = { 2: 1, 3: 1, 4: 2, 5: 2, 6: 3, 7: 3 };
 
-const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1, radius: 18 });
+const tree = new TreeView({
+  targetNode: svg,
+  nodes,
+  parent,
+  root: 1,
+  radius: 18,
+});
 
 const dfsOrder = [1, 2, 4, 5, 3, 6, 7];
 
@@ -26,7 +32,10 @@ sd.main(async () => {
   tree.fadeIn({ delay: 0 });
   await sd.pause();
   for (let i = 0; i < dfsOrder.length; i++) {
-    tree.paint(dfsOrder[i], "#fdecd9", C.darkOrange, { delay: i * 280, duration: 240 });
+    tree.paint(dfsOrder[i], "#fdecd9", C.darkOrange, {
+      delay: i * 280,
+      duration: 240,
+    });
     tree.setTag(dfsOrder[i], String(i + 1), C.darkOrange, { delay: i * 280 });
   }
   await sd.pause();

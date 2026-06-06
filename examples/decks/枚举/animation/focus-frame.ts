@@ -31,7 +31,10 @@ export class FocusFrame {
     const strokeWidth = opts.strokeWidth ?? 1.2;
     const cornerRadius = opts.cornerRadius ?? 6;
 
-    this.group = new sd.Group({ targetNode: opts.targetNode, opacity: opts.opacity ?? 0 });
+    this.group = new sd.Group({
+      targetNode: opts.targetNode,
+      opacity: opts.opacity ?? 0,
+    });
     this.rect = new sd.Rect({
       targetNode: this.group,
       x: opts.x,

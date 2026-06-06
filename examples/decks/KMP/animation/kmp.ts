@@ -20,15 +20,18 @@ export function buildLen(t: string): number[] {
 export type Step =
   | { kind: "advance-i"; i: number }
   | { kind: "match"; i: number; j: number }
-  | { kind: "fail"; i: number; j: number }    // j here = the position in t that failed (= j_old+1)
-  | { kind: "jump"; i: number; jFrom: number; jTo: number; jumpStep: number; lastJump: boolean };
+  | { kind: "fail"; i: number; j: number } // j here = the position in t that failed (= j_old+1)
+  | {
+      kind: "jump";
+      i: number;
+      jFrom: number;
+      jTo: number;
+      jumpStep: number;
+      lastJump: boolean;
+    };
 
 // Trace KMP and emit a sequence of steps. The visual layer interprets them.
-export function traceKMP(
-  s: string,
-  t: string,
-  startI = 1,
-): Step[] {
+export function traceKMP(s: string, t: string, startI = 1): Step[] {
   // Both s and t are 1-padded.
   const len = buildLen(t);
   const ns = s.length - 1;
@@ -54,7 +57,14 @@ export function traceKMP(
       step++;
       const jNext = len[j];
       // lastJump set later — we don't yet know if this is the last.
-      steps.push({ kind: "jump", i, jFrom: j, jTo: jNext, jumpStep: step, lastJump: false });
+      steps.push({
+        kind: "jump",
+        i,
+        jFrom: j,
+        jTo: jNext,
+        jumpStep: step,
+        lastJump: false,
+      });
       j = jNext;
     }
 
@@ -75,7 +85,10 @@ export function traceKMP(
     let isLast = true;
     for (let m = k + 1; m < steps.length; m++) {
       if (steps[m].kind === "advance-i") break;
-      if (steps[m].kind === "jump") { isLast = false; break; }
+      if (steps[m].kind === "jump") {
+        isLast = false;
+        break;
+      }
     }
     if (isLast) (cur as { lastJump: boolean }).lastJump = true;
   }

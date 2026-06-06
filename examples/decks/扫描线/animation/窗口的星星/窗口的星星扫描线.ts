@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+
 import { gridHelpers } from "../grid";
 
 const svg = sd.svg();
@@ -166,7 +167,13 @@ sd.init(() => {
       }),
     );
     events.push({ x: rx, w: WIN_W, eventY: ry, type: 1, rectIdx: idx });
-    events.push({ x: rx, w: WIN_W, eventY: ry + WIN_H, type: -1, rectIdx: idx });
+    events.push({
+      x: rx,
+      w: WIN_W,
+      eventY: ry + WIN_H,
+      type: -1,
+      rectIdx: idx,
+    });
   });
 
   for (let i = 0; i < GRID_W; i++) {
@@ -228,7 +235,10 @@ sd.main(async () => {
       .setOpacity(0.35)
       .endAnimate();
   }
-  frame.startAnimate({ delay: 220, duration: 380, easing: E.easeOut }).setOpacity(1).endAnimate();
+  frame
+    .startAnimate({ delay: 220, duration: 380, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < starNodes.length; i++) {
     starNodes[i]
       .startAnimate({ delay: 320 + i * 60, duration: 280, easing: E.easeOut })
@@ -269,7 +279,10 @@ sd.main(async () => {
     strokeWidth: 3,
     opacity: 0,
   });
-  line.startAnimate({ duration: 350, easing: E.easeOut }).setOpacity(1).endAnimate();
+  line
+    .startAnimate({ duration: 350, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 
   await sd.pause();
 
@@ -295,7 +308,11 @@ sd.main(async () => {
     }
     for (const ev of row) {
       dataRects[ev.rectIdx]
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setStrokeOpacity(ev.type === 1 ? 0.95 : 0.18)
         .endAnimate();
     }
@@ -304,20 +321,32 @@ sd.main(async () => {
     for (let i = 0; i < GRID_W; i++) {
       if (segment[i] > cellMax) cellMax = segment[i];
       cells[i]
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setFill(coverColor(segment[i]))
         .endAnimate();
     }
 
     nowText
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: TEXT_DUR,
+        easing: E.easeOut,
+      })
       .setText(`now ${cellMax}`, PIN_NOW)
       .endAnimate();
 
     if (cellMax > runningMax) {
       runningMax = cellMax;
       maxText
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: TEXT_DUR,
+          easing: E.easeOut,
+        })
         .setText(`max ${runningMax}`, PIN_MAX)
         .endAnimate();
     }

@@ -60,9 +60,14 @@ const eq = new sd.Math({
 sd.main(async () => {
   a.fadeIn({ delay: 0 });
   b.fadeIn({ delay: 200 });
-  plus.startAnimate({ delay: 240, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
+  plus
+    .startAnimate({ delay: 240, duration: 220, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   c.fadeIn({ delay: 400 });
-  eq.startAnimate({ delay: 440, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
+  eq.startAnimate({ delay: 440, duration: 220, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   for (let i = 1; i <= aData.length; i++) {

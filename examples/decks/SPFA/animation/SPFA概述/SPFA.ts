@@ -15,11 +15,23 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 2], [1, 3], [2, 4], [3, 5], [2, 5], [4, 6], [5, 6],
+  [1, 2],
+  [1, 3],
+  [2, 4],
+  [3, 5],
+  [2, 5],
+  [4, 6],
+  [5, 6],
 ];
 
 const weights: Record<string, number> = {
-  "1-2": 4, "1-3": 2, "2-4": -1, "3-5": 3, "2-5": 5, "4-6": 2, "5-6": 1,
+  "1-2": 4,
+  "1-3": 2,
+  "2-4": -1,
+  "3-5": 3,
+  "2-5": 5,
+  "4-6": 2,
+  "5-6": 1,
 };
 
 const dag = new Dag({ targetNode: svg, nodes, edges, radius: 18 });
@@ -28,9 +40,12 @@ for (const [u, v] of edges) {
   const a = nodes.find((n) => n.id === u)!;
   const b = nodes.find((n) => n.id === v)!;
   new sd.Text({
-    targetNode: svg, text: String(weights[`${u}-${v}`]),
-    cx: (a.cx + b.cx) / 2 + 8, cy: (a.cy + b.cy) / 2 - 8,
-    fontSize: 12, fill: weights[`${u}-${v}`] < 0 ? C.darkOrange : C.darkButtonGrey,
+    targetNode: svg,
+    text: String(weights[`${u}-${v}`]),
+    cx: (a.cx + b.cx) / 2 + 8,
+    cy: (a.cy + b.cy) / 2 - 8,
+    fontSize: 12,
+    fill: weights[`${u}-${v}`] < 0 ? C.darkOrange : C.darkButtonGrey,
   });
 }
 
@@ -51,7 +66,10 @@ while (q.length > 0) {
       const cand = dist[u] + weights[`${u}-${b}`];
       if (cand < dist[b]) {
         dist[b] = cand;
-        if (!inq.has(b)) { q.push(b); inq.add(b); }
+        if (!inq.has(b)) {
+          q.push(b);
+          inq.add(b);
+        }
       }
     }
   }

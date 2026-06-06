@@ -21,12 +21,28 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  2: 1, 3: 1, 4: 1, 5: 2, 6: 2, 7: 4, 8: 4, 9: 5, 10: 5, 11: 6, 12: 7,
+  2: 1,
+  3: 1,
+  4: 1,
+  5: 2,
+  6: 2,
+  7: 4,
+  8: 4,
+  9: 5,
+  10: 5,
+  11: 6,
+  12: 7,
 };
 
 const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1 });
 
-const paths: Array<{ a: number; b: number; color: sd.SDColor; len: number; tone: sd.SDColor }> = [
+const paths: Array<{
+  a: number;
+  b: number;
+  color: sd.SDColor;
+  len: number;
+  tone: sd.SDColor;
+}> = [
   { a: 10, b: 6, color: C.darkOrange, len: 5, tone: "#fdecd9" },
   { a: 8, b: 3, color: C.steelBlue, len: 4, tone: "#dbeefd" },
   { a: 11, b: 12, color: C.darkGreen, len: 6, tone: "#e8f5e9" },
@@ -37,9 +53,15 @@ function pathNodes(u: number, v: number): number[] {
   const lca = tree.lca(u, v);
   const pv = tree.pathToRoot(v);
   const up: number[] = [];
-  for (const x of pu) { up.push(x); if (x === lca) break; }
+  for (const x of pu) {
+    up.push(x);
+    if (x === lca) break;
+  }
   const down: number[] = [];
-  for (const x of pv) { if (x === lca) break; down.push(x); }
+  for (const x of pv) {
+    if (x === lca) break;
+    down.push(x);
+  }
   return [...up, ...down.reverse()];
 }
 
@@ -74,7 +96,8 @@ sd.main(async () => {
   for (let k = 0; k < paths.length; k++) {
     const p = paths[k];
     const path = pathNodes(p.a, p.b);
-    for (let i = 1; i < path.length; i++) tree.paintEdge(path[i], p.color, { delay: i * 60 });
+    for (let i = 1; i < path.length; i++)
+      tree.paintEdge(path[i], p.color, { delay: i * 60 });
     tree.paint(p.a, p.tone, p.color, { duration: 220 });
     tree.paint(p.b, p.tone, p.color, { duration: 220 });
     await sd.pause();

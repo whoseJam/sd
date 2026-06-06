@@ -38,7 +38,10 @@ for (let i = 1; i <= N; i++) {
   });
 }
 
-interface Block { rect: sd.Rect; label: sd.Text }
+interface Block {
+  rect: sd.Rect;
+  label: sd.Text;
+}
 const blocks = new Map<number, Block>();
 for (let i = 1; i <= N; i++) {
   const lo = lowbit(i);

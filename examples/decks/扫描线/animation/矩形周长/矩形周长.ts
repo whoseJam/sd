@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+
 import { gridHelpers } from "../grid";
 
 const svg = sd.svg();
@@ -189,17 +190,18 @@ sd.main(async () => {
   // schedule, made tangible.
   const TICK_X1 = gx(0) - 18;
   const TICK_X2 = gx(0) - 4;
-  const ticks: sd.Line[] = grouped.map((row) =>
-    new sd.Line({
-      targetNode: svg,
-      x1: TICK_X1,
-      y1: gy(row[0].eventY),
-      x2: TICK_X2,
-      y2: gy(row[0].eventY),
-      stroke: C.silver,
-      strokeWidth: 1,
-      opacity: 0,
-    }),
+  const ticks: sd.Line[] = grouped.map(
+    (row) =>
+      new sd.Line({
+        targetNode: svg,
+        x1: TICK_X1,
+        y1: gy(row[0].eventY),
+        x2: TICK_X2,
+        y2: gy(row[0].eventY),
+        stroke: C.silver,
+        strokeWidth: 1,
+        opacity: 0,
+      }),
   );
 
   // Layered entrance: graph paper → frame → input rects → strip → ticks → readouts.
@@ -215,7 +217,10 @@ sd.main(async () => {
       .setOpacity(0.35)
       .endAnimate();
   }
-  frame.startAnimate({ delay: 220, duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
+  frame
+    .startAnimate({ delay: 220, duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < dataRects.length; i++) {
     dataRects[i]
       .startAnimate({ delay: 340 + i * 80, duration: 300, easing: E.easeOut })
@@ -262,7 +267,10 @@ sd.main(async () => {
     strokeWidth: 3,
     opacity: 0,
   });
-  line.startAnimate({ duration: 350, easing: E.easeOut }).setOpacity(1).endAnimate();
+  line
+    .startAnimate({ duration: 350, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 
   await sd.pause();
 
@@ -313,7 +321,11 @@ sd.main(async () => {
         opacity: 0,
       });
       trail
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setOpacity(1)
         .endAnimate();
     }
@@ -322,35 +334,59 @@ sd.main(async () => {
     // via the dominant +1 sort first).
     const dominant = row[0].type;
     ticks[gIdx]
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: ARRIVAL_DUR,
+        easing: E.easeOut,
+      })
       .setStroke(dominant === 1 ? TICK_ADD : TICK_REM)
       .setStrokeWidth(2.5)
       .endAnimate();
 
     for (const ev of row) {
       dataRects[ev.rectIdx]
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setStroke(ev.type === 1 ? RECT_STROKE_ACTIVE : RECT_STROKE_DONE)
         .endAnimate();
     }
 
     for (let k = 0; k < W; k++) {
       cells[k]
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setFill(coverColor(segment[k]))
         .endAnimate();
     }
 
     coverageText
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: TEXT_DUR,
+        easing: E.easeOut,
+      })
       .setText(`cov ${cov} / ${W}`, { "cov ": "cov ", [` / ${W}`]: ` / ${W}` })
       .endAnimate();
     deltaText
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: TEXT_DUR,
+        easing: E.easeOut,
+      })
       .setText(`Δ ${delta}`, { "Δ ": "Δ " })
       .endAnimate();
     sumText
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: TEXT_DUR,
+        easing: E.easeOut,
+      })
       .setText(`Σ ${totalPerim}`, { "Σ ": "Σ " })
       .endAnimate();
 

@@ -15,17 +15,29 @@ const edges: Array<[number, number]> = [[1, 2]];
 const dag = new Dag({ targetNode: svg, nodes, edges, radius: 22 });
 
 new sd.Math({
-  targetNode: svg, text: "k",
-  cx: 0, cy: -16, fontSize: 14, fill: C.darkButtonGrey,
+  targetNode: svg,
+  text: "k",
+  cx: 0,
+  cy: -16,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
 });
 
 new sd.Math({
-  targetNode: svg, text: "x_j \\le x_i + k",
-  cx: 0, cy: 60, fontSize: 16, fill: C.darkOrange,
+  targetNode: svg,
+  text: "x_j \\le x_i + k",
+  cx: 0,
+  cy: 60,
+  fontSize: 16,
+  fill: C.darkOrange,
 });
 new sd.Math({
-  targetNode: svg, text: "dis_j \\le dis_i + w(i, j)",
-  cx: 0, cy: 90, fontSize: 14, fill: C.steelBlue,
+  targetNode: svg,
+  text: "dis_j \\le dis_i + w(i, j)",
+  cx: 0,
+  cy: 90,
+  fontSize: 14,
+  fill: C.steelBlue,
 });
 
 sd.main(async () => {

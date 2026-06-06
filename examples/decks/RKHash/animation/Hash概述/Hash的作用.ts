@@ -63,7 +63,14 @@ for (let i = 0; i < n; i++) {
     }),
   );
 }
-new sd.Math({ targetNode: svg, text: "f", cx: 0, cy: -((n - 1) / 2) * GAP_Y - 20, fontSize: 16, fill: C.darkButtonGrey });
+new sd.Math({
+  targetNode: svg,
+  text: "f",
+  cx: 0,
+  cy: -((n - 1) / 2) * GAP_Y - 20,
+  fontSize: 16,
+  fill: C.darkButtonGrey,
+});
 
 sd.main(async () => {
   for (let i = 0; i < n; i++) {

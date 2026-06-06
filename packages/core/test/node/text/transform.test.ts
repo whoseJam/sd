@@ -3,18 +3,28 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // Contract: every <path> the morph emits must end up with a fill set, or it inherits SVG default
 // (black) and the fading char renders black regardless of the Text's fill.
 
-const pushedActions: Array<{ key: string; entity: object; from: unknown; to: unknown }> = [];
+const pushedActions: Array<{
+  key: string;
+  entity: object;
+  from: unknown;
+  to: unknown;
+}> = [];
 const createdPaths: Array<{ attrs: Map<string, unknown> }> = [];
 const createdGroups: Array<{ attrs: Map<string, unknown> }> = [];
 
 vi.mock("@/animate/animate", async () => {
-  const actual = await vi.importActual<typeof import("@/animate/animate")>(
-    "@/animate/animate",
-  );
+  const actual =
+    await vi.importActual<typeof import("@/animate/animate")>(
+      "@/animate/animate",
+    );
   return {
     ...actual,
-    pushAction: (opts: { key: string; entity: object; from: unknown; to: unknown }) =>
-      pushedActions.push(opts),
+    pushAction: (opts: {
+      key: string;
+      entity: object;
+      from: unknown;
+      to: unknown;
+    }) => pushedActions.push(opts),
     Animate: {
       ...actual.Animate,
       getAttribute: vi.fn(),
@@ -94,13 +104,21 @@ function invokeMorph(
 ) {
   const text = { getOpacity: () => textOpacity };
   const fn = transformPostProcess(text as never, {} as never);
-  fn.call({ timingFunction: () => 0 } as never, l, r, sourceSubs as never, targetSubs as never);
+  fn.call(
+    { timingFunction: () => 0 } as never,
+    l,
+    r,
+    sourceSubs as never,
+    targetSubs as never,
+  );
 }
 
 function fillOn(node: { attrs: Map<string, unknown> } | undefined): unknown {
   if (!node) return undefined;
   if (node.attrs.has("fill")) return node.attrs.get("fill");
-  const action = pushedActions.find((a) => a.entity === node && a.key === "fill");
+  const action = pushedActions.find(
+    (a) => a.entity === node && a.key === "fill",
+  );
   return action?.to ?? action?.from;
 }
 
@@ -124,7 +142,9 @@ describe("transformPostProcess", () => {
     expect(createdPaths).toHaveLength(1);
     const path = createdPaths[0];
     expect(path.attrs.get("fill")).toBe("#ff0000");
-    const action = pushedActions.find((a) => a.entity === path && a.key === "fill");
+    const action = pushedActions.find(
+      (a) => a.entity === path && a.key === "fill",
+    );
     expect(action).toBeDefined();
     expect(action!.from).toBe("#ff0000");
     expect(action!.to).toBe("#00ff00");

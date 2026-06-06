@@ -52,7 +52,12 @@ function pointer(side: "right" | "top", label: string): sd.Group {
           [cx - SIZE_TRI / 2, cy + SIZE_TRI],
           [cx + SIZE_TRI / 2, cy + SIZE_TRI],
         ];
-  new sd.Polygon({ targetNode: g, points: pts, fill: C.steelBlue, stroke: C.none });
+  new sd.Polygon({
+    targetNode: g,
+    points: pts,
+    fill: C.steelBlue,
+    stroke: C.none,
+  });
   new sd.Text({
     targetNode: g,
     text: label,
@@ -68,7 +73,9 @@ const pi = pointer("right", "i");
 const pj = pointer("top", "j");
 
 function moveTri(p: sd.Group, dx: number, dy: number) {
-  p.startAnimate({ duration: 220, easing: E.easeOut }).setTranslate(dx, dy).endAnimate();
+  p.startAnimate({ duration: 220, easing: E.easeOut })
+    .setTranslate(dx, dy)
+    .endAnimate();
 }
 
 const STEP = 260;

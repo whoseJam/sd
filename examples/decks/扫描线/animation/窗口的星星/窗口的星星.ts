@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+
 import { gridHelpers } from "../grid";
 
 const svg = sd.svg();
@@ -160,7 +161,10 @@ sd.main(async () => {
       .setOpacity(0.35)
       .endAnimate();
   }
-  frame.startAnimate({ delay: 220, duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
+  frame
+    .startAnimate({ delay: 220, duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < starNodes.length; i++) {
     starNodes[i]
       .startAnimate({ delay: 400 + i * 80, duration: 320, easing: E.easeOut })
@@ -192,7 +196,10 @@ sd.main(async () => {
   });
   // entrance + retreat must share the same (delay, duration) on opacity —
   // flush-mode action accumulation otherwise sees a partial overlap.
-  win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(1).endAnimate();
+  win
+    .startAnimate({ duration: 360, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   litStars(initWX, initWY);
   countText
     .startAnimate({ delay: READ_DELAY, duration: READ_DUR, easing: E.easeOut })
@@ -209,10 +216,18 @@ sd.main(async () => {
     [8, 4],
   ];
   for (const [wx, wy] of stops) {
-    win.startAnimate({ duration: 600, easing: E.easeInOut }).setX(gx(wx)).setY(gy(wy)).endAnimate();
+    win
+      .startAnimate({ duration: 600, easing: E.easeInOut })
+      .setX(gx(wx))
+      .setY(gy(wy))
+      .endAnimate();
     litStars(wx, wy);
     countText
-      .startAnimate({ delay: READ_DELAY, duration: READ_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: READ_DELAY,
+        duration: READ_DUR,
+        easing: E.easeOut,
+      })
       .setText(`seen ${seen(wx, wy)}`, PIN_SEEN)
       .endAnimate();
     await sd.pause();
@@ -220,7 +235,10 @@ sd.main(async () => {
 
   // Flip the picture: hide the window, pick one star, and reveal the set of anchors
   // that would have seen it — a W×H rectangle. That's the per-star contribution.
-  win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0).endAnimate();
+  win
+    .startAnimate({ duration: 360, easing: E.easeOut })
+    .setOpacity(0)
+    .endAnimate();
   // Reset every non-focus star to dim — touching the focus star here would create
   // an overlapping fill action with the lit transition below (partial overlap on the
   // same attr is a hard throw in sd's action list).
@@ -232,7 +250,10 @@ sd.main(async () => {
       .setFill(STAR_INK)
       .endAnimate();
   }
-  countText.startAnimate({ duration: 240, easing: E.easeOut }).setOpacity(0).endAnimate();
+  countText
+    .startAnimate({ duration: 240, easing: E.easeOut })
+    .setOpacity(0)
+    .endAnimate();
 
   const [fsx, fsy] = stars[focusIdx];
   starNodes[focusIdx]
@@ -275,8 +296,15 @@ sd.main(async () => {
   ];
 
   const [sxStart, syStart] = pointAt(startAngle);
-  win.startAnimate({ duration: 0 }).setX(gx(sxStart)).setY(gy(syStart)).endAnimate();
-  win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0.55).endAnimate();
+  win
+    .startAnimate({ duration: 0 })
+    .setX(gx(sxStart))
+    .setY(gy(syStart))
+    .endAnimate();
+  win
+    .startAnimate({ duration: 360, easing: E.easeOut })
+    .setOpacity(0.55)
+    .endAnimate();
 
   await sd.pause();
 
@@ -298,7 +326,10 @@ sd.main(async () => {
 
   // Window retreats, then every remaining star's anchor rectangle fades in —
   // the forest of orange rectangles is what the next slide's sweep consumes.
-  win.startAnimate({ duration: 360, easing: E.easeOut }).setOpacity(0).endAnimate();
+  win
+    .startAnimate({ duration: 360, easing: E.easeOut })
+    .setOpacity(0)
+    .endAnimate();
   for (let i = 0; i < stars.length; i++) {
     if (i === focusIdx) continue;
     const [sx, sy] = stars[i];
@@ -314,8 +345,7 @@ sd.main(async () => {
       strokeWidth: 1.2,
       strokeOpacity: 0,
     });
-    r
-      .startAnimate({ delay: i * 100, duration: 420, easing: E.easeOut })
+    r.startAnimate({ delay: i * 100, duration: 420, easing: E.easeOut })
       .setFillOpacity(0.18)
       .setStrokeOpacity(0.5)
       .endAnimate();

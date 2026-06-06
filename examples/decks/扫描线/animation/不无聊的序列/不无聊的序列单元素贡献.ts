@@ -54,45 +54,112 @@ function bracket(a: number, b: number, side: "above" | "below", label: string) {
   const tickDir = side === "above" ? 6 : -6;
   const labelY = side === "above" ? baseY - 14 : baseY + 14;
   const items: sd.SDNode[] = [
-    new sd.Line({ targetNode: svg, x1, y1: baseY, x2, y2: baseY, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
-    new sd.Line({ targetNode: svg, x1, y1: baseY, x2: x1, y2: baseY + tickDir, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
-    new sd.Line({ targetNode: svg, x1: x2, y1: baseY, x2, y2: baseY + tickDir, stroke: C.blue, strokeWidth: 1.5, opacity: 0 }),
-    new sd.Text({ targetNode: svg, text: label, cx: (x1 + x2) / 2, cy: labelY, fontSize: 16, fill: C.blue, opacity: 0 }),
+    new sd.Line({
+      targetNode: svg,
+      x1,
+      y1: baseY,
+      x2,
+      y2: baseY,
+      stroke: C.blue,
+      strokeWidth: 1.5,
+      opacity: 0,
+    }),
+    new sd.Line({
+      targetNode: svg,
+      x1,
+      y1: baseY,
+      x2: x1,
+      y2: baseY + tickDir,
+      stroke: C.blue,
+      strokeWidth: 1.5,
+      opacity: 0,
+    }),
+    new sd.Line({
+      targetNode: svg,
+      x1: x2,
+      y1: baseY,
+      x2,
+      y2: baseY + tickDir,
+      stroke: C.blue,
+      strokeWidth: 1.5,
+      opacity: 0,
+    }),
+    new sd.Text({
+      targetNode: svg,
+      text: label,
+      cx: (x1 + x2) / 2,
+      cy: labelY,
+      fontSize: 16,
+      fill: C.blue,
+      opacity: 0,
+    }),
   ];
   for (const item of items) {
-    item.startAnimate({ duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
+    item
+      .startAnimate({ duration: 260, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   return items;
 }
 
 function fadeOut(items: sd.SDNode[]) {
   for (const item of items) {
-    item.startAnimate({ duration: 260, easing: E.easeOut }).setOpacity(0).endAnimate();
+    item
+      .startAnimate({ duration: 260, easing: E.easeOut })
+      .setOpacity(0)
+      .endAnimate();
   }
 }
 
 sd.main(async () => {
   for (let i = 0; i < N; i++) {
-    cells[i].startAnimate({ delay: i * 50, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
-    labels[i].startAnimate({ delay: 100 + i * 50, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
+    cells[i]
+      .startAnimate({ delay: i * 50, duration: 260, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    labels[i]
+      .startAnimate({ delay: 100 + i * 50, duration: 260, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
 
   await sd.pause();
 
   for (let i = 0; i < N; i++) {
     let L = -1;
-    for (let k = i - 1; k >= 0; k--) if (data[k] === data[i]) { L = k; break; }
+    for (let k = i - 1; k >= 0; k--)
+      if (data[k] === data[i]) {
+        L = k;
+        break;
+      }
     let R = N;
-    for (let k = i + 1; k < N; k++) if (data[k] === data[i]) { R = k; break; }
+    for (let k = i + 1; k < N; k++)
+      if (data[k] === data[i]) {
+        R = k;
+        break;
+      }
 
     if (i > 0) {
-      cells[i - 1].startAnimate({ duration: 260, easing: E.easeOut }).setStroke(C.grey).endAnimate();
-      labels[i - 1].startAnimate({ duration: 260, easing: E.easeOut }).setFill(TEXT_DARK).endAnimate();
+      cells[i - 1]
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setStroke(C.grey)
+        .endAnimate();
+      labels[i - 1]
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setFill(TEXT_DARK)
+        .endAnimate();
     }
     cells[i].raise();
     labels[i].raise();
-    cells[i].startAnimate({ duration: 260, easing: E.easeOut }).setStroke(C.red).endAnimate();
-    labels[i].startAnimate({ duration: 260, easing: E.easeOut }).setFill(C.red).endAnimate();
+    cells[i]
+      .startAnimate({ duration: 260, easing: E.easeOut })
+      .setStroke(C.red)
+      .endAnimate();
+    labels[i]
+      .startAnimate({ duration: 260, easing: E.easeOut })
+      .setFill(C.red)
+      .endAnimate();
     await sd.pause();
 
     const above = bracket(L + 1, i, "above", "[L+1, i]");
@@ -103,8 +170,14 @@ sd.main(async () => {
     fadeOut(below);
   }
 
-  cells[N - 1].startAnimate({ duration: 260, easing: E.easeOut }).setStroke(C.grey).endAnimate();
-  labels[N - 1].startAnimate({ duration: 260, easing: E.easeOut }).setFill(TEXT_DARK).endAnimate();
+  cells[N - 1]
+    .startAnimate({ duration: 260, easing: E.easeOut })
+    .setStroke(C.grey)
+    .endAnimate();
+  labels[N - 1]
+    .startAnimate({ duration: 260, easing: E.easeOut })
+    .setFill(TEXT_DARK)
+    .endAnimate();
 
   await sd.pause();
 });

@@ -24,7 +24,8 @@ trie.buildFail();
 
 const FAIL_INK = "#c08fbf";
 for (let i = 1; i < trie.nodes.length; i++) {
-  trie.failLink(i, trie.fail[i], { stroke: FAIL_INK, bending: 0.3 })
+  trie
+    .failLink(i, trie.fail[i], { stroke: FAIL_INK, bending: 0.3 })
     .setOpacity(1);
 }
 
@@ -42,7 +43,8 @@ const row = new CharRow({
 // represent patterns.
 const TERMINAL_STROKE = C.darkGreen;
 for (let i = 1; i < trie.nodes.length; i++) {
-  if (trie.nodes[i].isEnd) trie.nodes[i].circle.setStroke(TERMINAL_STROKE).setStrokeWidth(2.2);
+  if (trie.nodes[i].isEnd)
+    trie.nodes[i].circle.setStroke(TERMINAL_STROKE).setStrokeWidth(2.2);
 }
 
 const MARK_FILL = "#cfead0";

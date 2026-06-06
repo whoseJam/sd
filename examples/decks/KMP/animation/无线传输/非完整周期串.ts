@@ -99,7 +99,11 @@ sd.main(async () => {
       .endAnimate();
   }
   formula
-    .startAnimate({ delay: bands.length * 120 + 180, duration: 320, easing: E.easeOut })
+    .startAnimate({
+      delay: bands.length * 120 + 180,
+      duration: 320,
+      easing: E.easeOut,
+    })
     .setOpacity(1)
     .endAnimate();
   await sd.pause();

@@ -46,10 +46,38 @@ for (let v = -3; v <= 11; v++) {
 const xPos = X0 + (0 + 3) * TICK_STEP;
 const yPos = X0 + (5 + 3) * TICK_STEP;
 
-new sd.Circle({ targetNode: svg, cx: xPos, cy: 0, r: 8, fill: C.steelBlue, stroke: C.none });
-new sd.Text({ targetNode: svg, text: "x", cx: xPos, cy: 20, fontSize: 14, fill: C.steelBlue });
-new sd.Circle({ targetNode: svg, cx: yPos, cy: 0, r: 8, fill: C.darkOrange, stroke: C.none });
-new sd.Text({ targetNode: svg, text: "y", cx: yPos, cy: 20, fontSize: 14, fill: C.darkOrange });
+new sd.Circle({
+  targetNode: svg,
+  cx: xPos,
+  cy: 0,
+  r: 8,
+  fill: C.steelBlue,
+  stroke: C.none,
+});
+new sd.Text({
+  targetNode: svg,
+  text: "x",
+  cx: xPos,
+  cy: 20,
+  fontSize: 14,
+  fill: C.steelBlue,
+});
+new sd.Circle({
+  targetNode: svg,
+  cx: yPos,
+  cy: 0,
+  r: 8,
+  fill: C.darkOrange,
+  stroke: C.none,
+});
+new sd.Text({
+  targetNode: svg,
+  text: "y",
+  cx: yPos,
+  cy: 20,
+  fontSize: 14,
+  fill: C.darkOrange,
+});
 
 new sd.Math({
   targetNode: svg,

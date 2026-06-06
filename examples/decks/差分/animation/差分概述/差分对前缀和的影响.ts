@@ -49,7 +49,10 @@ sd.main(async () => {
     for (let k = index; k <= N; k++) {
       aValues[k - 1] += delta;
       a.setValue(k, aValues[k - 1], { delay: base + 120 + (k - index) * 40 });
-      a.paintCell(k, "#dbeefd", C.steelBlue, { delay: base + 120 + (k - index) * 40, duration: 200 });
+      a.paintCell(k, "#dbeefd", C.steelBlue, {
+        delay: base + 120 + (k - index) * 40,
+        duration: 200,
+      });
     }
     await sd.pause();
     for (let k = index; k <= N; k++) a.clearCell(k, { duration: 180 });

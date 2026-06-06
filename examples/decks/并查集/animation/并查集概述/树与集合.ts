@@ -46,7 +46,14 @@ new sd.Rect({
   strokeWidth: 1.4,
   strokeDashArray: [6, 4],
 });
-new sd.Text({ targetNode: svg, text: "Set", cx: LEFT_CX, cy: R + 36, fontSize: 18, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "Set",
+  cx: LEFT_CX,
+  cy: R + 36,
+  fontSize: 18,
+  fill: C.darkButtonGrey,
+});
 
 // Right: tree view — root + 3 children.
 const RIGHT_CX = 180;
@@ -56,7 +63,10 @@ const positions = new Map<number, { cx: number; cy: number }>();
 positions.set(ROOT, { cx: RIGHT_CX, cy: ROOT_CY });
 const children = ids.filter((i) => i !== ROOT);
 for (let k = 0; k < children.length; k++) {
-  positions.set(children[k], { cx: RIGHT_CX + (k - (children.length - 1) / 2) * 70, cy: CHILD_CY });
+  positions.set(children[k], {
+    cx: RIGHT_CX + (k - (children.length - 1) / 2) * 70,
+    cy: CHILD_CY,
+  });
 }
 
 for (const [id, pos] of positions) {
@@ -69,7 +79,14 @@ for (const [id, pos] of positions) {
     stroke: id === ROOT ? C.darkOrange : C.darkButtonGrey,
     strokeWidth: id === ROOT ? 2.4 : 1.4,
   });
-  new sd.Text({ targetNode: svg, text: String(id), cx: pos.cx, cy: pos.cy, fontSize: 16, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: String(id),
+    cx: pos.cx,
+    cy: pos.cy,
+    fontSize: 16,
+    fill: C.darkButtonGrey,
+  });
 }
 
 for (const c of children) {
@@ -88,7 +105,14 @@ for (const c of children) {
     strokeWidth: 1.2,
   });
 }
-new sd.Text({ targetNode: svg, text: "Tree", cx: RIGHT_CX, cy: ROOT_CY + R + 22, fontSize: 18, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "Tree",
+  cx: RIGHT_CX,
+  cy: ROOT_CY + R + 22,
+  fontSize: 18,
+  fill: C.darkButtonGrey,
+});
 
 sd.main(async () => {
   await sd.pause();

@@ -15,11 +15,20 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 4], [2, 4], [2, 5], [3, 5], [3, 6], [4, 5], [5, 6],
+  [1, 4],
+  [2, 4],
+  [2, 5],
+  [3, 5],
+  [3, 6],
+  [4, 5],
+  [5, 6],
 ];
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 18,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 18,
 });
 
 sd.main(async () => {
@@ -33,7 +42,10 @@ sd.main(async () => {
     // Find any in-degree-0 vertex.
     let pick: number | undefined;
     for (const id of alive) {
-      if (dag.inDegree(id, alive) === 0) { pick = id; break; }
+      if (dag.inDegree(id, alive) === 0) {
+        pick = id;
+        break;
+      }
     }
     if (pick === undefined) break;
     order.push(pick);

@@ -34,9 +34,33 @@ export function makeBrace(svg: sd.Group, opts: BraceOpts): sd.Group {
   const awayRow = -towardRow;
   const g = new sd.Group({ targetNode: opts.targetNode ?? svg, opacity: 0 });
 
-  new sd.Line({ targetNode: g, x1: xL, y1: y, x2: xR, y2: y, stroke, strokeWidth });
-  new sd.Line({ targetNode: g, x1: xL, y1: y, x2: xL, y2: y + towardRow, stroke, strokeWidth });
-  new sd.Line({ targetNode: g, x1: xR, y1: y, x2: xR, y2: y + towardRow, stroke, strokeWidth });
+  new sd.Line({
+    targetNode: g,
+    x1: xL,
+    y1: y,
+    x2: xR,
+    y2: y,
+    stroke,
+    strokeWidth,
+  });
+  new sd.Line({
+    targetNode: g,
+    x1: xL,
+    y1: y,
+    x2: xL,
+    y2: y + towardRow,
+    stroke,
+    strokeWidth,
+  });
+  new sd.Line({
+    targetNode: g,
+    x1: xR,
+    y1: y,
+    x2: xR,
+    y2: y + towardRow,
+    stroke,
+    strokeWidth,
+  });
   new sd.Line({
     targetNode: g,
     x1: (xL + xR) / 2,

@@ -55,7 +55,7 @@ export function sampleSpace(opts: SampleSpaceOpts): SampleSpaceHandles {
   // coordinates ourselves — placing everything in the positive quadrant
   // works just as well.
   const processWidth = opts.process.width ?? 100;
-  const answerWidth = opts.answer ? opts.answer.width ?? 70 : 0;
+  const answerWidth = opts.answer ? (opts.answer.width ?? 70) : 0;
   const x0 = 0;
   const topY = 0;
   const stacks: ValueStack[] = [];

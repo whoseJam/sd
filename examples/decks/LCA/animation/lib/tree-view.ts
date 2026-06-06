@@ -90,41 +90,79 @@ export class TreeView {
     }
   }
 
-  fadeIn(opts?: { delay?: number; stagger?: number; duration?: number }): number {
+  fadeIn(opts?: {
+    delay?: number;
+    stagger?: number;
+    duration?: number;
+  }): number {
     const delay0 = opts?.delay ?? 0;
     const stagger = opts?.stagger ?? 28;
     const dur = opts?.duration ?? 280;
     let k = 0;
     for (const id of this.circles.keys()) {
       const d = delay0 + k * stagger;
-      this.circles.get(id)!.startAnimate({ delay: d, duration: dur, easing: E.easeOut }).setOpacity(1).endAnimate();
-      this.labels.get(id)!.startAnimate({ delay: d, duration: dur, easing: E.easeOut }).setOpacity(1).endAnimate();
+      this.circles
+        .get(id)!
+        .startAnimate({ delay: d, duration: dur, easing: E.easeOut })
+        .setOpacity(1)
+        .endAnimate();
+      this.labels
+        .get(id)!
+        .startAnimate({ delay: d, duration: dur, easing: E.easeOut })
+        .setOpacity(1)
+        .endAnimate();
       const e = this.edges.get(id);
-      if (e) e.startAnimate({ delay: d, duration: dur, easing: E.easeOut }).setOpacity(1).endAnimate();
+      if (e)
+        e.startAnimate({ delay: d, duration: dur, easing: E.easeOut })
+          .setOpacity(1)
+          .endAnimate();
       k++;
     }
     return delay0 + k * stagger + dur;
   }
 
-  paint(id: number, fill: sd.SDColor, stroke: sd.SDColor, opts?: { delay?: number; duration?: number }) {
-    this.circles.get(id)!
-      .startAnimate({ delay: opts?.delay ?? 0, duration: opts?.duration ?? 240, easing: E.easeOut })
+  paint(
+    id: number,
+    fill: sd.SDColor,
+    stroke: sd.SDColor,
+    opts?: { delay?: number; duration?: number },
+  ) {
+    this.circles
+      .get(id)!
+      .startAnimate({
+        delay: opts?.delay ?? 0,
+        duration: opts?.duration ?? 240,
+        easing: E.easeOut,
+      })
       .setFill(fill)
       .setStroke(stroke)
       .setStrokeWidth(2.2)
       .endAnimate();
   }
 
-  paintEdge(child: number, color: sd.SDColor, opts?: { delay?: number; duration?: number }) {
+  paintEdge(
+    child: number,
+    color: sd.SDColor,
+    opts?: { delay?: number; duration?: number },
+  ) {
     const e = this.edges.get(child);
     if (!e) return;
-    e.startAnimate({ delay: opts?.delay ?? 0, duration: opts?.duration ?? 240, easing: E.easeOut })
+    e.startAnimate({
+      delay: opts?.delay ?? 0,
+      duration: opts?.duration ?? 240,
+      easing: E.easeOut,
+    })
       .setStroke(color)
       .setStrokeWidth(2.4)
       .endAnimate();
   }
 
-  setTag(id: number, text: string, color: sd.SDColor, opts?: { delay?: number; duration?: number }) {
+  setTag(
+    id: number,
+    text: string,
+    color: sd.SDColor,
+    opts?: { delay?: number; duration?: number },
+  ) {
     const n = this.nodes.get(id)!;
     let t = this.tags.get(id);
     if (!t) {
@@ -139,9 +177,16 @@ export class TreeView {
       });
       this.tags.set(id, t);
     } else {
-      t.startAnimate({ delay: opts?.delay ?? 0, duration: 200 }).setText(text).setFill(color).endAnimate();
+      t.startAnimate({ delay: opts?.delay ?? 0, duration: 200 })
+        .setText(text)
+        .setFill(color)
+        .endAnimate();
     }
-    t.startAnimate({ delay: opts?.delay ?? 0, duration: opts?.duration ?? 260, easing: E.easeOut })
+    t.startAnimate({
+      delay: opts?.delay ?? 0,
+      duration: opts?.duration ?? 260,
+      easing: E.easeOut,
+    })
       .setOpacity(1)
       .endAnimate();
   }

@@ -27,7 +27,8 @@ function manacher(s: string): number[] {
       i - p[i] >= 1 &&
       i + p[i] <= n &&
       s[i - p[i] - 1] === s[i + p[i] - 1]
-    ) p[i]++;
+    )
+      p[i]++;
     if (i + p[i] > right) {
       right = i + p[i];
       center = i;
@@ -85,7 +86,9 @@ sd.main(async () => {
     const radius = p[i - 1];
     for (let k = i - radius + 1; k <= i + radius - 1; k++) {
       if (k === i) continue;
-      row.paintCell(k, PALI_FILL, PALI_STROKE, { delay: (k - (i - radius + 1)) * 60 });
+      row.paintCell(k, PALI_FILL, PALI_STROKE, {
+        delay: (k - (i - radius + 1)) * 60,
+      });
     }
     row.paintCell(i, CENTER_FILL, CENTER_STROKE);
     pLabels[i - 1]

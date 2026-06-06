@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+
 import { gridHelpers } from "../grid";
 
 const svg = sd.svg();
@@ -209,7 +210,10 @@ sd.main(async () => {
       .setOpacity(0.35)
       .endAnimate();
   }
-  frame.startAnimate({ delay: 220, duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
+  frame
+    .startAnimate({ delay: 220, duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < dataRects.length; i++) {
     dataRects[i]
       .startAnimate({ delay: 340 + i * 80, duration: 300, easing: E.easeOut })
@@ -252,7 +256,10 @@ sd.main(async () => {
     strokeWidth: 3,
     opacity: 0,
   });
-  line.startAnimate({ duration: 350, easing: E.easeOut }).setOpacity(1).endAnimate();
+  line
+    .startAnimate({ duration: 350, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 
   await sd.pause();
 
@@ -308,25 +315,40 @@ sd.main(async () => {
     // mode (sd-element's viewBox-measurement pass collapses all delays to
     // t=0, so overlapping ranges on the same attribute throw).
     ticks[evIdx]
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: ARRIVAL_DUR,
+        easing: E.easeOut,
+      })
       .setStroke(ev.type === 1 ? TICK_ADD : TICK_REM)
       .setStrokeWidth(2.5)
       .endAnimate();
 
     dataRects[ev.rectIdx]
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: ARRIVAL_DUR,
+        easing: E.easeOut,
+      })
       .setStroke(ev.type === 1 ? RECT_STROKE_ACTIVE : RECT_STROKE_DONE)
       .endAnimate();
 
     for (let i = ev.x; i < ev.x + ev.w; i++) {
       segment[i] += ev.type;
       cells[i]
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setFill(coverColor(segment[i]))
         .endAnimate();
     }
 
-    const cov = segment.reduce((s: number, v: number) => s + (v > 0 ? 1 : 0), 0);
+    const cov = segment.reduce(
+      (s: number, v: number) => s + (v > 0 ? 1 : 0),
+      0,
+    );
     // Area is the algorithm's real output: each sweep span contributes
     // prevCov × dy. Snap-update at arrival so the digit morph syncs with
     // the visual "thump" rather than ticking continuously.
@@ -335,11 +357,19 @@ sd.main(async () => {
     // setText morphs only the count digit; mapping pins the constant tail/symbol
     // so positional alignment doesn't reshape them.
     coverageText
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: TEXT_DUR,
+        easing: E.easeOut,
+      })
       .setText(`${cov} / ${W}`, { [` / ${W}`]: ` / ${W}` })
       .endAnimate();
     areaText
-      .startAnimate({ delay: ARRIVAL_DELAY, duration: TEXT_DUR, easing: E.easeOut })
+      .startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: TEXT_DUR,
+        easing: E.easeOut,
+      })
       .setText(`Σ ${area}`, { "Σ ": "Σ " })
       .endAnimate();
 

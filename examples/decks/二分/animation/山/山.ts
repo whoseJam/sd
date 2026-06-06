@@ -16,21 +16,34 @@ const ground: Array<[number, number]> = [
   [160, -10],
   [200, -60],
 ];
-const groundD = ground.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
+const groundD = ground
+  .map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`)
+  .join(" ");
 new sd.Path({
-  targetNode: svg, d: groundD,
-  stroke: C.darkButtonGrey, strokeWidth: 1.6, fill: "none",
+  targetNode: svg,
+  d: groundD,
+  stroke: C.darkButtonGrey,
+  strokeWidth: 1.6,
+  fill: "none",
 });
 
 const H = 120;
 new sd.Line({
-  targetNode: svg, x1: -240, y1: H, x2: 240, y2: H,
-  stroke: C.steelBlue, strokeWidth: 1.4,
+  targetNode: svg,
+  x1: -240,
+  y1: H,
+  x2: 240,
+  y2: H,
+  stroke: C.steelBlue,
+  strokeWidth: 1.4,
 });
 new sd.Text({
-  targetNode: svg, text: "灯高",
-  cx: 230, cy: H + 12,
-  fontSize: 11, fill: C.steelBlue,
+  targetNode: svg,
+  text: "灯高",
+  cx: 230,
+  cy: H + 12,
+  fontSize: 11,
+  fill: C.steelBlue,
 });
 
 // For each ridge segment, project endpoints onto y=H using slope rays.
@@ -48,11 +61,17 @@ sd.main(async () => {
     const hi = Math.max(projAx, projBx);
     new sd.Line({
       targetNode: svg,
-      x1: Math.max(-240, lo), y1: H + 4,
-      x2: Math.min(240, hi), y2: H + 4,
-      stroke: C.darkOrange, strokeWidth: 2,
+      x1: Math.max(-240, lo),
+      y1: H + 4,
+      x2: Math.min(240, hi),
+      y2: H + 4,
+      stroke: C.darkOrange,
+      strokeWidth: 2,
       opacity: 0,
-    }).startAnimate({ delay: i * 120, duration: 220, easing: E.easeOut }).setOpacity(0.6).endAnimate();
+    })
+      .startAnimate({ delay: i * 120, duration: 220, easing: E.easeOut })
+      .setOpacity(0.6)
+      .endAnimate();
   }
   await sd.pause();
 });

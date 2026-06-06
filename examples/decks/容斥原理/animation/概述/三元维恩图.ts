@@ -25,13 +25,22 @@ const circles = [
 
 for (const c of circles) {
   new sd.Circle({
-    targetNode: svg, cx: c.cx, cy: c.cy, r,
-    fill: c.col.c, stroke: c.col.c, strokeWidth: 1.4,
+    targetNode: svg,
+    cx: c.cx,
+    cy: c.cy,
+    r,
+    fill: c.col.c,
+    stroke: c.col.c,
+    strokeWidth: 1.4,
     fillOpacity: 0.25,
   });
   new sd.Text({
-    targetNode: svg, text: c.col.label,
-    cx: c.col.lcx, cy: c.col.lcy, fontSize: 18, fill: c.col.c,
+    targetNode: svg,
+    text: c.col.label,
+    cx: c.col.lcx,
+    cy: c.col.lcy,
+    fontSize: 18,
+    fill: c.col.c,
   });
 }
 

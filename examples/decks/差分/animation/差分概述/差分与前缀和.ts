@@ -71,11 +71,23 @@ sd.main(async () => {
   await sd.pause();
 
   d.fadeIn({ delay: 0 });
-  arrowDown.startAnimate({ delay: 100, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
-  topArrow.startAnimate({ delay: 180, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
+  arrowDown
+    .startAnimate({ delay: 100, duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  topArrow
+    .startAnimate({ delay: 180, duration: 220, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
-  arrowUp.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
-  botArrow.startAnimate({ delay: 80, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
+  arrowUp
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  botArrow
+    .startAnimate({ delay: 80, duration: 220, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

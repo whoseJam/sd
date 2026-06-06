@@ -28,17 +28,30 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  1: 4, 3: 4, 4: 5, 2: 5, 6: 5,
+  1: 4,
+  3: 4,
+  4: 5,
+  2: 5,
+  6: 5,
 };
 
-const tree = new TreeView({ targetNode: svg, nodes, parent, root: 5, radius: 18 });
+const tree = new TreeView({
+  targetNode: svg,
+  nodes,
+  parent,
+  root: 5,
+  radius: 18,
+});
 
 sd.main(async () => {
   seqRow.fadeIn({ delay: 0 });
   await sd.pause();
   tree.fadeIn({ delay: 0 });
   for (let i = 0; i < prufer.length; i++) {
-    seqRow.paintCell(i + 1, "#fdecd9", C.darkOrange, { delay: i * 200, duration: 200 });
+    seqRow.paintCell(i + 1, "#fdecd9", C.darkOrange, {
+      delay: i * 200,
+      duration: 200,
+    });
   }
   await sd.pause();
 });

@@ -30,7 +30,11 @@ const SQR_STROKE = C.steelBlue;
 
 // Pointer chevrons — small triangles outside the grid pointing inward at
 // the chosen row and column.
-function pointerTriangle(cx: number, cy: number, dir: "left" | "down"): sd.Polygon {
+function pointerTriangle(
+  cx: number,
+  cy: number,
+  dir: "left" | "down",
+): sd.Polygon {
   const SIZE_TRI = 9;
   // tip points toward grid; base is on the far side.
   const points: Array<[number, number]> =
@@ -76,6 +80,8 @@ new sd.Text({
 });
 
 sd.main(async () => {
-  grid.paintRange(I_AT, J_AT, I_AT + D - 1, J_AT + D - 1, SQR_FILL, { stroke: SQR_STROKE });
+  grid.paintRange(I_AT, J_AT, I_AT + D - 1, J_AT + D - 1, SQR_FILL, {
+    stroke: SQR_STROKE,
+  });
   await sd.pause();
 });

@@ -29,7 +29,8 @@ const trie = new Trie(svg, {
   siblingGap: 90,
 });
 for (let i = 1; i < trie.nodes.length; i++) {
-  if (trie.nodes[i].isEnd) trie.nodes[i].circle.setStroke(C.darkRed).setStrokeWidth(2.4);
+  if (trie.nodes[i].isEnd)
+    trie.nodes[i].circle.setStroke(C.darkRed).setStrokeWidth(2.4);
 }
 
 const queryBits = toBits(QUERY);
@@ -49,7 +50,11 @@ const FALLBACK_FILL = "#fce4a0";
 const FALLBACK_STROKE = C.darkOrange;
 
 // Greedy walk from root.
-interface GreedyStep { node: number; preferred: string; got: string; }
+interface GreedyStep {
+  node: number;
+  preferred: string;
+  got: string;
+}
 const steps: GreedyStep[] = [];
 {
   let cur = 0;
@@ -59,22 +64,34 @@ const steps: GreedyStep[] = [];
     const c = trie.children.get(cur);
     const next = c?.get(want) ?? c?.get(other);
     if (next === undefined) break;
-    steps.push({ node: next, preferred: want, got: c?.get(want) !== undefined ? want : other });
+    steps.push({
+      node: next,
+      preferred: want,
+      got: c?.get(want) !== undefined ? want : other,
+    });
     cur = next;
   }
 }
 
 sd.main(async () => {
   trie.fadeIn({ delay: 0 });
-  queryLabel.startAnimate({ delay: 500, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+  queryLabel
+    .startAnimate({ delay: 500, duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   for (let k = 0; k < steps.length; k++) {
     const step = steps[k];
     const hit = step.got === step.preferred;
-    trie.paintNode(step.node, hit ? PICK_FILL : FALLBACK_FILL, hit ? PICK_STROKE : FALLBACK_STROKE, {
-      delay: k * 200,
-    });
+    trie.paintNode(
+      step.node,
+      hit ? PICK_FILL : FALLBACK_FILL,
+      hit ? PICK_STROKE : FALLBACK_STROKE,
+      {
+        delay: k * 200,
+      },
+    );
   }
   await sd.pause();
 });

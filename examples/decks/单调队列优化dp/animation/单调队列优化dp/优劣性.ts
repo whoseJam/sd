@@ -19,21 +19,30 @@ for (let i = 0; i < candidates.length; i++) {
   const c = candidates[i];
   const x = X0 + i * 220;
   new sd.Rect({
-    targetNode: svg, x, y: -c.G * SCALE / 2,
-    width: BAR_W, height: c.G * SCALE,
+    targetNode: svg,
+    x,
+    y: (-c.G * SCALE) / 2,
+    width: BAR_W,
+    height: c.G * SCALE,
     fill: i === 0 ? "#fde9e9" : "#e8f5e9",
     stroke: i === 0 ? ("#d32f2f" as sd.SDColor) : C.darkGreen,
     strokeWidth: 1.6,
   });
   new sd.Math({
-    targetNode: svg, text: `G(${c.label}) = ${c.G}`,
-    cx: x + BAR_W / 2, cy: -c.G * SCALE / 2 - 20,
-    fontSize: 14, fill: i === 0 ? ("#d32f2f" as sd.SDColor) : C.darkGreen,
+    targetNode: svg,
+    text: `G(${c.label}) = ${c.G}`,
+    cx: x + BAR_W / 2,
+    cy: (-c.G * SCALE) / 2 - 20,
+    fontSize: 14,
+    fill: i === 0 ? ("#d32f2f" as sd.SDColor) : C.darkGreen,
   });
   new sd.Math({
-    targetNode: svg, text: c.label,
-    cx: x + BAR_W / 2, cy: c.G * SCALE / 2 + 16,
-    fontSize: 16, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: c.label,
+    cx: x + BAR_W / 2,
+    cy: (c.G * SCALE) / 2 + 16,
+    fontSize: 16,
+    fill: C.darkButtonGrey,
   });
   void SIZE;
 }
@@ -43,8 +52,14 @@ sd.main(async () => {
   new sd.Math({
     targetNode: svg,
     text: "j_1 < j_2 \\land G(j_1) \\le G(j_2) \\Rightarrow j_1 \\text{ 可弃}",
-    cx: 0, cy: -100,
-    fontSize: 14, fill: C.darkButtonGrey, opacity: 0,
-  }).startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+    cx: 0,
+    cy: -100,
+    fontSize: 14,
+    fill: C.darkButtonGrey,
+    opacity: 0,
+  })
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

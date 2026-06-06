@@ -16,7 +16,14 @@ new sd.Circle({
   stroke: C.darkButtonGrey,
   strokeWidth: 1.4,
 });
-new sd.Text({ targetNode: svg, text: "u", cx: -60, cy: 0, fontSize: 16, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "u",
+  cx: -60,
+  cy: 0,
+  fontSize: 16,
+  fill: C.darkButtonGrey,
+});
 new sd.Circle({
   targetNode: svg,
   cx: 60,
@@ -26,7 +33,14 @@ new sd.Circle({
   stroke: C.darkButtonGrey,
   strokeWidth: 1.4,
 });
-new sd.Text({ targetNode: svg, text: "v", cx: 60, cy: 0, fontSize: 16, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "v",
+  cx: 60,
+  cy: 0,
+  fontSize: 16,
+  fill: C.darkButtonGrey,
+});
 arrow(svg, {
   from: { x: -60 + R, y: 0 },
   to: { x: 60 - R, y: 0 },
@@ -61,8 +75,14 @@ const i1Label = new sd.Text({
 
 sd.main(async () => {
   await sd.pause();
-  iLabel.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+  iLabel
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
-  i1Label.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+  i1Label
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

@@ -17,7 +17,13 @@ for (let i = 1; i <= N; i++) {
 const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1 });
 
 const U = N;
-const jumps: Array<{ j: number; from: number; to: number; color: sd.SDColor; tone: string }> = [
+const jumps: Array<{
+  j: number;
+  from: number;
+  to: number;
+  color: sd.SDColor;
+  tone: string;
+}> = [
   { j: 0, from: 9, to: 8, color: C.darkOrange, tone: "#fdecd9" },
   { j: 1, from: 9, to: 7, color: C.steelBlue, tone: "#dbeefd" },
   { j: 2, from: 9, to: 5, color: C.darkGreen, tone: "#e8f5e9" },

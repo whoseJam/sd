@@ -49,12 +49,15 @@ for (let i = 0; i < N; i++) {
   cellBgs.push(
     new sd.Rect({
       targetNode: svg,
-      x: cx - CELL_W / 2, y: ROW_Y - CELL_H / 2,
-      width: CELL_W, height: CELL_H,
+      x: cx - CELL_W / 2,
+      y: ROW_Y - CELL_H / 2,
+      width: CELL_W,
+      height: CELL_H,
       fill: C.white,
       stroke: C.silver,
       strokeWidth: 0.8,
-      rx: 3, ry: 3,
+      rx: 3,
+      ry: 3,
       opacity: 0,
     }),
   );
@@ -62,7 +65,8 @@ for (let i = 0; i < N; i++) {
     new sd.Text({
       targetNode: svg,
       text: String(VALUES[i]),
-      cx, cy: ROW_Y - 1,
+      cx,
+      cy: ROW_Y - 1,
       fontSize: 12,
       fill: C.darkButtonGrey,
       opacity: 0,
@@ -72,7 +76,8 @@ for (let i = 0; i < N; i++) {
     new sd.Text({
       targetNode: svg,
       text: String(i + 1),
-      cx, cy: I_LABEL_Y - 1,
+      cx,
+      cy: I_LABEL_Y - 1,
       fontSize: 9,
       fill: C.silver,
       opacity: 0,
@@ -83,7 +88,8 @@ for (let i = 0; i < N; i++) {
 const summary = new sd.Text({
   targetNode: svg,
   text: `${BLOCKS.length} 块  ≤  O(√n)`,
-  cx: 0, cy: -45,
+  cx: 0,
+  cy: -45,
   fontSize: 13,
   fill: C.darkOrange,
   opacity: 0,
@@ -93,12 +99,18 @@ sd.main(async () => {
   // p1: cells + i labels + floor values
   for (let i = 0; i < N; i++) {
     const d = i * 50;
-    cellBgs[i].startAnimate({ delay: d, duration: 240, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    cellTexts[i].startAnimate({ delay: d + 80, duration: 240, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    iLabels[i].startAnimate({ delay: d + 40, duration: 240, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    cellBgs[i]
+      .startAnimate({ delay: d, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    cellTexts[i]
+      .startAnimate({ delay: d + 80, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    iLabels[i]
+      .startAnimate({ delay: d + 40, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
@@ -109,15 +121,20 @@ sd.main(async () => {
     const stroke = b % 2 === 0 ? ODD_STROKE : EVEN_STROKE;
     for (let i = start; i <= end; i++) {
       const d = b * 200 + (i - start) * 40;
-      cellBgs[i].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-        .setFill(fill).setStroke(stroke).setStrokeWidth(1.2)
+      cellBgs[i]
+        .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+        .setFill(fill)
+        .setStroke(stroke)
+        .setStrokeWidth(1.2)
         .endAnimate();
     }
   }
   await sd.pause();
 
   // p3: the punchline: block count is small.
-  summary.startAnimate({ duration: 400, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  summary
+    .startAnimate({ duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

@@ -119,7 +119,15 @@ export class FailTree {
         fill: textFill,
         opacity: 0,
       });
-      this.nodes.push({ i, depth: depth[i], parent: i === 0 ? -1 : this.len[i], cx, cy, circle, text });
+      this.nodes.push({
+        i,
+        depth: depth[i],
+        parent: i === 0 ? -1 : this.len[i],
+        cx,
+        cy,
+        circle,
+        text,
+      });
     }
 
     // Edges: i -> len[i]. Drawn child -> parent.
@@ -154,7 +162,11 @@ export class FailTree {
   }
 
   /** Walk root-to-leaves; fade in each node and the edge into it together. */
-  fadeIn(opts?: { delay?: number; stagger?: number; duration?: number }): number {
+  fadeIn(opts?: {
+    delay?: number;
+    stagger?: number;
+    duration?: number;
+  }): number {
     const delay0 = opts?.delay ?? 0;
     const stagger = opts?.stagger ?? 60;
     const dur = opts?.duration ?? 320;
@@ -197,7 +209,11 @@ export class FailTree {
     const dur = opts?.duration ?? 260;
     const sw = opts?.strokeWidth ?? 2.4;
     this.nodes[i].circle
-      .startAnimate({ delay: opts?.delay ?? 0, duration: dur, easing: E.easeOut })
+      .startAnimate({
+        delay: opts?.delay ?? 0,
+        duration: dur,
+        easing: E.easeOut,
+      })
       .setFill(fill)
       .setStroke(stroke)
       .setStrokeWidth(sw)
@@ -214,7 +230,11 @@ export class FailTree {
     if (!e) return;
     const dur = opts?.duration ?? 260;
     e.line
-      .startAnimate({ delay: opts?.delay ?? 0, duration: dur, easing: E.easeOut })
+      .startAnimate({
+        delay: opts?.delay ?? 0,
+        duration: dur,
+        easing: E.easeOut,
+      })
       .setStroke(stroke)
       .setStrokeWidth(opts?.strokeWidth ?? 2.4)
       .endAnimate();

@@ -291,13 +291,19 @@ function convertMappingToGlyphs(
   }));
 }
 
-function convertLocation(node: Math, location: TextMappingLocation): TextMappingLocation {
+function convertLocation(
+  node: Math,
+  location: TextMappingLocation,
+): TextMappingLocation {
   if (typeof location === "string") return parseToHTML(node, location)[1];
   if (Array.isArray(location)) return location;
   if (location instanceof BaseText) return location;
   if ("subtext" in location) {
     const sub = location.subtext;
-    return { ...location, subtext: typeof sub === "string" ? parseToHTML(node, sub)[1] : sub };
+    return {
+      ...location,
+      subtext: typeof sub === "string" ? parseToHTML(node, sub)[1] : sub,
+    };
   }
   return location;
 }

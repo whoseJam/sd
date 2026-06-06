@@ -13,17 +13,29 @@ const SIZE = 40;
 const X0 = -(Math.max(left.length, right.length) * SIZE) / 2;
 
 const lRow = new NumRow({
-  targetNode: svg, values: left, size: SIZE,
-  x: X0, y: 30, label: "L",
+  targetNode: svg,
+  values: left,
+  size: SIZE,
+  x: X0,
+  y: 30,
+  label: "L",
 });
 const rRow = new NumRow({
-  targetNode: svg, values: right, size: SIZE,
-  x: X0, y: -30 - SIZE, label: "R",
+  targetNode: svg,
+  values: right,
+  size: SIZE,
+  x: X0,
+  y: -30 - SIZE,
+  label: "R",
 });
 
 new sd.Math({
-  targetNode: svg, text: `W = ${W}`,
-  cx: -150, cy: 0, fontSize: 14, fill: C.darkButtonGrey,
+  targetNode: svg,
+  text: `W = ${W}`,
+  cx: -150,
+  cy: 0,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
 });
 
 // Two-pointer scan: i forward, j backward.
@@ -49,8 +61,16 @@ sd.main(async () => {
     }
   }
   new sd.Math({
-    targetNode: svg, text: `best = ${best}`,
-    cx: 150, cy: 0, fontSize: 14, fill: C.darkGreen, opacity: 0,
-  }).startAnimate({ duration: 280 }).setOpacity(1).endAnimate();
+    targetNode: svg,
+    text: `best = ${best}`,
+    cx: 150,
+    cy: 0,
+    fontSize: 14,
+    fill: C.darkGreen,
+    opacity: 0,
+  })
+    .startAnimate({ duration: 280 })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

@@ -27,7 +27,10 @@ const STEP = 240;
 
 sd.main(async () => {
   await sd.pause();
-  codeNode.startAnimate({ duration: STEP, easing: E.easeOut }).setSubtextFill("i=n", C.orange).endAnimate();
+  codeNode
+    .startAnimate({ duration: STEP, easing: E.easeOut })
+    .setSubtextFill("i=n", C.orange)
+    .endAnimate();
   await sd.pause();
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
@@ -36,7 +39,10 @@ sd.main(async () => {
     .setSubtextFill("i=n", C.orange)
     .endAnimate();
   await sd.pause();
-  codeNode.startAnimate({ duration: STEP, easing: E.easeOut }).setSubtextFill("i<=n*2", C.textBlue).endAnimate();
+  codeNode
+    .startAnimate({ duration: STEP, easing: E.easeOut })
+    .setSubtextFill("i<=n*2", C.textBlue)
+    .endAnimate();
   await sd.pause();
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
@@ -45,7 +51,10 @@ sd.main(async () => {
     .setSubtextFill("2n", C.textBlue)
     .endAnimate();
   await sd.pause();
-  codeNode.startAnimate({ duration: STEP, easing: E.easeOut }).setSubtextFill("ans += (i - n + 1)", C.red).endAnimate();
+  codeNode
+    .startAnimate({ duration: STEP, easing: E.easeOut })
+    .setSubtextFill("ans += (i - n + 1)", C.red)
+    .endAnimate();
   await sd.pause();
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })

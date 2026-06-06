@@ -28,12 +28,16 @@ sd.main(async () => {
   console.log("[probe A] string:", m.getText());
   console.log("[probe A] text glyphs:", JSON.stringify(m.text));
 
-  m.startAnimate({ duration: 300 }).setText("\\sum_{i=1}^??", { "?": "i=1" }).endAnimate();
+  m.startAnimate({ duration: 300 })
+    .setText("\\sum_{i=1}^??", { "?": "i=1" })
+    .endAnimate();
   await sd.pause();
 
   console.log("[probe B] string:", m.getText());
   console.log("[probe B] text glyphs:", JSON.stringify(m.text));
 
-  m.startAnimate({ duration: 300 }).setText("\\sum_{i=1}^n?", { "?": "n" }).endAnimate();
+  m.startAnimate({ duration: 300 })
+    .setText("\\sum_{i=1}^n?", { "?": "n" })
+    .endAnimate();
   await sd.pause();
 });

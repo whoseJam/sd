@@ -15,7 +15,8 @@ const trie = new Trie(svg, {
 });
 
 for (let i = 1; i < trie.nodes.length; i++) {
-  if (trie.nodes[i].isEnd) trie.nodes[i].circle.setStroke(C.darkRed).setStrokeWidth(2.4);
+  if (trie.nodes[i].isEnd)
+    trie.nodes[i].circle.setStroke(C.darkRed).setStrokeWidth(2.4);
 }
 
 sd.main(async () => {

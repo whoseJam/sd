@@ -14,24 +14,38 @@ const SIZE = 44;
 const X0 = -(N * SIZE) / 2;
 
 const fRow = new NumRow({
-  targetNode: svg, values: F, size: SIZE,
-  x: X0, y: 30, label: "F",
+  targetNode: svg,
+  values: F,
+  size: SIZE,
+  x: X0,
+  y: 30,
+  label: "F",
 });
 const sRow = new NumRow({
-  targetNode: svg, values: S, size: SIZE,
-  x: X0, y: -30 - SIZE, label: "S",
+  targetNode: svg,
+  values: S,
+  size: SIZE,
+  x: X0,
+  y: -30 - SIZE,
+  label: "S",
 });
 
 function pointerOn(row: NumRow, idx: number, label: string, color: sd.SDColor) {
   const tri = new sd.Path({
     targetNode: svg,
     d: `M ${row.cellCx(idx)} ${row.top() + 6} L ${row.cellCx(idx) - 5} ${row.top() + 14} L ${row.cellCx(idx) + 5} ${row.top() + 14} Z`,
-    fill: color, stroke: color, opacity: 0,
+    fill: color,
+    stroke: color,
+    opacity: 0,
   });
   const lab = new sd.Text({
-    targetNode: svg, text: label,
-    cx: row.cellCx(idx), cy: row.top() + 24,
-    fontSize: 13, fill: color, opacity: 0,
+    targetNode: svg,
+    text: label,
+    cx: row.cellCx(idx),
+    cy: row.top() + 24,
+    fontSize: 13,
+    fill: color,
+    opacity: 0,
   });
   return { tri, lab, idx };
 }
@@ -55,13 +69,23 @@ sd.main(async () => {
     if (sum < M) continue;
     for (let k = i + 1; k <= j; k++) {
       fRow.paintCell(k, "#e8f5e9", C.darkGreen, { delay: base, duration: 200 });
-      sRow.paintCell(k, "#fdecd9", C.darkOrange, { delay: base, duration: 200 });
+      sRow.paintCell(k, "#fdecd9", C.darkOrange, {
+        delay: base,
+        duration: 200,
+      });
     }
     new sd.Text({
-      targetNode: svg, text: `[${i + 1}, ${j}]`,
-      cx: 0, cy: sRow.top() + 22, fontSize: 13, fill: C.darkButtonGrey,
+      targetNode: svg,
+      text: `[${i + 1}, ${j}]`,
+      cx: 0,
+      cy: sRow.top() + 22,
+      fontSize: 13,
+      fill: C.darkButtonGrey,
       opacity: 0,
-    }).startAnimate({ delay: base + 200, duration: 240, easing: E.easeOut }).setOpacity(1).endAnimate();
+    })
+      .startAnimate({ delay: base + 200, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     await sd.pause();
     for (let k = i + 1; k <= j; k++) {
       fRow.clearCell(k, { duration: 160 });

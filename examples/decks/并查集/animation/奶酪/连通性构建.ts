@@ -27,7 +27,14 @@ for (const [label, cx, cy] of layout) {
     stroke: C.darkButtonGrey,
     strokeWidth: 1.4,
   });
-  new sd.Text({ targetNode: svg, text: label, cx, cy, fontSize: 13, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: label,
+    cx,
+    cy,
+    fontSize: 13,
+    fill: C.darkButtonGrey,
+  });
   nodes[label] = { cx, cy, circle };
 }
 
@@ -69,7 +76,15 @@ sd.main(async () => {
   }
   await sd.pause();
   // Highlight the source/sink.
-  nodes.TOP.circle.startAnimate({ duration: 280 }).setStroke(C.darkGreen).setStrokeWidth(2.4).endAnimate();
-  nodes.BOT.circle.startAnimate({ duration: 280 }).setStroke(C.darkGreen).setStrokeWidth(2.4).endAnimate();
+  nodes.TOP.circle
+    .startAnimate({ duration: 280 })
+    .setStroke(C.darkGreen)
+    .setStrokeWidth(2.4)
+    .endAnimate();
+  nodes.BOT.circle
+    .startAnimate({ duration: 280 })
+    .setStroke(C.darkGreen)
+    .setStrokeWidth(2.4)
+    .endAnimate();
   await sd.pause();
 });

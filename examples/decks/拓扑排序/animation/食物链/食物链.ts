@@ -15,11 +15,20 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 3], [1, 4], [2, 4], [3, 5], [4, 5], [3, 6], [5, 6],
+  [1, 3],
+  [1, 4],
+  [2, 4],
+  [3, 5],
+  [4, 5],
+  [3, 6],
+  [5, 6],
 ];
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 22,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 22,
 });
 
 // f(u) = sum of f(v) over predecessors v; initialize sources to 1.
@@ -41,7 +50,12 @@ for (const u of order) {
 sd.main(async () => {
   dag.fadeIn({ delay: 0 });
   for (const id of order) {
-    dag.setTag(id, `f=${f[id]}`, indegree[id] === 0 ? C.steelBlue : C.darkOrange, { delay: 300 + id * 80 });
+    dag.setTag(
+      id,
+      `f=${f[id]}`,
+      indegree[id] === 0 ? C.steelBlue : C.darkOrange,
+      { delay: 300 + id * 80 },
+    );
   }
   await sd.pause();
 });

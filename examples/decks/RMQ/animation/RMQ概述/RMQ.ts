@@ -30,7 +30,9 @@ const F = new FTable({
   label: "F",
 });
 
-const fValues: number[][] = Array.from({ length: M }, () => new Array(N).fill(0));
+const fValues: number[][] = Array.from({ length: M }, () =>
+  new Array(N).fill(0),
+);
 for (let i = 0; i < N; i++) fValues[0][i] = data[i];
 for (let j = 1; j < M; j++) {
   for (let i = 1; i + (1 << j) - 1 <= N; i++) {
@@ -63,7 +65,8 @@ sd.main(async () => {
     const k = Math.floor(Math.log2(r - l + 1));
     const lStart = l;
     const rStart = r - (1 << k) + 1;
-    for (let i = l; i <= r; i++) a.paintCell(i, "#e8f5e9", C.darkGreen, { delay: base, duration: 180 });
+    for (let i = l; i <= r; i++)
+      a.paintCell(i, "#e8f5e9", C.darkGreen, { delay: base, duration: 180 });
     await sd.pause();
 
     const leftRect = new sd.Rect({
@@ -88,14 +91,30 @@ sd.main(async () => {
       strokeWidth: 2.4,
       opacity: 0,
     });
-    leftRect.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+    leftRect
+      .startAnimate({ duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     F.paintCell(k, lStart, "#fdecd9", C.darkOrange, { duration: 200 });
-    rightRect.startAnimate({ delay: 180, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
-    if (rStart !== lStart) F.paintCell(k, rStart, "#dbeefd", C.steelBlue, { delay: 180, duration: 200 });
+    rightRect
+      .startAnimate({ delay: 180, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    if (rStart !== lStart)
+      F.paintCell(k, rStart, "#dbeefd", C.steelBlue, {
+        delay: 180,
+        duration: 200,
+      });
     await sd.pause();
 
-    leftRect.startAnimate({ duration: 200, easing: E.easeOut }).setOpacity(0).endAnimate();
-    rightRect.startAnimate({ duration: 200, easing: E.easeOut }).setOpacity(0).endAnimate();
+    leftRect
+      .startAnimate({ duration: 200, easing: E.easeOut })
+      .setOpacity(0)
+      .endAnimate();
+    rightRect
+      .startAnimate({ duration: 200, easing: E.easeOut })
+      .setOpacity(0)
+      .endAnimate();
     for (let i = l; i <= r; i++) a.clearCell(i, { duration: 160 });
     F.clearCell(k, lStart, { duration: 160 });
     if (rStart !== lStart) F.clearCell(k, rStart, { duration: 160 });

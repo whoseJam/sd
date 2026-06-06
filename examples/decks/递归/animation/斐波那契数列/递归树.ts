@@ -27,7 +27,12 @@ function build(k: number, depth: number, x: number, width: number): number {
 build(5, 0, 0, 280);
 
 const tree = new TreeView({
-  targetNode: svg, nodes, parent, root: 1, radius: 18, fontSize: 11,
+  targetNode: svg,
+  nodes,
+  parent,
+  root: 1,
+  radius: 18,
+  fontSize: 11,
 });
 
 sd.main(async () => {

@@ -22,10 +22,13 @@ const trie = new Trie(svg, {
 trie.buildFail();
 
 for (let i = 1; i < trie.nodes.length; i++) {
-  trie.failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 }).setOpacity(1);
+  trie
+    .failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 })
+    .setOpacity(1);
 }
 for (let i = 1; i < trie.nodes.length; i++) {
-  if (trie.nodes[i].isEnd) trie.nodes[i].circle.setStroke(C.darkGreen).setStrokeWidth(2.2);
+  if (trie.nodes[i].isEnd)
+    trie.nodes[i].circle.setStroke(C.darkGreen).setStrokeWidth(2.2);
 }
 
 const SIZE = 28;
@@ -50,8 +53,16 @@ sd.main(async () => {
 
   for (const step of trie.walk(text)) {
     const isMatch = trie.nodes[step.to].isEnd;
-    trie.paintNode(step.to, isMatch ? HIT_FILL : ACTIVE_FILL, isMatch ? HIT_STROKE : ACTIVE_STROKE);
-    row.paintCell(step.i, isMatch ? HIT_FILL : ACTIVE_FILL, isMatch ? HIT_STROKE : ACTIVE_STROKE);
+    trie.paintNode(
+      step.to,
+      isMatch ? HIT_FILL : ACTIVE_FILL,
+      isMatch ? HIT_STROKE : ACTIVE_STROKE,
+    );
+    row.paintCell(
+      step.i,
+      isMatch ? HIT_FILL : ACTIVE_FILL,
+      isMatch ? HIT_STROKE : ACTIVE_STROKE,
+    );
     await sd.pause();
   }
 });

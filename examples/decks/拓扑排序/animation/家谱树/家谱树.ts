@@ -16,11 +16,19 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 4], [1, 5], [2, 5], [2, 6], [3, 6], [3, 7],
+  [1, 4],
+  [1, 5],
+  [2, 5],
+  [2, 6],
+  [3, 6],
+  [3, 7],
 ];
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 18,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 18,
 });
 
 const SIZE = 36;
@@ -36,18 +44,31 @@ sd.main(async () => {
     const id = order[i];
     const r = new sd.Rect({
       targetNode: svg,
-      x: X0 + i * SIZE, y: Y - SIZE / 2,
-      width: SIZE, height: SIZE,
-      fill: "#fdecd9", stroke: C.darkOrange, strokeWidth: 1.4, opacity: 0,
+      x: X0 + i * SIZE,
+      y: Y - SIZE / 2,
+      width: SIZE,
+      height: SIZE,
+      fill: "#fdecd9",
+      stroke: C.darkOrange,
+      strokeWidth: 1.4,
+      opacity: 0,
     });
     const t = new sd.Text({
-      targetNode: svg, text: String(id),
-      cx: X0 + (i + 0.5) * SIZE, cy: Y,
-      fontSize: 14, fill: C.darkButtonGrey, opacity: 0,
+      targetNode: svg,
+      text: String(id),
+      cx: X0 + (i + 0.5) * SIZE,
+      cy: Y,
+      fontSize: 14,
+      fill: C.darkButtonGrey,
+      opacity: 0,
     });
     const E = sd.easing();
-    r.startAnimate({ delay: i * 200, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
-    t.startAnimate({ delay: i * 200 + 60, duration: 200, easing: E.easeOut }).setOpacity(1).endAnimate();
+    r.startAnimate({ delay: i * 200, duration: 220, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    t.startAnimate({ delay: i * 200 + 60, duration: 200, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 });

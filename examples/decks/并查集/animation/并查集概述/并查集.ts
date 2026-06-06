@@ -11,7 +11,12 @@ const N = 8;
 const R = 22;
 const GRID = 80;
 
-interface Node { id: number; cx: number; cy: number; circle: sd.Circle }
+interface Node {
+  id: number;
+  cx: number;
+  cy: number;
+  circle: sd.Circle;
+}
 
 const nodes: Node[] = [];
 for (let i = 1; i <= N; i++) {
@@ -28,7 +33,14 @@ for (let i = 1; i <= N; i++) {
     stroke: C.darkButtonGrey,
     strokeWidth: 1.4,
   });
-  new sd.Text({ targetNode: svg, text: String(i), cx, cy, fontSize: 16, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: String(i),
+    cx,
+    cy,
+    fontSize: 16,
+    fill: C.darkButtonGrey,
+  });
   nodes.push({ id: i, cx, cy, circle });
 }
 
@@ -64,7 +76,10 @@ sd.main(async () => {
       strokeWidth: 1.6,
       opacity: 0,
     });
-    line.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+    line
+      .startAnimate({ duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     await sd.pause();
   }
 });

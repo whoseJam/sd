@@ -53,7 +53,11 @@ function edge(a: sd.Circle, b: sd.Circle): sd.Line {
   });
 }
 
-const edges = [edge(points[0], points[1]), edge(points[1], points[2]), edge(points[2], points[0])];
+const edges = [
+  edge(points[0], points[1]),
+  edge(points[1], points[2]),
+  edge(points[2], points[0]),
+];
 
 sd.main(async () => {
   for (let i = 0; i < points.length; i++) {

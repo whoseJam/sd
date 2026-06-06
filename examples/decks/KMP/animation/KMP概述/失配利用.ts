@@ -146,7 +146,10 @@ const queryText = new sd.Text({
 });
 
 sd.main(async () => {
-  sGroup.startAnimate({ duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
+  sGroup
+    .startAnimate({ duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   tGroup
     .startAnimate({ delay: 150, duration: 400, easing: E.easeOut })
     .setOpacity(1)
@@ -154,7 +157,10 @@ sd.main(async () => {
   await sd.pause();
 
   // Reveal the j+1 mismatch on both bars.
-  sBar.fail.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  sBar.fail
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   tBar.fail
     .startAnimate({ delay: 80, duration: 320, easing: E.easeOut })
     .setOpacity(1)
@@ -162,7 +168,10 @@ sd.main(async () => {
   await sd.pause();
 
   // Highlight prefix and suffix on t: they are equal substrings of length len.
-  tBar.suffix.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  tBar.suffix
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   tBar.prefix
     .startAnimate({ delay: 160, duration: 320, easing: E.easeOut })
     .setOpacity(1)
@@ -170,7 +179,10 @@ sd.main(async () => {
   await sd.pause();
 
   // Same regions on s also coincide with t — that's the whole point.
-  sBar.suffix.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  sBar.suffix
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   sBar.prefix
     .startAnimate({ delay: 160, duration: 320, easing: E.easeOut })
     .setOpacity(1)

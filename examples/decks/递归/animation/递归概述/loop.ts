@@ -15,7 +15,12 @@ const nodes = [
 const parent: Record<number, number> = { 2: 3, 1: 2 };
 
 const tree = new TreeView({
-  targetNode: svg, nodes, parent, root: 3, radius: 32, fontSize: 11,
+  targetNode: svg,
+  nodes,
+  parent,
+  root: 3,
+  radius: 32,
+  fontSize: 11,
 });
 
 sd.main(async () => {

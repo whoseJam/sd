@@ -100,7 +100,13 @@ export class ValueStack {
     }
   }
 
-  left(): number { return this.cx - this.elementWidth / 2; }
-  right(): number { return this.cx + this.elementWidth / 2; }
-  midY(): number { return (this.topY + this.bottomY) / 2; }
+  left(): number {
+    return this.cx - this.elementWidth / 2;
+  }
+  right(): number {
+    return this.cx + this.elementWidth / 2;
+  }
+  midY(): number {
+    return (this.topY + this.bottomY) / 2;
+  }
 }

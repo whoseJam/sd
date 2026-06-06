@@ -5,9 +5,10 @@
 // Static file serving used to live here; both tools now consume URLs
 // directly from a pre-existing dev server.
 
+import type { Page } from "playwright";
+
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { Page } from "playwright";
 import sharp from "sharp";
 
 export function labelSvg(width: number, height: number, label: string): Buffer {
@@ -47,7 +48,13 @@ export async function stitchGrid(opts: StitchOptions): Promise<void> {
     const col = idx % cols;
     const tile = await sharp(shots[idx])
       .resize(tileW, tileH)
-      .composite([{ input: labelSvg(tileW, tileH, `#${startIndex + idx}`), top: 0, left: 0 }])
+      .composite([
+        {
+          input: labelSvg(tileW, tileH, `#${startIndex + idx}`),
+          top: 0,
+          left: 0,
+        },
+      ])
       .toBuffer();
     composites.push({ input: tile, top: row * tileH, left: col * tileW });
   }
@@ -98,10 +105,7 @@ export interface IssueCollector {
 // Patterns suppressed because they're either browser-level noise (favicon)
 // or sd-internal control-flow throws that get surfaced as pageerrors but
 // aren't actually errors.
-const NOISE_PATTERNS: RegExp[] = [
-  /favicon\.ico/,
-  /Reload \(not an error\)/,
-];
+const NOISE_PATTERNS: RegExp[] = [/favicon\.ico/, /Reload \(not an error\)/];
 
 function isNoise(text: string): boolean {
   return NOISE_PATTERNS.some((r) => r.test(text));

@@ -9,7 +9,10 @@ const data = [3, 1, 4, 1, 5, 9, 2, 6];
 const prefix: number[] = [];
 {
   let s = 0;
-  for (const v of data) { s += v; prefix.push(s); }
+  for (const v of data) {
+    s += v;
+    prefix.push(s);
+  }
 }
 
 const SIZE = 38;

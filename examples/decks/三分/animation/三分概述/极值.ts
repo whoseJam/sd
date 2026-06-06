@@ -21,12 +21,22 @@ function py(y: number) {
 
 // Axes
 new sd.Line({
-  targetNode: svg, x1: -W / 2 - 10, y1: -H / 2, x2: W / 2 + 10, y2: -H / 2,
-  stroke: C.darkButtonGrey, strokeWidth: 1.2,
+  targetNode: svg,
+  x1: -W / 2 - 10,
+  y1: -H / 2,
+  x2: W / 2 + 10,
+  y2: -H / 2,
+  stroke: C.darkButtonGrey,
+  strokeWidth: 1.2,
 });
 new sd.Line({
-  targetNode: svg, x1: -W / 2, y1: -H / 2 - 10, x2: -W / 2, y2: H / 2 + 10,
-  stroke: C.darkButtonGrey, strokeWidth: 1.2,
+  targetNode: svg,
+  x1: -W / 2,
+  y1: -H / 2 - 10,
+  x2: -W / 2,
+  y2: H / 2 + 10,
+  stroke: C.darkButtonGrey,
+  strokeWidth: 1.2,
 });
 
 // Curve
@@ -36,17 +46,26 @@ new sd.Line({
     const x = X_MIN + (i / 100) * (X_MAX - X_MIN);
     pts.push([px(x), py(f(x))]);
   }
-  const d = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
+  const d = pts
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`)
+    .join(" ");
   new sd.Path({
-    targetNode: svg, d,
-    stroke: C.darkButtonGrey, strokeWidth: 1.6, fill: "none",
+    targetNode: svg,
+    d,
+    stroke: C.darkButtonGrey,
+    strokeWidth: 1.6,
+    fill: "none",
   });
 }
 
 const peakX = 5;
 const peakMark = new sd.Circle({
-  targetNode: svg, cx: px(peakX), cy: py(f(peakX)), r: 5,
-  fill: C.darkOrange, stroke: C.darkOrange,
+  targetNode: svg,
+  cx: px(peakX),
+  cy: py(f(peakX)),
+  r: 5,
+  fill: C.darkOrange,
+  stroke: C.darkOrange,
   opacity: 0,
 });
 
@@ -60,15 +79,41 @@ sd.main(async () => {
     const ml = l + (r - l) / 3;
     const mr = r - (r - l) / 3;
     new sd.Line({
-      targetNode: svg, x1: px(ml), y1: -H / 2, x2: px(ml), y2: py(f(ml)),
-      stroke: C.steelBlue, strokeWidth: 1, opacity: 0,
-    }).startAnimate({ delay: iter * 280, duration: 240, easing: E.easeOut }).setOpacity(0.6).endAnimate();
+      targetNode: svg,
+      x1: px(ml),
+      y1: -H / 2,
+      x2: px(ml),
+      y2: py(f(ml)),
+      stroke: C.steelBlue,
+      strokeWidth: 1,
+      opacity: 0,
+    })
+      .startAnimate({ delay: iter * 280, duration: 240, easing: E.easeOut })
+      .setOpacity(0.6)
+      .endAnimate();
     new sd.Line({
-      targetNode: svg, x1: px(mr), y1: -H / 2, x2: px(mr), y2: py(f(mr)),
-      stroke: C.darkOrange, strokeWidth: 1, opacity: 0,
-    }).startAnimate({ delay: iter * 280 + 60, duration: 240, easing: E.easeOut }).setOpacity(0.6).endAnimate();
-    if (f(mr) > f(ml)) l = ml; else r = mr;
+      targetNode: svg,
+      x1: px(mr),
+      y1: -H / 2,
+      x2: px(mr),
+      y2: py(f(mr)),
+      stroke: C.darkOrange,
+      strokeWidth: 1,
+      opacity: 0,
+    })
+      .startAnimate({
+        delay: iter * 280 + 60,
+        duration: 240,
+        easing: E.easeOut,
+      })
+      .setOpacity(0.6)
+      .endAnimate();
+    if (f(mr) > f(ml)) l = ml;
+    else r = mr;
   }
-  peakMark.startAnimate({ delay: 1600, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  peakMark
+    .startAnimate({ delay: 1600, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

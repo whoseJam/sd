@@ -177,7 +177,12 @@ sd.main(async () => {
     while (j > 0 && tStr[j] !== sCh) {
       const jNext = lenArr[j];
 
-      flashBracket(sBracket, s.cellLeft(i - j), s.cellLeft(i - j + jNext), s.top() + 6);
+      flashBracket(
+        sBracket,
+        s.cellLeft(i - j),
+        s.cellLeft(i - j + jNext),
+        s.top() + 6,
+      );
       flashBracket(tBracket, t.cellLeft(1), t.cellLeft(1 + jNext), t.top() + 6);
       await sd.pause();
 

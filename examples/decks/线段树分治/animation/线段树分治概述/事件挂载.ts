@@ -18,7 +18,13 @@ function nodeCenter(l: number, r: number, level: number) {
   return { cx: (arrayX(l) + arrayX(r)) / 2, cy: LEVEL_Y[level] };
 }
 
-interface TreeNode { l: number; r: number; level: number; rect: sd.Rect; text: sd.Text; }
+interface TreeNode {
+  l: number;
+  r: number;
+  level: number;
+  rect: sd.Rect;
+  text: sd.Text;
+}
 const tree: TreeNode[] = [];
 const edges: { line: sd.Line; childLevel: number }[] = [];
 
@@ -32,8 +38,10 @@ function buildEdges(l: number, r: number, level: number) {
     edges.push({
       line: new sd.Line({
         targetNode: svg,
-        x1: p.cx, y1: p.cy - NODE_H / 2,
-        x2: child.cx, y2: child.cy + NODE_H / 2,
+        x1: p.cx,
+        y1: p.cy - NODE_H / 2,
+        x2: child.cx,
+        y2: child.cy + NODE_H / 2,
         stroke: C.silver,
         strokeWidth: 0.8,
         opacity: 0,
@@ -48,21 +56,27 @@ function buildEdges(l: number, r: number, level: number) {
 function buildNodes(l: number, r: number, level: number) {
   const { cx, cy } = nodeCenter(l, r, level);
   tree.push({
-    l, r, level,
+    l,
+    r,
+    level,
     rect: new sd.Rect({
       targetNode: svg,
-      x: cx - NODE_W / 2, y: cy - NODE_H / 2,
-      width: NODE_W, height: NODE_H,
+      x: cx - NODE_W / 2,
+      y: cy - NODE_H / 2,
+      width: NODE_W,
+      height: NODE_H,
       fill: C.white,
       stroke: C.darkButtonGrey,
       strokeWidth: 1,
-      rx: 3, ry: 3,
+      rx: 3,
+      ry: 3,
       opacity: 0,
     }),
     text: new sd.Text({
       targetNode: svg,
       text: l === r ? String(l) : `${l}-${r}`,
-      cx, cy: cy - 1,
+      cx,
+      cy: cy - 1,
       fontSize: 8,
       fill: C.darkButtonGrey,
       opacity: 0,
@@ -84,12 +98,15 @@ for (let i = 1; i <= N; i++) {
   tlBgs.push(
     new sd.Rect({
       targetNode: svg,
-      x: arrayX(i) - 11, y: TIMELINE_Y - TIMELINE_H / 2,
-      width: 22, height: TIMELINE_H,
+      x: arrayX(i) - 11,
+      y: TIMELINE_Y - TIMELINE_H / 2,
+      width: 22,
+      height: TIMELINE_H,
       fill: C.white,
       stroke: C.silver,
       strokeWidth: 0.8,
-      rx: 2, ry: 2,
+      rx: 2,
+      ry: 2,
       opacity: 0,
     }),
   );
@@ -97,7 +114,8 @@ for (let i = 1; i <= N; i++) {
     new sd.Text({
       targetNode: svg,
       text: String(i),
-      cx: arrayX(i), cy: TIMELINE_Y - 1,
+      cx: arrayX(i),
+      cy: TIMELINE_Y - 1,
       fontSize: 9,
       fill: C.darkButtonGrey,
       opacity: 0,
@@ -107,7 +125,11 @@ for (let i = 1; i <= N; i++) {
 
 // Event range [2, 6] gets covered by tree nodes [2,2], [3,4], [5,6].
 const EVENT = { l: 2, r: 6 };
-const COVERING: Array<[number, number]> = [[2, 2], [3, 4], [5, 6]];
+const COVERING: Array<[number, number]> = [
+  [2, 2],
+  [3, 4],
+  [5, 6],
+];
 
 const EVENT_COLOR = C.darkOrange;
 const EVENT_FILL = "#fdecd9";
@@ -115,31 +137,51 @@ const EVENT_FILL = "#fdecd9";
 sd.main(async () => {
   // p1: segment tree + timeline strip
   for (const e of edges) {
-    e.line.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+    e.line
+      .startAnimate({ duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   for (const n of tree) {
-    n.rect.startAnimate({ delay: n.level * 180, duration: 260, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    n.text.startAnimate({ delay: n.level * 180 + 80, duration: 260, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    n.rect
+      .startAnimate({ delay: n.level * 180, duration: 260, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    n.text
+      .startAnimate({
+        delay: n.level * 180 + 80,
+        duration: 260,
+        easing: E.easeOut,
+      })
+      .setOpacity(1)
+      .endAnimate();
   }
   for (let i = 0; i < N; i++) {
     const d = i * 50;
-    tlBgs[i].startAnimate({ delay: d, duration: 240, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    tlTexts[i].startAnimate({ delay: d + 60, duration: 240, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    tlBgs[i]
+      .startAnimate({ delay: d, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    tlTexts[i]
+      .startAnimate({ delay: d + 60, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
   // p2: event range highlight on timeline
   for (let i = EVENT.l; i <= EVENT.r; i++) {
     const d = (i - EVENT.l) * 100;
-    tlBgs[i - 1].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setFill(EVENT_FILL).setStroke(EVENT_COLOR).setStrokeWidth(1.2)
+    tlBgs[i - 1]
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setFill(EVENT_FILL)
+      .setStroke(EVENT_COLOR)
+      .setStrokeWidth(1.2)
       .endAnimate();
-    tlTexts[i - 1].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setFill(EVENT_COLOR).endAnimate();
+    tlTexts[i - 1]
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setFill(EVENT_COLOR)
+      .endAnimate();
   }
   await sd.pause();
 
@@ -148,11 +190,16 @@ sd.main(async () => {
     const [l, r] = COVERING[i];
     const node = tree.find((n) => n.l === l && n.r === r)!;
     const d = i * 220;
-    node.rect.startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setFill(EVENT_FILL).setStroke(EVENT_COLOR).setStrokeWidth(1.6)
+    node.rect
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setFill(EVENT_FILL)
+      .setStroke(EVENT_COLOR)
+      .setStrokeWidth(1.6)
       .endAnimate();
-    node.text.startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setFill(EVENT_COLOR).endAnimate();
+    node.text
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setFill(EVENT_COLOR)
+      .endAnimate();
   }
   await sd.pause();
 });

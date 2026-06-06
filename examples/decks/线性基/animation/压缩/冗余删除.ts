@@ -37,34 +37,56 @@ interface Row {
   decimal: sd.Math;
 }
 
-function makeRow(spec: typeof VECTORS[number], cy: number): Row {
+function makeRow(spec: (typeof VECTORS)[number], cy: number): Row {
   const label = new sd.Math({
-    targetNode: svg, text: spec.label,
-    cx: LABEL_X, cy: cy - 1,
-    fontSize: 15, fill: NEUTRAL, opacity: 0,
+    targetNode: svg,
+    text: spec.label,
+    cx: LABEL_X,
+    cy: cy - 1,
+    fontSize: 15,
+    fill: NEUTRAL,
+    opacity: 0,
   });
   const cellBgs: sd.Rect[] = [];
   const cellTexts: sd.Text[] = [];
   for (let i = 0; i < 4; i++) {
     const bit = 3 - i;
     const cx = bitX(bit);
-    cellBgs.push(new sd.Rect({
-      targetNode: svg,
-      x: cx - CELL_W / 2, y: cy - CELL_H / 2,
-      width: CELL_W, height: CELL_H,
-      fill: C.white, stroke: FAINT, strokeWidth: 1,
-      rx: 3, ry: 3, opacity: 0,
-    }));
-    cellTexts.push(new sd.Text({
-      targetNode: svg,
-      text: String(spec.bits[i]), cx, cy: cy - 1,
-      fontSize: 13, fill: NEUTRAL, opacity: 0,
-    }));
+    cellBgs.push(
+      new sd.Rect({
+        targetNode: svg,
+        x: cx - CELL_W / 2,
+        y: cy - CELL_H / 2,
+        width: CELL_W,
+        height: CELL_H,
+        fill: C.white,
+        stroke: FAINT,
+        strokeWidth: 1,
+        rx: 3,
+        ry: 3,
+        opacity: 0,
+      }),
+    );
+    cellTexts.push(
+      new sd.Text({
+        targetNode: svg,
+        text: String(spec.bits[i]),
+        cx,
+        cy: cy - 1,
+        fontSize: 13,
+        fill: NEUTRAL,
+        opacity: 0,
+      }),
+    );
   }
   const decimal = new sd.Math({
-    targetNode: svg, text: `= ${spec.value}`,
-    cx: DECIMAL_X, cy: cy - 1,
-    fontSize: 15, fill: NEUTRAL, opacity: 0,
+    targetNode: svg,
+    text: `= ${spec.value}`,
+    cx: DECIMAL_X,
+    cy: cy - 1,
+    fontSize: 15,
+    fill: NEUTRAL,
+    opacity: 0,
   });
   return { label, cellBgs, cellTexts, decimal };
 }
@@ -74,43 +96,62 @@ const rows: Row[] = VECTORS.map((v, i) => makeRow(v, ROW_Y[i]));
 const equation = new sd.Math({
   targetNode: svg,
   text: "\\vec{c} = \\vec{a} \\oplus \\vec{b}",
-  cx: 0, cy: -55,
-  fontSize: 17, fill: HIGHLIGHT, opacity: 0,
+  cx: 0,
+  cy: -55,
+  fontSize: 17,
+  fill: HIGHLIGHT,
+  opacity: 0,
 });
 
 const strikeLine = new sd.Line({
   targetNode: svg,
-  x1: -TOTAL_W / 2 - CELL_W / 2 - 6, y1: ROW_Y[2],
-  x2: TOTAL_W / 2 + CELL_W / 2 + 6, y2: ROW_Y[2],
-  stroke: ACCENT, strokeWidth: 1.8, opacity: 0,
+  x1: -TOTAL_W / 2 - CELL_W / 2 - 6,
+  y1: ROW_Y[2],
+  x2: TOTAL_W / 2 + CELL_W / 2 + 6,
+  y2: ROW_Y[2],
+  stroke: ACCENT,
+  strokeWidth: 1.8,
+  opacity: 0,
 });
 
 const conclusion = new sd.Math({
   targetNode: svg,
   text: "S = \\{0,\\ 3,\\ 5,\\ 6\\}",
-  cx: 0, cy: -95,
-  fontSize: 16, fill: ACCENT, opacity: 0,
+  cx: 0,
+  cy: -95,
+  fontSize: 16,
+  fill: ACCENT,
+  opacity: 0,
 });
 
 const DUR = 280;
 
 function showRow(r: Row, delay = 0) {
   const els: Array<sd.Math | sd.Text | sd.Rect> = [
-    r.label, ...r.cellBgs, ...r.cellTexts, r.decimal,
+    r.label,
+    ...r.cellBgs,
+    ...r.cellTexts,
+    r.decimal,
   ];
   for (let i = 0; i < els.length; i++) {
-    els[i].startAnimate({ delay: delay + i * 30, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    els[i]
+      .startAnimate({ delay: delay + i * 30, duration: DUR, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
 }
 
 function dimRow(r: Row, delay = 0) {
   const els: Array<sd.Math | sd.Text | sd.Rect> = [
-    r.label, ...r.cellBgs, ...r.cellTexts, r.decimal,
+    r.label,
+    ...r.cellBgs,
+    ...r.cellTexts,
+    r.decimal,
   ];
   for (const el of els) {
     el.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(0.25).endAnimate();
+      .setOpacity(0.25)
+      .endAnimate();
   }
 }
 
@@ -120,26 +161,36 @@ sd.main(async () => {
   await sd.pause();
 
   // p2: reveal that c = a ⊕ b. Pulse a and b's rows.
-  equation.startAnimate({ duration: 360, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  equation
+    .startAnimate({ duration: 360, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let row = 0; row <= 1; row++) {
     for (const bg of rows[row].cellBgs) {
       bg.startAnimate({ delay: 100, duration: 200, easing: E.easeOut })
-        .setStroke(HIGHLIGHT).setStrokeWidth(1.6).endAnimate();
+        .setStroke(HIGHLIGHT)
+        .setStrokeWidth(1.6)
+        .endAnimate();
       bg.startAnimate({ delay: 700, duration: 240, easing: E.easeOut })
-        .setStroke(FAINT).setStrokeWidth(1).endAnimate();
+        .setStroke(FAINT)
+        .setStrokeWidth(1)
+        .endAnimate();
     }
   }
   await sd.pause();
 
   // p3: c is redundant — strike through, dim.
-  strikeLine.startAnimate({ duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  strikeLine
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   dimRow(rows[2], 200);
   await sd.pause();
 
   // p4: S unchanged.
-  conclusion.startAnimate({ duration: 380, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  conclusion
+    .startAnimate({ duration: 380, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

@@ -18,7 +18,14 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  2: 1, 3: 2, 4: 3, 5: 3, 6: 1, 7: 6, 8: 6, 9: 1,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 3,
+  6: 1,
+  7: 6,
+  8: 6,
+  9: 1,
 };
 
 const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1 });
@@ -28,9 +35,15 @@ function pathBetween(u: number, v: number): number[] {
   const lca = tree.lca(u, v);
   const pv = tree.pathToRoot(v);
   const upPart: number[] = [];
-  for (const x of pu) { upPart.push(x); if (x === lca) break; }
+  for (const x of pu) {
+    upPart.push(x);
+    if (x === lca) break;
+  }
   const downPart: number[] = [];
-  for (const x of pv) { if (x === lca) break; downPart.push(x); }
+  for (const x of pv) {
+    if (x === lca) break;
+    downPart.push(x);
+  }
   return [...upPart, ...downPart.reverse()];
 }
 

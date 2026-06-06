@@ -26,7 +26,9 @@ for (let r = 0; r <= ROWS; r++) {
     pegs.push(
       new sd.Circle({
         targetNode: svg,
-        cx: x, cy: y, r: PEG_R,
+        cx: x,
+        cy: y,
+        r: PEG_R,
         fill: C.darkButtonGrey,
         stroke: "none",
         opacity: 0,
@@ -52,12 +54,15 @@ for (let k = 0; k <= ROWS; k++) {
   binBgs.push(
     new sd.Rect({
       targetNode: svg,
-      x: x - BIN_W / 2, y: BIN_Y - BIN_H / 2,
-      width: BIN_W, height: BIN_H,
+      x: x - BIN_W / 2,
+      y: BIN_Y - BIN_H / 2,
+      width: BIN_W,
+      height: BIN_H,
       fill: C.white,
       stroke: C.silver,
       strokeWidth: 0.8,
-      rx: 3, ry: 3,
+      rx: 3,
+      ry: 3,
       opacity: 0,
     }),
   );
@@ -65,7 +70,8 @@ for (let k = 0; k <= ROWS; k++) {
     new sd.Text({
       targetNode: svg,
       text: String(COEFS[k]),
-      cx: x, cy: BIN_Y - 1,
+      cx: x,
+      cy: BIN_Y - 1,
       fontSize: 12,
       fill: C.darkOrange,
       opacity: 0,
@@ -76,7 +82,8 @@ for (let k = 0; k <= ROWS; k++) {
 const formula = new sd.Text({
   targetNode: svg,
   text: `C(${ROWS}, k) / 2^${ROWS}`,
-  cx: 0, cy: BIN_Y - 30,
+  cx: 0,
+  cy: BIN_Y - 30,
   fontSize: 12,
   fill: C.darkButtonGrey,
   opacity: 0,
@@ -90,7 +97,8 @@ sd.main(async () => {
       const d = r * 90 + c * 30;
       pegs[k++]
         .startAnimate({ delay: d, duration: 240, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
     }
   }
   await sd.pause();
@@ -98,21 +106,34 @@ sd.main(async () => {
   // p2: bins appear
   for (let i = 0; i <= ROWS; i++) {
     const d = i * 100;
-    binBgs[i].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    binBgs[i]
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
   // p3: probability counts appear inside bins, highlighting them.
   for (let i = 0; i <= ROWS; i++) {
     const d = i * 140;
-    binBgs[i].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setFill(HIGHLIGHT_FILL).setStroke(HIGHLIGHT_STROKE).setStrokeWidth(1.2)
+    binBgs[i]
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setFill(HIGHLIGHT_FILL)
+      .setStroke(HIGHLIGHT_STROKE)
+      .setStrokeWidth(1.2)
       .endAnimate();
-    binTexts[i].startAnimate({ delay: d + 60, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    binTexts[i]
+      .startAnimate({ delay: d + 60, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
-  formula.startAnimate({ delay: (ROWS + 1) * 140 + 200, duration: 360, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  formula
+    .startAnimate({
+      delay: (ROWS + 1) * 140 + 200,
+      duration: 360,
+      easing: E.easeOut,
+    })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

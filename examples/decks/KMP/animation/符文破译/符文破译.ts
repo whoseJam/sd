@@ -90,7 +90,9 @@ sd.main(async () => {
 
     // S cells of this segment.
     for (let k = seg.s0; k <= seg.s1; k++) {
-      sRow.paintCell(k, colour.fill, colour.stroke, { delay: (k - seg.s0) * 40 });
+      sRow.paintCell(k, colour.fill, colour.stroke, {
+        delay: (k - seg.s0) * 40,
+      });
     }
     // T cells that match this prefix.
     for (let k = 1; k <= seg.tLen; k++) {
@@ -101,7 +103,8 @@ sd.main(async () => {
     for (let k = 0; k < chain.length; k++) {
       const u = chain[k];
       tree.paintNode(u, colour.fill, colour.stroke, { delay: k * 100 });
-      if (k > 0) tree.paintEdge(chain[k - 1], colour.stroke, { delay: k * 100 });
+      if (k > 0)
+        tree.paintEdge(chain[k - 1], colour.stroke, { delay: k * 100 });
     }
     countLabel
       .startAnimate({ delay: 160, duration: 280, easing: E.easeOut })

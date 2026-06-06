@@ -16,7 +16,10 @@ const positions: Array<[number, number]> = [
   [120, -90],
 ];
 
-const nodes: Array<{ cx: number; cy: number }> = positions.map(([x, y]) => ({ cx: x, cy: y }));
+const nodes: Array<{ cx: number; cy: number }> = positions.map(([x, y]) => ({
+  cx: x,
+  cy: y,
+}));
 
 for (let i = 0; i < nodes.length; i++) {
   new sd.Circle({
@@ -28,11 +31,25 @@ for (let i = 0; i < nodes.length; i++) {
     stroke: C.darkButtonGrey,
     strokeWidth: 1.4,
   });
-  new sd.Text({ targetNode: svg, text: String(i), cx: nodes[i].cx, cy: nodes[i].cy, fontSize: 14, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: String(i),
+    cx: nodes[i].cx,
+    cy: nodes[i].cy,
+    fontSize: 14,
+    fill: C.darkButtonGrey,
+  });
 }
 
 const edges: Array<[number, number]> = [
-  [0, 1], [1, 2], [0, 3], [3, 4], [4, 2], [2, 5], [4, 6], [5, 6],
+  [0, 1],
+  [1, 2],
+  [0, 3],
+  [3, 4],
+  [4, 2],
+  [2, 5],
+  [4, 6],
+  [5, 6],
 ];
 
 for (const [u, v] of edges) {

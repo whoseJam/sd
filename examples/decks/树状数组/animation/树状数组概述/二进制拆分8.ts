@@ -76,8 +76,14 @@ sd.main(async () => {
   base.fadeIn({ delay: 0 });
   for (let i = 0; i < blocks.length; i++) {
     const delay = 200 + i * 100;
-    blocks[i].startAnimate({ delay, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
-    labels[i].startAnimate({ delay: delay + 80, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+    blocks[i]
+      .startAnimate({ delay, duration: 320, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    labels[i]
+      .startAnimate({ delay: delay + 80, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 });

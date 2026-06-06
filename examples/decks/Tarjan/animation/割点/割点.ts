@@ -53,21 +53,28 @@ sd.main(async () => {
   fadeInClassified(view);
   for (const t of [...dfnTexts, ...lowTexts]) {
     t.startAnimate({ delay: 500, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
   // 2 is a cut vertex: tree child 3 has low[3] = 2 = dfn[2].
-  view.circles.get(2)!
+  view.circles
+    .get(2)!
     .startAnimate({ duration: 320, easing: E.easeOut })
-    .setFill(CUT_FILL).setStroke(CUT_STROKE).setStrokeWidth(2.2)
+    .setFill(CUT_FILL)
+    .setStroke(CUT_STROKE)
+    .setStrokeWidth(2.2)
     .endAnimate();
   await sd.pause();
 
   // 5 is a cut vertex: tree child 6 has low[6] = 6 > dfn[5] = 5.
-  view.circles.get(5)!
+  view.circles
+    .get(5)!
     .startAnimate({ duration: 320, easing: E.easeOut })
-    .setFill(CUT_FILL).setStroke(CUT_STROKE).setStrokeWidth(2.2)
+    .setFill(CUT_FILL)
+    .setStroke(CUT_STROKE)
+    .setStrokeWidth(2.2)
     .endAnimate();
   await sd.pause();
 });

@@ -17,11 +17,16 @@ const nodes = [
 ];
 
 const edges: Array<{ u: number; v: number; w: number }> = [
-  { u: 1, v: 2, w: 4 }, { u: 1, v: 4, w: 3 },
-  { u: 2, v: 3, w: 2 }, { u: 2, v: 5, w: 7 },
-  { u: 3, v: 5, w: 5 }, { u: 3, v: 6, w: 6 },
-  { u: 4, v: 5, w: 8 }, { u: 4, v: 7, w: 9 },
-  { u: 5, v: 7, w: 1 }, { u: 5, v: 6, w: 4 },
+  { u: 1, v: 2, w: 4 },
+  { u: 1, v: 4, w: 3 },
+  { u: 2, v: 3, w: 2 },
+  { u: 2, v: 5, w: 7 },
+  { u: 3, v: 5, w: 5 },
+  { u: 3, v: 6, w: 6 },
+  { u: 4, v: 5, w: 8 },
+  { u: 4, v: 7, w: 9 },
+  { u: 5, v: 7, w: 1 },
+  { u: 5, v: 6, w: 4 },
   { u: 6, v: 8, w: 3 },
   { u: 7, v: 8, w: 5 },
 ];
@@ -29,13 +34,25 @@ const edges: Array<{ u: number; v: number; w: number }> = [
 const R = 18;
 const circles = new Map<number, sd.Circle>();
 for (const n of nodes) {
-  circles.set(n.id, new sd.Circle({
-    targetNode: svg, cx: n.cx, cy: n.cy, r: R,
-    fill: C.white, stroke: C.darkButtonGrey, strokeWidth: 1.4,
-  }));
+  circles.set(
+    n.id,
+    new sd.Circle({
+      targetNode: svg,
+      cx: n.cx,
+      cy: n.cy,
+      r: R,
+      fill: C.white,
+      stroke: C.darkButtonGrey,
+      strokeWidth: 1.4,
+    }),
+  );
   new sd.Text({
-    targetNode: svg, text: String(n.id),
-    cx: n.cx, cy: n.cy, fontSize: 13, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(n.id),
+    cx: n.cx,
+    cy: n.cy,
+    fontSize: 13,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -43,14 +60,25 @@ const edgeLines = new Map<string, sd.Line>();
 for (const e of edges) {
   const a = nodes.find((n) => n.id === e.u)!;
   const b = nodes.find((n) => n.id === e.v)!;
-  edgeLines.set(`${e.u}-${e.v}`, new sd.Line({
-    targetNode: svg, x1: a.cx, y1: a.cy, x2: b.cx, y2: b.cy,
-    stroke: C.silver, strokeWidth: 1.2,
-  }));
+  edgeLines.set(
+    `${e.u}-${e.v}`,
+    new sd.Line({
+      targetNode: svg,
+      x1: a.cx,
+      y1: a.cy,
+      x2: b.cx,
+      y2: b.cy,
+      stroke: C.silver,
+      strokeWidth: 1.2,
+    }),
+  );
   new sd.Text({
-    targetNode: svg, text: String(e.w),
-    cx: (a.cx + b.cx) / 2 + 6, cy: (a.cy + b.cy) / 2 - 6,
-    fontSize: 11, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(e.w),
+    cx: (a.cx + b.cx) / 2 + 6,
+    cy: (a.cy + b.cy) / 2 - 6,
+    fontSize: 11,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -73,7 +101,11 @@ while (inTree.size < nodes.length) {
   let bestTo = -1;
   for (const u of inTree) {
     for (const { to, w, key } of adj[u]) {
-      if (!inTree.has(to) && w < bestW) { bestW = w; bestKey = key; bestTo = to; }
+      if (!inTree.has(to) && w < bestW) {
+        bestW = w;
+        bestKey = key;
+        bestTo = to;
+      }
     }
   }
   if (bestTo === -1) break;
@@ -83,15 +115,26 @@ while (inTree.size < nodes.length) {
 
 sd.main(async () => {
   await sd.pause();
-  circles.get(1)!.startAnimate({ duration: 200 }).setFill("#e8f5e9").setStroke(C.darkGreen).endAnimate();
+  circles
+    .get(1)!
+    .startAnimate({ duration: 200 })
+    .setFill("#e8f5e9")
+    .setStroke(C.darkGreen)
+    .endAnimate();
   for (let k = 0; k < picks.length; k++) {
     const { key, to } = picks[k];
-    edgeLines.get(keyOf(...key.split("-").map(Number) as [number, number]))!
+    edgeLines
+      .get(keyOf(...(key.split("-").map(Number) as [number, number])))!
       .startAnimate({ delay: k * 220, duration: 240, easing: E.easeOut })
-      .setStroke(C.darkGreen).setStrokeWidth(2.4).endAnimate();
-    circles.get(to)!
+      .setStroke(C.darkGreen)
+      .setStrokeWidth(2.4)
+      .endAnimate();
+    circles
+      .get(to)!
       .startAnimate({ delay: k * 220 + 100, duration: 200 })
-      .setFill("#e8f5e9").setStroke(C.darkGreen).endAnimate();
+      .setFill("#e8f5e9")
+      .setStroke(C.darkGreen)
+      .endAnimate();
     await sd.pause();
   }
 });

@@ -1,7 +1,7 @@
 import type { RenderNode } from "@/renderer/render-node";
 
 import { Window } from "@/animate/window";
-import { SDNode } from "@/node/node";
+import type { SDNode } from "@/node/node";
 
 export type TweenFn = (t: number) => Record<string, number>;
 export type TweenBounds = { x?: [number, number]; y?: [number, number] };
@@ -55,7 +55,11 @@ export class ParametricAction {
     Window.ACTION_TICK++;
     const span = this.r - this.l;
     const k0 = span > 0 ? this.timingFunction((t - this.l) / span) : 1;
-    const k1 = this.is(ParametricAction.firstCallFlag) ? 0 : t > this.r ? 1 : k0;
+    const k1 = this.is(ParametricAction.firstCallFlag)
+      ? 0
+      : t > this.r
+        ? 1
+        : k0;
     this.apply(k1);
     if (k1 === 1) this.set(ParametricAction.stopFlag);
     this.unset(ParametricAction.firstCallFlag);

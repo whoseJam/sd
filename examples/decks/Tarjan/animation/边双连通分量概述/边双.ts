@@ -1,10 +1,6 @@
 import * as sd from "@/sd";
 
-import {
-  createGraph,
-  edgeKey,
-  fadeInClassified,
-} from "../lib/graph";
+import { createGraph, edgeKey, fadeInClassified } from "../lib/graph";
 
 const svg = sd.svg();
 const C = sd.color();
@@ -35,7 +31,9 @@ const view = createGraph(svg);
 //   (2,5): low[5]=5 > dfn[2]=2 ✓
 //   (5,6): low[6]=6 > dfn[5]=5 ✓
 const BRIDGES: ReadonlyArray<readonly [number, number]> = [
-  [1, 2], [2, 5], [5, 6],
+  [1, 2],
+  [2, 5],
+  [5, 6],
 ];
 
 sd.main(async () => {
@@ -45,9 +43,11 @@ sd.main(async () => {
   // Paint bridges with a distinct warm-red.
   for (let i = 0; i < BRIDGES.length; i++) {
     const [u, v] = BRIDGES[i];
-    view.treeLines.get(edgeKey(u, v))!
+    view.treeLines
+      .get(edgeKey(u, v))!
       .startAnimate({ delay: i * 180, duration: 320, easing: E.easeOut })
-      .setStroke(BRIDGE_COLOR).setStrokeWidth(2.4)
+      .setStroke(BRIDGE_COLOR)
+      .setStrokeWidth(2.4)
       .endAnimate();
   }
   await sd.pause();
@@ -55,6 +55,7 @@ sd.main(async () => {
   // Shade the non-trivial 边双 {2, 3, 4} — the cycle 2-3-4-2.
   bccTint
     .startAnimate({ duration: 520, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

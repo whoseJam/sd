@@ -40,7 +40,12 @@ const t = new CharRow({
   label: "t",
 });
 
-const ps = new Pointer({ targetNode: s.group, cx: s.cellCx(1), topY: S_Y, size: 9 });
+const ps = new Pointer({
+  targetNode: s.group,
+  cx: s.cellCx(1),
+  topY: S_Y,
+  size: 9,
+});
 const pt = new Pointer({ targetNode: t.group, cx: t.cellCx(1), topY: T_Y });
 
 const tPadded = " " + tStr;

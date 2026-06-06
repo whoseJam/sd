@@ -55,7 +55,8 @@ sd.main(async () => {
   // dfn appears in DFS order.
   for (let i = 0; i < DFS_ORDER.length; i++) {
     const id = DFS_ORDER[i];
-    dfnLabels.get(id)!
+    dfnLabels
+      .get(id)!
       .startAnimate({ delay: i * 220, duration: 260, easing: E.easeOut })
       .setText(String(DFN[id]))
       .setOpacity(1)
@@ -66,7 +67,8 @@ sd.main(async () => {
   // low initializes to dfn at every node.
   for (let i = 0; i < DFS_ORDER.length; i++) {
     const id = DFS_ORDER[i];
-    lowLabels.get(id)!
+    lowLabels
+      .get(id)!
       .startAnimate({ delay: i * 90, duration: 260, easing: E.easeOut })
       .setText(String(DFN[id]))
       .setOpacity(1)
@@ -79,7 +81,8 @@ sd.main(async () => {
     .startAnimate({ duration: 200, easing: E.easeOut })
     .setStrokeWidth(3.0)
     .endAnimate();
-  lowLabels.get(4)!
+  lowLabels
+    .get(4)!
     .startAnimate({ delay: 120, duration: 280, easing: E.easeOut })
     .setText("2")
     .endAnimate();
@@ -87,7 +90,8 @@ sd.main(async () => {
     .startAnimate({ delay: 420, duration: 240, easing: E.easeOut })
     .setStrokeWidth(1.6)
     .endAnimate();
-  lowLabels.get(3)!
+  lowLabels
+    .get(3)!
     .startAnimate({ delay: 720, duration: 280, easing: E.easeOut })
     .setText("2")
     .endAnimate();

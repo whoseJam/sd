@@ -21,7 +21,8 @@ sd.main(async () => {
 
   for (let i = 0; i < TREE_EDGES.length; i++) {
     const [u, v] = TREE_EDGES[i];
-    view.treeLines.get(edgeKey(u, v))!
+    view.treeLines
+      .get(edgeKey(u, v))!
       .startAnimate({ delay: i * 220, duration: 320, easing: E.easeOut })
       .setStroke(TREE_COLOR)
       .setStrokeWidth(1.8)
@@ -31,10 +32,12 @@ sd.main(async () => {
 
   view.backLine
     .startAnimate({ duration: 320, easing: E.easeOut })
-    .setOpacity(0).endAnimate();
+    .setOpacity(0)
+    .endAnimate();
   view.backDashed
     .startAnimate({ delay: 80, duration: 360, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   void BACK_COLOR;
   void BACK_EDGE;
   await sd.pause();

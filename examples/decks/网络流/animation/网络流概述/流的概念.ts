@@ -7,7 +7,11 @@ const E = sd.easing();
 const NODE_R = 18;
 const ARROW_HEAD = 8;
 
-interface Node { id: string; x: number; y: number; }
+interface Node {
+  id: string;
+  x: number;
+  y: number;
+}
 const NODES: Node[] = [
   { id: "s", x: -100, y: 0 },
   { id: "a", x: 0, y: 60 },
@@ -17,7 +21,12 @@ const NODES: Node[] = [
 
 const nodeOf = (id: string) => NODES.find((n) => n.id === id)!;
 
-interface Edge { from: string; to: string; cap: number; flow: number; }
+interface Edge {
+  from: string;
+  to: string;
+  cap: number;
+  flow: number;
+}
 // A max flow of 4 with caps below: s-a-t=2 + s-b-t=2.
 const EDGES: Edge[] = [
   { from: "s", to: "a", cap: 3, flow: 2 },
@@ -48,7 +57,10 @@ function makeArrow(from: string, to: string): { line: sd.Line; head: sd.Path } {
   const h2y = ey - uy * hL - py * hHalf;
   const line = new sd.Line({
     targetNode: svg,
-    x1: sx, y1: sy, x2: ex, y2: ey,
+    x1: sx,
+    y1: sy,
+    x2: ex,
+    y2: ey,
     stroke: C.silver,
     strokeWidth: 1.4,
     opacity: 0,
@@ -90,22 +102,31 @@ const labels = arrows.map(({ from, to, cap }) => {
 });
 
 // Nodes (circles + labels).
-const circles = NODES.map((n) => new sd.Circle({
-  targetNode: svg,
-  cx: n.x, cy: n.y, r: NODE_R,
-  fill: C.white,
-  stroke: C.darkButtonGrey,
-  strokeWidth: 1.4,
-  opacity: 0,
-}));
-const nodeLabels = NODES.map((n) => new sd.Text({
-  targetNode: svg,
-  text: n.id,
-  cx: n.x, cy: n.y - 1,
-  fontSize: 13,
-  fill: C.darkButtonGrey,
-  opacity: 0,
-}));
+const circles = NODES.map(
+  (n) =>
+    new sd.Circle({
+      targetNode: svg,
+      cx: n.x,
+      cy: n.y,
+      r: NODE_R,
+      fill: C.white,
+      stroke: C.darkButtonGrey,
+      strokeWidth: 1.4,
+      opacity: 0,
+    }),
+);
+const nodeLabels = NODES.map(
+  (n) =>
+    new sd.Text({
+      targetNode: svg,
+      text: n.id,
+      cx: n.x,
+      cy: n.y - 1,
+      fontSize: 13,
+      fill: C.darkButtonGrey,
+      opacity: 0,
+    }),
+);
 
 const FLOW_COLOR = C.steelBlue;
 
@@ -114,19 +135,29 @@ sd.main(async () => {
   for (let i = 0; i < arrows.length; i++) {
     const { arrow } = arrows[i];
     const d = i * 80;
-    arrow.line.startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    arrow.head.startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    labels[i].startAnimate({ delay: d + 120, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    arrow.line
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    arrow.head
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    labels[i]
+      .startAnimate({ delay: d + 120, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   for (let i = 0; i < NODES.length; i++) {
     const d = i * 60;
-    circles[i].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    nodeLabels[i].startAnimate({ delay: d + 60, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    circles[i]
+      .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    nodeLabels[i]
+      .startAnimate({ delay: d + 60, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
@@ -134,12 +165,21 @@ sd.main(async () => {
   for (let i = 0; i < arrows.length; i++) {
     const { flow, cap, arrow } = arrows[i];
     const d = i * 150;
-    arrow.line.startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setStroke(FLOW_COLOR).setStrokeWidth(2.2).endAnimate();
-    arrow.head.startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setStroke(FLOW_COLOR).setFill(FLOW_COLOR).endAnimate();
-    labels[i].startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setText(`${flow}/${cap}`).setFill(FLOW_COLOR).endAnimate();
+    arrow.line
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setStroke(FLOW_COLOR)
+      .setStrokeWidth(2.2)
+      .endAnimate();
+    arrow.head
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setStroke(FLOW_COLOR)
+      .setFill(FLOW_COLOR)
+      .endAnimate();
+    labels[i]
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setText(`${flow}/${cap}`)
+      .setFill(FLOW_COLOR)
+      .endAnimate();
   }
   await sd.pause();
 });

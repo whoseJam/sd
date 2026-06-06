@@ -27,13 +27,25 @@ const t = new sd.Text({
 
 sd.main(async () => {
   await sd.pause();
-  m.startAnimate({ duration: 400, easing: E.easeOut }).setSubtextFill("i=1", C.orange).endAnimate();
-  t.startAnimate({ duration: 400, easing: E.easeOut }).setSubtextFill("i=1", C.orange).endAnimate();
+  m.startAnimate({ duration: 400, easing: E.easeOut })
+    .setSubtextFill("i=1", C.orange)
+    .endAnimate();
+  t.startAnimate({ duration: 400, easing: E.easeOut })
+    .setSubtextFill("i=1", C.orange)
+    .endAnimate();
   await sd.pause();
-  m.startAnimate({ duration: 400, easing: E.easeOut }).setSubtextFill("n", C.textBlue).endAnimate();
-  t.startAnimate({ duration: 400, easing: E.easeOut }).setSubtextFill("i<=n", C.textBlue).endAnimate();
+  m.startAnimate({ duration: 400, easing: E.easeOut })
+    .setSubtextFill("n", C.textBlue)
+    .endAnimate();
+  t.startAnimate({ duration: 400, easing: E.easeOut })
+    .setSubtextFill("i<=n", C.textBlue)
+    .endAnimate();
   await sd.pause();
-  m.startAnimate({ duration: 400, easing: E.easeOut }).setSubtextFill("i", C.red, 1).endAnimate();
-  t.startAnimate({ duration: 400, easing: E.easeOut }).setSubtextFill("ans += i", C.red).endAnimate();
+  m.startAnimate({ duration: 400, easing: E.easeOut })
+    .setSubtextFill("i", C.red, 1)
+    .endAnimate();
+  t.startAnimate({ duration: 400, easing: E.easeOut })
+    .setSubtextFill("ans += i", C.red)
+    .endAnimate();
   await sd.pause();
 });

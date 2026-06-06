@@ -87,7 +87,8 @@ const visitedIds: number[] = [];
 sd.main(async () => {
   base.fadeIn({ delay: 0 });
   // Highlight the queried range [1, Q] on the bottom array.
-  for (let k = 1; k <= Q; k++) base.paintCell(k, "#fcf3d6", C.darkOrange, { delay: 220 + k * 30 });
+  for (let k = 1; k <= Q; k++)
+    base.paintCell(k, "#fcf3d6", C.darkOrange, { delay: 220 + k * 30 });
   await sd.pause();
 
   for (let k = 0; k < visitedIds.length; k++) {

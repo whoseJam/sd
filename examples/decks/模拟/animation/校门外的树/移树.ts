@@ -10,8 +10,12 @@ const SIZE = 36;
 const X0 = -(L * SIZE) / 2;
 
 const row = new NumRow({
-  targetNode: svg, values: new Array(L).fill("●"), size: SIZE,
-  x: X0, y: 0, label: "trees",
+  targetNode: svg,
+  values: new Array(L).fill("●"),
+  size: SIZE,
+  x: X0,
+  y: 0,
+  label: "trees",
 });
 
 const removals: Array<[number, number]> = [

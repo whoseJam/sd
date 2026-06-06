@@ -39,8 +39,22 @@ for (const [cx, cy, r] of holes) {
   });
 }
 
-new sd.Text({ targetNode: svg, text: "底", cx: -W / 2 - 18, cy: -H / 2 + 8, fontSize: 14, fill: C.darkButtonGrey });
-new sd.Text({ targetNode: svg, text: "顶", cx: -W / 2 - 18, cy: H / 2 - 8, fontSize: 14, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "底",
+  cx: -W / 2 - 18,
+  cy: -H / 2 + 8,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
+});
+new sd.Text({
+  targetNode: svg,
+  text: "顶",
+  cx: -W / 2 - 18,
+  cy: H / 2 - 8,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
+});
 
 sd.main(async () => {
   await sd.pause();

@@ -55,7 +55,12 @@ function pointer(side: "right" | "top", label: string): sd.Group {
           [cx - SIZE_TRI / 2, cy + SIZE_TRI],
           [cx + SIZE_TRI / 2, cy + SIZE_TRI],
         ];
-  new sd.Polygon({ targetNode: g, points: pts, fill: C.steelBlue, stroke: C.none });
+  new sd.Polygon({
+    targetNode: g,
+    points: pts,
+    fill: C.steelBlue,
+    stroke: C.none,
+  });
   new sd.Text({
     targetNode: g,
     text: label,
@@ -71,7 +76,9 @@ const pi = pointer("right", "i");
 const pd = pointer("top", "d");
 
 function moveTri(p: sd.Group, dx: number, dy: number) {
-  p.startAnimate({ duration: 220, easing: E.easeOut }).setTranslate(dx, dy).endAnimate();
+  p.startAnimate({ duration: 220, easing: E.easeOut })
+    .setTranslate(dx, dy)
+    .endAnimate();
 }
 
 const STEP = 260;
@@ -79,14 +86,16 @@ const STEP = 260;
 function clearRow(skipRow: number) {
   for (let r = 1; r <= N; r++) {
     if (r === skipRow) continue;
-    for (let c = 1; c <= N; c++) grid.paintCell(r, c, C.white, { duration: STEP });
+    for (let c = 1; c <= N; c++)
+      grid.paintCell(r, c, C.white, { duration: STEP });
   }
 }
 
 function clearCol(skipCol: number) {
   for (let c = 1; c <= N; c++) {
     if (c === skipCol) continue;
-    for (let r = 1; r <= N; r++) grid.paintCell(r, c, C.white, { duration: STEP });
+    for (let r = 1; r <= N; r++)
+      grid.paintCell(r, c, C.white, { duration: STEP });
   }
 }
 

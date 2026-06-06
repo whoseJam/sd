@@ -17,11 +17,16 @@ const nodes = [
 ];
 
 const edges: Array<{ u: number; v: number; w: number }> = [
-  { u: 1, v: 2, w: 4 }, { u: 1, v: 4, w: 3 },
-  { u: 2, v: 3, w: 2 }, { u: 2, v: 5, w: 7 },
-  { u: 3, v: 5, w: 5 }, { u: 3, v: 6, w: 6 },
-  { u: 4, v: 5, w: 8 }, { u: 4, v: 7, w: 9 },
-  { u: 5, v: 7, w: 1 }, { u: 5, v: 6, w: 4 },
+  { u: 1, v: 2, w: 4 },
+  { u: 1, v: 4, w: 3 },
+  { u: 2, v: 3, w: 2 },
+  { u: 2, v: 5, w: 7 },
+  { u: 3, v: 5, w: 5 },
+  { u: 3, v: 6, w: 6 },
+  { u: 4, v: 5, w: 8 },
+  { u: 4, v: 7, w: 9 },
+  { u: 5, v: 7, w: 1 },
+  { u: 5, v: 6, w: 4 },
   { u: 6, v: 8, w: 3 },
   { u: 7, v: 8, w: 5 },
 ];
@@ -32,12 +37,21 @@ const R = 18;
 // Draw nodes.
 for (const n of nodes) {
   new sd.Circle({
-    targetNode: svg, cx: n.cx, cy: n.cy, r: R,
-    fill: C.white, stroke: C.darkButtonGrey, strokeWidth: 1.4,
+    targetNode: svg,
+    cx: n.cx,
+    cy: n.cy,
+    r: R,
+    fill: C.white,
+    stroke: C.darkButtonGrey,
+    strokeWidth: 1.4,
   });
   new sd.Text({
-    targetNode: svg, text: String(n.id),
-    cx: n.cx, cy: n.cy, fontSize: 13, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(n.id),
+    cx: n.cx,
+    cy: n.cy,
+    fontSize: 13,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -46,24 +60,39 @@ const edgeLines: sd.Line[] = [];
 for (const e of edges) {
   const a = nodeMap.get(e.u)!;
   const b = nodeMap.get(e.v)!;
-  edgeLines.push(new sd.Line({
-    targetNode: svg, x1: a.cx, y1: a.cy, x2: b.cx, y2: b.cy,
-    stroke: C.silver, strokeWidth: 1.2,
-  }));
+  edgeLines.push(
+    new sd.Line({
+      targetNode: svg,
+      x1: a.cx,
+      y1: a.cy,
+      x2: b.cx,
+      y2: b.cy,
+      stroke: C.silver,
+      strokeWidth: 1.2,
+    }),
+  );
   new sd.Text({
-    targetNode: svg, text: String(e.w),
-    cx: (a.cx + b.cx) / 2 + 6, cy: (a.cy + b.cy) / 2 - 6,
-    fontSize: 11, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(e.w),
+    cx: (a.cx + b.cx) / 2 + 6,
+    cy: (a.cy + b.cy) / 2 - 6,
+    fontSize: 11,
+    fill: C.darkButtonGrey,
   });
 }
 
 // Kruskal: sort, then add edges not forming cycles.
 function find(parent: Record<number, number>, x: number): number {
-  while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+  while (parent[x] !== x) {
+    parent[x] = parent[parent[x]];
+    x = parent[x];
+  }
   return x;
 }
 
-const sorted = [...edges].map((e, i) => ({ ...e, idx: i })).sort((a, b) => a.w - b.w);
+const sorted = [...edges]
+  .map((e, i) => ({ ...e, idx: i }))
+  .sort((a, b) => a.w - b.w);
 const parentMap: Record<number, number> = {};
 for (const n of nodes) parentMap[n.id] = n.id;
 const chosen: number[] = [];
@@ -80,8 +109,11 @@ sd.main(async () => {
   await sd.pause();
   for (let k = 0; k < chosen.length; k++) {
     const line = edgeLines[chosen[k]];
-    line.startAnimate({ delay: k * 220, duration: 240, easing: E.easeOut })
-      .setStroke(C.darkGreen).setStrokeWidth(2.4).endAnimate();
+    line
+      .startAnimate({ delay: k * 220, duration: 240, easing: E.easeOut })
+      .setStroke(C.darkGreen)
+      .setStrokeWidth(2.4)
+      .endAnimate();
     await sd.pause();
   }
 });

@@ -28,12 +28,15 @@ for (let i = 0; i < STEPS.length; i++) {
   boxes.push(
     new sd.Rect({
       targetNode: svg,
-      x: -BOX_W / 2, y: cy - BOX_H / 2,
-      width: BOX_W, height: BOX_H,
+      x: -BOX_W / 2,
+      y: cy - BOX_H / 2,
+      width: BOX_W,
+      height: BOX_H,
       fill: C.white,
       stroke: C.silver,
       strokeWidth: 1,
-      rx: 4, ry: 4,
+      rx: 4,
+      ry: 4,
       opacity: 0,
     }),
   );
@@ -42,7 +45,8 @@ for (let i = 0; i < STEPS.length; i++) {
     new sd.Text({
       targetNode: svg,
       text: `gcd(${a}, ${b})`,
-      cx: 0, cy: cy - 1,
+      cx: 0,
+      cy: cy - 1,
       fontSize: 13,
       fill: C.darkButtonGrey,
       opacity: 0,
@@ -51,7 +55,11 @@ for (let i = 0; i < STEPS.length; i++) {
 }
 
 // Down arrows between successive boxes, plus "mod" annotation.
-interface DownArrow { line: sd.Line; head: sd.Path; modLabel: sd.Text; }
+interface DownArrow {
+  line: sd.Line;
+  head: sd.Path;
+  modLabel: sd.Text;
+}
 const arrows: DownArrow[] = [];
 for (let i = 0; i < STEPS.length - 1; i++) {
   const yTop = Y_TOP - i * Y_GAP - BOX_H / 2;
@@ -60,7 +68,10 @@ for (let i = 0; i < STEPS.length - 1; i++) {
   arrows.push({
     line: new sd.Line({
       targetNode: svg,
-      x1: 0, y1: yTop, x2: 0, y2: yBot + headSize,
+      x1: 0,
+      y1: yTop,
+      x2: 0,
+      y2: yBot + headSize,
       stroke: C.darkButtonGrey,
       strokeWidth: 1.2,
       opacity: 0,
@@ -75,7 +86,8 @@ for (let i = 0; i < STEPS.length - 1; i++) {
     modLabel: new sd.Text({
       targetNode: svg,
       text: "a mod b",
-      cx: 36, cy: (yTop + yBot) / 2 - 1,
+      cx: 36,
+      cy: (yTop + yBot) / 2 - 1,
       fontSize: 9,
       fill: C.silver,
       opacity: 0,
@@ -85,32 +97,51 @@ for (let i = 0; i < STEPS.length - 1; i++) {
 
 sd.main(async () => {
   // p1: initial pair
-  boxes[0].startAnimate({ duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
-  labels[0].startAnimate({ delay: 80, duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  boxes[0]
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  labels[0]
+    .startAnimate({ delay: 80, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   // p2..p4: each substitution step
   for (let i = 1; i < STEPS.length; i++) {
     const aIdx = i - 1;
-    arrows[aIdx].line.startAnimate({ duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    arrows[aIdx].head.startAnimate({ duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    arrows[aIdx].modLabel.startAnimate({ delay: 100, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    boxes[i].startAnimate({ delay: 220, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    labels[i].startAnimate({ delay: 300, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    arrows[aIdx].line
+      .startAnimate({ duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    arrows[aIdx].head
+      .startAnimate({ duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    arrows[aIdx].modLabel
+      .startAnimate({ delay: 100, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    boxes[i]
+      .startAnimate({ delay: 220, duration: 320, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    labels[i]
+      .startAnimate({ delay: 300, duration: 320, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     if (i === STEPS.length - 1) {
       // last step: highlight the answer
-      boxes[i].startAnimate({ delay: 620, duration: 320, easing: E.easeOut })
-        .setFill(FINAL_FILL).setStroke(FINAL_STROKE).setStrokeWidth(1.6)
+      boxes[i]
+        .startAnimate({ delay: 620, duration: 320, easing: E.easeOut })
+        .setFill(FINAL_FILL)
+        .setStroke(FINAL_STROKE)
+        .setStrokeWidth(1.6)
         .endAnimate();
-      labels[i].startAnimate({ delay: 620, duration: 320, easing: E.easeOut })
-        .setFill(FINAL_STROKE).endAnimate();
+      labels[i]
+        .startAnimate({ delay: 620, duration: 320, easing: E.easeOut })
+        .setFill(FINAL_STROKE)
+        .endAnimate();
     }
     await sd.pause();
   }

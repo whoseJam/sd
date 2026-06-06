@@ -11,11 +11,31 @@ type Row = {
 };
 
 const rows: Row[] = [
-  { label: "(a) same width, last digit",  initial: "Σ area  0",  steps: ["Σ area  1", "Σ area  2", "Σ area  9"] },
-  { label: "(b) width grows by 1 char",   initial: "Σ area  9",  steps: ["Σ area  10", "Σ area  19", "Σ area  36"] },
-  { label: "(c) digits only",             initial: "0",          steps: ["1", "2", "10", "19", "36"] },
-  { label: "(d) prefix stable, num grow", initial: "n = 0",      steps: ["n = 7", "n = 36"] },
-  { label: "(e) ASCII only baseline",     initial: "S area  0",  steps: ["S area  1", "S area  19"] },
+  {
+    label: "(a) same width, last digit",
+    initial: "Σ area  0",
+    steps: ["Σ area  1", "Σ area  2", "Σ area  9"],
+  },
+  {
+    label: "(b) width grows by 1 char",
+    initial: "Σ area  9",
+    steps: ["Σ area  10", "Σ area  19", "Σ area  36"],
+  },
+  {
+    label: "(c) digits only",
+    initial: "0",
+    steps: ["1", "2", "10", "19", "36"],
+  },
+  {
+    label: "(d) prefix stable, num grow",
+    initial: "n = 0",
+    steps: ["n = 7", "n = 36"],
+  },
+  {
+    label: "(e) ASCII only baseline",
+    initial: "S area  0",
+    steps: ["S area  1", "S area  19"],
+  },
 ];
 
 const X0 = 0;
@@ -44,7 +64,7 @@ sd.init(() => {
         cy: y,
         fontSize: 22,
         fill: C.darkGreen,
-        }),
+      }),
     );
     // Anchor reference: a small fixed dot at the same (cx, cy) so we
     // can SEE whether the text drifts away from its declared anchor

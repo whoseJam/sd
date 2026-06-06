@@ -11,9 +11,10 @@
 //   bun .claude/tools/sd-animation-snapshot.ts <url> --from 26 --count 25
 //   bun .claude/tools/sd-animation-snapshot.ts <url> -o /tmp/foo.png
 
+import type { Page } from "playwright";
+
 import path from "node:path";
 import { chromium } from "playwright";
-import type { Page } from "playwright";
 import sharp from "sharp";
 
 import { attachIssueCollector, openInViewer, stitchGrid } from "./grid";
@@ -144,41 +145,49 @@ async function captureFrames(
   // is sd's own end-of-animation flag; reading it removes any need for
   // timeout-based guessing.
   const waitForBoundary = (timeoutMs: number): Promise<void> =>
-    page.waitForFunction(
-      () => {
-        const sd = (globalThis as unknown as {
-          sd?: {
-            Window: { MAIN_FINISHED: boolean };
-            Animate: {
-              finished(): boolean;
-              currentActionList: { enabled: boolean };
-            };
-          };
-        }).sd;
-        if (!sd) return false;
-        if (sd.Window.MAIN_FINISHED) return true;
-        return (
-          sd.Animate.finished() === true &&
-          sd.Animate.currentActionList.enabled === true
-        );
-      },
-      undefined,
-      { timeout: timeoutMs },
-    ).then(() => undefined);
+    page
+      .waitForFunction(
+        () => {
+          const sd = (
+            globalThis as unknown as {
+              sd?: {
+                Window: { MAIN_FINISHED: boolean };
+                Animate: {
+                  finished(): boolean;
+                  currentActionList: { enabled: boolean };
+                };
+              };
+            }
+          ).sd;
+          if (!sd) return false;
+          if (sd.Window.MAIN_FINISHED) return true;
+          return (
+            sd.Animate.finished() === true &&
+            sd.Animate.currentActionList.enabled === true
+          );
+        },
+        undefined,
+        { timeout: timeoutMs },
+      )
+      .then(() => undefined);
 
   const mainFinished = (): Promise<boolean> =>
     page.evaluate(() => {
-      const sd = (globalThis as unknown as {
-        sd: { Window: { MAIN_FINISHED: boolean } };
-      }).sd;
+      const sd = (
+        globalThis as unknown as {
+          sd: { Window: { MAIN_FINISHED: boolean } };
+        }
+      ).sd;
       return sd.Window.MAIN_FINISHED;
     });
 
   const advance = (): Promise<void> =>
     page.evaluate(() => {
-      const sd = (globalThis as unknown as {
-        sd: { device(): { keyDown(k: string): void } };
-      }).sd;
+      const sd = (
+        globalThis as unknown as {
+          sd: { device(): { keyDown(k: string): void } };
+        }
+      ).sd;
       sd.device().keyDown("N");
     });
 
@@ -266,7 +275,13 @@ function pageClipFromSvgBox(page: Page, svgBox: Bbox): Promise<Bbox | null> {
     if (!svg) return null;
     const rect = svg.getBoundingClientRect();
     const vb = svg.viewBox.baseVal;
-    if (rect.width === 0 || rect.height === 0 || vb.width === 0 || vb.height === 0) return null;
+    if (
+      rect.width === 0 ||
+      rect.height === 0 ||
+      vb.width === 0 ||
+      vb.height === 0
+    )
+      return null;
     // preserveAspectRatio="xMidYMid meet" — content fits inside the SVG rect,
     // letterboxed and centered. Scale = min of axis ratios.
     const scale = Math.min(rect.width / vb.width, rect.height / vb.height);
@@ -288,8 +303,14 @@ async function cropShots(
 ): Promise<Buffer[]> {
   const left = Math.max(0, Math.floor(clip.x - CLIP_PADDING));
   const top = Math.max(0, Math.floor(clip.y - CLIP_PADDING));
-  const right = Math.min(viewport.width, Math.ceil(clip.x + clip.width + CLIP_PADDING));
-  const bottom = Math.min(viewport.height, Math.ceil(clip.y + clip.height + CLIP_PADDING));
+  const right = Math.min(
+    viewport.width,
+    Math.ceil(clip.x + clip.width + CLIP_PADDING),
+  );
+  const bottom = Math.min(
+    viewport.height,
+    Math.ceil(clip.y + clip.height + CLIP_PADDING),
+  );
   const width = right - left;
   const height = bottom - top;
   if (width <= 0 || height <= 0) return shots;
@@ -334,8 +355,12 @@ async function runFlushPass(
   try {
     await page.goto(url, { waitUntil: "load" });
     await page.waitForFunction(
-      () => (globalThis as unknown as { sd?: { Window?: { MAIN_FINISHED?: boolean } } })
-        .sd?.Window?.MAIN_FINISHED === true,
+      () =>
+        (
+          globalThis as unknown as {
+            sd?: { Window?: { MAIN_FINISHED?: boolean } };
+          }
+        ).sd?.Window?.MAIN_FINISHED === true,
       undefined,
       { timeout: timeoutMs },
     );
@@ -374,16 +399,24 @@ async function main(): Promise<void> {
     await page.goto(args.url, { waitUntil: "load" });
     await page.waitForFunction(
       () => {
-        const sd = (globalThis as unknown as {
-          sd?: { Window: unknown; Animate: { finished(): boolean }; device: () => unknown };
-        }).sd;
+        const sd = (
+          globalThis as unknown as {
+            sd?: {
+              Window: unknown;
+              Animate: { finished(): boolean };
+              device: () => unknown;
+            };
+          }
+        ).sd;
         return Boolean(sd?.Window && sd?.Animate?.finished && sd?.device);
       },
       undefined,
       { timeout: args.timeoutMs },
     );
     await page.evaluate(() => {
-      const sd = (globalThis as unknown as { sd: { Window: { PUPPETEER: boolean } } }).sd;
+      const sd = (
+        globalThis as unknown as { sd: { Window: { PUPPETEER: boolean } } }
+      ).sd;
       sd.Window.PUPPETEER = true;
     });
 
@@ -397,7 +430,8 @@ async function main(): Promise<void> {
     if (reachedEnd && !args.outputExplicit) {
       const actualTo = args.from + shots.length - 1;
       const stem = stemFromUrl(args.url);
-      const range = args.from === actualTo ? `p${args.from}` : `p${args.from}-${actualTo}`;
+      const range =
+        args.from === actualTo ? `p${args.from}` : `p${args.from}-${actualTo}`;
       outputPath = `/tmp/sd-animation-snapshot-${stem}-${range}.png`;
     }
 

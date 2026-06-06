@@ -14,15 +14,28 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 2], [1, 3], [2, 4], [3, 4], [4, 5], [2, 5],
+  [1, 2],
+  [1, 3],
+  [2, 4],
+  [3, 4],
+  [4, 5],
+  [2, 5],
 ];
 
 const weights: Record<string, number> = {
-  "1-2": 3, "1-3": 5, "2-4": 4, "3-4": 1, "4-5": 2, "2-5": 9,
+  "1-2": 3,
+  "1-3": 5,
+  "2-4": 4,
+  "3-4": 1,
+  "4-5": 2,
+  "2-5": 9,
 };
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 20,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 20,
 });
 
 // Add edge weight labels.
@@ -32,8 +45,12 @@ for (const [u, v] of edges) {
   const mx = (a.cx + b.cx) / 2;
   const my = (a.cy + b.cy) / 2;
   new sd.Text({
-    targetNode: svg, text: String(weights[`${u}-${v}`]),
-    cx: mx, cy: my, fontSize: 12, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(weights[`${u}-${v}`]),
+    cx: mx,
+    cy: my,
+    fontSize: 12,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -52,7 +69,9 @@ for (const u of order) {
 sd.main(async () => {
   dag.fadeIn({ delay: 0 });
   for (const u of order) {
-    dag.setTag(u, `dis=${dist[u] ?? "?"}`, C.darkGreen, { delay: 300 + u * 120 });
+    dag.setTag(u, `dis=${dist[u] ?? "?"}`, C.darkGreen, {
+      delay: 300 + u * 120,
+    });
   }
   await sd.pause();
 });

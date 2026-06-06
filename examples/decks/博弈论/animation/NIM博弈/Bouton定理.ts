@@ -30,19 +30,24 @@ const stones: sd.Circle[][] = PILES.map((count, p) => {
   return arr;
 });
 
-const pileLabels = PILES.map((count, p) => new sd.Text({
-  targetNode: svg,
-  text: String(count),
-  cx: PILE_X[p], cy: PILE_BASE_Y - 22 - 1,
-  fontSize: 12,
-  fill: C.darkButtonGrey,
-  opacity: 0,
-}));
+const pileLabels = PILES.map(
+  (count, p) =>
+    new sd.Text({
+      targetNode: svg,
+      text: String(count),
+      cx: PILE_X[p],
+      cy: PILE_BASE_Y - 22 - 1,
+      fontSize: 12,
+      fill: C.darkButtonGrey,
+      opacity: 0,
+    }),
+);
 
 const equation = new sd.Text({
   targetNode: svg,
   text: "3 ⊕ 2 ⊕ 1",
-  cx: 0, cy: -70,
+  cx: 0,
+  cy: -70,
   fontSize: 15,
   fill: C.darkButtonGrey,
   opacity: 0,
@@ -51,7 +56,8 @@ const equation = new sd.Text({
 const result = new sd.Text({
   targetNode: svg,
   text: "= 0  →  先手必败",
-  cx: 0, cy: -100,
+  cx: 0,
+  cy: -100,
   fontSize: 13,
   fill: C.darkOrange,
   opacity: 0,
@@ -64,23 +70,31 @@ sd.main(async () => {
       const d = p * 100 + i * 90;
       stones[p][i]
         .startAnimate({ delay: d, duration: 260, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
     }
     pileLabels[p]
-      .startAnimate({ delay: p * 100 + PILES[p] * 90 + 120, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .startAnimate({
+        delay: p * 100 + PILES[p] * 90 + 120,
+        duration: 280,
+        easing: E.easeOut,
+      })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
   // p2: XOR equation
   equation
     .startAnimate({ duration: 360, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   // p3: result
   result
     .startAnimate({ duration: 380, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

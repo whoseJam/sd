@@ -22,11 +22,15 @@ export const D_NODES: DNodeSpec[] = [
 ];
 
 export const D_TREE_EDGES: ReadonlyArray<readonly [number, number]> = [
-  [1, 2], [2, 3], [2, 4], [4, 5],
+  [1, 2],
+  [2, 3],
+  [2, 4],
+  [4, 5],
 ];
 
 export const D_BACK_EDGES: ReadonlyArray<readonly [number, number]> = [
-  [3, 1], [5, 4],
+  [3, 1],
+  [5, 4],
 ];
 
 export const D_DFS_ORDER = [1, 2, 3, 4, 5] as const;
@@ -51,8 +55,8 @@ export interface DEdge {
 
 export interface DirectedView {
   treeEdges: Map<string, DEdge>;
-  backEdges: Map<string, DEdge>;       // neutral grey solid
-  backDashed: Map<string, DEdge>;      // orange dashed (crossfade overlay)
+  backEdges: Map<string, DEdge>; // neutral grey solid
+  backDashed: Map<string, DEdge>; // orange dashed (crossfade overlay)
   circles: Map<number, sd.Circle>;
   labels: Map<number, sd.Text>;
 }
@@ -78,7 +82,10 @@ function makeArrow(
 
   const line = new sd.Line({
     targetNode: target,
-    x1: sx, y1: sy, x2: ex, y2: ey,
+    x1: sx,
+    y1: sy,
+    x2: ex,
+    y2: ey,
     stroke: color,
     strokeWidth: opts.width ?? 1.4,
     strokeDashArray: opts.dashed ? [5, 4] : undefined,
@@ -126,7 +133,9 @@ export function createDirectedGraph(target: sd.Group): DirectedView {
       n.id,
       new sd.Circle({
         targetNode: target,
-        cx: n.cx, cy: n.cy, r: D_RADIUS,
+        cx: n.cx,
+        cy: n.cy,
+        r: D_RADIUS,
         fill: C.white,
         stroke: C.darkButtonGrey,
         strokeWidth: 1.4,
@@ -138,7 +147,8 @@ export function createDirectedGraph(target: sd.Group): DirectedView {
       new sd.Text({
         targetNode: target,
         text: String(n.id),
-        cx: n.cx, cy: n.cy,
+        cx: n.cx,
+        cy: n.cy,
         fontSize: 13,
         fill: C.darkButtonGrey,
         opacity: 0,
@@ -157,61 +167,89 @@ function fadeEdge(
   const duration = opts.duration ?? 320;
   edge.line
     .startAnimate({ delay, duration, easing: E.easeOut })
-    .setOpacity(opacity).endAnimate();
+    .setOpacity(opacity)
+    .endAnimate();
   edge.head
     .startAnimate({ delay, duration, easing: E.easeOut })
-    .setOpacity(opacity).endAnimate();
+    .setOpacity(opacity)
+    .endAnimate();
 }
 
-export function fadeInDirectedNeutral(view: DirectedView, opts?: { delay?: number }): void {
+export function fadeInDirectedNeutral(
+  view: DirectedView,
+  opts?: { delay?: number },
+): void {
   const d0 = opts?.delay ?? 0;
   for (const edge of view.treeEdges.values()) fadeEdge(edge, 1, { delay: d0 });
   for (const edge of view.backEdges.values()) fadeEdge(edge, 1, { delay: d0 });
   let k = 0;
   for (const id of D_DFS_ORDER) {
     const d = d0 + 120 + k++ * 70;
-    view.circles.get(id)!
+    view.circles
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    view.labels.get(id)!
+      .setOpacity(1)
+      .endAnimate();
+    view.labels
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
 }
 
-export function fadeInDirectedClassified(view: DirectedView, opts?: { delay?: number }): void {
+export function fadeInDirectedClassified(
+  view: DirectedView,
+  opts?: { delay?: number },
+): void {
   const d0 = opts?.delay ?? 0;
   for (const edge of view.treeEdges.values()) {
     fadeEdge(edge, 1, { delay: d0 });
     edge.line
       .startAnimate({ delay: d0, duration: 320, easing: E.easeOut })
-      .setStroke(D_TREE_COLOR).setStrokeWidth(1.8).endAnimate();
+      .setStroke(D_TREE_COLOR)
+      .setStrokeWidth(1.8)
+      .endAnimate();
     edge.head
       .startAnimate({ delay: d0, duration: 320, easing: E.easeOut })
-      .setStroke(D_TREE_COLOR).setFill(D_TREE_COLOR).endAnimate();
+      .setStroke(D_TREE_COLOR)
+      .setFill(D_TREE_COLOR)
+      .endAnimate();
   }
   for (const edge of view.backDashed.values()) fadeEdge(edge, 1, { delay: d0 });
   let k = 0;
   for (const id of D_DFS_ORDER) {
     const d = d0 + 120 + k++ * 70;
-    view.circles.get(id)!
+    view.circles
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    view.labels.get(id)!
+      .setOpacity(1)
+      .endAnimate();
+    view.labels
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
 }
 
 // Crossfade neutral back edges → orange-dashed back edges.
-export function classifyBackEdges(view: DirectedView, opts?: { delay?: number; duration?: number }): void {
+export function classifyBackEdges(
+  view: DirectedView,
+  opts?: { delay?: number; duration?: number },
+): void {
   const delay = opts?.delay ?? 0;
   const duration = opts?.duration ?? 360;
-  for (const edge of view.backEdges.values()) fadeEdge(edge, 0, { delay, duration });
-  for (const edge of view.backDashed.values()) fadeEdge(edge, 1, { delay, duration });
+  for (const edge of view.backEdges.values())
+    fadeEdge(edge, 0, { delay, duration });
+  for (const edge of view.backDashed.values())
+    fadeEdge(edge, 1, { delay, duration });
 }
 
-export function colorTreeEdges(view: DirectedView, opts?: { delay?: number; duration?: number; stagger?: number }): void {
+export function colorTreeEdges(
+  view: DirectedView,
+  opts?: { delay?: number; duration?: number; stagger?: number },
+): void {
   const d0 = opts?.delay ?? 0;
   const duration = opts?.duration ?? 320;
   const stagger = opts?.stagger ?? 180;
@@ -220,9 +258,13 @@ export function colorTreeEdges(view: DirectedView, opts?: { delay?: number; dura
     const delay = d0 + k++ * stagger;
     edge.line
       .startAnimate({ delay, duration, easing: E.easeOut })
-      .setStroke(D_TREE_COLOR).setStrokeWidth(1.8).endAnimate();
+      .setStroke(D_TREE_COLOR)
+      .setStrokeWidth(1.8)
+      .endAnimate();
     edge.head
       .startAnimate({ delay, duration, easing: E.easeOut })
-      .setStroke(D_TREE_COLOR).setFill(D_TREE_COLOR).endAnimate();
+      .setStroke(D_TREE_COLOR)
+      .setFill(D_TREE_COLOR)
+      .endAnimate();
   }
 }

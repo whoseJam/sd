@@ -11,8 +11,12 @@ const SIZE = 38;
 const X0 = -(N * SIZE) / 2;
 
 const row = new NumRow({
-  targetNode: svg, values: colors, size: SIZE,
-  x: X0, y: 30, label: "col",
+  targetNode: svg,
+  values: colors,
+  size: SIZE,
+  x: X0,
+  y: 30,
+  label: "col",
 });
 
 // pos[c] = list of positions.
@@ -30,7 +34,12 @@ const strokes: Record<number, sd.SDColor> = {
 sd.main(async () => {
   row.fadeIn({ delay: 0 });
   for (let i = 1; i <= N; i++) {
-    row.paintCell(i, tones[colors[i - 1]] as sd.SDColor, strokes[colors[i - 1]], { delay: 200 + i * 30, duration: 220 });
+    row.paintCell(
+      i,
+      tones[colors[i - 1]] as sd.SDColor,
+      strokes[colors[i - 1]],
+      { delay: 200 + i * 30, duration: 220 },
+    );
   }
   await sd.pause();
 
@@ -38,7 +47,10 @@ sd.main(async () => {
   for (let i = 1; i <= N; i++) {
     if (colors[i - 1] === 1) {
       row.setValue(i, 2, { delay: i * 80 });
-      row.paintCell(i, tones[2] as sd.SDColor, strokes[2], { delay: i * 80, duration: 220 });
+      row.paintCell(i, tones[2] as sd.SDColor, strokes[2], {
+        delay: i * 80,
+        duration: 220,
+      });
     }
   }
   await sd.pause();

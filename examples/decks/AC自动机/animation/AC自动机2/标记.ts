@@ -24,7 +24,9 @@ trie.buildFail();
 
 const FAIL_INK = "#c08fbf";
 for (let i = 1; i < trie.nodes.length; i++) {
-  trie.failLink(i, trie.fail[i], { stroke: FAIL_INK, bending: 0.3 }).setOpacity(1);
+  trie
+    .failLink(i, trie.fail[i], { stroke: FAIL_INK, bending: 0.3 })
+    .setOpacity(1);
 }
 
 const SIZE = 28;
@@ -44,16 +46,17 @@ const COUNT_STROKE = C.darkOrange;
 
 // Per-node visit count labels, drawn below each node, initially hidden.
 const counts = new Array<number>(trie.nodes.length).fill(0);
-const countLabels: sd.Text[] = trie.nodes.map((n) =>
-  new sd.Text({
-    targetNode: svg,
-    text: "0",
-    cx: n.cx,
-    cy: n.cy - 26,
-    fontSize: 11,
-    fill: C.darkButtonGrey,
-    opacity: 0,
-  }),
+const countLabels: sd.Text[] = trie.nodes.map(
+  (n) =>
+    new sd.Text({
+      targetNode: svg,
+      text: "0",
+      cx: n.cx,
+      cy: n.cy - 26,
+      fontSize: 11,
+      fill: C.darkButtonGrey,
+      opacity: 0,
+    }),
 );
 
 const subtreeSum: number[] = [];

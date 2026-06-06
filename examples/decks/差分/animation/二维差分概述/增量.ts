@@ -59,7 +59,10 @@ function setFocus(rows: number, cols: number, delay = 0) {
 }
 
 sd.main(async () => {
-  label.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+  label
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
   setFocus(I, J);
   await sd.pause();

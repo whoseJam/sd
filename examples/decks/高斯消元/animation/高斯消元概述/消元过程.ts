@@ -21,8 +21,7 @@ const ROW_GAP = 6;
 const AUG_GAP = 10;
 
 function cellCenter(r: number, c: number): { cx: number; cy: number } {
-  const totalWidth =
-    COLS * CELL_W + (COLS - 1) * COL_GAP + AUG_GAP;
+  const totalWidth = COLS * CELL_W + (COLS - 1) * COL_GAP + AUG_GAP;
   const x0 = -totalWidth / 2 + CELL_W / 2;
   let cx = x0 + c * (CELL_W + COL_GAP);
   if (c >= COLS - 1) cx += AUG_GAP;
@@ -60,12 +59,15 @@ for (let r = 0; r < ROWS; r++) {
     rowBgs.push(
       new sd.Rect({
         targetNode: svg,
-        x: cx - CELL_W / 2, y: cy - CELL_H / 2,
-        width: CELL_W, height: CELL_H,
+        x: cx - CELL_W / 2,
+        y: cy - CELL_H / 2,
+        width: CELL_W,
+        height: CELL_H,
         fill: C.white,
         stroke: C.silver,
         strokeWidth: 0.8,
-        rx: 3, ry: 3,
+        rx: 3,
+        ry: 3,
         opacity: 0,
       }),
     );
@@ -73,7 +75,8 @@ for (let r = 0; r < ROWS; r++) {
       new sd.Text({
         targetNode: svg,
         text: String(STAGES[0][r][c]),
-        cx, cy: cy - 1,
+        cx,
+        cy: cy - 1,
         fontSize: 12,
         fill: C.darkButtonGrey,
         opacity: 0,
@@ -93,8 +96,10 @@ const augBar = (() => {
   const { cy: cyBot } = cellCenter(ROWS - 1, 0);
   return new sd.Line({
     targetNode: svg,
-    x1: x, y1: cyTop + CELL_H / 2,
-    x2: x, y2: cyBot - CELL_H / 2,
+    x1: x,
+    y1: cyTop + CELL_H / 2,
+    x2: x,
+    y2: cyBot - CELL_H / 2,
     stroke: C.darkButtonGrey,
     strokeWidth: 1,
     opacity: 0,
@@ -113,22 +118,27 @@ sd.main(async () => {
       const d = (r * COLS + c) * 30;
       cellBgs[r][c]
         .startAnimate({ delay: d, duration: 240, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
       cellTexts[r][c]
         .startAnimate({ delay: d + 60, duration: 240, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
     }
   }
   augBar
     .startAnimate({ duration: 360, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   // p2: highlight R1 as pivot row, then update R2 and R3.
   for (let c = 0; c < COLS; c++) {
     cellBgs[0][c]
       .startAnimate({ duration: 280, easing: E.easeOut })
-      .setFill(PIVOT_FILL).setStroke(PIVOT_STROKE).setStrokeWidth(1.2)
+      .setFill(PIVOT_FILL)
+      .setStroke(PIVOT_STROKE)
+      .setStrokeWidth(1.2)
       .endAnimate();
   }
   for (let r = 1; r < ROWS; r++) {
@@ -139,7 +149,8 @@ sd.main(async () => {
       const d = 250 + c * 80;
       cellTexts[r][c]
         .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-        .setText(String(newV)).endAnimate();
+        .setText(String(newV))
+        .endAnimate();
     }
   }
   await sd.pause();
@@ -148,11 +159,15 @@ sd.main(async () => {
   for (let c = 0; c < COLS; c++) {
     cellBgs[0][c]
       .startAnimate({ duration: 240, easing: E.easeOut })
-      .setFill(C.white).setStroke(C.silver).setStrokeWidth(0.8)
+      .setFill(C.white)
+      .setStroke(C.silver)
+      .setStrokeWidth(0.8)
       .endAnimate();
     cellBgs[1][c]
       .startAnimate({ duration: 280, easing: E.easeOut })
-      .setFill(PIVOT_FILL).setStroke(PIVOT_STROKE).setStrokeWidth(1.2)
+      .setFill(PIVOT_FILL)
+      .setStroke(PIVOT_STROKE)
+      .setStrokeWidth(1.2)
       .endAnimate();
   }
   for (let c = 0; c < COLS; c++) {
@@ -162,7 +177,8 @@ sd.main(async () => {
     const d = 250 + c * 80;
     cellTexts[2][c]
       .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setText(String(newV)).endAnimate();
+      .setText(String(newV))
+      .endAnimate();
   }
   await sd.pause();
 
@@ -170,15 +186,23 @@ sd.main(async () => {
   for (let c = 0; c < COLS; c++) {
     cellBgs[1][c]
       .startAnimate({ duration: 240, easing: E.easeOut })
-      .setFill(C.white).setStroke(C.silver).setStrokeWidth(0.8)
+      .setFill(C.white)
+      .setStroke(C.silver)
+      .setStrokeWidth(0.8)
       .endAnimate();
   }
   for (let i = 0; i < ROWS; i++) {
     const r = i;
     for (const c of [r, COLS - 1]) {
       cellBgs[r][c]
-        .startAnimate({ delay: 280 + i * 200, duration: 320, easing: E.easeOut })
-        .setFill(ANSWER_FILL).setStroke(ANSWER_STROKE).setStrokeWidth(1.4)
+        .startAnimate({
+          delay: 280 + i * 200,
+          duration: 320,
+          easing: E.easeOut,
+        })
+        .setFill(ANSWER_FILL)
+        .setStroke(ANSWER_STROKE)
+        .setStrokeWidth(1.4)
         .endAnimate();
     }
   }

@@ -25,16 +25,24 @@ const row = new NumRow({
 new sd.Math({
   targetNode: svg,
   text: `${D} = 2^3 + 2^2 + 2^0`,
-  cx: 0, cy: row.top() + 26,
-  fontSize: 16, fill: C.darkButtonGrey,
+  cx: 0,
+  cy: row.top() + 26,
+  fontSize: 16,
+  fill: C.darkButtonGrey,
   opacity: 0,
-}).startAnimate({ delay: 600, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+})
+  .startAnimate({ delay: 600, duration: 320, easing: E.easeOut })
+  .setOpacity(1)
+  .endAnimate();
 
 sd.main(async () => {
   row.fadeIn({ delay: 0 });
   for (let i = 0; i < N; i++) {
     if (bits[i] === 1) {
-      row.paintCell(i + 1, "#fdecd9", C.darkOrange, { delay: 200 + i * 80, duration: 220 });
+      row.paintCell(i + 1, "#fdecd9", C.darkOrange, {
+        delay: 200 + i * 80,
+        duration: 220,
+      });
     }
   }
   await sd.pause();

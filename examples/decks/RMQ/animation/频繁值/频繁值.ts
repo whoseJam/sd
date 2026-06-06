@@ -55,8 +55,14 @@ const queryLabel = new sd.Text({
 
 sd.main(async () => {
   arr.fadeIn({ delay: 0 });
-  queryBrace.startAnimate({ delay: 360, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
-  queryLabel.startAnimate({ delay: 420, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
+  queryBrace
+    .startAnimate({ delay: 360, duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  queryLabel
+    .startAnimate({ delay: 420, duration: 220, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   // Highlight each group inside the query window.
@@ -68,8 +74,15 @@ sd.main(async () => {
     const hi = Math.min(to, queryR);
     if (lo > hi) continue;
     const cnt = hi - lo + 1;
-    if (cnt > bestCount) { bestCount = cnt; bestGroup = g; }
-    for (let i = lo; i <= hi; i++) arr.paintCell(i, "#dbeefd", C.steelBlue, { delay: g * 60, duration: 200 });
+    if (cnt > bestCount) {
+      bestCount = cnt;
+      bestGroup = g;
+    }
+    for (let i = lo; i <= hi; i++)
+      arr.paintCell(i, "#dbeefd", C.steelBlue, {
+        delay: g * 60,
+        duration: 200,
+      });
   }
   await sd.pause();
 
@@ -77,7 +90,8 @@ sd.main(async () => {
     const { from, to } = groups[bestGroup];
     const lo = Math.max(from, queryL);
     const hi = Math.min(to, queryR);
-    for (let i = lo; i <= hi; i++) arr.paintCell(i, "#fdecd9", C.darkOrange, { duration: 200 });
+    for (let i = lo; i <= hi; i++)
+      arr.paintCell(i, "#fdecd9", C.darkOrange, { duration: 200 });
     new sd.Text({
       targetNode: svg,
       text: `mode count = ${bestCount}`,

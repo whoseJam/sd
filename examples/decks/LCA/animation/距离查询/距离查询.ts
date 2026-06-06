@@ -19,7 +19,14 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 3, 8: 7, 9: 8,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+  6: 5,
+  7: 3,
+  8: 7,
+  9: 8,
 };
 
 const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1 });
@@ -30,14 +37,21 @@ const Y = 9;
 function depthOf(id: number): number {
   let d = 0;
   let cur: number | undefined = id;
-  while (parent[cur!] !== undefined) { cur = parent[cur!]; d++; }
+  while (parent[cur!] !== undefined) {
+    cur = parent[cur!];
+    d++;
+  }
   return d;
 }
 
 const formula = new sd.Math({
   targetNode: svg,
   text: "d(x, y) = dep_x + dep_y - 2\\,dep_{LCA}",
-  cx: 160, cy: 0, fontSize: 14, fill: C.darkButtonGrey, opacity: 0,
+  cx: 160,
+  cy: 0,
+  fontSize: 14,
+  fill: C.darkButtonGrey,
+  opacity: 0,
 });
 
 sd.main(async () => {
@@ -70,7 +84,10 @@ sd.main(async () => {
   }
 
   const E = sd.easing();
-  formula.startAnimate({ delay: 400, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  formula
+    .startAnimate({ delay: 400, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 
   void depthOf;
   await sd.pause();

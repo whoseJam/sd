@@ -22,7 +22,14 @@ new sd.Circle({
   stroke: C.darkButtonGrey,
   strokeWidth: 1.6,
 });
-new sd.Text({ targetNode: svg, text: "u", cx: 0, cy: 0, fontSize: 16, fill: C.darkButtonGrey });
+new sd.Text({
+  targetNode: svg,
+  text: "u",
+  cx: 0,
+  cy: 0,
+  fontSize: 16,
+  fill: C.darkButtonGrey,
+});
 
 const positions = [-1, 0, 1];
 for (let i = 0; i < positions.length; i++) {

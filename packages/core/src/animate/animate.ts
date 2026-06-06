@@ -8,7 +8,7 @@ import type { SDNode } from "@/sd";
 
 import { Action } from "@/animate/action";
 import { ActionList } from "@/animate/action-list";
-import { ParametricAction } from "@/animate/parametric-action";
+import type { ParametricAction } from "@/animate/parametric-action";
 import { Window } from "@/animate/window";
 import { Status as S } from "@/interact/status";
 

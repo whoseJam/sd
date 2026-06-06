@@ -112,7 +112,10 @@ type Page = Awaited<ReturnType<typeof chromium.prototype.newPage>>;
 //   reveal     → window.Reveal (UMD global from reveal.js)
 //   webslides  → window.ws (set by packages/webslides/src/main.ts after init)
 //   impress    → window.impress() (re-calling with default rootId returns the same API)
-async function detectFramework(page: Page, timeoutMs: number): Promise<Framework> {
+async function detectFramework(
+  page: Page,
+  timeoutMs: number,
+): Promise<Framework> {
   await page.waitForFunction(
     () => {
       const w = window as unknown as {
@@ -120,8 +123,10 @@ async function detectFramework(page: Page, timeoutMs: number): Promise<Framework
         ws?: { maxSlide_?: number };
         impress?: (id?: string) => unknown;
       };
-      if (w.Reveal?.isReady?.() && (w.Reveal.getTotalSlides?.() ?? 0) > 0) return true;
-      if (typeof w.ws?.maxSlide_ === "number" && w.ws.maxSlide_ > 0) return true;
+      if (w.Reveal?.isReady?.() && (w.Reveal.getTotalSlides?.() ?? 0) > 0)
+        return true;
+      if (typeof w.ws?.maxSlide_ === "number" && w.ws.maxSlide_ > 0)
+        return true;
       if (
         typeof w.impress === "function" &&
         document.body.classList.contains("impress-supported") &&
@@ -160,7 +165,11 @@ async function getTotal(page: Page, fw: Framework): Promise<number> {
   }, fw);
 }
 
-async function gotoSlide(page: Page, fw: Framework, index: number): Promise<void> {
+async function gotoSlide(
+  page: Page,
+  fw: Framework,
+  index: number,
+): Promise<void> {
   await page.evaluate(
     ([framework, i]) => {
       const w = window as unknown as {
@@ -207,7 +216,8 @@ function stemFromUrl(rawUrl: string): string {
   if (segments.length === 0) return "deck";
   const last = segments[segments.length - 1];
   const base = last.replace(/\.[^.]+$/, "");
-  if (base === "index" && segments.length >= 2) return segments[segments.length - 2];
+  if (base === "index" && segments.length >= 2)
+    return segments[segments.length - 2];
   return base || "deck";
 }
 

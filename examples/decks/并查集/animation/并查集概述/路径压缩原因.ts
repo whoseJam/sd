@@ -9,7 +9,7 @@ const C = sd.color();
 const chain = [10, 9, 3, 1];
 const R = 20;
 const GAP = 70;
-const X0 = -(chain.length - 1) * GAP / 2;
+const X0 = (-(chain.length - 1) * GAP) / 2;
 
 const nodes: { id: number; cx: number; cy: number }[] = [];
 for (let i = 0; i < chain.length; i++) {
@@ -24,7 +24,14 @@ for (let i = 0; i < chain.length; i++) {
     stroke: i === chain.length - 1 ? C.darkOrange : C.darkButtonGrey,
     strokeWidth: i === chain.length - 1 ? 2.4 : 1.4,
   });
-  new sd.Text({ targetNode: svg, text: String(chain[i]), cx, cy, fontSize: 16, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: String(chain[i]),
+    cx,
+    cy,
+    fontSize: 16,
+    fill: C.darkButtonGrey,
+  });
   nodes.push({ id: chain[i], cx, cy });
 }
 

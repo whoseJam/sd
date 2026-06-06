@@ -59,7 +59,9 @@ sd.main(async () => {
   for (let k = 1; k < pathI.length; k++) {
     const idx = pathI[k];
     tree.paintEdge(pathI[k - 1], Q_COLORS.i.stroke, { delay: k * 160 });
-    tree.paintNode(idx, Q_COLORS.i.fill, Q_COLORS.i.stroke, { delay: k * 160 + 40 });
+    tree.paintNode(idx, Q_COLORS.i.fill, Q_COLORS.i.stroke, {
+      delay: k * 160 + 40,
+    });
   }
   await sd.pause();
 
@@ -76,7 +78,9 @@ sd.main(async () => {
       lcaIdx = idx;
     }
     if (lcaIdx === -1 || idx !== lcaIdx) {
-      tree.paintNode(idx, Q_COLORS.j.fill, Q_COLORS.j.stroke, { delay: k * 160 + 40 });
+      tree.paintNode(idx, Q_COLORS.j.fill, Q_COLORS.j.stroke, {
+        delay: k * 160 + 40,
+      });
     }
   }
   await sd.pause();
@@ -89,7 +93,9 @@ sd.main(async () => {
     });
     queryLabel
       .startAnimate({ delay: 200, duration: 320, easing: E.easeOut })
-      .setText(`LCA(${QUERY_I}, ${QUERY_J}) = ${lcaIdx}`, { [`LCA(${QUERY_I}, ${QUERY_J}) = `]: `LCA(${QUERY_I}, ${QUERY_J}) = ` })
+      .setText(`LCA(${QUERY_I}, ${QUERY_J}) = ${lcaIdx}`, {
+        [`LCA(${QUERY_I}, ${QUERY_J}) = `]: `LCA(${QUERY_I}, ${QUERY_J}) = `,
+      })
       .endAnimate();
   }
   await sd.pause();

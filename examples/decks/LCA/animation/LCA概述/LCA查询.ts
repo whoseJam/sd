@@ -22,8 +22,18 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  2: 1, 3: 1, 4: 2, 5: 2, 6: 3, 7: 3,
-  8: 4, 9: 4, 10: 5, 11: 6, 12: 7, 13: 7,
+  2: 1,
+  3: 1,
+  4: 2,
+  5: 2,
+  6: 3,
+  7: 3,
+  8: 4,
+  9: 4,
+  10: 5,
+  11: 6,
+  12: 7,
+  13: 7,
 };
 
 const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1 });
@@ -34,7 +44,10 @@ const Y = 11;
 function depthOf(id: number): number {
   let d = 0;
   let cur: number | undefined = id;
-  while (parent[cur!] !== undefined) { cur = parent[cur!]; d++; }
+  while (parent[cur!] !== undefined) {
+    cur = parent[cur!];
+    d++;
+  }
   return d;
 }
 

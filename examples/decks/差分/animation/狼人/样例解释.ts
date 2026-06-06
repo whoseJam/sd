@@ -7,7 +7,9 @@ const C = sd.color();
 const E = sd.easing();
 
 const v = 3;
-const data = [0, 0, 1, 2, 3, 2, 1, 0, -1, -2, -3, -2, -1, 0, 1, 2, 3, 2, 1, 0, 0, 0];
+const data = [
+  0, 0, 1, 2, 3, 2, 1, 0, -1, -2, -3, -2, -1, 0, 1, 2, 3, 2, 1, 0, 0, 0,
+];
 const pIndex0 = 10;
 
 const SIZE = 30;
@@ -41,18 +43,32 @@ const pLabel = new sd.Math({
 });
 
 const ranges: Array<{ from: number; to: number; color: sd.SDColor }> = [
-  { from: pIndex0 + 1 - 3 * v + 1, to: pIndex0 + 1 - 2 * v, color: C.steelBlue },
+  {
+    from: pIndex0 + 1 - 3 * v + 1,
+    to: pIndex0 + 1 - 2 * v,
+    color: C.steelBlue,
+  },
   { from: pIndex0 + 1 - 2 * v + 1, to: pIndex0 + 1 - v, color: C.steelBlue },
   { from: pIndex0 + 1 - v + 1, to: pIndex0 + 1, color: C.darkOrange },
   { from: pIndex0 + 1 + 1, to: pIndex0 + 1 + v, color: C.darkOrange },
   { from: pIndex0 + 1 + v + 1, to: pIndex0 + 1 + 2 * v, color: C.steelBlue },
-  { from: pIndex0 + 1 + 2 * v + 1, to: pIndex0 + 1 + 3 * v, color: C.steelBlue },
+  {
+    from: pIndex0 + 1 + 2 * v + 1,
+    to: pIndex0 + 1 + 3 * v,
+    color: C.steelBlue,
+  },
 ];
 
 sd.main(async () => {
   arr.fadeIn({ delay: 0 });
-  pTri.startAnimate({ delay: 240, duration: 260, easing: E.easeOut }).setOpacity(1).endAnimate();
-  pLabel.startAnimate({ delay: 280, duration: 220, easing: E.easeOut }).setOpacity(1).endAnimate();
+  pTri
+    .startAnimate({ delay: 240, duration: 260, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  pLabel
+    .startAnimate({ delay: 280, duration: 220, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   for (let k = 0; k < ranges.length; k++) {

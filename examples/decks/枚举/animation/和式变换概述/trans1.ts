@@ -17,12 +17,19 @@ const math = new sd.Math({
 });
 
 const DUR = 500;
-const STEPS = ["a_1+b_1+a_2+b_2+a_3+b_3", "a_1+a_2+a_3+b_1+b_2+b_3", "\\sum_{i=1}^3 a_i + \\sum_{i=1}^3 b_i"];
+const STEPS = [
+  "a_1+b_1+a_2+b_2+a_3+b_3",
+  "a_1+a_2+a_3+b_1+b_2+b_3",
+  "\\sum_{i=1}^3 a_i + \\sum_{i=1}^3 b_i",
+];
 
 sd.main(async () => {
   await sd.pause();
   for (const step of STEPS) {
-    math.startAnimate({ duration: DUR, easing: E.easeInOut }).setText(step).endAnimate();
+    math
+      .startAnimate({ duration: DUR, easing: E.easeInOut })
+      .setText(step)
+      .endAnimate();
     await sd.pause();
   }
 });

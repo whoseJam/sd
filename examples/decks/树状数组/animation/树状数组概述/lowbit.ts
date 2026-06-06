@@ -14,7 +14,12 @@ const N = 8;
 const X0 = -(N * SIZE) / 2;
 const GAP = 12;
 
-interface Row { label: string; bits: string; y: number; cells: CharRow; }
+interface Row {
+  label: string;
+  bits: string;
+  y: number;
+  cells: CharRow;
+}
 const rows: Row[] = [];
 
 const items: Array<[string, string]> = [

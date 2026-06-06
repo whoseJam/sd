@@ -24,7 +24,11 @@ export const GRAPH_NODES: NodeSpec[] = [
 ];
 
 export const TREE_EDGES: ReadonlyArray<readonly [number, number]> = [
-  [1, 2], [2, 3], [3, 4], [2, 5], [5, 6],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [2, 5],
+  [5, 6],
 ];
 
 export const BACK_EDGE: readonly [number, number] = [2, 4];
@@ -63,7 +67,10 @@ export function createGraph(target: sd.Group): GraphView {
       edgeKey(u, v),
       new sd.Line({
         targetNode: target,
-        x1: a.cx, y1: a.cy, x2: b.cx, y2: b.cy,
+        x1: a.cx,
+        y1: a.cy,
+        x2: b.cx,
+        y2: b.cy,
         stroke: NEUTRAL_COLOR,
         strokeWidth: 1,
         opacity: 0,
@@ -74,14 +81,20 @@ export function createGraph(target: sd.Group): GraphView {
   const bb = nodeOf(BACK_EDGE[1]);
   const backLine = new sd.Line({
     targetNode: target,
-    x1: ba.cx, y1: ba.cy, x2: bb.cx, y2: bb.cy,
+    x1: ba.cx,
+    y1: ba.cy,
+    x2: bb.cx,
+    y2: bb.cy,
     stroke: NEUTRAL_COLOR,
     strokeWidth: 1,
     opacity: 0,
   });
   const backDashed = new sd.Line({
     targetNode: target,
-    x1: ba.cx, y1: ba.cy, x2: bb.cx, y2: bb.cy,
+    x1: ba.cx,
+    y1: ba.cy,
+    x2: bb.cx,
+    y2: bb.cy,
     stroke: BACK_COLOR,
     strokeWidth: 1.6,
     strokeDashArray: [5, 4],
@@ -94,7 +107,9 @@ export function createGraph(target: sd.Group): GraphView {
       n.id,
       new sd.Circle({
         targetNode: target,
-        cx: n.cx, cy: n.cy, r: NODE_RADIUS,
+        cx: n.cx,
+        cy: n.cy,
+        r: NODE_RADIUS,
         fill: C.white,
         stroke: C.darkButtonGrey,
         strokeWidth: 1.4,
@@ -106,7 +121,8 @@ export function createGraph(target: sd.Group): GraphView {
       new sd.Text({
         targetNode: target,
         text: String(n.id),
-        cx: n.cx, cy: n.cy,
+        cx: n.cx,
+        cy: n.cy,
         fontSize: 13,
         fill: C.darkButtonGrey,
         opacity: 0,
@@ -117,49 +133,68 @@ export function createGraph(target: sd.Group): GraphView {
 }
 
 // All nodes + all edges (back edge as plain grey solid).
-export function fadeInNeutral(view: GraphView, opts?: { delay?: number }): void {
+export function fadeInNeutral(
+  view: GraphView,
+  opts?: { delay?: number },
+): void {
   const d0 = opts?.delay ?? 0;
   for (const line of view.treeLines.values()) {
     line
       .startAnimate({ delay: d0, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
   view.backLine
     .startAnimate({ delay: d0, duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   let k = 0;
   for (const id of DFS_ORDER) {
     const d = d0 + 120 + k++ * 70;
-    view.circles.get(id)!
+    view.circles
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    view.labels.get(id)!
+      .setOpacity(1)
+      .endAnimate();
+    view.labels
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
 }
 
 // All nodes + tree edges already in dark grey + back edge as dashed orange.
 // Use for anims downstream of 边分类 that should start from the "classified" state.
-export function fadeInClassified(view: GraphView, opts?: { delay?: number }): void {
+export function fadeInClassified(
+  view: GraphView,
+  opts?: { delay?: number },
+): void {
   const d0 = opts?.delay ?? 0;
   for (const line of view.treeLines.values()) {
     line
       .startAnimate({ delay: d0, duration: 320, easing: E.easeOut })
-      .setStroke(TREE_COLOR).setStrokeWidth(1.8).setOpacity(1)
+      .setStroke(TREE_COLOR)
+      .setStrokeWidth(1.8)
+      .setOpacity(1)
       .endAnimate();
   }
   view.backDashed
     .startAnimate({ delay: d0, duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   let k = 0;
   for (const id of DFS_ORDER) {
     const d = d0 + 120 + k++ * 70;
-    view.circles.get(id)!
+    view.circles
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    view.labels.get(id)!
+      .setOpacity(1)
+      .endAnimate();
+    view.labels
+      .get(id)!
       .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
 }

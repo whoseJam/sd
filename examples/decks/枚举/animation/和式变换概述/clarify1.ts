@@ -29,8 +29,14 @@ const DUR = 500;
 
 sd.main(async () => {
   await sd.pause();
-  top.startAnimate({ duration: DUR, easing: E.easeInOut }).setText("1 F(1) + 2 F(2) + 3 F(3)").endAnimate();
+  top
+    .startAnimate({ duration: DUR, easing: E.easeInOut })
+    .setText("1 F(1) + 2 F(2) + 3 F(3)")
+    .endAnimate();
   await sd.pause();
-  bottom.startAnimate({ duration: DUR, easing: E.easeInOut }).setText("F(i) (1 + 2 + 3)").endAnimate();
+  bottom
+    .startAnimate({ duration: DUR, easing: E.easeInOut })
+    .setText("F(i) (1 + 2 + 3)")
+    .endAnimate();
   await sd.pause();
 });

@@ -21,10 +21,13 @@ const trie = new Trie(svg, {
 trie.buildFail();
 
 for (let i = 1; i < trie.nodes.length; i++) {
-  trie.failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 }).setOpacity(1);
+  trie
+    .failLink(i, trie.fail[i], { stroke: "#c08fbf", bending: 0.3 })
+    .setOpacity(1);
 }
 for (let i = 1; i < trie.nodes.length; i++) {
-  if (trie.nodes[i].isEnd) trie.nodes[i].circle.setStroke(C.darkGreen).setStrokeWidth(2.2);
+  if (trie.nodes[i].isEnd)
+    trie.nodes[i].circle.setStroke(C.darkGreen).setStrokeWidth(2.2);
 }
 
 const MATCH_FILL = "#dde6ef";
@@ -52,14 +55,19 @@ sd.main(async () => {
     if (!children) break;
     let next: number | undefined;
     for (const [, v] of children) {
-      if (!trie.nodes[v].isEnd) { next = v; break; }
+      if (!trie.nodes[v].isEnd) {
+        next = v;
+        break;
+      }
     }
     if (next === undefined) break;
     constructPath.push(next);
     cur = next;
   }
   for (let k = 0; k < constructPath.length; k++) {
-    trie.paintNode(constructPath[k], BUILD_FILL, BUILD_STROKE, { delay: k * 160 });
+    trie.paintNode(constructPath[k], BUILD_FILL, BUILD_STROKE, {
+      delay: k * 160,
+    });
   }
   await sd.pause();
 

@@ -22,8 +22,18 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  2: 1, 3: 1, 4: 2, 5: 2, 6: 3, 7: 3,
-  8: 4, 9: 4, 10: 5, 11: 6, 12: 7, 13: 7,
+  2: 1,
+  3: 1,
+  4: 2,
+  5: 2,
+  6: 3,
+  7: 3,
+  8: 4,
+  9: 4,
+  10: 5,
+  11: 6,
+  12: 7,
+  13: 7,
 };
 
 const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1 });
@@ -38,9 +48,15 @@ function pathNodes(u: number, v: number): number[] {
   const lca = tree.lca(u, v);
   const pv = tree.pathToRoot(v);
   const up: number[] = [];
-  for (const x of pu) { up.push(x); if (x === lca) break; }
+  for (const x of pu) {
+    up.push(x);
+    if (x === lca) break;
+  }
   const down: number[] = [];
-  for (const x of pv) { if (x === lca) break; down.push(x); }
+  for (const x of pv) {
+    if (x === lca) break;
+    down.push(x);
+  }
   return [...up, ...down.reverse()];
 }
 
@@ -49,7 +65,8 @@ sd.main(async () => {
   await sd.pause();
 
   const pathAB = pathNodes(A, B);
-  for (let i = 1; i < pathAB.length; i++) tree.paintEdge(pathAB[i], C.steelBlue, { delay: i * 50 });
+  for (let i = 1; i < pathAB.length; i++)
+    tree.paintEdge(pathAB[i], C.steelBlue, { delay: i * 50 });
   tree.paint(A, "#dbeefd", C.steelBlue);
   tree.setTag(A, "a", C.steelBlue);
   tree.paint(B, "#dbeefd", C.steelBlue);
@@ -57,7 +74,8 @@ sd.main(async () => {
   await sd.pause();
 
   const pathDE = pathNodes(D, E);
-  for (let i = 1; i < pathDE.length; i++) tree.paintEdge(pathDE[i], C.darkOrange, { delay: i * 50 });
+  for (let i = 1; i < pathDE.length; i++)
+    tree.paintEdge(pathDE[i], C.darkOrange, { delay: i * 50 });
   tree.paint(D, "#fdecd9", C.darkOrange);
   tree.setTag(D, "c", C.darkOrange);
   tree.paint(E, "#fdecd9", C.darkOrange);

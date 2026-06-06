@@ -24,7 +24,9 @@ trie.buildFail();
 const FAIL_INK = "#c08fbf";
 const failPaths: sd.Path[] = [];
 for (let i = 1; i < trie.nodes.length; i++) {
-  failPaths.push(trie.failLink(i, trie.fail[i], { stroke: FAIL_INK, bending: 0.3 }));
+  failPaths.push(
+    trie.failLink(i, trie.fail[i], { stroke: FAIL_INK, bending: 0.3 }),
+  );
 }
 
 const SIZE = 26;

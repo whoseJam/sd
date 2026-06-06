@@ -11,8 +11,12 @@ const SIZE = 40;
 const X0 = -(N * SIZE) / 2;
 
 const row = new NumRow({
-  targetNode: svg, values: new Array(N).fill(0), size: SIZE,
-  x: X0, y: 0, label: "灯",
+  targetNode: svg,
+  values: new Array(N).fill(0),
+  size: SIZE,
+  x: X0,
+  y: 0,
+  label: "灯",
 });
 
 sd.main(async () => {

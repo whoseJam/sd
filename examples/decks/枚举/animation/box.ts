@@ -38,7 +38,10 @@ export class Box {
     this.height = opts.height;
     this.x = opts.x;
     this.y = opts.y;
-    this.group = new sd.Group({ targetNode: opts.targetNode, opacity: opts.opacity ?? 1 });
+    this.group = new sd.Group({
+      targetNode: opts.targetNode,
+      opacity: opts.opacity ?? 1,
+    });
 
     this.rect = new sd.Rect({
       targetNode: this.group,
@@ -78,10 +81,22 @@ export class Box {
     }
   }
 
-  cx(): number { return this.x + this.width / 2; }
-  cy(): number { return this.y + this.height / 2; }
-  left(): number { return this.x; }
-  right(): number { return this.x + this.width; }
-  bottom(): number { return this.y; }
-  top(): number { return this.y + this.height; }
+  cx(): number {
+    return this.x + this.width / 2;
+  }
+  cy(): number {
+    return this.y + this.height / 2;
+  }
+  left(): number {
+    return this.x;
+  }
+  right(): number {
+    return this.x + this.width;
+  }
+  bottom(): number {
+    return this.y;
+  }
+  top(): number {
+    return this.y + this.height;
+  }
 }

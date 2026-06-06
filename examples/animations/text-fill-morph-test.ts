@@ -49,8 +49,17 @@ sd.main(async () => {
   //   fullToEmpty: "ABC" → ""     all 3 chars fade out (targetIndex undefined)
   //   spaceToChar: "A  C" → "ABBC" the two interior spaces (undefined source
   //                                paths) become B's (defined target paths)
-  emptyToFull.startAnimate({ duration: 4000, easing: E.linear }).setText("RED").endAnimate();
-  fullToEmpty.startAnimate({ duration: 4000, easing: E.linear }).setText("").endAnimate();
-  spaceToChar.startAnimate({ duration: 4000, easing: E.linear }).setText("ABBC").endAnimate();
+  emptyToFull
+    .startAnimate({ duration: 4000, easing: E.linear })
+    .setText("RED")
+    .endAnimate();
+  fullToEmpty
+    .startAnimate({ duration: 4000, easing: E.linear })
+    .setText("")
+    .endAnimate();
+  spaceToChar
+    .startAnimate({ duration: 4000, easing: E.linear })
+    .setText("ABBC")
+    .endAnimate();
   await sd.pause();
 });

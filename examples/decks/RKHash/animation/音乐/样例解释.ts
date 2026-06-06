@@ -71,7 +71,8 @@ sd.main(async () => {
     const matched = dS.every((v, i) => v === dB[i]);
     const fill = matched ? MATCH_FILL : HL_FILL;
     const stroke = matched ? MATCH_STROKE : HL_STROKE;
-    for (const k of prev) if (!next.has(k)) rowA.paintCell(k, NEU_FILL, NEU_STROKE);
+    for (const k of prev)
+      if (!next.has(k)) rowA.paintCell(k, NEU_FILL, NEU_STROKE);
     for (const k of next) rowA.paintCell(k, fill, stroke);
     prev = next;
     await sd.pause();

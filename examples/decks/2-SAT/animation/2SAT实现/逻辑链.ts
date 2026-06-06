@@ -12,7 +12,12 @@ const nodes = [
   { id: 4, cx: 100, cy: 0, label: "V_4" },
   { id: 5, cx: 200, cy: 0, label: "V_m" },
 ];
-const edges: Array<[number, number]> = [[1, 2], [2, 3], [3, 4], [4, 5]];
+const edges: Array<[number, number]> = [
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [4, 5],
+];
 const dag = new Dag({ targetNode: svg, nodes, edges, radius: 22 });
 
 sd.main(async () => {

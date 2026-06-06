@@ -15,11 +15,20 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 6], [2, 5],
+  [1, 2],
+  [1, 3],
+  [2, 4],
+  [3, 5],
+  [4, 6],
+  [5, 6],
+  [2, 5],
 ];
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 18,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 18,
 });
 
 // All weights 1; BFS layer distances.

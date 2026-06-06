@@ -77,10 +77,22 @@ void naiveNode;
 
 sd.main(async () => {
   await sd.pause();
-  arr1.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
-  arr2.startAnimate({ delay: 120, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  arr1
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  arr2
+    .startAnimate({ delay: 120, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
-  cost1.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
-  cost2.startAnimate({ delay: 120, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  cost1
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  cost2
+    .startAnimate({ delay: 120, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

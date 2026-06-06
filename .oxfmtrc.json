@@ -5,6 +5,7 @@
     "packages/assets/**",
     "packages/reveal/src/plugin/HighlightEngine.js",
     "ppt/**",
+    "__deprecated__/**",
     "dist/**",
     "node_modules/**",
     "**/*.html"

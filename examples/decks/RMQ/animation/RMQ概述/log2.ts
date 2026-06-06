@@ -24,9 +24,12 @@ const row = new NumRow({
 
 for (let i = 1; i <= N; i++) {
   new sd.Text({
-    targetNode: svg, text: String(i),
-    cx: row.cellCx(i), cy: row.top() + 14,
-    fontSize: 12, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(i),
+    cx: row.cellCx(i),
+    cy: row.top() + 14,
+    fontSize: 12,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -44,15 +47,27 @@ sd.main(async () => {
     const base = 200;
     row.paintCell(src, "#fdecd9", C.darkOrange, { delay: base, duration: 180 });
     row.setValue(i, log2[i], { delay: base + 120 });
-    row.paintCell(i, "#dbeefd", C.steelBlue, { delay: base + 120, duration: 180 });
+    row.paintCell(i, "#dbeefd", C.steelBlue, {
+      delay: base + 120,
+      duration: 180,
+    });
     const arc = new sd.Path({
       targetNode: svg,
       d: `M ${row.cellCx(src)} ${row.top() - 4} Q ${(row.cellCx(src) + row.cellCx(i)) / 2} ${row.top() + Math.abs(i - src) * 12} ${row.cellCx(i)} ${row.top() - 4}`,
-      stroke: C.darkOrange, strokeWidth: 1.4, fill: "none", opacity: 0,
+      stroke: C.darkOrange,
+      strokeWidth: 1.4,
+      fill: "none",
+      opacity: 0,
     });
-    arc.startAnimate({ delay: base, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+    arc
+      .startAnimate({ delay: base, duration: 280, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     await sd.pause();
-    arc.startAnimate({ duration: 200, easing: E.easeOut }).setOpacity(0).endAnimate();
+    arc
+      .startAnimate({ duration: 200, easing: E.easeOut })
+      .setOpacity(0)
+      .endAnimate();
     row.clearCell(src, { duration: 160 });
     row.clearCell(i, { duration: 160 });
   }

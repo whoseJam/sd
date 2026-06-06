@@ -15,11 +15,21 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 2], [1, 5], [2, 3], [3, 4], [5, 6], [3, 6], [6, 7],
+  [1, 2],
+  [1, 5],
+  [2, 3],
+  [3, 4],
+  [5, 6],
+  [3, 6],
+  [6, 7],
 ];
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 28, fontSize: 12,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 28,
+  fontSize: 12,
 });
 
 sd.main(async () => {

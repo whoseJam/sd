@@ -15,11 +15,20 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 4], [2, 4], [2, 5], [3, 5], [3, 6], [4, 5], [5, 6],
+  [1, 4],
+  [2, 4],
+  [2, 5],
+  [3, 5],
+  [3, 6],
+  [4, 5],
+  [5, 6],
 ];
 
 const dag = new Dag({
-  targetNode: svg, nodes, edges, radius: 18,
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 18,
 });
 
 // One valid topo order: 1, 2, 3, 4, 5, 6.
@@ -39,17 +48,31 @@ sd.main(async () => {
     const cx = X0 + (i + 0.5) * SIZE;
     const r = new sd.Rect({
       targetNode: seqGroup,
-      x: X0 + i * SIZE, y: seqY - SIZE / 2,
-      width: SIZE, height: SIZE,
-      fill: "#fdecd9", stroke: C.darkOrange, strokeWidth: 1.4, opacity: 0,
+      x: X0 + i * SIZE,
+      y: seqY - SIZE / 2,
+      width: SIZE,
+      height: SIZE,
+      fill: "#fdecd9",
+      stroke: C.darkOrange,
+      strokeWidth: 1.4,
+      opacity: 0,
     });
     const t = new sd.Text({
-      targetNode: seqGroup, text: String(id),
-      cx, cy: seqY, fontSize: 14, fill: C.darkButtonGrey, opacity: 0,
+      targetNode: seqGroup,
+      text: String(id),
+      cx,
+      cy: seqY,
+      fontSize: 14,
+      fill: C.darkButtonGrey,
+      opacity: 0,
     });
     const E = sd.easing();
-    r.startAnimate({ delay: i * 220, duration: 240, easing: E.easeOut }).setOpacity(1).endAnimate();
-    t.startAnimate({ delay: i * 220 + 80, duration: 200, easing: E.easeOut }).setOpacity(1).endAnimate();
+    r.startAnimate({ delay: i * 220, duration: 240, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    t.startAnimate({ delay: i * 220 + 80, duration: 200, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     dag.paint(id, "#fdecd9", C.darkOrange, { delay: i * 220 });
     await sd.pause();
   }

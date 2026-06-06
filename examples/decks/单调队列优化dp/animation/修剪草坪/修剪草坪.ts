@@ -12,8 +12,12 @@ const SIZE = 38;
 const X0 = -(N * SIZE) / 2;
 
 const eRow = new NumRow({
-  targetNode: svg, values: E_arr, size: SIZE,
-  x: X0, y: 60, label: "E",
+  targetNode: svg,
+  values: E_arr,
+  size: SIZE,
+  x: X0,
+  y: 60,
+  label: "E",
 });
 
 // g(j) - S(j) values for some j. Sliding window of length K.
@@ -29,8 +33,12 @@ const aux: number[] = [];
 }
 
 const auxRow = new NumRow({
-  targetNode: svg, values: aux, size: SIZE,
-  x: X0, y: 0, label: "g-S",
+  targetNode: svg,
+  values: aux,
+  size: SIZE,
+  x: X0,
+  y: 0,
+  label: "g-S",
   labelGap: 30,
 });
 
@@ -42,7 +50,9 @@ const win = new sd.Rect({
   y: auxRow.bottom() - 3,
   width: K * SIZE + 6,
   height: SIZE + 6,
-  fill: "none", stroke: C.darkOrange, strokeWidth: 2,
+  fill: "none",
+  stroke: C.darkOrange,
+  strokeWidth: 2,
   opacity: 0,
 });
 const E = sd.easing();
@@ -52,14 +62,23 @@ sd.main(async () => {
   auxRow.fadeIn({ delay: 200 });
   await sd.pause();
 
-  win.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
-  for (let i = Ei - K; i < Ei; i++) auxRow.paintCell(i + 1, "#fdecd9", C.darkOrange, { duration: 200 });
+  win
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
+  for (let i = Ei - K; i < Ei; i++)
+    auxRow.paintCell(i + 1, "#fdecd9", C.darkOrange, { duration: 200 });
   new sd.Text({
     targetNode: svg,
     text: `query: max over last ${K}`,
-    cx: 0, cy: -60 - SIZE,
-    fontSize: 12, fill: C.darkOrange,
+    cx: 0,
+    cy: -60 - SIZE,
+    fontSize: 12,
+    fill: C.darkOrange,
     opacity: 0,
-  }).startAnimate({ delay: 300, duration: 240, easing: E.easeOut }).setOpacity(1).endAnimate();
+  })
+    .startAnimate({ delay: 300, duration: 240, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

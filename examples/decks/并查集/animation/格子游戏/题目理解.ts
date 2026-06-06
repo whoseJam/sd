@@ -13,7 +13,10 @@ const X0 = -((N - 1) * SIZE) / 2;
 const Y0 = -((N - 1) * SIZE) / 2;
 const R = 8;
 
-interface Pt { x: number; y: number }
+interface Pt {
+  x: number;
+  y: number;
+}
 const grid: Pt[][] = [];
 for (let i = 0; i < N; i++) {
   grid.push([]);
@@ -33,7 +36,11 @@ for (let i = 0; i < N; i++) {
 }
 
 const edges: Array<[number, number, number, number]> = [
-  [0, 0, 0, 1], [0, 1, 1, 1], [1, 1, 1, 2], [1, 2, 0, 2], [0, 2, 0, 1],
+  [0, 0, 0, 1],
+  [0, 1, 1, 1],
+  [1, 1, 1, 2],
+  [1, 2, 0, 2],
+  [0, 2, 0, 1],
 ];
 
 for (const [i1, j1, i2, j2] of edges) {
@@ -48,7 +55,14 @@ for (const [i1, j1, i2, j2] of edges) {
   });
 }
 
-new sd.Text({ targetNode: svg, text: "成环了 ✗", cx: 0, cy: -Y0 - 30, fontSize: 14, fill: C.darkRed });
+new sd.Text({
+  targetNode: svg,
+  text: "成环了 ✗",
+  cx: 0,
+  cy: -Y0 - 30,
+  fontSize: 14,
+  fill: C.darkRed,
+});
 
 sd.main(async () => {
   await sd.pause();

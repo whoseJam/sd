@@ -6,7 +6,13 @@ const E = sd.easing();
 
 const NODE_R = 14;
 
-interface Node { id: string; x: number; y: number; isRoot?: boolean; isLeaf?: boolean; }
+interface Node {
+  id: string;
+  x: number;
+  y: number;
+  isRoot?: boolean;
+  isLeaf?: boolean;
+}
 const NODES: Node[] = [
   { id: "1", x: 0, y: 70, isRoot: true },
   { id: "2", x: -60, y: 20 },
@@ -18,9 +24,12 @@ const NODES: Node[] = [
 ];
 
 const EDGES: Array<[string, string]> = [
-  ["1", "2"], ["1", "3"],
-  ["2", "4"], ["2", "5"],
-  ["3", "6"], ["3", "7"],
+  ["1", "2"],
+  ["1", "3"],
+  ["2", "4"],
+  ["2", "5"],
+  ["3", "6"],
+  ["3", "7"],
 ];
 
 const ROOT_FILL = "#e3f2fd";
@@ -35,29 +44,41 @@ const edgeLines: sd.Line[] = EDGES.map(([u, v]) => {
   const b = nodeOf(v);
   return new sd.Line({
     targetNode: svg,
-    x1: a.x, y1: a.y, x2: b.x, y2: b.y,
+    x1: a.x,
+    y1: a.y,
+    x2: b.x,
+    y2: b.y,
     stroke: C.silver,
     strokeWidth: 1.2,
     opacity: 0,
   });
 });
 
-const circles = NODES.map((n) => new sd.Circle({
-  targetNode: svg,
-  cx: n.x, cy: n.y, r: NODE_R,
-  fill: C.white,
-  stroke: C.darkButtonGrey,
-  strokeWidth: 1.4,
-  opacity: 0,
-}));
-const labels = NODES.map((n) => new sd.Text({
-  targetNode: svg,
-  text: n.id,
-  cx: n.x, cy: n.y - 1,
-  fontSize: 11,
-  fill: C.darkButtonGrey,
-  opacity: 0,
-}));
+const circles = NODES.map(
+  (n) =>
+    new sd.Circle({
+      targetNode: svg,
+      cx: n.x,
+      cy: n.y,
+      r: NODE_R,
+      fill: C.white,
+      stroke: C.darkButtonGrey,
+      strokeWidth: 1.4,
+      opacity: 0,
+    }),
+);
+const labels = NODES.map(
+  (n) =>
+    new sd.Text({
+      targetNode: svg,
+      text: n.id,
+      cx: n.x,
+      cy: n.y - 1,
+      fontSize: 11,
+      fill: C.darkButtonGrey,
+      opacity: 0,
+    }),
+);
 
 const DEPTH_X = 130;
 const depthLines: sd.Line[] = [];
@@ -67,8 +88,10 @@ for (let i = 0; i < DEPTH_Y.length; i++) {
   depthLines.push(
     new sd.Line({
       targetNode: svg,
-      x1: -120, y1: DEPTH_Y[i],
-      x2: 120, y2: DEPTH_Y[i],
+      x1: -120,
+      y1: DEPTH_Y[i],
+      x2: 120,
+      y2: DEPTH_Y[i],
       stroke: C.silver,
       strokeWidth: 0.6,
       strokeDashArray: [3, 3],
@@ -79,7 +102,8 @@ for (let i = 0; i < DEPTH_Y.length; i++) {
     new sd.Text({
       targetNode: svg,
       text: String(i),
-      cx: DEPTH_X, cy: DEPTH_Y[i] - 1,
+      cx: DEPTH_X,
+      cy: DEPTH_Y[i] - 1,
       fontSize: 11,
       fill: C.darkButtonGrey,
       opacity: 0,
@@ -93,18 +117,26 @@ sd.main(async () => {
   for (let lvl = 0; lvl < LEVELS.length; lvl++) {
     const d = lvl * 240;
     for (const ni of LEVELS[lvl]) {
-      circles[ni].startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
-      labels[ni].startAnimate({ delay: d + 80, duration: 280, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+      circles[ni]
+        .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
+        .setOpacity(1)
+        .endAnimate();
+      labels[ni]
+        .startAnimate({ delay: d + 80, duration: 280, easing: E.easeOut })
+        .setOpacity(1)
+        .endAnimate();
     }
     if (lvl > 0) {
       for (let e = 0; e < edgeLines.length; e++) {
         const [u, v] = EDGES[e];
-        const childLevel = LEVELS.findIndex((arr) => arr.includes(NODES.findIndex((n) => n.id === v)));
+        const childLevel = LEVELS.findIndex((arr) =>
+          arr.includes(NODES.findIndex((n) => n.id === v)),
+        );
         if (childLevel === lvl) {
-          edgeLines[e].startAnimate({ delay: d - 80, duration: 240, easing: E.easeOut })
-            .setOpacity(1).endAnimate();
+          edgeLines[e]
+            .startAnimate({ delay: d - 80, duration: 240, easing: E.easeOut })
+            .setOpacity(1)
+            .endAnimate();
         }
       }
     }
@@ -113,8 +145,11 @@ sd.main(async () => {
 
   // p2: root highlighted
   const rootIdx = NODES.findIndex((n) => n.isRoot);
-  circles[rootIdx].startAnimate({ duration: 320, easing: E.easeOut })
-    .setFill(ROOT_FILL).setStroke(ROOT_STROKE).setStrokeWidth(2)
+  circles[rootIdx]
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setFill(ROOT_FILL)
+    .setStroke(ROOT_STROKE)
+    .setStrokeWidth(2)
     .endAnimate();
   await sd.pause();
 
@@ -122,8 +157,11 @@ sd.main(async () => {
   for (let i = 0; i < NODES.length; i++) {
     if (!NODES[i].isLeaf) continue;
     const d = (i - 3) * 100;
-    circles[i].startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setFill(LEAF_FILL).setStroke(LEAF_STROKE).setStrokeWidth(2)
+    circles[i]
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setFill(LEAF_FILL)
+      .setStroke(LEAF_STROKE)
+      .setStrokeWidth(2)
       .endAnimate();
   }
   await sd.pause();
@@ -131,10 +169,14 @@ sd.main(async () => {
   // p4: depth markers
   for (let i = 0; i < DEPTH_Y.length; i++) {
     const d = i * 180;
-    depthLines[i].startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    depthLabels[i].startAnimate({ delay: d + 100, duration: 320, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    depthLines[i]
+      .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
+    depthLabels[i]
+      .startAnimate({ delay: d + 100, duration: 320, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 });

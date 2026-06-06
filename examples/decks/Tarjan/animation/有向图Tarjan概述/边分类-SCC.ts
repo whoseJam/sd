@@ -19,8 +19,10 @@ const SCC_TINT_B = "#e3f2fd";
 
 const sccA = new sd.Ellipse({
   targetNode: svg,
-  cx: -30, cy: 40,
-  rx: 80, ry: 95,
+  cx: -30,
+  cy: 40,
+  rx: 80,
+  ry: 95,
   fill: SCC_TINT_A,
   fillOpacity: 0.65,
   stroke: "none",
@@ -29,8 +31,10 @@ const sccA = new sd.Ellipse({
 
 const sccB = new sd.Ellipse({
   targetNode: svg,
-  cx: 90, cy: -65,
-  rx: 38, ry: 60,
+  cx: 90,
+  cy: -65,
+  rx: 38,
+  ry: 60,
   fill: SCC_TINT_B,
   fillOpacity: 0.65,
   stroke: "none",
@@ -54,9 +58,11 @@ sd.main(async () => {
   // Step 3: SCCs identified — back edges close cycles, fixing SCCs.
   sccA
     .startAnimate({ duration: 480, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   sccB
     .startAnimate({ delay: 220, duration: 480, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

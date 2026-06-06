@@ -25,7 +25,10 @@ const STEPS = [
 sd.main(async () => {
   await sd.pause();
   for (const step of STEPS) {
-    math.startAnimate({ duration: DUR, easing: E.easeInOut }).setText(step).endAnimate();
+    math
+      .startAnimate({ duration: DUR, easing: E.easeInOut })
+      .setText(step)
+      .endAnimate();
     await sd.pause();
   }
 });

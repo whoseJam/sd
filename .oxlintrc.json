@@ -14,7 +14,8 @@
     "**/dist/**",
     "packages/assets/**",
     "packages/reveal/src/plugin/HighlightEngine.js",
-    "ppt/**"
+    "ppt/**",
+    "__deprecated__/**"
   ],
   "rules": {
     "perfectionist/sort-imports": [

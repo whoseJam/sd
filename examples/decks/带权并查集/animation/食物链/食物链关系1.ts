@@ -17,12 +17,31 @@ const positions: Array<[string, number, number]> = [
 
 const nodes = new Map<string, { cx: number; cy: number }>();
 for (const [id, cx, cy] of positions) {
-  new sd.Circle({ targetNode: svg, cx, cy, r: R, fill: C.white, stroke: C.darkButtonGrey, strokeWidth: 1.4 });
-  new sd.Text({ targetNode: svg, text: id, cx, cy, fontSize: 16, fill: C.darkButtonGrey });
+  new sd.Circle({
+    targetNode: svg,
+    cx,
+    cy,
+    r: R,
+    fill: C.white,
+    stroke: C.darkButtonGrey,
+    strokeWidth: 1.4,
+  });
+  new sd.Text({
+    targetNode: svg,
+    text: id,
+    cx,
+    cy,
+    fontSize: 16,
+    fill: C.darkButtonGrey,
+  });
   nodes.set(id, { cx, cy });
 }
 
-const pairs: Array<[string, string]> = [["A", "B"], ["B", "C"], ["C", "A"]];
+const pairs: Array<[string, string]> = [
+  ["A", "B"],
+  ["B", "C"],
+  ["C", "A"],
+];
 for (const [u, v] of pairs) {
   const a = nodes.get(u)!;
   const b = nodes.get(v)!;

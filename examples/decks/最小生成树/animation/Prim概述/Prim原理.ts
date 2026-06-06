@@ -14,14 +14,21 @@ const nodes = [
 
 for (const n of nodes) {
   new sd.Circle({
-    targetNode: svg, cx: n.cx, cy: n.cy, r: 18,
+    targetNode: svg,
+    cx: n.cx,
+    cy: n.cy,
+    r: 18,
     fill: n.inTree ? "#e8f5e9" : C.white,
     stroke: n.inTree ? C.darkGreen : C.darkButtonGrey,
     strokeWidth: n.inTree ? 2.2 : 1.4,
   });
   new sd.Text({
-    targetNode: svg, text: String(n.id),
-    cx: n.cx, cy: n.cy, fontSize: 14, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(n.id),
+    cx: n.cx,
+    cy: n.cy,
+    fontSize: 14,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -36,19 +43,32 @@ const cands = [
 for (const c of cands) {
   const target = nodes.find((n) => n.id === c.v)!;
   new sd.Line({
-    targetNode: svg, x1: 0, y1: 60, x2: target.cx, y2: target.cy,
-    stroke: C.silver, strokeWidth: 1, strokeDashArray: [4, 3],
+    targetNode: svg,
+    x1: 0,
+    y1: 60,
+    x2: target.cx,
+    y2: target.cy,
+    stroke: C.silver,
+    strokeWidth: 1,
+    strokeDashArray: [4, 3],
   });
   new sd.Text({
-    targetNode: svg, text: String(c.w),
-    cx: target.cx / 2 + 8, cy: (60 + target.cy) / 2 - 6,
-    fontSize: 11, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(c.w),
+    cx: target.cx / 2 + 8,
+    cy: (60 + target.cy) / 2 - 6,
+    fontSize: 11,
+    fill: C.darkButtonGrey,
   });
 }
 
 new sd.Text({
-  targetNode: svg, text: "MST",
-  cx: 0, cy: 90, fontSize: 13, fill: C.darkGreen,
+  targetNode: svg,
+  text: "MST",
+  cx: 0,
+  cy: 90,
+  fontSize: 13,
+  fill: C.darkGreen,
 });
 
 sd.main(async () => {

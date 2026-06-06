@@ -76,18 +76,27 @@ sd.main(async () => {
   for (let k = 1; k < path.length; k++) {
     const idx = path[k];
     const isValid = idx <= HALF;
-    tree.paintEdge(path[k - 1], isValid ? KEEP_STROKE : SKIP_STROKE, { delay: k * 220 });
-    tree.paintNode(idx, isValid ? KEEP_FILL : SKIP_FILL, isValid ? KEEP_STROKE : SKIP_STROKE, {
-      delay: k * 220 + 60,
-      strokeWidth: isValid ? 2.6 : 1.2,
+    tree.paintEdge(path[k - 1], isValid ? KEEP_STROKE : SKIP_STROKE, {
+      delay: k * 220,
     });
+    tree.paintNode(
+      idx,
+      isValid ? KEEP_FILL : SKIP_FILL,
+      isValid ? KEEP_STROKE : SKIP_STROKE,
+      {
+        delay: k * 220 + 60,
+        strokeWidth: isValid ? 2.6 : 1.2,
+      },
+    );
     if (isValid && result === -1) result = tree.nodes[idx].depth + 1;
   }
   await sd.pause();
 
   numLabel
     .startAnimate({ duration: 320, easing: E.easeOut })
-    .setText(`num(${QUERY}) = ${result}`, { [`num(${QUERY}) = `]: `num(${QUERY}) = ` })
+    .setText(`num(${QUERY}) = ${result}`, {
+      [`num(${QUERY}) = `]: `num(${QUERY}) = `,
+    })
     .endAnimate();
   await sd.pause();
 });

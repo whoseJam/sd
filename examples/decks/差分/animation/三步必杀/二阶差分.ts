@@ -46,7 +46,11 @@ sd.main(async () => {
   dR.fadeInLabel();
   for (let i = 1; i <= c.length; i++) {
     dR.setValue(i, dRow[i - 1], { delay: i * 60 });
-    if (dRow[i - 1] !== 0) dR.paintCell(i, "#fdecd9", C.darkOrange, { delay: i * 60, duration: 200 });
+    if (dRow[i - 1] !== 0)
+      dR.paintCell(i, "#fdecd9", C.darkOrange, {
+        delay: i * 60,
+        duration: 200,
+      });
     dR.fadeInCell(i, { delay: i * 60 });
   }
   await sd.pause();
@@ -54,7 +58,11 @@ sd.main(async () => {
   ddR.fadeInLabel();
   for (let i = 1; i <= c.length; i++) {
     ddR.setValue(i, ddRow[i - 1], { delay: i * 60 });
-    if (ddRow[i - 1] !== 0) ddR.paintCell(i, "#dbeefd", C.steelBlue, { delay: i * 60, duration: 200 });
+    if (ddRow[i - 1] !== 0)
+      ddR.paintCell(i, "#dbeefd", C.steelBlue, {
+        delay: i * 60,
+        duration: 200,
+      });
     ddR.fadeInCell(i, { delay: i * 60 });
   }
   await sd.pause();

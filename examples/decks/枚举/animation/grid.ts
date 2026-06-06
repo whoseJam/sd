@@ -117,10 +117,18 @@ export class Grid {
     return this.rows * this.cellSize;
   }
 
-  left(): number { return this.x0; }
-  right(): number { return this.x0 + this.width(); }
-  bottom(): number { return this.y0; }
-  top(): number { return this.y0 + this.height(); }
+  left(): number {
+    return this.x0;
+  }
+  right(): number {
+    return this.x0 + this.width();
+  }
+  bottom(): number {
+    return this.y0;
+  }
+  top(): number {
+    return this.y0 + this.height();
+  }
 
   paintCell(
     r: number,
@@ -157,11 +165,18 @@ export class Grid {
     }
   }
 
-  clearAll(opts?: { delay?: number; duration?: number; fill?: sd.SDColor }): void {
+  clearAll(opts?: {
+    delay?: number;
+    duration?: number;
+    fill?: sd.SDColor;
+  }): void {
     const fill = opts?.fill ?? C.white;
     for (let r = 1; r <= this.rows; r++) {
       for (let c = 1; c <= this.cols; c++) {
-        this.paintCell(r, c, fill, { delay: opts?.delay, duration: opts?.duration });
+        this.paintCell(r, c, fill, {
+          delay: opts?.delay,
+          duration: opts?.duration,
+        });
       }
     }
   }

@@ -10,7 +10,10 @@ const E = sd.easing();
 const POWERS = [1, 2, 4, 8];
 const BITS = [1, 0, 1, 1]; // bit 0 .. bit 3 of 13 = 1101
 const SUP_DIGIT: Record<number, string> = {
-  1: "¹", 2: "²", 4: "⁴", 8: "⁸",
+  1: "¹",
+  2: "²",
+  4: "⁴",
+  8: "⁸",
 };
 
 const HIGHLIGHT_FILL = "#fdecd9";
@@ -35,12 +38,15 @@ for (let i = 0; i < POWERS.length; i++) {
   cellBgs.push(
     new sd.Rect({
       targetNode: svg,
-      x, y: CELL_Y,
-      width: CELL_W, height: CELL_H,
+      x,
+      y: CELL_Y,
+      width: CELL_W,
+      height: CELL_H,
       fill: C.white,
       stroke: NEUTRAL_STROKE,
       strokeWidth: 1,
-      rx: 4, ry: 4,
+      rx: 4,
+      ry: 4,
       opacity: 0,
     }),
   );
@@ -68,7 +74,10 @@ for (let i = 0; i < POWERS.length - 1; i++) {
   arrowLines.push(
     new sd.Line({
       targetNode: svg,
-      x1: sx, y1: y, x2: ex - 5, y2: y,
+      x1: sx,
+      y1: y,
+      x2: ex - 5,
+      y2: y,
       stroke: C.darkButtonGrey,
       strokeWidth: 1.2,
       opacity: 0,
@@ -87,7 +96,8 @@ for (let i = 0; i < POWERS.length - 1; i++) {
     new sd.Text({
       targetNode: svg,
       text: "²",
-      cx: (sx + ex) / 2, cy: y - 9,
+      cx: (sx + ex) / 2,
+      cy: y - 9,
       fontSize: 11,
       fill: C.darkButtonGrey,
       opacity: 0,
@@ -98,7 +108,8 @@ for (let i = 0; i < POWERS.length - 1; i++) {
 const equation = new sd.Text({
   targetNode: svg,
   text: "A¹³ = A⁸ · A⁴ · A¹",
-  cx: 0, cy: -50,
+  cx: 0,
+  cy: -50,
   fontSize: 16,
   fill: C.darkOrange,
   opacity: 0,
@@ -107,7 +118,8 @@ const equation = new sd.Text({
 const decomp = new sd.Text({
   targetNode: svg,
   text: "13 = 8 + 4 + 1",
-  cx: 0, cy: -15,
+  cx: 0,
+  cy: -15,
   fontSize: 13,
   fill: C.darkButtonGrey,
   opacity: 0,
@@ -119,20 +131,25 @@ sd.main(async () => {
     const d = i * 200;
     cellBgs[i]
       .startAnimate({ delay: d, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
     cellTexts[i]
       .startAnimate({ delay: d + 80, duration: 280, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
     if (i > 0) {
       arrowLines[i - 1]
         .startAnimate({ delay: d - 60, duration: 220, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
       arrowHeads[i - 1]
         .startAnimate({ delay: d - 60, duration: 220, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
       arrowLabels[i - 1]
         .startAnimate({ delay: d - 60, duration: 220, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .setOpacity(1)
+        .endAnimate();
     }
   }
   await sd.pause();
@@ -140,7 +157,8 @@ sd.main(async () => {
   // p2: decomposition.
   decomp
     .startAnimate({ duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   // p3: highlight contributing powers (bits = 1).
@@ -149,17 +167,21 @@ sd.main(async () => {
     const d = i * 140;
     cellBgs[i]
       .startAnimate({ delay: d, duration: 300, easing: E.easeOut })
-      .setFill(HIGHLIGHT_FILL).setStroke(HIGHLIGHT_STROKE).setStrokeWidth(1.4)
+      .setFill(HIGHLIGHT_FILL)
+      .setStroke(HIGHLIGHT_STROKE)
+      .setStrokeWidth(1.4)
       .endAnimate();
     cellTexts[i]
       .startAnimate({ delay: d, duration: 300, easing: E.easeOut })
-      .setFill(HIGHLIGHT_STROKE).endAnimate();
+      .setFill(HIGHLIGHT_STROKE)
+      .endAnimate();
   }
   await sd.pause();
 
   // p4: final equation.
   equation
     .startAnimate({ duration: 360, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

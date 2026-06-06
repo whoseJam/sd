@@ -25,7 +25,14 @@ for (const p of positions) {
     stroke: C.darkButtonGrey,
     strokeWidth: 1.4,
   });
-  new sd.Text({ targetNode: svg, text: String(p.id), cx: p.cx, cy: p.cy, fontSize: 16, fill: C.darkButtonGrey });
+  new sd.Text({
+    targetNode: svg,
+    text: String(p.id),
+    cx: p.cx,
+    cy: p.cy,
+    fontSize: 16,
+    fill: C.darkButtonGrey,
+  });
   new sd.Text({
     targetNode: svg,
     text: p.label,

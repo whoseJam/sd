@@ -35,10 +35,18 @@ const eq2 = new sd.Math({
 });
 
 sd.main(async () => {
-  eq.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  eq.startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
-  arrow.startAnimate({ duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+  arrow
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
-  eq2.startAnimate({ duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  eq2
+    .startAnimate({ duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 });

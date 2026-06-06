@@ -35,7 +35,10 @@ sd.main(async () => {
   sparseRow.fadeIn({ delay: 0 });
   for (let i = 1; i <= sparse.length; i++) {
     if (sparse[i - 1] !== 0) {
-      sparseRow.paintCell(i, "#fdecd9", C.darkOrange, { delay: 200 + i * 20, duration: 220 });
+      sparseRow.paintCell(i, "#fdecd9", C.darkOrange, {
+        delay: 200 + i * 20,
+        duration: 220,
+      });
     }
   }
   await sd.pause();

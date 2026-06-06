@@ -39,20 +39,37 @@ const ACTIVE_STROKE = C.steelBlue;
 const NEUTRAL = C.darkButtonGrey;
 const FAINT = C.silver;
 
-interface Cell { bg: sd.Rect; text: sd.Text; }
-function makeCell(cx: number, cy: number, txt: string, txtFill: sd.SDColor): Cell {
+interface Cell {
+  bg: sd.Rect;
+  text: sd.Text;
+}
+function makeCell(
+  cx: number,
+  cy: number,
+  txt: string,
+  txtFill: sd.SDColor,
+): Cell {
   return {
     bg: new sd.Rect({
       targetNode: svg,
-      x: cx - CELL_W / 2, y: cy - CELL_H / 2,
-      width: CELL_W, height: CELL_H,
-      fill: C.white, stroke: FAINT, strokeWidth: 1,
-      rx: 3, ry: 3, opacity: 0,
+      x: cx - CELL_W / 2,
+      y: cy - CELL_H / 2,
+      width: CELL_W,
+      height: CELL_H,
+      fill: C.white,
+      stroke: FAINT,
+      strokeWidth: 1,
+      rx: 3,
+      ry: 3,
+      opacity: 0,
     }),
     text: new sd.Text({
       targetNode: svg,
-      text: txt, cx, cy: cy - 1,
-      fontSize: 13, fill: txtFill,
+      text: txt,
+      cx,
+      cy: cy - 1,
+      fontSize: 13,
+      fill: txtFill,
       opacity: 0,
     }),
   };
@@ -65,17 +82,24 @@ for (let bit = 0; bit <= 3; bit++) {
 }
 
 const xLabel = new sd.Math({
-  targetNode: svg, text: "\\vec{x}",
-  cx: LABEL_X, cy: WR_Y - 1,
-  fontSize: 15, fill: NEUTRAL, opacity: 0,
+  targetNode: svg,
+  text: "\\vec{x}",
+  cx: LABEL_X,
+  cy: WR_Y - 1,
+  fontSize: 15,
+  fill: NEUTRAL,
+  opacity: 0,
 });
 
 // Beam: vertical line from x bottom to a basis row top. Endpoints animated.
 const beam = new sd.Line({
   targetNode: svg,
-  x1: bitX(0), y1: WR_Y - CELL_H / 2,
-  x2: bitX(0), y2: basisCy(0) + CELL_H / 2,
-  stroke: ACTIVE_STROKE, strokeWidth: 1.8,
+  x1: bitX(0),
+  y1: WR_Y - CELL_H / 2,
+  x2: bitX(0),
+  y2: basisCy(0) + CELL_H / 2,
+  stroke: ACTIVE_STROKE,
+  strokeWidth: 1.8,
   strokeDashArray: [5, 4],
   opacity: 0,
 });
@@ -90,11 +114,17 @@ for (let slot = 3; slot >= 0; slot--) {
     row[bit] = makeCell(bitX(bit), cy, "0", FAINT);
   }
   basis.push(row);
-  slotLabels.push(new sd.Math({
-    targetNode: svg, text: `\\vec{b}_${slot}`,
-    cx: LABEL_X, cy: cy - 1,
-    fontSize: 14, fill: NEUTRAL, opacity: 0,
-  }));
+  slotLabels.push(
+    new sd.Math({
+      targetNode: svg,
+      text: `\\vec{b}_${slot}`,
+      cx: LABEL_X,
+      cy: cy - 1,
+      fontSize: 14,
+      fill: NEUTRAL,
+      opacity: 0,
+    }),
+  );
 }
 basis.reverse();
 slotLabels.reverse();
@@ -106,32 +136,39 @@ const INPUTS = [13, 11, 14, 8];
 const INPUT_X = -170;
 const INPUT_Y_BASE = 90;
 const INPUT_Y_STEP = 30;
-const inputLabels: sd.Math[] = INPUTS.map((val, i) =>
-  new sd.Math({
-    targetNode: svg,
-    text: `\\vec{a}_${i + 1} = ${val}`,
-    cx: INPUT_X, cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
-    fontSize: 14, fill: FAINT, opacity: 0,
-  }),
+const inputLabels: sd.Math[] = INPUTS.map(
+  (val, i) =>
+    new sd.Math({
+      targetNode: svg,
+      text: `\\vec{a}_${i + 1} = ${val}`,
+      cx: INPUT_X,
+      cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
+      fontSize: 14,
+      fill: FAINT,
+      opacity: 0,
+    }),
 );
 
 function activateInput(idx: number, delay = 0) {
   inputLabels[idx]
     .startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setFill(ACTIVE_STROKE).endAnimate();
+    .setFill(ACTIVE_STROKE)
+    .endAnimate();
 }
 
 function completeInput(idx: number, delay = 0) {
   inputLabels[idx]
     .startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setFill(PLACED_STROKE).endAnimate();
+    .setFill(PLACED_STROKE)
+    .endAnimate();
 }
 
 function rejectInput(idx: number, delay = 0) {
   // 冗余：x XOR 化简到 0，没有进任何 slot。Label 维持 FAINT 灰色。
   inputLabels[idx]
     .startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setFill(FAINT).endAnimate();
+    .setFill(FAINT)
+    .endAnimate();
 }
 
 // Pointer: a small filled dot on the left of the queue that moves vertically
@@ -139,7 +176,8 @@ function rejectInput(idx: number, delay = 0) {
 const POINTER_X = INPUT_X - 28;
 const pointer = new sd.Circle({
   targetNode: svg,
-  cx: POINTER_X, cy: INPUT_Y_BASE,
+  cx: POINTER_X,
+  cy: INPUT_Y_BASE,
   r: 4,
   fill: ACTIVE_STROKE,
   stroke: "none",
@@ -148,13 +186,18 @@ const pointer = new sd.Circle({
 
 function pointerTo(idx: number, delay = 0) {
   const cy = INPUT_Y_BASE - idx * INPUT_Y_STEP;
-  pointer.startAnimate({ delay, duration: 320, easing: E.easeOut })
-    .setCy(cy).setOpacity(1).endAnimate();
+  pointer
+    .startAnimate({ delay, duration: 320, easing: E.easeOut })
+    .setCy(cy)
+    .setOpacity(1)
+    .endAnimate();
 }
 
 function hidePointer(delay = 0) {
-  pointer.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setOpacity(0).endAnimate();
+  pointer
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setOpacity(0)
+    .endAnimate();
 }
 
 // Badges: small marker placed to the right of each input label showing
@@ -162,13 +205,17 @@ function hidePointer(delay = 0) {
 const BADGE_X = INPUT_X + 40;
 const BADGE_TEXTS = ["\\to b_3", "\\to b_2", "\\to b_1", "\\times"];
 const BADGE_FILLS = [PLACED_STROKE, PLACED_STROKE, PLACED_STROKE, FAINT];
-const inputBadges: sd.Math[] = INPUTS.map((_, i) =>
-  new sd.Math({
-    targetNode: svg,
-    text: BADGE_TEXTS[i],
-    cx: BADGE_X, cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
-    fontSize: 14, fill: BADGE_FILLS[i], opacity: 0,
-  }),
+const inputBadges: sd.Math[] = INPUTS.map(
+  (_, i) =>
+    new sd.Math({
+      targetNode: svg,
+      text: BADGE_TEXTS[i],
+      cx: BADGE_X,
+      cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
+      fontSize: 14,
+      fill: BADGE_FILLS[i],
+      opacity: 0,
+    }),
 );
 // Re-align each badge's center to its label's actual rendered center.
 // sd.Math's content has different vertical extents (label = \vec{a}_i = N
@@ -179,8 +226,10 @@ inputBadges.forEach((badge, i) => {
 });
 
 function showBadge(idx: number, delay = 0) {
-  inputBadges[idx].startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  inputBadges[idx]
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 }
 
 // ─── helpers ─────────────────────────────────────────────────────
@@ -194,27 +243,37 @@ function showX(value: number, delay = 0) {
     // animate during the opacity transition (no text morph).
     xCells[bit].bg
       .startAnimate({ delay, duration: 1, easing: E.easeOut })
-      .setFill(C.white).setStroke(FAINT).setStrokeWidth(1)
+      .setFill(C.white)
+      .setStroke(FAINT)
+      .setStrokeWidth(1)
       .endAnimate();
     xCells[bit].text
       .startAnimate({ delay, duration: 1, easing: E.easeOut })
-      .setText(String(v)).setFill(NEUTRAL).endAnimate();
+      .setText(String(v))
+      .setFill(NEUTRAL)
+      .endAnimate();
     // Then fade opacity in cleanly.
     xCells[bit].bg
       .startAnimate({ delay: delay + 4, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
     xCells[bit].text
       .startAnimate({ delay: delay + 4, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
 }
 
 function hideX(delay = 0) {
   for (const c of xCells) {
-    c.bg.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(0).endAnimate();
-    c.text.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(0).endAnimate();
+    c.bg
+      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+      .setOpacity(0)
+      .endAnimate();
+    c.text
+      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+      .setOpacity(0)
+      .endAnimate();
   }
 }
 
@@ -233,27 +292,35 @@ function highlightLeadingBit(bit: number, delay = 0) {
 function beamTo(bit: number, slot: number, delay = 0, dur = 320) {
   // Snap endpoints into position while invisible, then fade in. Avoids
   // the "drifting from a previous endpoint" look.
-  beam.startAnimate({ delay, duration: 1, easing: E.easeOut })
-    .setX1(bitX(bit)).setX2(bitX(bit))
+  beam
+    .startAnimate({ delay, duration: 1, easing: E.easeOut })
+    .setX1(bitX(bit))
+    .setX2(bitX(bit))
     .setY2(basisCy(slot) + CELL_H / 2)
     .endAnimate();
-  beam.startAnimate({ delay: delay + 4, duration: dur, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  beam
+    .startAnimate({ delay: delay + 4, duration: dur, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 }
 
 function fadeBeam(delay = 0) {
-  beam.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setOpacity(0).endAnimate();
+  beam
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setOpacity(0)
+    .endAnimate();
 }
 
 function pulseRow(slot: number, delay = 0) {
   for (let bit = 0; bit <= 3; bit++) {
     basis[slot][bit].bg
       .startAnimate({ delay, duration: 200, easing: E.easeOut })
-      .setStrokeWidth(2.6).endAnimate();
+      .setStrokeWidth(2.6)
+      .endAnimate();
     basis[slot][bit].bg
       .startAnimate({ delay: delay + 380, duration: 220, easing: E.easeOut })
-      .setStrokeWidth(1.4).endAnimate();
+      .setStrokeWidth(1.4)
+      .endAnimate();
   }
 }
 
@@ -263,13 +330,16 @@ function xorXBits(newValue: number, delay = 0) {
     const v = (newValue >> bit) & 1;
     xCells[bit].bg
       .startAnimate({ delay, duration: 220, easing: E.easeOut })
-      .setFill(ACTIVE_FILL).endAnimate();
+      .setFill(ACTIVE_FILL)
+      .endAnimate();
     xCells[bit].text
       .startAnimate({ delay: delay + 120, duration: 220, easing: E.easeOut })
-      .setText(String(v)).endAnimate();
+      .setText(String(v))
+      .endAnimate();
     xCells[bit].bg
       .startAnimate({ delay: delay + 360, duration: 220, easing: E.easeOut })
-      .setFill(C.white).endAnimate();
+      .setFill(C.white)
+      .endAnimate();
   }
 }
 
@@ -278,12 +348,24 @@ function placeBasis(slot: number, value: number, delay = 0) {
     const v = (value >> bit) & 1;
     const stagger = (3 - bit) * 70;
     basis[slot][bit].bg
-      .startAnimate({ delay: delay + stagger, duration: DUR, easing: E.easeOut })
-      .setFill(PLACED_FILL).setStroke(PLACED_STROKE).setStrokeWidth(1.4)
+      .startAnimate({
+        delay: delay + stagger,
+        duration: DUR,
+        easing: E.easeOut,
+      })
+      .setFill(PLACED_FILL)
+      .setStroke(PLACED_STROKE)
+      .setStrokeWidth(1.4)
       .endAnimate();
     basis[slot][bit].text
-      .startAnimate({ delay: delay + stagger, duration: DUR, easing: E.easeOut })
-      .setText(String(v)).setFill(PLACED_STROKE).endAnimate();
+      .startAnimate({
+        delay: delay + stagger,
+        duration: DUR,
+        easing: E.easeOut,
+      })
+      .setText(String(v))
+      .setFill(PLACED_STROKE)
+      .endAnimate();
   }
 }
 
@@ -293,21 +375,38 @@ sd.main(async () => {
   // p1: empty basis + labels.
   for (let slot = 0; slot <= 3; slot++) {
     const d = (3 - slot) * 80;
-    slotLabels[slot].startAnimate({ delay: d, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    slotLabels[slot]
+      .startAnimate({ delay: d, duration: DUR, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
     for (let bit = 0; bit <= 3; bit++) {
       basis[slot][bit].bg
-        .startAnimate({ delay: d + (3 - bit) * 30, duration: DUR, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .startAnimate({
+          delay: d + (3 - bit) * 30,
+          duration: DUR,
+          easing: E.easeOut,
+        })
+        .setOpacity(1)
+        .endAnimate();
       basis[slot][bit].text
-        .startAnimate({ delay: d + (3 - bit) * 30 + 40, duration: DUR, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
+        .startAnimate({
+          delay: d + (3 - bit) * 30 + 40,
+          duration: DUR,
+          easing: E.easeOut,
+        })
+        .setOpacity(1)
+        .endAnimate();
     }
   }
-  xLabel.startAnimate({ duration: DUR, easing: E.easeOut }).setOpacity(1).endAnimate();
+  xLabel
+    .startAnimate({ duration: DUR, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < inputLabels.length; i++) {
-    inputLabels[i].startAnimate({ delay: 200 + i * 120, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    inputLabels[i]
+      .startAnimate({ delay: 200 + i * 120, duration: DUR, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
@@ -418,7 +517,9 @@ sd.main(async () => {
   for (let b = 0; b <= 3; b++) {
     xCells[b].bg
       .startAnimate({ delay: 380, duration: DUR, easing: E.easeOut })
-      .setStroke(FAINT).setStrokeWidth(1).endAnimate();
+      .setStroke(FAINT)
+      .setStrokeWidth(1)
+      .endAnimate();
   }
   hideX(700);
   fadeBeam(700);

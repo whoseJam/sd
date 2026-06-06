@@ -13,11 +13,17 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 2], [1, 3], [2, 4], [3, 4],
+  [1, 2],
+  [1, 3],
+  [2, 4],
+  [3, 4],
 ];
 
 const weights: Record<string, number> = {
-  "1-2": 5, "1-3": 1, "2-4": 1, "3-4": 2,
+  "1-2": 5,
+  "1-3": 1,
+  "2-4": 1,
+  "3-4": 2,
 };
 
 const dag = new Dag({ targetNode: svg, nodes, edges, radius: 18 });
@@ -26,9 +32,12 @@ for (const [u, v] of edges) {
   const a = nodes.find((n) => n.id === u)!;
   const b = nodes.find((n) => n.id === v)!;
   new sd.Text({
-    targetNode: svg, text: String(weights[`${u}-${v}`]),
-    cx: (a.cx + b.cx) / 2, cy: (a.cy + b.cy) / 2 - 8,
-    fontSize: 12, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(weights[`${u}-${v}`]),
+    cx: (a.cx + b.cx) / 2,
+    cy: (a.cy + b.cy) / 2 - 8,
+    fontSize: 12,
+    fill: C.darkButtonGrey,
   });
 }
 

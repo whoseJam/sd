@@ -55,15 +55,22 @@ const bracket = new sd.Math({
 sd.main(async () => {
   a.fadeIn({ delay: 0 });
   b.fadeIn({ delay: 200 });
-  for (let i = L; i <= R; i++) b.paintCell(i, "#fdecd9", C.darkOrange, { delay: 220, duration: 200 });
+  for (let i = L; i <= R; i++)
+    b.paintCell(i, "#fdecd9", C.darkOrange, { delay: 220, duration: 200 });
   aP.fadeIn({ delay: 400 });
-  bracket.startAnimate({ delay: 420, duration: 280, easing: E.easeOut }).setOpacity(1).endAnimate();
+  bracket
+    .startAnimate({ delay: 420, duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
   for (let i = 1; i <= N; i++) {
     aP.setValue(i, aAfter[i - 1], { delay: (i - 1) * 60 });
     if (inc[i - 1] !== 0) {
-      aP.paintCell(i, "#dbeefd", C.steelBlue, { delay: (i - 1) * 60, duration: 200 });
+      aP.paintCell(i, "#dbeefd", C.steelBlue, {
+        delay: (i - 1) * 60,
+        duration: 200,
+      });
     }
   }
   await sd.pause();

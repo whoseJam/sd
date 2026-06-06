@@ -15,11 +15,23 @@ const nodes = [
 ];
 
 const edges: Array<[number, number]> = [
-  [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 6], [2, 5],
+  [1, 2],
+  [1, 3],
+  [2, 4],
+  [3, 5],
+  [4, 6],
+  [5, 6],
+  [2, 5],
 ];
 
 const weights: Record<string, number> = {
-  "1-2": 4, "1-3": 2, "2-4": 3, "3-5": 6, "4-6": 2, "5-6": 3, "2-5": 1,
+  "1-2": 4,
+  "1-3": 2,
+  "2-4": 3,
+  "3-5": 6,
+  "4-6": 2,
+  "5-6": 3,
+  "2-5": 1,
 };
 
 const dag = new Dag({ targetNode: svg, nodes, edges, radius: 18 });
@@ -28,9 +40,12 @@ for (const [u, v] of edges) {
   const a = nodes.find((n) => n.id === u)!;
   const b = nodes.find((n) => n.id === v)!;
   new sd.Text({
-    targetNode: svg, text: String(weights[`${u}-${v}`]),
-    cx: (a.cx + b.cx) / 2 + 8, cy: (a.cy + b.cy) / 2 - 8,
-    fontSize: 12, fill: C.darkButtonGrey,
+    targetNode: svg,
+    text: String(weights[`${u}-${v}`]),
+    cx: (a.cx + b.cx) / 2 + 8,
+    cy: (a.cy + b.cy) / 2 - 8,
+    fontSize: 12,
+    fill: C.darkButtonGrey,
   });
 }
 
@@ -44,7 +59,10 @@ while (true) {
   let u: number | undefined;
   let best = Infinity;
   for (const n of nodes) {
-    if (!visited.has(n.id) && dist[n.id] < best) { best = dist[n.id]; u = n.id; }
+    if (!visited.has(n.id) && dist[n.id] < best) {
+      best = dist[n.id];
+      u = n.id;
+    }
   }
   if (u === undefined) break;
   visited.add(u);

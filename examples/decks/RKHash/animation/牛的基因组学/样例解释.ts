@@ -49,7 +49,7 @@ new sd.Text({
   targetNode: svg,
   text: "斑点",
   cx: X0 - 30,
-  cy: Y_START - (spotted.length - 1) * (SIZE + ROW_GAP) / 2 + SIZE / 2,
+  cy: Y_START - ((spotted.length - 1) * (SIZE + ROW_GAP)) / 2 + SIZE / 2,
   fontSize: 14,
   fill: C.darkButtonGrey,
 });
@@ -57,7 +57,7 @@ new sd.Text({
   targetNode: svg,
   text: "非斑点",
   cx: X0 - 30,
-  cy: SECOND_Y - (nonSpotted.length - 1) * (SIZE + ROW_GAP) / 2 + SIZE / 2,
+  cy: SECOND_Y - ((nonSpotted.length - 1) * (SIZE + ROW_GAP)) / 2 + SIZE / 2,
   fontSize: 14,
   fill: C.darkButtonGrey,
 });
@@ -74,7 +74,8 @@ sd.main(async () => {
   await sd.pause();
 
   for (const row of [...spottedRows, ...nonSpottedRows]) {
-    for (let k = L; k <= R; k++) row.paintCell(k, HL_FILL, HL_STROKE, { delay: (k - L) * 60 });
+    for (let k = L; k <= R; k++)
+      row.paintCell(k, HL_FILL, HL_STROKE, { delay: (k - L) * 60 });
   }
   await sd.pause();
 });

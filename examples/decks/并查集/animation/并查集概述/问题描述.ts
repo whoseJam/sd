@@ -16,7 +16,11 @@ const R = 22;
 const GAP = 60;
 const COL_GAP = 200;
 
-interface Node { id: number; cx: number; cy: number }
+interface Node {
+  id: number;
+  cx: number;
+  cy: number;
+}
 const nodes: Node[] = [];
 for (let g = 0; g < groups.length; g++) {
   const groupCx = -COL_GAP / 2 + g * COL_GAP;

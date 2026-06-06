@@ -20,8 +20,10 @@ function cellTopLeft(n: number): { x: number; y: number } {
   const idx = n - 1;
   const col = idx % COLS;
   const row = Math.floor(idx / COLS);
-  const x = -((COLS - 1) * (CELL_W + GAP)) / 2 - CELL_W / 2 + col * (CELL_W + GAP);
-  const y = -((ROWS - 1) * (CELL_H + GAP)) / 2 - CELL_H / 2 + row * (CELL_H + GAP);
+  const x =
+    -((COLS - 1) * (CELL_W + GAP)) / 2 - CELL_W / 2 + col * (CELL_W + GAP);
+  const y =
+    -((ROWS - 1) * (CELL_H + GAP)) / 2 - CELL_H / 2 + row * (CELL_H + GAP);
   return { x, y };
 }
 
@@ -41,12 +43,15 @@ for (let n = 1; n <= N; n++) {
     n,
     new sd.Rect({
       targetNode: svg,
-      x, y,
-      width: CELL_W, height: CELL_H,
+      x,
+      y,
+      width: CELL_W,
+      height: CELL_H,
       fill: C.white,
       stroke: C.silver,
       strokeWidth: 0.8,
-      rx: 3, ry: 3,
+      rx: 3,
+      ry: 3,
       opacity: 0,
     }),
   );
@@ -101,12 +106,16 @@ sd.main(async () => {
   // p1: grid appears
   for (let n = 1; n <= N; n++) {
     const d = (n - 1) * 35;
-    cellBgs.get(n)!
+    cellBgs
+      .get(n)!
       .startAnimate({ delay: d, duration: 260, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    cellTexts.get(n)!
+      .setOpacity(1)
+      .endAnimate();
+    cellTexts
+      .get(n)!
       .startAnimate({ delay: d + 60, duration: 260, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 
@@ -115,13 +124,18 @@ sd.main(async () => {
   for (let n = 2; n <= N; n++) {
     if (!isPrime(n)) continue;
     const d = k++ * 80;
-    cellBgs.get(n)!
+    cellBgs
+      .get(n)!
       .startAnimate({ delay: d, duration: 300, easing: E.easeOut })
-      .setFill(PRIME_FILL).setStroke(PRIME_STROKE).setStrokeWidth(1.4)
+      .setFill(PRIME_FILL)
+      .setStroke(PRIME_STROKE)
+      .setStrokeWidth(1.4)
       .endAnimate();
-    cellTexts.get(n)!
+    cellTexts
+      .get(n)!
       .startAnimate({ delay: d, duration: 300, easing: E.easeOut })
-      .setFill(PRIME_STROKE).endAnimate();
+      .setFill(PRIME_STROKE)
+      .endAnimate();
   }
   await sd.pause();
 
@@ -129,16 +143,23 @@ sd.main(async () => {
   for (let i = 0; i < markOrder.length; i++) {
     const { c } = markOrder[i];
     const d = i * 140;
-    cellBgs.get(c)!
+    cellBgs
+      .get(c)!
       .startAnimate({ delay: d, duration: 260, easing: E.easeOut })
-      .setFill(COMP_FILL).setStroke(COMP_STROKE).setStrokeWidth(1)
+      .setFill(COMP_FILL)
+      .setStroke(COMP_STROKE)
+      .setStrokeWidth(1)
       .endAnimate();
-    cellTexts.get(c)!
+    cellTexts
+      .get(c)!
       .startAnimate({ delay: d, duration: 260, easing: E.easeOut })
-      .setFill(COMP_STROKE).endAnimate();
-    spfLabels.get(c)!
+      .setFill(COMP_STROKE)
+      .endAnimate();
+    spfLabels
+      .get(c)!
       .startAnimate({ delay: d + 80, duration: 240, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+      .setOpacity(1)
+      .endAnimate();
   }
   await sd.pause();
 });

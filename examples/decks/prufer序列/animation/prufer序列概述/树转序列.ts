@@ -18,10 +18,20 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  1: 4, 3: 4, 4: 5, 2: 5, 6: 5,
+  1: 4,
+  3: 4,
+  4: 5,
+  2: 5,
+  6: 5,
 };
 
-const tree = new TreeView({ targetNode: svg, nodes, parent, root: 5, radius: 18 });
+const tree = new TreeView({
+  targetNode: svg,
+  nodes,
+  parent,
+  root: 5,
+  radius: 18,
+});
 
 // Simulate Prufer:
 // Removal sequence + parent recorded.
@@ -56,7 +66,10 @@ sd.main(async () => {
     tree.paint(removed, "#fde9e9", "#d32f2f" as sd.SDColor);
     tree.setTag(removed, "remove", "#d32f2f" as sd.SDColor);
     seqRow.setValue(i + 1, prufer[i], { delay: 200 });
-    seqRow.paintCell(i + 1, "#fdecd9", C.darkOrange, { delay: 200, duration: 200 });
+    seqRow.paintCell(i + 1, "#fdecd9", C.darkOrange, {
+      delay: 200,
+      duration: 200,
+    });
     await sd.pause();
   }
 });

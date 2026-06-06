@@ -134,7 +134,11 @@ export class CharRow {
 
   // Staggered fade-in over all cells / glyphs / label. Returns the total
   // delay consumed so the caller can chain follow-up animations.
-  fadeIn(opts?: { delay?: number; stagger?: number; duration?: number }): number {
+  fadeIn(opts?: {
+    delay?: number;
+    stagger?: number;
+    duration?: number;
+  }): number {
     const delay0 = opts?.delay ?? 0;
     const stagger = opts?.stagger ?? 22;
     const dur = opts?.duration ?? 300;

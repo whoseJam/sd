@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+
 import { gridHelpers } from "../grid";
 
 const svg = sd.svg();
@@ -210,7 +211,10 @@ sd.main(async () => {
       .setOpacity(0.3)
       .endAnimate();
   }
-  frame.startAnimate({ delay: 220, duration: 360, easing: E.easeOut }).setOpacity(1).endAnimate();
+  frame
+    .startAnimate({ delay: 220, duration: 360, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < dotNodes.length; i++) {
     dotNodes[i]
       .startAnimate({ delay: 360 + i * 70, duration: 280, easing: E.easeOut })
@@ -233,8 +237,7 @@ sd.main(async () => {
       strokeOpacity: 0.7,
     });
     hAxisLines.push(ln);
-    ln
-      .startAnimate({ delay: i * 140, duration: 380, easing: E.easeOut })
+    ln.startAnimate({ delay: i * 140, duration: 380, easing: E.easeOut })
       .setX2(dotX(xr))
       .endAnimate();
   }
@@ -255,8 +258,7 @@ sd.main(async () => {
       strokeOpacity: 0.7,
     });
     vAxisLines.push(ln);
-    ln
-      .startAnimate({ delay: i * 140, duration: 380, easing: E.easeOut })
+    ln.startAnimate({ delay: i * 140, duration: 380, easing: E.easeOut })
       .setY2(dotY(yr))
       .endAnimate();
   }
@@ -287,7 +289,11 @@ sd.main(async () => {
       .endAnimate();
   }
   previewText
-    .startAnimate({ delay: 200 + newOrder.length * 160, duration: 280, easing: E.easeOut })
+    .startAnimate({
+      delay: 200 + newOrder.length * 160,
+      duration: 280,
+      easing: E.easeOut,
+    })
     .setOpacity(1)
     .endAnimate();
 
@@ -311,7 +317,10 @@ sd.main(async () => {
     strokeWidth: 2.5,
     opacity: 0,
   });
-  scanLine.startAnimate({ delay: 200, duration: 320, easing: E.easeOut }).setOpacity(1).endAnimate();
+  scanLine
+    .startAnimate({ delay: 200, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   countText
     .startAnimate({ delay: 320, duration: 260, easing: E.easeOut })
     .setOpacity(1)
@@ -367,7 +376,9 @@ sd.main(async () => {
       .setY2(dotY(y))
       .endAnimate();
     for (const tr of trackerByX.values()) {
-      tr.startAnimate({ duration: SWEEP_DUR, easing: E.easeInOut }).setCy(dotY(y)).endAnimate();
+      tr.startAnimate({ duration: SWEEP_DUR, easing: E.easeInOut })
+        .setCy(dotY(y))
+        .endAnimate();
     }
     for (const ev of vPluses) {
       const tr = new sd.Circle({
@@ -379,13 +390,20 @@ sd.main(async () => {
         opacity: 0,
       });
       trackerByX.set(ev.x!, tr);
-      tr
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+      tr.startAnimate({
+        delay: ARRIVAL_DELAY,
+        duration: ARRIVAL_DUR,
+        easing: E.easeOut,
+      })
         .setOpacity(1)
         .endAnimate();
       segment[ev.x!] = 1;
       stripCells[ev.x!]
-        .startAnimate({ delay: ARRIVAL_DELAY, duration: ARRIVAL_DUR, easing: E.easeOut })
+        .startAnimate({
+          delay: ARRIVAL_DELAY,
+          duration: ARRIVAL_DUR,
+          easing: E.easeOut,
+        })
         .setFill(TRACKER)
         .endAnimate();
     }
@@ -419,7 +437,11 @@ sd.main(async () => {
         const ring = newMarkers.get(key);
         if (ring) {
           ring
-            .startAnimate({ delay: ARRIVAL_DUR, duration: HOLD_DUR, easing: E.easeOut })
+            .startAnimate({
+              delay: ARRIVAL_DUR,
+              duration: HOLD_DUR,
+              easing: E.easeOut,
+            })
             .setFill(DOT_INK)
             .endAnimate();
           rowNew++;
@@ -427,7 +449,11 @@ sd.main(async () => {
           const dotIdx = data.findIndex(([dx, dy]) => dx === x && dy === y);
           if (dotIdx >= 0) {
             dotNodes[dotIdx]
-              .startAnimate({ delay: ARRIVAL_DUR, duration: HOLD_DUR / 2, easing: E.easeOut })
+              .startAnimate({
+                delay: ARRIVAL_DUR,
+                duration: HOLD_DUR / 2,
+                easing: E.easeOut,
+              })
               .setR(8)
               .endAnimate();
             dotNodes[dotIdx]
@@ -444,19 +470,28 @@ sd.main(async () => {
       if (rowNew > 0) {
         runningNew += rowNew;
         countText
-          .startAnimate({ delay: ARRIVAL_DUR, duration: HOLD_DUR, easing: E.easeOut })
+          .startAnimate({
+            delay: ARRIVAL_DUR,
+            duration: HOLD_DUR,
+            easing: E.easeOut,
+          })
           .setText(`found ${runningNew}`, PIN_NEW)
           .endAnimate();
       }
       await sd.pause();
-      band.startAnimate({ duration: 260, easing: E.easeOut }).setOpacity(0).endAnimate();
+      band
+        .startAnimate({ duration: 260, easing: E.easeOut })
+        .setOpacity(0)
+        .endAnimate();
     }
 
     // v- retires under the next sweep — no separate beat.
     for (const ev of vMinuses) {
       const tr = trackerByX.get(ev.x!);
       if (tr) {
-        tr.startAnimate({ duration: ARRIVAL_DUR, easing: E.easeOut }).setOpacity(0).endAnimate();
+        tr.startAnimate({ duration: ARRIVAL_DUR, easing: E.easeOut })
+          .setOpacity(0)
+          .endAnimate();
         trackerByX.delete(ev.x!);
       }
       segment[ev.x!] = 0;

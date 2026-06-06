@@ -20,15 +20,33 @@ const nodes = [
 ];
 
 const parent: Record<number, number> = {
-  2: 1, 3: 1, 4: 2, 5: 2, 6: 3, 7: 3,
-  8: 4, 9: 4, 10: 5, 11: 6,
+  2: 1,
+  3: 1,
+  4: 2,
+  5: 2,
+  6: 3,
+  7: 3,
+  8: 4,
+  9: 4,
+  10: 5,
+  11: 6,
 };
 
-const tree = new TreeView({ targetNode: svg, nodes, parent, root: 1, radius: 18 });
+const tree = new TreeView({
+  targetNode: svg,
+  nodes,
+  parent,
+  root: 1,
+  radius: 18,
+});
 
 // Heavy chain: each node's heavy child = the child with max subtree size.
 // Heavy edges (manually chosen): 1-2, 2-4, 4-8 (one heavy path from root).
-const heavyEdges: Array<[number, number]> = [[1, 2], [2, 4], [4, 8]];
+const heavyEdges: Array<[number, number]> = [
+  [1, 2],
+  [2, 4],
+  [4, 8],
+];
 
 sd.main(async () => {
   tree.fadeIn({ delay: 0 });

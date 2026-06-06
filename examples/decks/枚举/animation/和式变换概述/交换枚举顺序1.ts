@@ -36,7 +36,12 @@ for (let i = 1; i <= ROWS; i++) {
   }
 }
 
-function pointer(side: "right" | "top", label: string, baseRow: number, baseCol: number): sd.Group {
+function pointer(
+  side: "right" | "top",
+  label: string,
+  baseRow: number,
+  baseCol: number,
+): sd.Group {
   const SIZE_TRI = 9;
   const g = new sd.Group({ targetNode: svg });
   const cx = side === "right" ? grid.right() + 6 : grid.cellCx(1, baseCol);
@@ -53,7 +58,12 @@ function pointer(side: "right" | "top", label: string, baseRow: number, baseCol:
           [cx - SIZE_TRI / 2, cy + SIZE_TRI],
           [cx + SIZE_TRI / 2, cy + SIZE_TRI],
         ];
-  new sd.Polygon({ targetNode: g, points: pts, fill: C.steelBlue, stroke: C.none });
+  new sd.Polygon({
+    targetNode: g,
+    points: pts,
+    fill: C.steelBlue,
+    stroke: C.none,
+  });
   new sd.Text({
     targetNode: g,
     text: label,
@@ -69,7 +79,9 @@ const pi = pointer("right", "i", 1, 1);
 const pj = pointer("top", "j", 1, 1);
 
 function moveTri(p: sd.Group, dx: number, dy: number) {
-  p.startAnimate({ duration: 220, easing: E.easeOut }).setTranslate(dx, dy).endAnimate();
+  p.startAnimate({ duration: 220, easing: E.easeOut })
+    .setTranslate(dx, dy)
+    .endAnimate();
 }
 
 const STEP = 260;
@@ -78,8 +90,13 @@ sd.main(async () => {
   await sd.pause();
   // Pass 1: row by row.
   for (let i = 1; i <= ROWS; i++) {
-    if (i > 1) grid.paintRange(i - 1, 1, i - 1, COLS, C.white, { duration: STEP });
-    grid.paintRange(i, 1, i, COLS, HL, { stroke: HL_STROKE, duration: STEP, delay: i > 1 ? 40 : 0 });
+    if (i > 1)
+      grid.paintRange(i - 1, 1, i - 1, COLS, C.white, { duration: STEP });
+    grid.paintRange(i, 1, i, COLS, HL, {
+      stroke: HL_STROKE,
+      duration: STEP,
+      delay: i > 1 ? 40 : 0,
+    });
     moveTri(pi, 0, grid.cellCy(i, 1) - grid.cellCy(1, 1));
     await sd.pause();
   }
@@ -88,8 +105,13 @@ sd.main(async () => {
 
   // Pass 2: column by column.
   for (let j = 1; j <= COLS; j++) {
-    if (j > 1) grid.paintRange(1, j - 1, ROWS, j - 1, C.white, { duration: STEP });
-    grid.paintRange(1, j, ROWS, j, HL, { stroke: HL_STROKE, duration: STEP, delay: j > 1 ? 40 : 0 });
+    if (j > 1)
+      grid.paintRange(1, j - 1, ROWS, j - 1, C.white, { duration: STEP });
+    grid.paintRange(1, j, ROWS, j, HL, {
+      stroke: HL_STROKE,
+      duration: STEP,
+      delay: j > 1 ? 40 : 0,
+    });
     moveTri(pj, grid.cellCx(1, j) - grid.cellCx(1, 1), 0);
     await sd.pause();
   }

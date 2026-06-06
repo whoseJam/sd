@@ -44,17 +44,25 @@ function makeRow(opts: {
   hasArrow: boolean;
 }): Row {
   const leftLabel = new sd.Math({
-    targetNode: svg, text: opts.labelLatex,
-    cx: LEFT_LABEL_X, cy: opts.cy - 1,
-    fontSize: 14, fill: NEUTRAL, opacity: 0,
+    targetNode: svg,
+    text: opts.labelLatex,
+    cx: LEFT_LABEL_X,
+    cy: opts.cy - 1,
+    fontSize: 14,
+    fill: NEUTRAL,
+    opacity: 0,
   });
   leftLabel.setMaxX(ARROW_X - 12);
 
   const arrow = opts.hasArrow
     ? new sd.Text({
-        targetNode: svg, text: "→",
-        cx: ARROW_X, cy: opts.cy - 1,
-        fontSize: 14, fill: NEUTRAL, opacity: 0,
+        targetNode: svg,
+        text: "→",
+        cx: ARROW_X,
+        cy: opts.cy - 1,
+        fontSize: 14,
+        fill: NEUTRAL,
+        opacity: 0,
       })
     : null;
 
@@ -63,46 +71,103 @@ function makeRow(opts: {
   for (let i = 0; i < 4; i++) {
     const bit = 3 - i;
     const cx = bitX(bit);
-    cellBgs.push(new sd.Rect({
-      targetNode: svg,
-      x: cx - CELL_W / 2, y: opts.cy - CELL_H / 2,
-      width: CELL_W, height: CELL_H,
-      fill: C.white, stroke: FAINT, strokeWidth: 1,
-      rx: 3, ry: 3, opacity: 0,
-    }));
-    cellTexts.push(new sd.Text({
-      targetNode: svg,
-      text: String(opts.bits[i]), cx, cy: opts.cy - 1,
-      fontSize: 13, fill: NEUTRAL, opacity: 0,
-    }));
+    cellBgs.push(
+      new sd.Rect({
+        targetNode: svg,
+        x: cx - CELL_W / 2,
+        y: opts.cy - CELL_H / 2,
+        width: CELL_W,
+        height: CELL_H,
+        fill: C.white,
+        stroke: FAINT,
+        strokeWidth: 1,
+        rx: 3,
+        ry: 3,
+        opacity: 0,
+      }),
+    );
+    cellTexts.push(
+      new sd.Text({
+        targetNode: svg,
+        text: String(opts.bits[i]),
+        cx,
+        cy: opts.cy - 1,
+        fontSize: 13,
+        fill: NEUTRAL,
+        opacity: 0,
+      }),
+    );
   }
 
   const decimal = new sd.Math({
-    targetNode: svg, text: `= ${opts.decimal}`,
-    cx: DECIMAL_X, cy: opts.cy - 1,
-    fontSize: 14, fill: NEUTRAL, opacity: 0,
+    targetNode: svg,
+    text: `= ${opts.decimal}`,
+    cx: DECIMAL_X,
+    cy: opts.cy - 1,
+    fontSize: 14,
+    fill: NEUTRAL,
+    opacity: 0,
   });
 
   return { leftLabel, arrow, cellBgs, cellTexts, decimal };
 }
 
 const inputs: Row[] = [
-  makeRow({ labelLatex: "\\vec{a}_1", bits: [0, 0, 1, 1], decimal: 3, cy: INPUT_Y[0], hasArrow: false }),
-  makeRow({ labelLatex: "\\vec{a}_2", bits: [0, 1, 0, 1], decimal: 5, cy: INPUT_Y[1], hasArrow: false }),
+  makeRow({
+    labelLatex: "\\vec{a}_1",
+    bits: [0, 0, 1, 1],
+    decimal: 3,
+    cy: INPUT_Y[0],
+    hasArrow: false,
+  }),
+  makeRow({
+    labelLatex: "\\vec{a}_2",
+    bits: [0, 1, 0, 1],
+    decimal: 5,
+    cy: INPUT_Y[1],
+    hasArrow: false,
+  }),
 ];
 
 const subsets: Row[] = [
-  makeRow({ labelLatex: "\\emptyset",                  bits: [0, 0, 0, 0], decimal: 0, cy: ROW_Y[0], hasArrow: true }),
-  makeRow({ labelLatex: "\\{ \\vec{a}_1 \\}",           bits: [0, 0, 1, 1], decimal: 3, cy: ROW_Y[1], hasArrow: true }),
-  makeRow({ labelLatex: "\\{ \\vec{a}_2 \\}",           bits: [0, 1, 0, 1], decimal: 5, cy: ROW_Y[2], hasArrow: true }),
-  makeRow({ labelLatex: "\\{ \\vec{a}_1, \\vec{a}_2 \\}", bits: [0, 1, 1, 0], decimal: 6, cy: ROW_Y[3], hasArrow: true }),
+  makeRow({
+    labelLatex: "\\emptyset",
+    bits: [0, 0, 0, 0],
+    decimal: 0,
+    cy: ROW_Y[0],
+    hasArrow: true,
+  }),
+  makeRow({
+    labelLatex: "\\{ \\vec{a}_1 \\}",
+    bits: [0, 0, 1, 1],
+    decimal: 3,
+    cy: ROW_Y[1],
+    hasArrow: true,
+  }),
+  makeRow({
+    labelLatex: "\\{ \\vec{a}_2 \\}",
+    bits: [0, 1, 0, 1],
+    decimal: 5,
+    cy: ROW_Y[2],
+    hasArrow: true,
+  }),
+  makeRow({
+    labelLatex: "\\{ \\vec{a}_1, \\vec{a}_2 \\}",
+    bits: [0, 1, 1, 0],
+    decimal: 6,
+    cy: ROW_Y[3],
+    hasArrow: true,
+  }),
 ];
 
 const conclusion = new sd.Math({
   targetNode: svg,
   text: "S = \\{0,\\ 3,\\ 5,\\ 6\\}",
-  cx: 0, cy: -125,
-  fontSize: 17, fill: ACCENT, opacity: 0,
+  cx: 0,
+  cy: -125,
+  fontSize: 17,
+  fill: ACCENT,
+  opacity: 0,
 });
 
 const DUR = 280;
@@ -111,11 +176,15 @@ function showRow(r: Row, delay = 0) {
   const els: Array<sd.Math | sd.Text | sd.Rect> = [
     r.leftLabel,
     ...(r.arrow ? [r.arrow] : []),
-    ...r.cellBgs, ...r.cellTexts, r.decimal,
+    ...r.cellBgs,
+    ...r.cellTexts,
+    r.decimal,
   ];
   for (let i = 0; i < els.length; i++) {
-    els[i].startAnimate({ delay: delay + i * 25, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
+    els[i]
+      .startAnimate({ delay: delay + i * 25, duration: DUR, easing: E.easeOut })
+      .setOpacity(1)
+      .endAnimate();
   }
 }
 
@@ -139,12 +208,15 @@ sd.main(async () => {
   await sd.pause();
 
   // p5: result set S = {0, 3, 5, 6} — all four decimals turn orange.
-  conclusion.startAnimate({ duration: 400, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  conclusion
+    .startAnimate({ duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < subsets.length; i++) {
     subsets[i].decimal
       .startAnimate({ delay: 100 + i * 80, duration: 280, easing: E.easeOut })
-      .setFill(ACCENT).endAnimate();
+      .setFill(ACCENT)
+      .endAnimate();
   }
   await sd.pause();
 });

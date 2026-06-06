@@ -120,7 +120,11 @@ export class NumRow {
     return this.values[i - 1];
   }
 
-  fadeIn(opts?: { delay?: number; stagger?: number; duration?: number }): number {
+  fadeIn(opts?: {
+    delay?: number;
+    stagger?: number;
+    duration?: number;
+  }): number {
     const delay0 = opts?.delay ?? 0;
     const stagger = opts?.stagger ?? 22;
     const dur = opts?.duration ?? 300;

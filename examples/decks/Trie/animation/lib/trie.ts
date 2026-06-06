@@ -188,7 +188,11 @@ export class Trie {
     }
   }
 
-  fadeIn(opts?: { delay?: number; stagger?: number; duration?: number }): number {
+  fadeIn(opts?: {
+    delay?: number;
+    stagger?: number;
+    duration?: number;
+  }): number {
     const delay0 = opts?.delay ?? 0;
     const stagger = opts?.stagger ?? 70;
     const duration = opts?.duration ?? 320;
@@ -219,7 +223,10 @@ export class Trie {
   }
 
   /** Fade in a specific set of nodes (plus their incoming edges). */
-  fadeInNodes(ids: ReadonlyArray<number>, opts?: { delay?: number; stagger?: number; duration?: number }): number {
+  fadeInNodes(
+    ids: ReadonlyArray<number>,
+    opts?: { delay?: number; stagger?: number; duration?: number },
+  ): number {
     const delay0 = opts?.delay ?? 0;
     const stagger = opts?.stagger ?? 60;
     const duration = opts?.duration ?? 280;
@@ -245,9 +252,18 @@ export class Trie {
     return t + duration;
   }
 
-  paintNode(i: number, fill: sd.SDColor, stroke: sd.SDColor, opts?: { delay?: number; duration?: number; strokeWidth?: number }) {
+  paintNode(
+    i: number,
+    fill: sd.SDColor,
+    stroke: sd.SDColor,
+    opts?: { delay?: number; duration?: number; strokeWidth?: number },
+  ) {
     this.nodes[i].circle
-      .startAnimate({ delay: opts?.delay ?? 0, duration: opts?.duration ?? 240, easing: E.easeOut })
+      .startAnimate({
+        delay: opts?.delay ?? 0,
+        duration: opts?.duration ?? 240,
+        easing: E.easeOut,
+      })
       .setFill(fill)
       .setStroke(stroke)
       .setStrokeWidth(opts?.strokeWidth ?? 2.4)
@@ -255,7 +271,11 @@ export class Trie {
   }
 
   /** Draw a curved dashed fail-link arrow from `from` to `to`. Starts at opacity 0. */
-  failLink(from: number, to: number, opts?: { stroke?: sd.SDColor; bending?: number }): sd.Path {
+  failLink(
+    from: number,
+    to: number,
+    opts?: { stroke?: sd.SDColor; bending?: number },
+  ): sd.Path {
     const a = this.nodes[from];
     const b = this.nodes[to];
     const stroke = opts?.stroke ?? C.darkButtonGrey;
@@ -292,8 +312,11 @@ export class Trie {
   }
 
   /** Walk text on the AC automaton (requires buildFail() first). */
-  walk(text: string): Array<{ i: number; ch: string; from: number; to: number }> {
-    const steps: Array<{ i: number; ch: string; from: number; to: number }> = [];
+  walk(
+    text: string,
+  ): Array<{ i: number; ch: string; from: number; to: number }> {
+    const steps: Array<{ i: number; ch: string; from: number; to: number }> =
+      [];
     let cur = 0;
     for (let i = 1; i <= text.length; i++) {
       const ch = text[i - 1];
@@ -356,7 +379,8 @@ export class Trie {
     const bending = opts?.bending ?? 0.35;
     for (const [u, uGo] of go) {
       for (const [, v] of uGo) {
-        if (this.children.get(u)?.get(this.charForChild(u, v) ?? "") === v) continue;
+        if (this.children.get(u)?.get(this.charForChild(u, v) ?? "") === v)
+          continue;
         out.push(this.failLink(u, v, { stroke, bending }));
       }
     }

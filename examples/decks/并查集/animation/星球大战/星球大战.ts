@@ -19,7 +19,11 @@ const positions: Array<[number, number]> = [
 ];
 const destroyed = [2, 4, 6];
 
-interface Node { cx: number; cy: number; circle: sd.Circle }
+interface Node {
+  cx: number;
+  cy: number;
+  circle: sd.Circle;
+}
 const nodes: Node[] = [];
 for (let i = 0; i < positions.length; i++) {
   const cx = positions[i][0];
@@ -46,7 +50,14 @@ for (let i = 0; i < positions.length; i++) {
 }
 
 const edges: Array<[number, number]> = [
-  [0, 1], [1, 2], [0, 3], [3, 4], [4, 2], [2, 5], [4, 6], [5, 6],
+  [0, 1],
+  [1, 2],
+  [0, 3],
+  [3, 4],
+  [4, 2],
+  [2, 5],
+  [4, 6],
+  [5, 6],
 ];
 
 const edgeLines: Array<{ line: sd.Line; involvesDead: boolean }> = [];

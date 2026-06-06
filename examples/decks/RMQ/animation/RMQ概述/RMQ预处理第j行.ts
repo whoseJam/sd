@@ -30,12 +30,15 @@ const F = new FTable({
   label: "F",
 });
 
-const fValues: number[][] = Array.from({ length: M }, () => new Array(N).fill(0));
+const fValues: number[][] = Array.from({ length: M }, () =>
+  new Array(N).fill(0),
+);
 for (let i = 0; i < N; i++) fValues[0][i] = data[i];
 
 sd.main(async () => {
   a.fadeIn({ delay: 0 });
-  for (let i = 1; i <= N; i++) F.setValue(0, i, data[i - 1], { delay: 200 + i * 30 });
+  for (let i = 1; i <= N; i++)
+    F.setValue(0, i, data[i - 1], { delay: 200 + i * 30 });
   await sd.pause();
 
   let isFirst = true;
@@ -48,9 +51,18 @@ sd.main(async () => {
       fValues[j][i - 1] = v;
       const base = isFirst ? 0 : 200;
       isFirst = false;
-      F.paintCell(j - 1, iLeft, "#fdecd9", C.darkOrange, { delay: base, duration: 180 });
-      F.paintCell(j - 1, iRight, "#dbeefd", C.steelBlue, { delay: base, duration: 180 });
-      F.paintCell(j, i, "#e8f5e9", C.darkGreen, { delay: base + 140, duration: 200 });
+      F.paintCell(j - 1, iLeft, "#fdecd9", C.darkOrange, {
+        delay: base,
+        duration: 180,
+      });
+      F.paintCell(j - 1, iRight, "#dbeefd", C.steelBlue, {
+        delay: base,
+        duration: 180,
+      });
+      F.paintCell(j, i, "#e8f5e9", C.darkGreen, {
+        delay: base + 140,
+        duration: 200,
+      });
       F.setValue(j, i, v, { delay: base + 200 });
       await sd.pause();
       F.clearCell(j - 1, iLeft, { duration: 160 });

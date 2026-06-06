@@ -1,4 +1,5 @@
 import * as sd from "@/sd";
+
 import { gridHelpers } from "../grid";
 
 const svg = sd.svg();
@@ -51,7 +52,12 @@ const PIN_V = { "ΣV ": "ΣV " };
 function sweep(
   axisLen: number,
   crossLen: number,
-  evList: { sweepAt: number; cellStart: number; cellEnd: number; type: 1 | -1 }[],
+  evList: {
+    sweepAt: number;
+    cellStart: number;
+    cellEnd: number;
+    type: 1 | -1;
+  }[],
   visit: (sweepAt: number, runStart: number, runEnd: number) => void,
 ): number {
   const seg = sd.make1d(crossLen, 0);
@@ -160,12 +166,22 @@ sd.init(() => {
   });
   // Edges + totals are deterministic from `data`; compute them in init so
   // totalText can be seeded with its final value (no morph needed for the punchline).
-  const hEvs: { sweepAt: number; cellStart: number; cellEnd: number; type: 1 | -1 }[] = [];
+  const hEvs: {
+    sweepAt: number;
+    cellStart: number;
+    cellEnd: number;
+    type: 1 | -1;
+  }[] = [];
   data.forEach(([x, y, w, h]) => {
     hEvs.push({ sweepAt: y, cellStart: x, cellEnd: x + w, type: 1 });
     hEvs.push({ sweepAt: y + h, cellStart: x, cellEnd: x + w, type: -1 });
   });
-  const vEvs: { sweepAt: number; cellStart: number; cellEnd: number; type: 1 | -1 }[] = [];
+  const vEvs: {
+    sweepAt: number;
+    cellStart: number;
+    cellEnd: number;
+    type: 1 | -1;
+  }[] = [];
   data.forEach(([x, y, w, h]) => {
     vEvs.push({ sweepAt: x, cellStart: y, cellEnd: y + h, type: 1 });
     vEvs.push({ sweepAt: x + w, cellStart: y, cellEnd: y + h, type: -1 });
@@ -224,7 +240,10 @@ sd.main(async () => {
       .setOpacity(0.35)
       .endAnimate();
   }
-  frame.startAnimate({ delay: 220, duration: 400, easing: E.easeOut }).setOpacity(1).endAnimate();
+  frame
+    .startAnimate({ delay: 220, duration: 400, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   for (let i = 0; i < dataRects.length; i++) {
     dataRects[i]
       .startAnimate({ delay: 340 + i * 80, duration: 300, easing: E.easeOut })
@@ -251,7 +270,11 @@ sd.main(async () => {
       .endAnimate();
   }
   hSumText
-    .startAnimate({ delay: hEdges.length * 60, duration: 280, easing: E.easeOut })
+    .startAnimate({
+      delay: hEdges.length * 60,
+      duration: 280,
+      easing: E.easeOut,
+    })
     .setText(`ΣH ${sumH}`, PIN_H)
     .endAnimate();
 
@@ -266,7 +289,11 @@ sd.main(async () => {
       .endAnimate();
   }
   vSumText
-    .startAnimate({ delay: vEdges.length * 60, duration: 280, easing: E.easeOut })
+    .startAnimate({
+      delay: vEdges.length * 60,
+      duration: 280,
+      easing: E.easeOut,
+    })
     .setText(`ΣV ${sumV}`, PIN_V)
     .endAnimate();
 

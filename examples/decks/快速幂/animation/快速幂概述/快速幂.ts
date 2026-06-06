@@ -15,15 +15,22 @@ const X0 = -(N * SIZE) / 2;
 // Display: MSB on the left.
 const display = bits.slice().reverse();
 const row = new NumRow({
-  targetNode: svg, values: display, size: SIZE,
-  x: X0, y: 30, label: `${b}_{(2)}`,
+  targetNode: svg,
+  values: display,
+  size: SIZE,
+  x: X0,
+  y: 30,
+  label: `${b}_{(2)}`,
   labelGap: 40,
 });
 
 const expr = new sd.Math({
-  targetNode: svg, text: "ans = 1",
-  cx: 0, cy: -50,
-  fontSize: 16, fill: C.darkGreen,
+  targetNode: svg,
+  text: "ans = 1",
+  cx: 0,
+  cy: -50,
+  fontSize: 16,
+  fill: C.darkGreen,
 });
 
 sd.main(async () => {
@@ -36,7 +43,10 @@ sd.main(async () => {
     const colIdx = N - i; // 1-based index from left
     if (bits[i] === 1) {
       curExpr = `${curExpr} \\cdot a^{${mi}}`;
-      expr.startAnimate({ duration: 240, easing: E.easeOut }).setText(curExpr).endAnimate();
+      expr
+        .startAnimate({ duration: 240, easing: E.easeOut })
+        .setText(curExpr)
+        .endAnimate();
       row.paintCell(colIdx, "#e8f5e9", C.darkGreen, { duration: 200 });
     } else {
       row.paintCell(colIdx, "#f0f0f0", C.darkButtonGrey, { duration: 200 });
