@@ -1,23 +1,33 @@
 <section>
     <section>
         <h1>斐波那契数列</h1>
-        <p>luogu P1962</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1962" target="_blank" data-preview-link>P1962</a></p>
+    </section>
+    <section>
+        <h2>斐波那契数列</h2>
+        <p>
+            $$f_n = f_{n-1} + f_{n-2}$$
+            且 $f_1 = f_2 = 1$，求第 $n$ 项。
+        </p>
+        <p class="fragment quote">$n < 2^{63}$</p>
+        <p class="fragment">注意到 $f_n$ 实际上是前两项的<b style="color: red;">线性组合</b>。</p>
+        <p class="fragment">尝试把递推式改写成矩阵形式：</p>
+        <p class="fragment">
+            $$\begin{pmatrix} ? & ? \\ ? & ? \end{pmatrix}
+            \begin{pmatrix} f_{n-1} \\ f_{n-2} \end{pmatrix}
+            = \begin{pmatrix} f_n \\ f_{n-1} \end{pmatrix}$$
+        </p>
+        <sd-animation src="../../animation/斐波那契数列/矩阵递推.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 520px; height: 180px;"></sd-animation>
     </section>
     <section>
         <h2>转移矩阵</h2>
         <p>
-            $$
-            \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix}
-            \begin{pmatrix} f_{n-1} \\ f_{n-2} \end{pmatrix}
-            = \begin{pmatrix} f_n \\ f_{n-1} \end{pmatrix}
-            $$
+            $$F = \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix}$$
         </p>
-        <p class="fragment">设 $F = \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix}$：</p>
-        <p class="fragment">
-            $$
-            F^{n-2} \begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} f_n \\ f_{n-1} \end{pmatrix}
-            $$
+        <p class="fragment">那么
+            $$F^{n-2} \begin{pmatrix} f_2 \\ f_1 \end{pmatrix} = \begin{pmatrix} f_n \\ f_{n-1} \end{pmatrix}$$
         </p>
-        <p class="fragment">矩阵快速幂算 $F^{n-2}$ — $O(\log n)$。</p>
+        <p class="fragment">只需算 $F^{n-2}$，用矩阵快速幂 $O(\log n)$。</p>
     </section>
 </section>

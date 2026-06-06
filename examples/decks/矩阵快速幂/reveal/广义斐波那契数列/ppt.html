@@ -1,17 +1,36 @@
 <section>
     <section>
         <h1>广义斐波那契数列</h1>
-        <p>luogu P1349</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1349" target="_blank" data-preview-link>P1349</a></p>
     </section>
     <section>
-        <h2>转移</h2>
-        <p>$a_n = p a_{n-1} + q a_{n-2}$ →</p>
+        <h2>广义斐波那契数列</h2>
         <p>
-            $$
-            \begin{pmatrix} p & q \\ 1 & 0 \end{pmatrix}^{n-2}
-            \begin{pmatrix} a_2 \\ a_1 \end{pmatrix}
-            = \begin{pmatrix} a_n \\ a_{n-1} \end{pmatrix}
-            $$
+            $$a_n = p \, a_{n-1} + q \, a_{n-2}$$
+            且已知 $a_1$ 和 $a_2$，求第 $n$ 项。
         </p>
+        <p class="fragment quote">$n < 2^{31}$</p>
+        <p class="fragment">同样是<b style="color: purple;">线性递推式</b>，套斐波那契的思路构造：</p>
+        <p class="fragment">
+            $$\begin{pmatrix} ? & ? \\ ? & ? \end{pmatrix}
+            \begin{pmatrix} a_{n-1} \\ a_{n-2} \end{pmatrix}
+            = \begin{pmatrix} a_n \\ a_{n-1} \end{pmatrix}$$
+        </p>
+        <sd-animation src="../../animation/广义斐波那契数列/矩阵递推.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 520px; height: 180px;"></sd-animation>
+    </section>
+    <section>
+        <h2>转移矩阵</h2>
+        <p>
+            $$\begin{pmatrix} p & q \\ 1 & 0 \end{pmatrix}
+            \begin{pmatrix} a_{n-1} \\ a_{n-2} \end{pmatrix}
+            = \begin{pmatrix} a_n \\ a_{n-1} \end{pmatrix}$$
+        </p>
+        <p class="fragment">所以
+            $$\begin{pmatrix} p & q \\ 1 & 0 \end{pmatrix}^{n-2}
+            \begin{pmatrix} a_2 \\ a_1 \end{pmatrix}
+            = \begin{pmatrix} a_n \\ a_{n-1} \end{pmatrix}$$
+        </p>
+        <p class="fragment">用矩阵快速幂 $O(\log n)$。</p>
     </section>
 </section>

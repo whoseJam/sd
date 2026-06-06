@@ -3,36 +3,156 @@
         <h1>矩阵</h1>
         <p>$n \times m$ 二维数组</p>
     </section>
+
     <section>
-        <h2>矩阵乘法</h2>
-        <p>$A_{n \times m} \cdot B_{m \times p} = C_{n \times p}$，其中
-            $$C_{i, j} = \sum_{k = 1}^{m} A_{i, k} B_{k, j}$$
+        <h2><ruby>矩阵<rt>Matrix</rt></ruby></h2>
+        <p>一个 $n \times m$ 的二维数组 $\{a_{i,j}\}$，第 $i$ 行第 $j$ 列记作 $a_{i,j}$。</p>
+        <ul>
+            <li class="fragment">$i$ 是<ruby style="color: red;">行下标<rt>row</rt></ruby></li>
+            <li class="fragment">$j$ 是<ruby style="color: purple;">列下标<rt>column</rt></ruby></li>
+            <li class="fragment">$R(A)$ 表示行数，$C(A)$ 表示列数</li>
+        </ul>
+        <p class="fragment quote">下标从 $0$ 还是从 $1$ 开始没有固定标准，比较灵活</p>
+        <p class="fragment">例如下面这个 $3 \times 4$ 矩阵 $A$，$R(A)=3$，$C(A)=4$：
+            $$A = \begin{pmatrix}
+            1 & 2 & 1 & 4 \\
+            -3 & 3 & 5 & -1 \\
+            2 & -1 & 1 & -6
+            \end{pmatrix}$$
         </p>
-        <p class="fragment">必须满足 $C(A) = R(B)$。</p>
     </section>
+
+    <section>
+        <h2><ruby>矩阵乘法<rt>Matrix Multiply</rt></ruby></h2>
+        <p>矩阵乘法是<b>人为约定</b>的运算，并不是任意两个矩阵都能相乘<span class="fragment">，<b style="color: red;">必须满足 $C(A) = R(B)$</b>。</span></p>
+        <p class="fragment">结果 $C = AB$ 的 $(i, j)$ 元素是 $A$ 第 $i$ 行与 $B$ 第 $j$ 列的对应相乘再求和：
+            $$C_{i, j} = \sum_{k = 1}^{C(A)} A_{i, k} B_{k, j}$$
+        </p>
+        <sd-animation src="../../animation/矩阵概述/矩阵乘法.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 480px; height: 220px;"></sd-animation>
+    </section>
+
+    <section>
+        <h2>矩阵从哪儿来</h2>
+        <p>矩阵的引入来自<b>线性方程组</b>，是一种"打包处理"的思想。</p>
+        <p class="fragment">把
+            $$\left\{\begin{aligned}
+            & 7x_1 + 8x_2 + 9x_3 = 13 \\
+            & 4x_1 + 5x_2 + 6x_3 = 12 \\
+            & \phantom{4}x_1 + 2x_2 + 3x_3 = 11
+            \end{aligned}\right.$$
+            的系数抽出来：
+            $$\begin{pmatrix} 7 & 8 & 9 \\ 4 & 5 & 6 \\ 1 & 2 & 3 \end{pmatrix}
+            \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix}
+            = \begin{pmatrix} 13 \\ 12 \\ 11 \end{pmatrix}$$
+        </p>
+        <p class="fragment">简记作 $Ax = b$。</p>
+    </section>
+
     <section>
         <h2>性质</h2>
+        <p>设 $A = \begin{pmatrix} 1 & 2 \\ 0 & 1 \end{pmatrix}$，$B = \begin{pmatrix} 2 & 1 \\ 3 & 1 \end{pmatrix}$：</p>
+        <div style="display: flex; justify-content: space-around;">
+            <p class="fragment">$AB = \begin{pmatrix} 8 & 3 \\ 3 & 1 \end{pmatrix}$</p>
+            <p class="fragment">$BA = \begin{pmatrix} 2 & 5 \\ 3 & 7 \end{pmatrix}$</p>
+        </div>
         <ul>
-            <li>结合律：$(AB)C = A(BC)$</li>
-            <li>不满足交换律</li>
-            <li>有单位阵 $I$：$AI = IA = A$</li>
+            <li class="fragment"><b style="color: red;">不满足交换律</b>：$AB \neq BA$</li>
+            <li class="fragment"><b>满足结合律</b>：$(AB)C = A(BC)$ <del>证明略</del></li>
         </ul>
-        <p class="fragment">结合律让快速幂可行：</p>
-        <codeblock class="fragment">
+        <p class="fragment">结合律是矩阵快速幂能成立的关键。</p>
+    </section>
+
+    <section>
+        <h2>代码实现</h2>
+        <p>三重循环，$O(n^3)$。</p>
+        <codeblock>
             <script type="text/template">
-                Matrix Mpow(Matrix A, ll b) {
-                    Matrix ans = Identity();
-                    while (b) {
-                        if (b & 1) ans = ans * A;
-                        A = A * A;
-                        b >>= 1;
-                    }
-                    return ans;
+                struct Matrix {
+                    int rows, cols;
+                    int v[N][N];
+                };
+                Matrix operator *(const Matrix& a, const Matrix& b) {
+                    Matrix c;
+                    c.rows = a.rows;
+                    c.cols = b.cols;
+                    for (int i = 0; i < c.rows; i++)
+                        for (int j = 0; j < c.cols; j++)
+                            for (int k = 0; k < a.cols; k++)
+                                c.v[i][j] += a.v[i][k] * b.v[k][j];
+                    return c;
                 }
             </script>
         </codeblock>
-        <p class="fragment">$n^3 \log b$。</p>
+    </section>
+
+    <section>
+        <h2><ruby>单位矩阵<rt>Identity Matrix</rt></ruby></h2>
+        <p>$n$ 阶单位阵 $I_n$：主对角线为 $1$，其它位置为 $0$ 的 $n \times n$ 方阵。</p>
+        <p>
+            $$I_n = \begin{pmatrix}
+            1 & 0 & \cdots & 0 \\
+            0 & 1 & \cdots & 0 \\
+            \vdots & \vdots & \ddots & \vdots \\
+            0 & 0 & \cdots & 1
+            \end{pmatrix}$$
+        </p>
+        <p class="fragment">类比数 $1$ 在乘法中的角色，任意矩阵 $A$（与 $I$ 维度匹配的）满足 $AI = IA = A$，无论左乘还是右乘。</p>
+    </section>
+
+    <section>
+        <h2>矩阵快速幂</h2>
+        <p>结合律让 $A^n$ 可以反复平方算。类比整数快速幂：</p>
+        <div style="display: flex; gap: 24px; align-items: flex-start; justify-content: center;">
+            <codeblock>
+                <script type="text/template">
+                    int Fpow(int a, int b) {
+                        int ans = 1;
+                        while (b) {
+                            if (b & 1) ans = ans * a;
+                            a = a * a;
+                            b >>= 1;
+                        }
+                        return ans;
+                    }
+                </script>
+            </codeblock>
+            <codeblock>
+                <script type="text/template">
+                    Matrix Mpow(Matrix A, ll b) {
+                        Matrix ans = Identity();
+                        while (b) {
+                            if (b & 1) ans = ans * A;
+                            A = A * A;
+                            b >>= 1;
+                        }
+                        return ans;
+                    }
+                </script>
+            </codeblock>
+        </div>
+        <p class="fragment">单次乘法 $O(n^3)$，总复杂度 $O(n^3 \log b)$。</p>
         <sd-animation src="../../animation/矩阵概述/快速幂二进制.js" class="fragment"
-            style="margin: 0 auto; width: 420px; height: 200px;"></sd-animation>
+            style="display: block; margin: 0 auto; width: 420px; height: 200px;"></sd-animation>
+    </section>
+
+    <section>
+        <h2>矩阵乘法的意义</h2>
+        <sd-animation src="../../animation/矩阵概述/线性组合.js"
+            style="display: block; margin: 0 auto; width: 420px; height: 220px;"></sd-animation>
+        <p>矩阵乘法的本质：把一组<b style="color: #b4610e;">元素</b>，按不同的<b style="color: #4a90e2;">权重</b>组合到一起，形成一组新的元素。</p>
+        <p class="fragment">这个过程的专业名字叫做 <b><ruby>线性组合<rt>Linear Combination</rt></ruby></b>。</p>
+    </section>
+
+    <section>
+        <h2>什么是线性组合</h2>
+        <p><b>线性</b>组合 = 系数 $\times$ 项 + 系数 $\times$ 项 + $\cdots$。</p>
+        <p class="fragment quote">关键在"线性"：每一项里只出现单个被组合对象，不能有乘方、不能两两相乘。</p>
+        <ul>
+            <li class="fragment">$2A + 3B + 4C$，<b style="color: green;">是</b> $A, B, C$ 的线性组合 ✓</li>
+            <li class="fragment">$A^2 + 3B + 4C$，<b style="color: red;">不是</b>（出现 $A^2$）✗</li>
+            <li class="fragment">$AB + 3C$，<b style="color: red;">不是</b>（出现 $AB$）✗</li>
+        </ul>
+        <p class="fragment">后面的递推问题都靠"把当前状态写成上一步状态的线性组合"，从而塞进矩阵乘法。</p>
     </section>
 </section>
