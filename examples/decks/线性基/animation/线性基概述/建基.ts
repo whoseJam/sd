@@ -98,6 +98,33 @@ for (let slot = 3; slot >= 0; slot--) {
 basis.reverse();
 slotLabels.reverse();
 
+// Input queue: x_1, x_2, x_3 listed on the left so the viewer can see
+// what's coming and what's been processed.
+const INPUTS = [7, 5, 3];
+const INPUT_X = -170;
+const INPUT_Y_BASE = 80;
+const INPUT_Y_STEP = 36;
+const inputLabels: sd.Math[] = INPUTS.map((val, i) =>
+  new sd.Math({
+    targetNode: svg,
+    text: `\\vec{x}_${i + 1} = ${val}`,
+    cx: INPUT_X, cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
+    fontSize: 14, fill: FAINT, opacity: 0,
+  }),
+);
+
+function activateInput(idx: number, delay = 0) {
+  inputLabels[idx]
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setFill(ACTIVE_STROKE).endAnimate();
+}
+
+function completeInput(idx: number, delay = 0) {
+  inputLabels[idx]
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setFill(PLACED_STROKE).endAnimate();
+}
+
 // ─── helpers ─────────────────────────────────────────────────────
 
 const DUR = 280;
@@ -211,9 +238,14 @@ sd.main(async () => {
     }
   }
   xLabel.startAnimate({ duration: DUR, easing: E.easeOut }).setOpacity(1).endAnimate();
+  for (let i = 0; i < inputLabels.length; i++) {
+    inputLabels[i].startAnimate({ delay: 200 + i * 120, duration: DUR, easing: E.easeOut })
+      .setOpacity(1).endAnimate();
+  }
   await sd.pause();
 
   // p2: x = 7 (0111), highlight bit 2.
+  activateInput(0);
   showX(0b0111);
   highlightLeadingBit(2, 320);
   await sd.pause();
@@ -224,9 +256,11 @@ sd.main(async () => {
   placeBasis(2, 0b0111, 1000);
   hideX(1300);
   fadeBeam(1500);
+  completeInput(0, 1000);
   await sd.pause();
 
   // p4: x = 5 (0101), highlight bit 2.
+  activateInput(1);
   showX(0b0101);
   highlightLeadingBit(2, 320);
   await sd.pause();
@@ -245,9 +279,11 @@ sd.main(async () => {
   placeBasis(1, 0b0010, 1000);
   hideX(1300);
   fadeBeam(1500);
+  completeInput(1, 1000);
   await sd.pause();
 
   // p7: x = 3 (0011), highlight bit 1.
+  activateInput(2);
   showX(0b0011);
   highlightLeadingBit(1, 320);
   await sd.pause();
@@ -266,5 +302,6 @@ sd.main(async () => {
   placeBasis(0, 0b0001, 1000);
   hideX(1300);
   fadeBeam(1500);
+  completeInput(2, 1000);
   await sd.pause();
 });
