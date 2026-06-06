@@ -20,31 +20,36 @@ const FONT = 24;
 const NEUTRAL = C.darkButtonGrey;
 const ACCENT = C.darkOrange;
 
+// All three rows share the same right edge → bmatrix lines up
+// column-by-column. setMx pins the right edge after construction.
+const SHARED_MX = 130;
+
 const aMath = new sd.Math({
   targetNode: svg,
   text: "\\mathbf{a} = \\begin{bmatrix} 0 & 1 & 0 & 1 \\end{bmatrix}",
-  cx: 0, cy: ROW_A_Y,
-  fontSize: FONT, fill: NEUTRAL, opacity: 0,
+  cy: ROW_A_Y, fontSize: FONT, fill: NEUTRAL, opacity: 0,
 });
+aMath.setMx(SHARED_MX);
 
 const bMath = new sd.Math({
   targetNode: svg,
-  text: "\\oplus\\ \\ \\mathbf{b} = \\begin{bmatrix} 0 & 0 & 1 & 1 \\end{bmatrix}",
-  cx: 0, cy: ROW_B_Y,
-  fontSize: FONT, fill: NEUTRAL, opacity: 0,
+  text: "\\oplus\\ \\mathbf{b} = \\begin{bmatrix} 0 & 0 & 1 & 1 \\end{bmatrix}",
+  cy: ROW_B_Y, fontSize: FONT, fill: NEUTRAL, opacity: 0,
 });
+bMath.setMx(SHARED_MX);
 
 const rMath = new sd.Math({
   targetNode: svg,
   text: "\\mathbf{a} \\oplus \\mathbf{b} = \\begin{bmatrix} 0 & 1 & 1 & 0 \\end{bmatrix}",
-  cx: 0, cy: ROW_R_Y,
-  fontSize: FONT, fill: ACCENT, opacity: 0,
+  cy: ROW_R_Y, fontSize: FONT, fill: ACCENT, opacity: 0,
 });
+rMath.setMx(SHARED_MX);
 
+// Line spans roughly the bmatrix (mx 130, matrix width ~100).
 const sumLine = new sd.Line({
   targetNode: svg,
-  x1: -140, y1: LINE_Y,
-  x2: 140, y2: LINE_Y,
+  x1: 22, y1: LINE_Y,
+  x2: SHARED_MX + 4, y2: LINE_Y,
   stroke: NEUTRAL, strokeWidth: 1.4, opacity: 0,
 });
 
