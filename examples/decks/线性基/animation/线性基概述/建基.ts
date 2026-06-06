@@ -114,10 +114,12 @@ function setRowColor(r: Row, color: sd.SDColor, delay = 0) {
   }
 }
 
+// values is MSB-first: values[0] → bit 3 (leftmost), values[3] → bit 0.
 function setBits(r: Row, values: number[], delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
+  for (let i = 0; i <= 3; i++) {
+    const bit = 3 - i;
     r.bits[bit].startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setText(String(values[bit])).endAnimate();
+      .setText(String(values[i])).endAnimate();
   }
 }
 
@@ -154,28 +156,30 @@ function pulseRow(slot: number, delay = 0) {
   }
 }
 
-// XOR x's bits, then re-highlight the new leading bit. Single combined
-// op so fill animations on x.bits don't collide.
+// newValues is MSB-first like setBits. newLeading is a bit number.
 function xorAndRehighlight(newValues: number[], newLeading: number, delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
+  for (let i = 0; i <= 3; i++) {
+    const bit = 3 - i;
     // flash
     xRow.bits[bit].startAnimate({ delay, duration: 200, easing: E.easeOut })
       .setFill(HIGHLIGHT).endAnimate();
     // text change
     xRow.bits[bit].startAnimate({ delay: delay + 220, duration: 200, easing: E.easeOut })
-      .setText(String(newValues[bit])).endAnimate();
+      .setText(String(newValues[i])).endAnimate();
     // settle into new leading-bit colors
     xRow.bits[bit].startAnimate({ delay: delay + 460, duration: 240, easing: E.easeOut })
       .setFill(bit === newLeading ? HIGHLIGHT : NEUTRAL).endAnimate();
   }
 }
 
+// values is MSB-first.
 function placeBasis(slot: number, values: number[], delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
-    const stagger = (3 - bit) * 60;
+  for (let i = 0; i <= 3; i++) {
+    const bit = 3 - i;
+    const stagger = i * 60;
     basisRows[slot].bits[bit]
       .startAnimate({ delay: delay + stagger, duration: DUR, easing: E.easeOut })
-      .setText(String(values[bit])).setFill(PLACED).endAnimate();
+      .setText(String(values[i])).setFill(PLACED).endAnimate();
   }
   // Also paint label and brackets in PLACED color.
   for (const el of [basisRows[slot].label, basisRows[slot].open, basisRows[slot].close]) {
