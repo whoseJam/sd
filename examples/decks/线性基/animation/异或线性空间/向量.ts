@@ -26,21 +26,21 @@ const SHARED_MAX_X = 130;
 
 const aMath = new sd.Math({
   targetNode: svg,
-  text: "\\mathbf{a} = \\begin{bmatrix} 0 & 1 & 0 & 1 \\end{bmatrix}",
+  text: "\\vec{a} = \\begin{bmatrix} 0 & 1 & 0 & 1 \\end{bmatrix}",
   cy: ROW_A_Y, fontSize: FONT, fill: NEUTRAL, opacity: 0,
 });
 aMath.setMaxX(SHARED_MAX_X);
 
 const bMath = new sd.Math({
   targetNode: svg,
-  text: "\\oplus\\ \\mathbf{b} = \\begin{bmatrix} 0 & 0 & 1 & 1 \\end{bmatrix}",
+  text: "\\oplus\\ \\vec{b} = \\begin{bmatrix} 0 & 0 & 1 & 1 \\end{bmatrix}",
   cy: ROW_B_Y, fontSize: FONT, fill: NEUTRAL, opacity: 0,
 });
 bMath.setMaxX(SHARED_MAX_X);
 
 const rMath = new sd.Math({
   targetNode: svg,
-  text: "\\mathbf{a} \\oplus \\mathbf{b} = \\begin{bmatrix} 0 & 1 & 1 & 0 \\end{bmatrix}",
+  text: "\\vec{a} \\oplus \\vec{b} = \\begin{bmatrix} 0 & 1 & 1 & 0 \\end{bmatrix}",
   cy: ROW_R_Y, fontSize: FONT, fill: ACCENT, opacity: 0,
 });
 rMath.setMaxX(SHARED_MAX_X);

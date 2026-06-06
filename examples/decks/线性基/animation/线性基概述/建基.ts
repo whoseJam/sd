@@ -64,7 +64,7 @@ for (let bit = 0; bit <= 3; bit++) {
 }
 
 const xLabel = new sd.Math({
-  targetNode: svg, text: "\\mathbf{x}",
+  targetNode: svg, text: "\\vec{x}",
   cx: LABEL_X, cy: WR_Y - 1,
   fontSize: 15, fill: NEUTRAL, opacity: 0,
 });
@@ -90,7 +90,7 @@ for (let slot = 3; slot >= 0; slot--) {
   }
   basis.push(row);
   slotLabels.push(new sd.Math({
-    targetNode: svg, text: `\\mathbf{b}_${slot}`,
+    targetNode: svg, text: `\\vec{b}_${slot}`,
     cx: LABEL_X, cy: cy - 1,
     fontSize: 14, fill: NEUTRAL, opacity: 0,
   }));
