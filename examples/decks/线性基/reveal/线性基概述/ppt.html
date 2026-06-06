@@ -21,11 +21,17 @@
 
     <section>
         <h2>关键观察：压缩</h2>
-        <p>这堆数能 XOR 出来的所有可能值是个集合 $S$。</p>
-        <p class="fragment">能不能用<b>更少的数</b>代替原集合，让 $S$ 不变？</p>
-        <p class="fragment">例：$\{3, 5, 6\}$，注意 $6 = 3 \oplus 5$ — 6 是冗余的。</p>
-        <p class="fragment">删掉 6 后还剩 $\{3, 5\}$，能 XOR 出的值<b>仍然是</b> $\{0, 3, 5, 6\}$。</p>
-        <p class="fragment">原集合做得到的事新集合一样做得到，原集合做不到的事新集合也照样做不到。</p>
+        <div style="display: flex; align-items: flex-start; gap: 24px;">
+            <div style="flex: 1 1 0; min-width: 0;">
+                <p>这堆数能 XOR 出来的所有可能值是个集合 $S$。</p>
+                <p class="fragment">能不能用<b>更少的数</b>代替原集合，让 $S$ 不变？</p>
+                <p class="fragment">例 $\{3, 5, 6\}$：$\vec{c} = \vec{a} \oplus \vec{b}$，所以 $\vec{c}$ 是冗余的。</p>
+                <p class="fragment">删掉 $\vec{c}$ 后还剩 $\{3, 5\}$，能 XOR 出的值<b>仍然是</b> $\{0, 3, 5, 6\}$。</p>
+                <p class="fragment">原集合做得到的事新集合一样做得到，原集合做不到的事新集合也做不到。</p>
+            </div>
+            <sd-animation src="../../animation/压缩/冗余删除.js" class="fragment"
+                style="flex: 1 1 0; margin: 0; height: 400px;"></sd-animation>
+        </div>
     </section>
 
     <section>
