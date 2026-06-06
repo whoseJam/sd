@@ -18,20 +18,24 @@
     </section>
     <section>
         <h2>建基</h2>
-        <p>贪心：维护 $b[60..0]$，$b[i]$ 是首高位为 $i$ 的基元素。插入 $x$：</p>
-        <codeblock>
-            <script type="text/template">
-                bool insert(ll x) {
-                    for (int i = 60; i >= 0; i--) {
-                        if (!((x >> i) & 1)) continue;
-                        if (!b[i]) { b[i] = x; return true; }
-                        x ^= b[i];
-                    }
-                    return false;  // x 被线性表出了
-                }
-            </script>
-        </codeblock>
-        <sd-animation src="../../animation/线性基概述/建基.js" class="fragment"
-            style="margin: 0 auto; width: 320px; height: 240px;"></sd-animation>
+        <div style="display: flex; align-items: center; gap: 24px;">
+            <div style="flex: 1; min-width: 0;">
+                <p>贪心：维护 $b[60..0]$，$b[i]$ 是首高位为 $i$ 的基元素。插入 $x$：</p>
+                <codeblock>
+                    <script type="text/template">
+                        bool insert(ll x) {
+                            for (int i = 60; i >= 0; i--) {
+                                if (!((x >> i) & 1)) continue;
+                                if (!b[i]) { b[i] = x; return true; }
+                                x ^= b[i];
+                            }
+                            return false;
+                        }
+                    </script>
+                </codeblock>
+            </div>
+            <sd-animation src="../../animation/线性基概述/建基.js" class="fragment"
+                style="margin: 0; width: 50%; height: 460px;"></sd-animation>
+        </div>
     </section>
 </section>
