@@ -5,6 +5,8 @@
     <section>
         <h2>边分类</h2>
         <p>DFS 把无向图分为 DFS 树 + 若干返祖边。</p>
+        <sd-animation src="../../animation/无向图Tarjan概述/边分类.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 280px;"></sd-animation>
     </section>
     <section>
         <h2>dfn / low</h2>
@@ -13,6 +15,8 @@
             <li>$\text{low}(u)$ — 从 $u$ 出发能回到的最早祖先的 dfn（含自己）</li>
         </ul>
         <p class="fragment">$\text{low}(u) = \min$ 之下：自己、$\text{low}(v)$ 若 $v$ 是树边孩子、$\text{dfn}(v)$ 若 $v$ 是返祖目标。</p>
+        <sd-animation src="../../animation/无向图Tarjan概述/dfn-low.js" class="fragment"
+            style="margin: 0 auto; width: 320px; height: 280px;"></sd-animation>
     </section>
     <section>
         <h2>模板</h2>
