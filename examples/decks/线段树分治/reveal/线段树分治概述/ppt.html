@@ -7,6 +7,8 @@
         <h2>动机</h2>
         <p>数据结构 $S$ 只支持插入不支持删除。但操作序列里有插入、删除、查询。</p>
         <p class="fragment">把每条"$[t_l, t_r]$ 区间内有效"的事件挂在时序线段树的对应节点上。DFS 整棵线段树：进入节点时 push 事件，回溯时按可撤回栈 pop — 自然完成"删除"。</p>
+        <sd-animation src="../../animation/线段树分治概述/事件挂载.js" class="fragment"
+            style="margin: 0 auto; width: 380px; height: 280px;"></sd-animation>
     </section>
     <section>
         <h2>复杂度</h2>
