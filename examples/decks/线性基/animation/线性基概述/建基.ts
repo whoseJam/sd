@@ -4,267 +4,173 @@ const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
 
-// All-animation walkthrough of building a 4-bit basis from {7, 5, 3}.
-// Each insert:
-//   1. x appears at the top with its 4 bits
-//   2. leading bit highlights
-//   3. a beam reaches down to b[i] at that slot
-//   4. if b[i] is occupied: pulse, then x's bits flip (XOR effect),
-//      leading bit moves; beam fades and the loop continues
-//   5. if b[i] is empty: pulse, b[i] fills with x's bits, x fades
+// Same visual language as the 异或线性空间 page: every "row" is one
+// sd.Math expression of the form  label = [b3 b2 b1 b0]  with all
+// rows right-aligned to a shared maxX. The bmatrix has constant width
+// regardless of bit values, so setMaxX once at construction is enough.
+//
+// Layout:
+//   ─── scratchpad ───────────────  (current insertion + optional XOR)
+//      x        = [...]
+//      ⊕ b_i    = [...]
+//      ────────────
+//      x  becomes = [...]            (orange — new x after XOR)
+//   ─── basis ────────────────────  (accumulating)
+//      b_3, b_2, b_1, b_0
 
-const CELL_W = 30;
-const CELL_H = 24;
-const CELL_GAP = 4;
-const TOTAL_W = 4 * CELL_W + 3 * CELL_GAP;
+const SHARED_MAX_X = 130;
+const FONT = 22;
 
-// MSB on the left (bit 3 leftmost), LSB on the right (bit 0).
-function bitX(bit: number): number {
-  return -TOTAL_W / 2 + CELL_W / 2 + (3 - bit) * (CELL_W + CELL_GAP);
-}
+const SCRATCH_X_Y = 130;
+const SCRATCH_XOR_Y = 95;
+const SCRATCH_LINE_Y = 73;
+const SCRATCH_RES_Y = 52;
 
-const WR_Y = 95;
-const SLOT_Y = [20, -15, -50, -85]; // slot 3, 2, 1, 0 (top to bottom)
-function basisCy(slot: number): number {
-  return SLOT_Y[3 - slot];
-}
+const BASIS_TOP_Y = -10;
+const BASIS_GAP_Y = 36;
+const basisY = (slot: number) => BASIS_TOP_Y - (3 - slot) * BASIS_GAP_Y;
 
-const LABEL_X = -TOTAL_W / 2 - CELL_W / 2 - 14;
-
-const PLACED_FILL = "#fdecd9";
-const PLACED_STROKE = C.darkOrange;
-const ACTIVE_FILL = "#e3f2fd";
-const ACTIVE_STROKE = C.steelBlue;
 const NEUTRAL = C.darkButtonGrey;
-const FAINT = C.silver;
+const ACCENT = C.darkOrange;
+const EMPTY = C.silver;
+const XOR_COLOR = C.steelBlue;
 
-interface Cell { bg: sd.Rect; text: sd.Text; }
-function makeCell(cx: number, cy: number, txt: string, txtFill: sd.SDColor): Cell {
-  return {
-    bg: new sd.Rect({
-      targetNode: svg,
-      x: cx - CELL_W / 2, y: cy - CELL_H / 2,
-      width: CELL_W, height: CELL_H,
-      fill: C.white, stroke: FAINT, strokeWidth: 1,
-      rx: 3, ry: 3, opacity: 0,
-    }),
-    text: new sd.Text({
-      targetNode: svg,
-      text: txt, cx, cy: cy - 1,
-      fontSize: 13, fill: txtFill,
-      opacity: 0,
-    }),
-  };
-}
+const bmatrixLatex = (bits: number[]) =>
+  `\\begin{bmatrix} ${bits.join(" & ")} \\end{bmatrix}`;
+const xLatex = (bits: number[]) => `\\mathbf{x} = ${bmatrixLatex(bits)}`;
+const xorTermLatex = (slot: number, bits: number[]) =>
+  `\\oplus\\ \\mathbf{b}_${slot} = ${bmatrixLatex(bits)}`;
+const resultLatex = (bits: number[]) => `= ${bmatrixLatex(bits)}`;
+const basisLatex = (slot: number, bits: number[]) =>
+  `\\mathbf{b}_${slot} = ${bmatrixLatex(bits)}`;
 
-// x register (xCells[bit] indexed by bit value).
-const xCells: Cell[] = [];
-for (let bit = 0; bit <= 3; bit++) {
-  xCells[bit] = makeCell(bitX(bit), WR_Y, "0", NEUTRAL);
-}
+// ─── scratchpad ──────────────────────────────────────────────────
 
-const xLabel = new sd.Math({
-  targetNode: svg, text: "\\mathbf{x}",
-  cx: LABEL_X, cy: WR_Y - 1,
-  fontSize: 15, fill: NEUTRAL, opacity: 0,
+const ZEROS = [0, 0, 0, 0];
+
+const xMath = new sd.Math({
+  targetNode: svg, text: xLatex(ZEROS),
+  cy: SCRATCH_X_Y, fontSize: FONT, fill: NEUTRAL, opacity: 0,
 });
+xMath.setMaxX(SHARED_MAX_X);
 
-// Beam: vertical line from x bottom to a basis row top. Endpoints animated.
-const beam = new sd.Line({
+const xorTermMath = new sd.Math({
+  targetNode: svg, text: xorTermLatex(0, ZEROS),
+  cy: SCRATCH_XOR_Y, fontSize: FONT, fill: XOR_COLOR, opacity: 0,
+});
+xorTermMath.setMaxX(SHARED_MAX_X);
+
+const scratchLine = new sd.Line({
   targetNode: svg,
-  x1: bitX(0), y1: WR_Y - CELL_H / 2,
-  x2: bitX(0), y2: basisCy(0) + CELL_H / 2,
-  stroke: ACTIVE_STROKE, strokeWidth: 1.8,
-  strokeDashArray: [5, 4],
-  opacity: 0,
+  x1: 24, y1: SCRATCH_LINE_Y,
+  x2: SHARED_MAX_X + 4, y2: SCRATCH_LINE_Y,
+  stroke: NEUTRAL, strokeWidth: 1.2, opacity: 0,
 });
 
-// Basis grid (basis[slot][bit]).
-const basis: Cell[][] = [];
-const slotLabels: sd.Text[] = [];
+const resultMath = new sd.Math({
+  targetNode: svg, text: resultLatex(ZEROS),
+  cy: SCRATCH_RES_Y, fontSize: FONT, fill: ACCENT, opacity: 0,
+});
+resultMath.setMaxX(SHARED_MAX_X);
+
+// ─── basis (always present, faint until placed) ──────────────────
+
+const basis: sd.Math[] = [];
 for (let slot = 3; slot >= 0; slot--) {
-  const cy = basisCy(slot);
-  const row: Cell[] = [];
-  for (let bit = 0; bit <= 3; bit++) {
-    row[bit] = makeCell(bitX(bit), cy, "0", FAINT);
-  }
-  basis.push(row);
-  slotLabels.push(new sd.Math({
-    targetNode: svg, text: `\\mathbf{b}_${slot}`,
-    cx: LABEL_X, cy: cy - 1,
-    fontSize: 14, fill: NEUTRAL, opacity: 0,
-  }));
+  const m = new sd.Math({
+    targetNode: svg, text: basisLatex(slot, ZEROS),
+    cy: basisY(slot), fontSize: FONT, fill: EMPTY, opacity: 0,
+  });
+  m.setMaxX(SHARED_MAX_X);
+  basis.push(m);
 }
-basis.reverse();
-slotLabels.reverse();
+basis.reverse(); // basis[slot]
 
 // ─── helpers ─────────────────────────────────────────────────────
 
-const DUR = 280;
+const DUR = 320;
 
-function showX(value: number, delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
-    const v = (value >> bit) & 1;
-    xCells[bit].bg
-      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).setFill(C.white).setStroke(FAINT).setStrokeWidth(1)
-      .endAnimate();
-    xCells[bit].text
-      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).setText(String(v)).setFill(NEUTRAL).endAnimate();
-  }
-}
-
-function hideX(delay = 0) {
-  for (const c of xCells) {
-    c.bg.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(0).endAnimate();
-    c.text.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setOpacity(0).endAnimate();
-  }
-}
-
-// Highlight a single x cell with a thicker blue stroke; un-highlight others.
-function highlightLeadingBit(bit: number, delay = 0) {
-  for (let b = 0; b <= 3; b++) {
-    const isLead = b === bit;
-    xCells[b].bg
-      .startAnimate({ delay, duration: 280, easing: E.easeOut })
-      .setStroke(isLead ? ACTIVE_STROKE : FAINT)
-      .setStrokeWidth(isLead ? 2.4 : 1)
-      .endAnimate();
-  }
-}
-
-function beamTo(bit: number, slot: number, delay = 0, dur = 320) {
-  // Snap endpoints into position while invisible, then fade in. Avoids
-  // the "drifting from a previous endpoint" look.
-  beam.startAnimate({ delay, duration: 1, easing: E.easeOut })
-    .setX1(bitX(bit)).setX2(bitX(bit))
-    .setY2(basisCy(slot) + CELL_H / 2)
-    .endAnimate();
-  beam.startAnimate({ delay: delay + 4, duration: dur, easing: E.easeOut })
+function show(m: sd.Math | sd.Line, delay = 0) {
+  m.startAnimate({ delay, duration: DUR, easing: E.easeOut })
     .setOpacity(1).endAnimate();
 }
 
-function fadeBeam(delay = 0) {
-  beam.startAnimate({ delay, duration: DUR, easing: E.easeOut })
+function hide(m: sd.Math | sd.Line, delay = 0) {
+  m.startAnimate({ delay, duration: DUR, easing: E.easeOut })
     .setOpacity(0).endAnimate();
 }
 
-function pulseRow(slot: number, delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
-    basis[slot][bit].bg
-      .startAnimate({ delay, duration: 200, easing: E.easeOut })
-      .setStrokeWidth(2.6).endAnimate();
-    basis[slot][bit].bg
-      .startAnimate({ delay: delay + 380, duration: 220, easing: E.easeOut })
-      .setStrokeWidth(1.4).endAnimate();
-  }
+function morph(m: sd.Math, latex: string, delay = 0) {
+  m.startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setText(latex).endAnimate();
 }
 
-// Flash x cells and morph their bit values to a new XOR'd state.
-function xorXBits(newValue: number, delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
-    const v = (newValue >> bit) & 1;
-    xCells[bit].bg
-      .startAnimate({ delay, duration: 220, easing: E.easeOut })
-      .setFill(ACTIVE_FILL).endAnimate();
-    xCells[bit].text
-      .startAnimate({ delay: delay + 120, duration: 220, easing: E.easeOut })
-      .setText(String(v)).endAnimate();
-    xCells[bit].bg
-      .startAnimate({ delay: delay + 360, duration: 220, easing: E.easeOut })
-      .setFill(C.white).endAnimate();
-  }
+function place(slot: number, bits: number[], delay = 0) {
+  morph(basis[slot], basisLatex(slot, bits), delay);
+  basis[slot]
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setFill(ACCENT).endAnimate();
 }
 
-function placeBasis(slot: number, value: number, delay = 0) {
-  for (let bit = 0; bit <= 3; bit++) {
-    const v = (value >> bit) & 1;
-    const stagger = (3 - bit) * 70;
-    basis[slot][bit].bg
-      .startAnimate({ delay: delay + stagger, duration: DUR, easing: E.easeOut })
-      .setFill(PLACED_FILL).setStroke(PLACED_STROKE).setStrokeWidth(1.4)
-      .endAnimate();
-    basis[slot][bit].text
-      .startAnimate({ delay: delay + stagger, duration: DUR, easing: E.easeOut })
-      .setText(String(v)).setFill(PLACED_STROKE).endAnimate();
-  }
+function clearScratch(delay = 0) {
+  hide(xMath, delay);
+  hide(xorTermMath, delay);
+  hide(resultMath, delay);
+  hide(scratchLine, delay);
 }
 
 // ─── main ────────────────────────────────────────────────────────
 
 sd.main(async () => {
-  // p1: empty basis + labels.
-  for (let slot = 0; slot <= 3; slot++) {
-    const d = (3 - slot) * 80;
-    slotLabels[slot].startAnimate({ delay: d, duration: DUR, easing: E.easeOut })
-      .setOpacity(1).endAnimate();
-    for (let bit = 0; bit <= 3; bit++) {
-      basis[slot][bit].bg
-        .startAnimate({ delay: d + (3 - bit) * 30, duration: DUR, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
-      basis[slot][bit].text
-        .startAnimate({ delay: d + (3 - bit) * 30 + 40, duration: DUR, easing: E.easeOut })
-        .setOpacity(1).endAnimate();
-    }
+  // p1: basis appears, all faint zeros.
+  for (let slot = 3; slot >= 0; slot--) {
+    show(basis[slot], (3 - slot) * 100);
   }
-  xLabel.startAnimate({ duration: DUR, easing: E.easeOut }).setOpacity(1).endAnimate();
   await sd.pause();
 
-  // p2: x = 7 (0111), highlight bit 2.
-  showX(0b0111);
-  highlightLeadingBit(2, 320);
+  // p2: insert 7. x = [0 1 1 1].
+  morph(xMath, xLatex([0, 1, 1, 1]));
+  show(xMath);
   await sd.pause();
 
-  // p3: beam → b[2] (empty) → place 0111.
-  beamTo(2, 2);
-  pulseRow(2, 360);
-  placeBasis(2, 0b0111, 1000);
-  hideX(1300);
-  fadeBeam(1500);
+  // p3: b_2 empty → place. x fades.
+  place(2, [0, 1, 1, 1]);
+  hide(xMath, 400);
   await sd.pause();
 
-  // p4: x = 5 (0101), highlight bit 2.
-  showX(0b0101);
-  highlightLeadingBit(2, 320);
+  // p4: insert 5. x = [0 1 0 1].
+  morph(xMath, xLatex([0, 1, 0, 1]));
+  show(xMath);
   await sd.pause();
 
-  // p5: beam → b[2] (occupied) → XOR; x becomes 0010, leading bit now 1.
-  beamTo(2, 2);
-  pulseRow(2, 360);
-  xorXBits(0b0010, 700);
-  highlightLeadingBit(1, 1080);
-  fadeBeam(1200);
+  // p5: XOR with b_2.  ⊕ b_2 = [0 1 1 1], line, result = [0 0 1 0].
+  morph(xorTermMath, xorTermLatex(2, [0, 1, 1, 1]));
+  show(xorTermMath);
+  show(scratchLine, 200);
+  morph(resultMath, resultLatex([0, 0, 1, 0]), 400);
+  show(resultMath, 400);
   await sd.pause();
 
-  // p6: beam → b[1] (empty) → place 0010.
-  beamTo(1, 1);
-  pulseRow(1, 360);
-  placeBasis(1, 0b0010, 1000);
-  hideX(1300);
-  fadeBeam(1500);
+  // p6: place result → b_1. Scratchpad clears.
+  place(1, [0, 0, 1, 0]);
+  clearScratch(300);
   await sd.pause();
 
-  // p7: x = 3 (0011), highlight bit 1.
-  showX(0b0011);
-  highlightLeadingBit(1, 320);
+  // p7: insert 3. x = [0 0 1 1].
+  morph(xMath, xLatex([0, 0, 1, 1]));
+  show(xMath);
   await sd.pause();
 
-  // p8: beam → b[1] (occupied) → XOR; x becomes 0001, leading bit now 0.
-  beamTo(1, 1);
-  pulseRow(1, 360);
-  xorXBits(0b0001, 700);
-  highlightLeadingBit(0, 1080);
-  fadeBeam(1200);
+  // p8: XOR with b_1. ⊕ b_1 = [0 0 1 0], line, result = [0 0 0 1].
+  morph(xorTermMath, xorTermLatex(1, [0, 0, 1, 0]));
+  show(xorTermMath);
+  show(scratchLine, 200);
+  morph(resultMath, resultLatex([0, 0, 0, 1]), 400);
+  show(resultMath, 400);
   await sd.pause();
 
-  // p9: beam → b[0] (empty) → place 0001.
-  beamTo(0, 0);
-  pulseRow(0, 360);
-  placeBasis(0, 0b0001, 1000);
-  hideX(1300);
-  fadeBeam(1500);
+  // p9: place result → b_0. Scratchpad clears.
+  place(0, [0, 0, 0, 1]);
+  clearScratch(300);
   await sd.pause();
 });
