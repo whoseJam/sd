@@ -1,14 +1,18 @@
 <section>
     <section>
         <h1>最大异或和路径</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4151" target="_blank" data-preview-link>P4151</a></p>
     </section>
     <section>
         <h2>题意</h2>
-        <p>无向图 $1 \to n$ 的最大异或和路径。</p>
+        <p>边带权无向图，求 $1 \to n$ 的所有路径中异或和最大的那条（路径可以重复经过点和边）。</p>
+        <p>$n \le 5 \times 10^4$，$m \le 10^5$。</p>
     </section>
     <section>
         <h2>环异或基</h2>
         <p>固定一条 $1 \to n$ 的路径 $P_0$。其它任何 $1 \to n$ 的路径都可以表示为 $P_0$ 异或上若干<b>简单环</b>。</p>
+        <sd-animation src="../../animation/最大异或和路径/路径环等价.js"
+            style="display: block; margin: 0 auto; width: 60%; height: 280px;"></sd-animation>
         <p class="fragment">DFS 找到所有简单环的异或值，扔进线性基。答案 = 用基对 $P_0$ 取最大异或。</p>
     </section>
 </section>

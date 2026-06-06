@@ -28,24 +28,44 @@ const LABEL_X = -TOTAL_W / 2 - CELL_W / 2 - 14;
 const NEUTRAL = C.darkButtonGrey;
 const FAINT = C.silver;
 const ACCENT = C.darkOrange;
-const LEAD = "#d34d2e";      // red for leading bit
+const LEAD = "#d34d2e"; // red for leading bit
 const SKIP = "#cccccc";
 const PROBE = C.steelBlue;
 
-interface Cell { bg: sd.Rect; text: sd.Text; }
-function makeCell(cx: number, cy: number, txt: string, fill: sd.SDColor, stroke: sd.SDColor, textFill: sd.SDColor): Cell {
+interface Cell {
+  bg: sd.Rect;
+  text: sd.Text;
+}
+function makeCell(
+  cx: number,
+  cy: number,
+  txt: string,
+  fill: sd.SDColor,
+  stroke: sd.SDColor,
+  textFill: sd.SDColor,
+): Cell {
   return {
     bg: new sd.Rect({
       targetNode: svg,
-      x: cx - CELL_W / 2, y: cy - CELL_H / 2,
-      width: CELL_W, height: CELL_H,
-      fill, stroke, strokeWidth: 1.2,
-      rx: 3, ry: 3, opacity: 0,
+      x: cx - CELL_W / 2,
+      y: cy - CELL_H / 2,
+      width: CELL_W,
+      height: CELL_H,
+      fill,
+      stroke,
+      strokeWidth: 1.2,
+      rx: 3,
+      ry: 3,
+      opacity: 0,
     }),
     text: new sd.Text({
       targetNode: svg,
-      text: txt, cx, cy: cy - 1,
-      fontSize: 13, fill: textFill, opacity: 0,
+      text: txt,
+      cx,
+      cy: cy - 1,
+      fontSize: 13,
+      fill: textFill,
+      opacity: 0,
     }),
   };
 }
@@ -56,9 +76,13 @@ for (let bit = 0; bit <= 3; bit++) {
   ansCells[bit] = makeCell(bitX(bit), ANS_Y, "0", C.white, NEUTRAL, NEUTRAL);
 }
 const ansLabel = new sd.Math({
-  targetNode: svg, text: "\\text{ans}",
-  cx: LABEL_X, cy: ANS_Y - 1,
-  fontSize: 14, fill: NEUTRAL, opacity: 0,
+  targetNode: svg,
+  text: "\\text{ans}",
+  cx: LABEL_X,
+  cy: ANS_Y - 1,
+  fontSize: 14,
+  fill: NEUTRAL,
+  opacity: 0,
 });
 
 // basis rows
@@ -70,7 +94,12 @@ const BASIS_DEFS = [
   { slot: 1, bits: [0, 0, 1, 1], value: 3 },
 ];
 
-interface BasisRow { cells: Cell[]; label: sd.Math; slot: number; bits: number[]; }
+interface BasisRow {
+  cells: Cell[];
+  label: sd.Math;
+  slot: number;
+  bits: number[];
+}
 const basis: BasisRow[] = [];
 for (let i = 0; i < BASIS_DEFS.length; i++) {
   const def = BASIS_DEFS[i];
@@ -91,9 +120,13 @@ for (let i = 0; i < BASIS_DEFS.length; i++) {
     );
   }
   const label = new sd.Math({
-    targetNode: svg, text: `b_${def.slot}`,
-    cx: LABEL_X, cy: cy - 1,
-    fontSize: 14, fill: NEUTRAL, opacity: 0,
+    targetNode: svg,
+    text: `b_${def.slot}`,
+    cx: LABEL_X,
+    cy: cy - 1,
+    fontSize: 14,
+    fill: NEUTRAL,
+    opacity: 0,
   });
   basis.push({ cells, label, slot: def.slot, bits: def.bits });
 }
@@ -101,31 +134,42 @@ for (let i = 0; i < BASIS_DEFS.length; i++) {
 // Probe beam: vertical dashed line from ans bit i down to basis row's bit i.
 const probe = new sd.Line({
   targetNode: svg,
-  x1: bitX(0), y1: ANS_Y - CELL_H / 2,
-  x2: bitX(0), y2: BASIS_Y[0] + CELL_H / 2,
-  stroke: PROBE, strokeWidth: 1.8,
-  strokeDashArray: [5, 4], opacity: 0,
+  x1: bitX(0),
+  y1: ANS_Y - CELL_H / 2,
+  x2: bitX(0),
+  y2: BASIS_Y[0] + CELL_H / 2,
+  stroke: PROBE,
+  strokeWidth: 1.8,
+  strokeDashArray: [5, 4],
+  opacity: 0,
 });
 
 const DUR = 280;
 
 function fadeIn(el: sd.Rect | sd.Text | sd.Math | sd.Line, delay = 0) {
   el.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+    .setOpacity(1)
+    .endAnimate();
 }
 
 function probeTo(bit: number, slotIdx: number, delay = 0) {
-  probe.startAnimate({ delay, duration: 1, easing: E.easeOut })
-    .setX1(bitX(bit)).setX2(bitX(bit))
+  probe
+    .startAnimate({ delay, duration: 1, easing: E.easeOut })
+    .setX1(bitX(bit))
+    .setX2(bitX(bit))
     .setY2(BASIS_Y[slotIdx] + CELL_H / 2)
     .endAnimate();
-  probe.startAnimate({ delay: delay + 4, duration: 320, easing: E.easeOut })
-    .setOpacity(1).endAnimate();
+  probe
+    .startAnimate({ delay: delay + 4, duration: 320, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
 }
 
 function fadeProbe(delay = 0) {
-  probe.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setOpacity(0).endAnimate();
+  probe
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setOpacity(0)
+    .endAnimate();
 }
 
 // Update ans's bits to new values (MSB first).
@@ -134,33 +178,46 @@ function setAns(bits: number[], delay = 0) {
     const bit = 3 - i;
     ansCells[bit].text
       .startAnimate({ delay, duration: 220, easing: E.easeOut })
-      .setText(String(bits[i])).setFill(ACCENT).endAnimate();
+      .setText(String(bits[i]))
+      .setFill(ACCENT)
+      .endAnimate();
     ansCells[bit].bg
       .startAnimate({ delay, duration: 220, easing: E.easeOut })
-      .setStroke(ACCENT).endAnimate();
+      .setStroke(ACCENT)
+      .endAnimate();
   }
 }
 
 function dimBasisRow(slotIdx: number, delay = 0) {
   const row = basis[slotIdx];
   for (const c of row.cells) {
-    c.bg.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setStroke(SKIP).endAnimate();
-    c.text.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setFill(SKIP).endAnimate();
+    c.bg
+      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+      .setStroke(SKIP)
+      .endAnimate();
+    c.text
+      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+      .setFill(SKIP)
+      .endAnimate();
   }
-  row.label.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setFill(SKIP).endAnimate();
+  row.label
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setFill(SKIP)
+    .endAnimate();
 }
 
 function pickBasisRow(slotIdx: number, delay = 0) {
   const row = basis[slotIdx];
   for (const c of row.cells) {
-    c.bg.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-      .setStroke(ACCENT).endAnimate();
+    c.bg
+      .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+      .setStroke(ACCENT)
+      .endAnimate();
   }
-  row.label.startAnimate({ delay, duration: DUR, easing: E.easeOut })
-    .setFill(ACCENT).endAnimate();
+  row.label
+    .startAnimate({ delay, duration: DUR, easing: E.easeOut })
+    .setFill(ACCENT)
+    .endAnimate();
 }
 
 // ─── main ────────────────────────────────────────────────────────
@@ -206,8 +263,11 @@ sd.main(async () => {
   const final = new sd.Math({
     targetNode: svg,
     text: "\\text{ans} = (1110)_2 = 14",
-    cx: 0, cy: -110,
-    fontSize: 16, fill: ACCENT, opacity: 0,
+    cx: 0,
+    cy: -110,
+    fontSize: 16,
+    fill: ACCENT,
+    opacity: 0,
   });
   fadeIn(final);
   await sd.pause();
