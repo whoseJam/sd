@@ -1,0 +1,18 @@
+<section>
+    <section>
+        <h1>序列划分动态规划模型</h1>
+    </section>
+    <section>
+        <h2>序列划分动态规划模型</h2>
+        <p>这类模型尝试在一个序列中取出一个子序列<span class="fragment">，不同的子序列可能有不同的得分，或者有些子序列合法有些不合法</span></p>
+        <sd-animation src="../../animation/序列划分动态规划模型概述/状态设置.js"
+            style="margin: 0 auto; width: 800px; height: 150px;"></sd-animation>
+        <p class="fragment">状态往往考虑序列的最末尾是序列中的哪个位置，设 $f(i)$ 表示子序列最后一个元素下标为 $i$ 时的<b style="color: purple;">子序列得分最大值 / 得分最小值 / 方案数</b><span class="fragment">，然后通过枚举子序列倒数第二个元素是谁进行转移</span></p>
+        <p class="fragment">
+            $$
+            f(j) \stackrel{\text{更新}}{\rightarrow} f(i),\ j \lt i
+            $$
+        </p>
+        <p class="fragment">优化可以从<b style="color: teal;">减少转移数量</b>，<b style="color: red;">加速转移过程</b>两个角度思考</p>
+    </section>
+</section>
