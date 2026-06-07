@@ -70,9 +70,11 @@ cat <<EOF
 
 EOF
 
-# 3. tmux session
+# 3. tmux session (create if missing, but do NOT auto-attach — printing the
+# URL box and then immediately attaching causes the URL to be cleared by tmux
+# taking over the screen. Let the user attach explicitly.)
 if tmux has-session -t "$SESSION" 2>/dev/null; then
-  echo "[tmux] session '$SESSION' exists — attaching..."
+  echo "[tmux] session '$SESSION' already exists"
 else
   echo "[tmux] creating '$SESSION'..."
   cd "$REPO"
@@ -84,4 +86,7 @@ if [ -n "$URL" ]; then
   tmux set-option -t "$SESSION" status-right " chat: $URL " >/dev/null 2>&1 || true
 fi
 
-exec tmux attach -t "$SESSION"
+echo
+echo "attach with:  tmux attach -t $SESSION"
+echo "detach:       Ctrl-b d"
+echo "re-print url: cat $URL_FILE"
