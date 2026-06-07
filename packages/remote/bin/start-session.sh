@@ -83,12 +83,14 @@ fi
 
 # ── tmux session ───────────────────────────────────────────────────────────
 SHELLS_RE='^(fish|bash|zsh|sh|dash|ksh)$'
+NEED_PIN=0
 if tmux has-session -t "$SESSION" 2>/dev/null; then
   PANE_CMD=$(tmux display-message -p -t "$SESSION" -F '#{pane_current_command}' 2>/dev/null || echo "")
   if [[ "$PANE_CMD" =~ $SHELLS_RE ]] || [ -z "$PANE_CMD" ]; then
     echo "  Claude not running in tmux (pane: ${PANE_CMD:-?}) — relaunching..."
     tmux send-keys -t "$SESSION":main "claude" Enter
     echo "✓ tmux session '$SESSION' (Claude relaunched)"
+    NEED_PIN=1
   else
     echo "✓ tmux session '$SESSION' (Claude alive: $PANE_CMD)"
   fi
@@ -97,6 +99,28 @@ else
   tmux new-session -d -s "$SESSION" -c "$REPO" -n main
   tmux send-keys -t "$SESSION":main "claude" Enter
   echo "✓ tmux session '$SESSION' (created)"
+  NEED_PIN=1
+fi
+
+# ── pin the watcher to this Claude's transcript ────────────────────────────
+# Without pinning, the watcher falls back to "newest mtime" which leaks
+# other Claude sessions running in the same project dir (e.g. cmux's
+# parent Claude). After Claude boots in tmux we detect its new JSONL by
+# diffing against the file set we saw beforehand.
+if [ "$NEED_PIN" = "1" ]; then
+  CLAUDE_DIR="$HOME/.claude/projects/$(echo "$REPO" | sed 's|/|-|g')"
+  BEFORE=$(ls "$CLAUDE_DIR"/*.jsonl 2>/dev/null | sort)
+  echo "  detecting Claude's transcript file..."
+  for _ in $(seq 1 30); do
+    sleep 0.5
+    AFTER=$(ls "$CLAUDE_DIR"/*.jsonl 2>/dev/null | sort)
+    NEW=$(comm -13 <(echo "$BEFORE") <(echo "$AFTER") | head -1)
+    if [ -n "$NEW" ]; then
+      echo "$NEW" > "$REVEAL_ROOT/transcript-path.txt"
+      echo "✓ watcher pinned to $(basename "$NEW" .jsonl)"
+      break
+    fi
+  done
 fi
 
 # Pin URL to the status bar in a hard-to-miss blue bar. status-left is

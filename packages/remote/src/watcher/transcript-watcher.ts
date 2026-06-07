@@ -73,25 +73,48 @@ export class TranscriptWatcher {
     this.timer = null;
   }
 
-  private tick(): void {
-    const dir = this.opts.adapter.getTranscriptDir(this.opts.cwd);
-    if (!existsSync(dir)) return;
-
-    let files: { full: string; mtime: number }[] = [];
+  /** Lock the watcher to a specific transcript path if pinned. Pinning lives
+   *  in /tmp/sd-test/transcript-path.txt (written by start-session.sh after
+   *  it launches Claude in tmux) and falls back to the env var override. The
+   *  newest-mtime auto-pick is only used when nothing is pinned — useful in
+   *  test/dev but leaks parent Claude sessions into chat if the user runs
+   *  one in the same project dir. */
+  private pinnedPath(): string {
+    const env = process.env.TRANSCRIPT_PATH;
+    if (env) return env;
     try {
-      files = readdirSync(dir)
-        .filter((f) => f.endsWith(".jsonl"))
-        .map((f) => {
-          const full = join(dir, f);
-          return { full, mtime: statSync(full).mtimeMs };
-        });
+      return readFileSync("/tmp/sd-test/transcript-path.txt", "utf-8").trim();
     } catch {
-      return;
+      return "";
     }
-    if (files.length === 0) return;
-    files.sort((a, b) => b.mtime - a.mtime);
-    const newest = files[0].full;
+  }
 
+  private tick(): void {
+    let target: string;
+    const pinned = this.pinnedPath();
+    if (pinned) {
+      if (!existsSync(pinned)) return;
+      target = pinned;
+    } else {
+      const dir = this.opts.adapter.getTranscriptDir(this.opts.cwd);
+      if (!existsSync(dir)) return;
+      let files: { full: string; mtime: number }[] = [];
+      try {
+        files = readdirSync(dir)
+          .filter((f) => f.endsWith(".jsonl"))
+          .map((f) => {
+            const full = join(dir, f);
+            return { full, mtime: statSync(full).mtimeMs };
+          });
+      } catch {
+        return;
+      }
+      if (files.length === 0) return;
+      files.sort((a, b) => b.mtime - a.mtime);
+      target = files[0].full;
+    }
+
+    const newest = target;
     if (newest !== this.activeFile) {
       this.activeFile = newest;
     }
