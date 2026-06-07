@@ -11,7 +11,7 @@
             <li>一对匹配的括号<b>恰有一个</b>被染色</li>
             <li>相邻两个括号的颜色不能相同</li>
         </ul>
-        <sd-animation src="../../../animation/区间树动态规划模型/括号染色/样例解释.js"
+        <sd-animation src="../../animation/括号染色/样例解释.js"
             style="margin: 0 auto; width: 600px; height: 140px;"></sd-animation>
         <p class="fragment">求合法染色方案数，对 $10^9+7$ 取模</p>
         <p class="fragment quote">一个合法的括号序列暗藏了一棵区间树，把匹配的括号连线就能看出来</p>
@@ -22,7 +22,7 @@
         <p class="quote">$c_l, c_r \in \{0,1,2\}$，$0$ 对应不染色，$1$ 对应红色，$2$ 对应蓝色</p>
         <div class="fragment">
             <p>若 $l+1=r$（$[l,r]$ 构成的括号序列合法），只有这四种情况</p>
-            <sd-animation src="../../../animation/区间树动态规划模型/括号染色/状态转移1.js"
+            <sd-animation src="../../animation/括号染色/状态转移1.js"
                 style="margin: 0 auto; width: 600px; height: 80px;"></sd-animation>
             <span class="fragment">$$f_{l,r,1,0}=f_{l,r,0,1}=f_{l,r,2,0}=f_{l,r,0,2}=1$$</span>
         </div>
@@ -30,7 +30,7 @@
     <section>
         <h2>括号染色</h2>
         <p>若 $l$ 端点和 $r$ 端点的括号匹配，外层和内层独立</p>
-        <sd-animation src="../../../animation/区间树动态规划模型/括号染色/状态转移2.js"
+        <sd-animation src="../../animation/括号染色/状态转移2.js"
             style="margin: 0 auto; width: 600px; height: 90px;"></sd-animation>
         <span class="fragment math-fragment">
             $$
@@ -46,7 +46,7 @@
     <section>
         <h2>括号染色</h2>
         <p>若 $l$ 端点和 $r$ 端点的括号不匹配，设与 $l$ 处左括号匹配的右括号位置为 $m$</p>
-        <sd-animation src="../../../animation/区间树动态规划模型/括号染色/状态转移3.js"
+        <sd-animation src="../../animation/括号染色/状态转移3.js"
             style="margin: 0 auto; width: 700px; height: 90px;"></sd-animation>
         <span class="fragment">
             $$

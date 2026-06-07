@@ -6,7 +6,7 @@
         <h2>石子合并</h2>
         <p>luogu <a href="https://www.luogu.com.cn/problem/P1775" target="_blank" data-preview-link>P1775</a></p>
         <p>有 $n$ 堆石子排成一排，第 $i$ 堆石子的质量为 $m_i$</p>
-        <sd-animation src="../../../animation/区间树动态规划模型/石子合并/样例解释.js"
+        <sd-animation src="../../animation/石子合并/样例解释.js"
             style="margin: 0 auto; width: 800px; height: 130px;"></sd-animation>
         <p>现在要将这 $n$ 堆石子合并为一堆，每次只能合并相邻的两堆，合并的代价为两堆质量之和，合并后新堆的质量为两堆质量之和</p>
         <p class="fragment">求最小合并代价</p>
@@ -15,7 +15,7 @@
     <section>
         <h2>石子合并</h2>
         <p>设 $f_{l,r}$ 表示把 $[l,r]$ 区间合并到一起，产生的最小代价</p>
-        <sd-animation src="../../../animation/区间树动态规划模型/石子合并/状态转移.js"
+        <sd-animation src="../../animation/石子合并/状态转移.js"
             style="margin: 0 auto; width: 800px; height: 260px;"></sd-animation>
         <p class="fragment">设 $\{S\}$ 为石子质量的前缀和</p>
         <p class="fragment">
