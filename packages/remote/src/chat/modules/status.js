@@ -1,6 +1,9 @@
 import { fetchStatus, restartClaude } from "./api.js";
 
 let pill, pillText, typing;
+// Forced-on by app.js right after a user submit so the indicator is
+// visible immediately, not 5s later when the status poll catches up.
+let clientThinking = false;
 
 export function initStatus(refs) {
   pill = refs.pill;
@@ -15,9 +18,18 @@ export function initStatus(refs) {
   });
 }
 
+export function setThinking(visible) {
+  clientThinking = !!visible;
+  if (typing) typing.classList.toggle("show", clientThinking);
+}
+
 export async function poll() {
   const status = await fetchStatus();
-  if (!status) return;
+  if (!status) {
+    pill.className = "status-pill down";
+    pillText.textContent = "offline";
+    return;
+  }
   if (!status.session) {
     pill.className = "status-pill down";
     pillText.textContent = "tmux down";
@@ -28,5 +40,7 @@ export async function poll() {
     pill.className = "status-pill down";
     pillText.textContent = `restart Claude (${status.cmd || "?"})`;
   }
-  if (typing) typing.classList.toggle("show", !!status.responding);
+  if (typing) {
+    typing.classList.toggle("show", clientThinking || !!status.responding);
+  }
 }

@@ -5,11 +5,15 @@ export async function fetchMessages(sinceMs) {
 }
 
 export async function sendUserMessage(text) {
-  await fetch("/api/messages", {
+  const response = await fetch("/api/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   });
+  if (!response.ok) {
+    throw new Error(`server returned ${response.status}`);
+  }
+  return response.json();
 }
 
 export async function fetchStatus() {

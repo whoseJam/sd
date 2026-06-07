@@ -29,6 +29,17 @@
   border-bottom-right-radius: var(--radius-sm);
   box-shadow: var(--shadow-1);
 }
+.msg.user.failed .bubble {
+  background: var(--warn, #c2410c);
+  position: relative;
+}
+.msg.user.failed .bubble::after {
+  content: "✕ failed";
+  display: block;
+  font-size: var(--fs-xs);
+  margin-top: 4px;
+  opacity: 0.85;
+}
 .msg.agent .bubble {
   background: var(--bg-1);
   color: var(--fg-0);

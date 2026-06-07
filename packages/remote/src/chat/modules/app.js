@@ -8,16 +8,24 @@ import {
 } from "./api.js";
 import { connectSSE } from "./sse.js";
 import {
+  adoptServerId,
   clearMessages,
+  clearOptimistic,
   initMessages,
   isNearBottom,
   latestTs,
+  markFailed,
+  registerOptimistic,
   renderMsg,
   scrollToBottom,
 } from "./messages.js";
 import { initSessions, refresh as refreshSessions } from "./sessions.js";
 import { initPreview, apply as applyPreview } from "./preview.js";
-import { initStatus, poll as pollStatus } from "./status.js";
+import {
+  initStatus,
+  poll as pollStatus,
+  setThinking,
+} from "./status.js";
 
 const messages = $("#messages");
 const input = $("#input");
@@ -65,7 +73,17 @@ function handleSessionSwitched() {
 async function catchUpMessages() {
   const wasAtBottom = isNearBottom();
   const newMessages = await fetchMessages(latestTs());
-  for (const message of newMessages) renderMsg(message);
+  let sawAgentContent = false;
+  for (const message of newMessages) {
+    renderMsg(message);
+    if (
+      message.from === "agent" &&
+      (message.text || message.images?.length)
+    ) {
+      sawAgentContent = true;
+    }
+  }
+  if (sawAgentContent) setThinking(false);
   if (newMessages.length && wasAtBottom) scrollToBottom();
 }
 
@@ -78,6 +96,9 @@ connectSSE({
   onMessage(message) {
     const wasAtBottom = isNearBottom();
     renderMsg(message);
+    if (message.from === "agent" && (message.text || message.images?.length)) {
+      setThinking(false);
+    }
     if (wasAtBottom) scrollToBottom();
   },
   onReconnect() {
@@ -101,9 +122,29 @@ async function submit() {
   if (!text) return;
   input.value = "";
   input.style.height = "36px";
+
+  const optimisticId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  renderMsg({
+    id: optimisticId,
+    ts: Date.now(),
+    from: "user",
+    text,
+  });
+  registerOptimistic(optimisticId, text);
+  scrollToBottom();
+  setThinking(true);
+
   send.disabled = true;
   try {
-    await sendUserMessage(text);
+    const reply = await sendUserMessage(text);
+    if (reply?.id) {
+      clearOptimistic(text);
+      adoptServerId(optimisticId, reply.id);
+    }
+  } catch {
+    clearOptimistic(text);
+    markFailed(optimisticId);
+    setThinking(false);
   } finally {
     send.disabled = false;
     input.focus();
