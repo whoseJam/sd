@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>sd remote</title>
+  <link rel="stylesheet" href="/chat/styles/tokens.css">
+  <link rel="stylesheet" href="/chat/styles/base.css">
+  <link rel="stylesheet" href="/chat/styles/layout.css">
+  <link rel="stylesheet" href="/chat/styles/header.css">
+  <link rel="stylesheet" href="/chat/styles/stage.css">
+  <link rel="stylesheet" href="/chat/styles/messages.css">
+  <link rel="stylesheet" href="/chat/styles/markdown.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked@13/marked.min.js"></script>
+</head>
+<body>
+
+<div id="stage">
+  <div class="label" id="stage-label"></div>
+  <div class="toolbar">
+    <button id="stage-minimize" type="button" aria-label="minimize">▾</button>
+    <button id="stage-close" type="button" aria-label="close">×</button>
+  </div>
+  <iframe id="stage-iframe" src="about:blank"></iframe>
+</div>
+
+<div id="app">
+
+  <div class="stage-pill" id="stage-pill" role="button" tabindex="0">
+    <span class="icon">▤</span>
+    <span class="label" id="stage-pill-label">preview</span>
+    <span class="hint">tap to show ↗</span>
+  </div>
+
+  <header>
+    <span class="title">sd remote</span>
+    <button class="status-pill" id="status" type="button">
+      <span class="dot"></span>
+      <span id="status-text">checking…</span>
+    </button>
+    <div class="links">
+      <a href="/reveal/index.html" target="_blank">deck</a>
+    </div>
+  </header>
+
+  <main id="messages"></main>
+
+  <div class="typing" id="typing">
+    Claude is typing
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+
+  <footer>
+    <textarea id="input" placeholder="Message" rows="1"></textarea>
+    <button id="send" type="button">Send</button>
+  </footer>
+
+</div>
+
+<script type="module" src="/chat/modules/app.js"></script>
+</body>
+</html>

@@ -161,7 +161,8 @@ function makeSystemMsg(text: string): Message {
   return { id: newId(), ts: Date.now(), from: "system", text };
 }
 
-const CHAT_HTML_PATH = new URL("./chat.html", import.meta.url).pathname;
+const CHAT_DIR = new URL("./chat/", import.meta.url).pathname;
+const CHAT_HTML_PATH = join(CHAT_DIR, "index.html");
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -193,6 +194,19 @@ Bun.serve({
       return new Response(readFileSync(CHAT_HTML_PATH), {
         headers: { "Content-Type": "text/html; charset=utf-8" },
       });
+    }
+
+    // Static chat assets — index.html links to /chat/styles/*.css and
+    // /chat/modules/*.js. Resolve them from the package source tree.
+    if (path.startsWith("/chat/")) {
+      const rel = path.slice("/chat/".length);
+      const filePath = join(CHAT_DIR, rel);
+      if (filePath.startsWith(CHAT_DIR) && existsSync(filePath) && statSync(filePath).isFile()) {
+        return new Response(Bun.file(filePath), {
+          headers: { "Content-Type": contentType(filePath) },
+        });
+      }
+      return new Response("not found", { status: 404 });
     }
 
     if (path === "/api/messages") {

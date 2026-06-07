@@ -1,57 +1,26 @@
 #!/usr/bin/env bun
-// Claude Code hook: posts any assistant content the chat hasn't seen yet to
-// the chat server, with auto-attached local image paths.
+// Generic hook dispatcher.
 //
-// Wired to both PreToolUse and Stop in .claude/settings.json so the phone
-// sees intermediate text DURING a turn (whenever Claude reaches a tool-use
-// boundary) instead of only at the very end. State (which assistant UUIDs
-// we've already posted) is persisted in /tmp/sd-test/hook-state.json so
-// each hook fire only posts what's new.
-//
-// Inert outside the tmux workflow: skips silently if TMUX env var is unset
-// or the chat server is unreachable.
+// Reads the agent's hook event JSON on stdin, finds the first AgentAdapter
+// whose matches() claims it, parses, and POSTs to the chat server. To
+// support Codex / Aider / any other CLI agent: write a new adapter in
+// adapters/, append it to ADAPTERS, done — server and UI code don't change.
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
+
+import { claudeCodeAdapter } from "../adapters/claude-code";
+import type { AgentAdapter } from "../adapters/types";
+
+const ADAPTERS: AgentAdapter[] = [claudeCodeAdapter];
 
 const PORT = Number(process.env.PORT ?? 8765);
-const STATE_FILE =
-  process.env.HOOK_STATE_FILE ?? "/tmp/sd-test/hook-state.json";
-
-interface HookInput {
-  session_id?: string;
-  transcript_path?: string;
-  hook_event_name?: string;
-  stop_hook_active?: boolean;
-  // Stop hook input includes the assistant text directly. Use this instead of
-  // reading the JSONL transcript, which lags behind by one turn (Claude Code
-  // fires the hook before flushing the JSONL).
-  last_assistant_message?: string;
-  // PreToolUse provides the tool being called.
-  tool_name?: string;
-  tool_input?: Record<string, unknown>;
-}
-
-interface HookState {
-  session_id?: string;
-  posted_uuids?: string[];
-}
-
-interface TranscriptEntry {
-  uuid?: string;
-  type?: string;
-  message?: {
-    role?: string;
-    content?: string | { type: string; text?: string }[];
-  };
-}
+const DEBUG = process.env.HOOK_DEBUG === "1";
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
   for await (const chunk of Bun.stdin.stream()) chunks.push(Buffer.from(chunk));
   return Buffer.concat(chunks).toString("utf-8");
 }
-
-const DEBUG = process.env.HOOK_DEBUG === "1";
 
 function logLine(line: string): void {
   if (!DEBUG) return;
@@ -60,72 +29,40 @@ function logLine(line: string): void {
   } catch {}
 }
 
-function loadState(): HookState {
-  if (!existsSync(STATE_FILE)) return {};
-  try {
-    return JSON.parse(readFileSync(STATE_FILE, "utf-8"));
-  } catch {
-    return {};
-  }
-}
-
-function saveState(state: HookState): void {
-  try {
-    writeFileSync(STATE_FILE, JSON.stringify(state));
-  } catch {
-    // ignore
-  }
-}
-
-const IMAGE_PATH_RE =
-  /(?:\/tmp|\/Users\/[\w./-]+)\/[\w./-]+\.(?:png|jpg|jpeg|gif|webp)/gi;
-
-function findImagePaths(text: string): string[] {
-  const out: string[] = [];
-  const seen = new Set<string>();
-  for (const match of text.matchAll(IMAGE_PATH_RE)) {
-    const path = match[0];
-    if (seen.has(path)) continue;
-    seen.add(path);
-    if (existsSync(path)) out.push(path);
-  }
-  return out;
-}
-
-function extractText(entry: TranscriptEntry): string {
-  const msg = entry.message;
-  if (!msg || msg.role !== "assistant") return "";
-  const content = msg.content;
-  if (typeof content === "string") return content.trim();
-  if (Array.isArray(content)) {
-    const texts: string[] = [];
-    for (const block of content) {
-      if (block.type === "text" && block.text) texts.push(block.text);
-    }
-    return texts.join("\n\n").trim();
-  }
-  return "";
-}
-
-async function postToChat(text: string): Promise<void> {
-  if (!text) return;
+async function postReply(text: string, images?: string[]): Promise<void> {
   const form = new FormData();
   form.append("text", text);
-  for (const p of findImagePaths(text)) {
+  for (const p of images ?? []) {
     try {
       form.append("image", Bun.file(p));
-    } catch {
-      // skip unreadable
-    }
+    } catch {}
   }
   try {
     await fetch(`http://127.0.0.1:${PORT}/api/post-agent`, {
       method: "POST",
       body: form,
     });
-  } catch {
-    // server down, ignore
-  }
+  } catch {}
+}
+
+async function postToolUse(
+  tool: string,
+  summary: string,
+  raw: unknown,
+  images?: string[],
+): Promise<void> {
+  try {
+    await fetch(`http://127.0.0.1:${PORT}/api/tool-call`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tool_name: tool,
+        summary,
+        raw,
+        image_paths: images ?? [],
+      }),
+    });
+  } catch {}
 }
 
 async function main(): Promise<void> {
@@ -135,165 +72,49 @@ async function main(): Promise<void> {
       `${new Date().toISOString()}  TMUX=${process.env.TMUX ? "yes" : "no"}  raw=${raw.slice(0, 400)}`,
     );
   }
-
   if (!process.env.TMUX) return;
 
-  let input: HookInput;
+  const adapter = ADAPTERS.find((a) => a.matches(raw));
+  if (!adapter) {
+    logLine("  return: no matching adapter");
+    return;
+  }
+
+  let parsed: unknown;
   try {
-    input = JSON.parse(raw);
+    parsed = JSON.parse(raw);
   } catch {
     logLine("  return: bad json");
     return;
   }
-  if (input.stop_hook_active) {
-    logLine("  return: stop_hook_active");
-    return;
-  }
 
-  // Stop hook: use last_assistant_message from the hook input directly. The
-  // JSONL transcript lags one turn behind (Claude Code fires Stop before
-  // flushing JSONL to disk), which used to cause messages to drop.
-  if (input.hook_event_name === "Stop") {
-    const text = (input.last_assistant_message ?? "").trim();
-    if (text) {
+  const stop = adapter.parseStop(parsed);
+  if (stop) {
+    await postReply(stop.text, stop.images);
+    logLine(`  ${adapter.name}: stop posted (${stop.text.length} chars)`);
+    if (adapter.syncAfterStop) {
       try {
-        await postToChat(text);
-        logLine(`  posted (Stop) text=${text.slice(0, 80)}`);
-      } catch (e) {
-        logLine(`  POST ERROR: ${e}`);
-      }
-    }
-    // Wait briefly for the JSONL to flush, then sync state by marking every
-    // assistant uuid currently in the transcript as posted. This prevents the
-    // next PreToolUse from re-posting entries Stop already handled.
-    await new Promise((r) => setTimeout(r, 1200));
-    if (input.transcript_path && existsSync(input.transcript_path)) {
-      let state = loadState();
-      if (state.session_id !== input.session_id) {
-        state = { session_id: input.session_id, posted_uuids: [] };
-      }
-      const postedSet = new Set(state.posted_uuids ?? []);
-      const lines = readFileSync(input.transcript_path, "utf-8")
-        .split("\n")
-        .filter(Boolean);
-      for (const line of lines) {
-        try {
-          const entry = JSON.parse(line) as TranscriptEntry;
-          if (entry.type === "assistant" && entry.uuid) {
-            postedSet.add(entry.uuid);
-          }
-        } catch {
-          // skip
-        }
-      }
-      state.posted_uuids = [...postedSet];
-      if (state.posted_uuids.length > 500) {
-        state.posted_uuids = state.posted_uuids.slice(-500);
-      }
-      saveState(state);
-      logLine(`  state synced: ${state.posted_uuids.length} uuids tracked`);
+        await adapter.syncAfterStop(parsed);
+      } catch {}
     }
     return;
   }
 
-  // PreToolUse: post a compact tool chip to chat. We don't read the transcript
-  // here — the tool_name + tool_input come directly in the hook input, and
-  // the assistant text introducing this tool call will be posted by Stop.
-  if (input.hook_event_name === "PreToolUse") {
-    const toolName = input.tool_name ?? "?";
-    const toolInput = input.tool_input ?? {};
-    const summary = summarizeToolInput(toolName, toolInput);
-    const imagePaths = extractImagePaths(toolName, toolInput);
-    try {
-      await fetch(`http://127.0.0.1:${PORT}/api/tool-call`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tool_name: toolName,
-          summary,
-          raw: toolInput,
-          image_paths: imagePaths,
-        }),
-      });
-      logLine(
-        `  posted tool: ${toolName} ${summary.slice(0, 60)} images=${imagePaths.length}`,
-      );
-    } catch (e) {
-      logLine(`  tool POST ERROR: ${e}`);
-    }
+  const toolUse = adapter.parsePreToolUse(parsed);
+  if (toolUse) {
+    await postToolUse(
+      toolUse.tool,
+      toolUse.summary,
+      toolUse.raw,
+      toolUse.images,
+    );
+    logLine(
+      `  ${adapter.name}: tool ${toolUse.tool} ${toolUse.summary.slice(0, 60)}`,
+    );
     return;
   }
-}
 
-// If the tool is about to *use* a local image (Read on a PNG, NotebookEdit on
-// a notebook with images, etc.), return the file paths so they can be shown
-// inline in chat. The user sees what Claude is looking at.
-function extractImagePaths(
-  toolName: string,
-  input: Record<string, unknown>,
-): string[] {
-  const get = (k: string): string =>
-    typeof input[k] === "string" ? (input[k] as string) : "";
-  const isImage = (p: string): boolean =>
-    /\.(?:png|jpe?g|gif|webp|bmp|svg)$/i.test(p);
-  switch (toolName) {
-    case "Read": {
-      const p = get("file_path");
-      return p && isImage(p) ? [p] : [];
-    }
-    default:
-      return [];
-  }
-}
-
-// Render a one-line summary of a tool's input. Goal: feel like the `⏺ Bash(gulp
-// sd -w)` line you see in the terminal, but short enough for a phone chip.
-function summarizeToolInput(
-  toolName: string,
-  input: Record<string, unknown>,
-): string {
-  const trunc = (s: string, n = 80): string =>
-    s.length > n ? s.slice(0, n - 1) + "…" : s;
-  const get = (k: string): string =>
-    typeof input[k] === "string" ? (input[k] as string) : "";
-
-  switch (toolName) {
-    // Tools whose summary is reliably short: filename, pattern, id.
-    // Show inline so the chip is scannable.
-    case "Read":
-    case "Write":
-    case "Edit":
-    case "NotebookEdit":
-      return trunc(get("file_path").replace(/^.*\//, ""), 50);
-    case "Grep":
-    case "Glob":
-      return trunc(get("pattern"), 50);
-    case "WebFetch":
-    case "WebSearch":
-      return trunc(get("url") || get("query"), 50);
-    case "Task":
-    case "Agent":
-      return trunc(get("description") || get("subagent_type"), 50);
-    case "TaskCreate":
-      return trunc(get("subject"), 50);
-    case "TaskUpdate":
-      return trunc(
-        get("taskId") + " " + (get("status") || get("subject")),
-        50,
-      );
-    case "TaskStop":
-      return trunc(get("task_id") || get("shell_id"), 30);
-    case "ToolSearch":
-      return trunc(get("query"), 40);
-    // Tools whose first param is arbitrarily long (command, pasted text):
-    // show only the tool name. The full param is in the expanded details.
-    case "Bash":
-    case "BashOutput":
-    case "AskUserQuestion":
-      return "";
-    default:
-      return "";
-  }
+  logLine("  return: adapter parsed nothing");
 }
 
 main().catch(() => {});
