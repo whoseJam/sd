@@ -50,7 +50,12 @@ function cellX(matrixCx: number, col: number): number {
   return matrixCx - CELL - GAP / 2 + col * (CELL + GAP);
 }
 
-function makeCell(matrixCx: number, row: number, col: number, value: string): Cell {
+function makeCell(
+  matrixCx: number,
+  row: number,
+  col: number,
+  value: string,
+): Cell {
   const x = cellX(matrixCx, col);
   const y = cellY(row);
   return {
@@ -141,7 +146,15 @@ const formula = new sd.Math({
 // own sd.Text so digits can be colored independently — \textcolor in
 // MathJax3 needs the color extension, which isn't bundled here.
 const TOKEN_FILLS = [
-  ROW_HL, NEUTRAL, COL_HL, NEUTRAL, ROW_HL, NEUTRAL, COL_HL, NEUTRAL, RES_HL,
+  ROW_HL,
+  NEUTRAL,
+  COL_HL,
+  NEUTRAL,
+  ROW_HL,
+  NEUTRAL,
+  COL_HL,
+  NEUTRAL,
+  RES_HL,
 ];
 const TOKEN_OPS: Record<number, string> = {
   1: "×",
@@ -164,7 +177,6 @@ const tokens: sd.Text[] = TOKEN_FILLS.map(
       opacity: 0,
     }),
 );
-const NUMERIC_TOKEN_IDX = [0, 2, 4, 6, 8]; // ones we re-write each pause
 
 const DUR = 280;
 type AnyEl = sd.Rect | sd.Text | sd.Math | sd.Path;
@@ -229,7 +241,6 @@ sd.main(async () => {
   fadeIn(eqSign, 80);
   fadeIn(formula, 200);
   await sd.pause();
-
 
   // p2-p5: each C cell — re-color row of A and column of B,
   // re-write the formula, fill the result.

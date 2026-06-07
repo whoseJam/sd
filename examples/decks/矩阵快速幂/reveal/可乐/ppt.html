@@ -5,28 +5,19 @@
     </section>
     <section>
         <h2>可乐</h2>
-        <p>给定一张图，一个机器人在图上移动。每个单位时刻可以选择：</p>
-        <ul>
-            <li>自爆</li>
-            <li>向某个邻接点移动</li>
-            <li>站着不动</li>
-        </ul>
-        <p>求 $t$ 个时刻后的行为方案总数。</p>
-    </section>
-    <section>
-        <h2>样例</h2>
-        <p>考虑下面这张图，$t = 2$：</p>
-        <div style="display: flex; gap: 36px; justify-content: center; align-items: flex-start;">
-            <div>
-                <p>图：$1 \leftrightarrow 2 \leftrightarrow 3$</p>
-                <p class="fragment quote" style="font-size: 22px; margin-top: 12px;">机器人初始在 $1$ 号点</p>
+        <p>机器人在图上移动，每时刻可选：<b>自爆</b> / <b>走邻边</b> / <b>站着不动</b>。求 $t$ 个时刻后的行为方案总数。</p>
+        <div class="fragment" style="display: flex; gap: 32px; justify-content: center; align-items: center; margin-top: 12px;">
+            <div style="text-align: center;">
+                <sd-animation src="../../animation/可乐/样例.js"
+                    style="display: block; margin: 0 auto; width: 220px; height: 90px;"></sd-animation>
+                <p style="font-size: 18px; margin-top: 4px;">$t = 2$，机器人初始在 $1$</p>
             </div>
-            <div class="fragment">
-                <p style="text-align: left; margin: 0;">$8$ 种方案：</p>
-                <ul style="font-size: 22px;">
-                    <li>$1 \to bomb$</li>
-                    <li>$1 \to 1 \to bomb$</li>
-                    <li>$1 \to 2 \to bomb$</li>
+            <div>
+                <p style="margin: 0; font-size: 18px;">$8$ 种方案：</p>
+                <ul style="font-size: 17px; margin: 4px 0 0; columns: 2; column-gap: 20px;">
+                    <li>$1 \to b$</li>
+                    <li>$1 \to 1 \to b$</li>
+                    <li>$1 \to 2 \to b$</li>
                     <li>$1 \to 1 \to 1$</li>
                     <li>$1 \to 1 \to 2$</li>
                     <li>$1 \to 2 \to 1$</li>
@@ -39,6 +30,8 @@
     <section>
         <h2>化简</h2>
         <p class="fragment quote">自爆和站着不动有点麻烦，先把它们转成「走一条边」。</p>
+        <sd-animation src="../../animation/可乐/化简.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 480px; height: 220px;"></sd-animation>
         <ul>
             <li class="fragment">自爆：新建虚拟点 $B$，每个原点都向 $B$ 连一条单向边，$B$ 没有出边。走到 $B$ 就相当于自爆了。</li>
             <li class="fragment">站着不动：每个原点加一条自环 $u \to u$。走自环就相当于站着不动。</li>

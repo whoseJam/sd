@@ -270,14 +270,36 @@ function colorNode(idx: number, active: boolean, delay = 0) {
 
 // Which edges + matrix cells actually contribute to each transition
 // t-1 → t (where the source node has positive count in f_{t-1}).
-const TRANSITIONS: Array<{ edges: number[]; cells: Array<[number, number]> }> = [
-  // f_0 → f_1: only node 1 (idx 0) has count > 0, so edges 1→2, 1→3
-  { edges: [0, 1], cells: [[1, 0], [2, 0]] },
-  // f_1 → f_2: nodes 2, 3 active. Edges 2→3, 3→4, 3→5
-  { edges: [2, 3, 4], cells: [[2, 1], [3, 2], [4, 2]] },
-  // f_2 → f_3: nodes 3, 4, 5 active. Edges 3→4, 3→5, 4→5, 5→6
-  { edges: [3, 4, 5, 6], cells: [[3, 2], [4, 2], [4, 3], [5, 4]] },
-];
+const TRANSITIONS: Array<{ edges: number[]; cells: Array<[number, number]> }> =
+  [
+    // f_0 → f_1: only node 1 (idx 0) has count > 0, so edges 1→2, 1→3
+    {
+      edges: [0, 1],
+      cells: [
+        [1, 0],
+        [2, 0],
+      ],
+    },
+    // f_1 → f_2: nodes 2, 3 active. Edges 2→3, 3→4, 3→5
+    {
+      edges: [2, 3, 4],
+      cells: [
+        [2, 1],
+        [3, 2],
+        [4, 2],
+      ],
+    },
+    // f_2 → f_3: nodes 3, 4, 5 active. Edges 3→4, 3→5, 4→5, 5→6
+    {
+      edges: [3, 4, 5, 6],
+      cells: [
+        [3, 2],
+        [4, 2],
+        [4, 3],
+        [5, 4],
+      ],
+    },
+  ];
 
 function highlightEdge(idx: number, active: boolean, delay = 0) {
   const color = active ? HL : NEUTRAL;

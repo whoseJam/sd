@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import type * as AnimateModule from "@/animate/animate";
+
 // Contract: every <path> the morph emits must end up with a fill set, or it inherits SVG default
 // (black) and the fading char renders black regardless of the Text's fill.
 
@@ -14,9 +16,7 @@ const createdGroups: Array<{ attrs: Map<string, unknown> }> = [];
 
 vi.mock("@/animate/animate", async () => {
   const actual =
-    await vi.importActual<typeof import("@/animate/animate")>(
-      "@/animate/animate",
-    );
+    await vi.importActual<typeof AnimateModule>("@/animate/animate");
   return {
     ...actual,
     pushAction: (opts: {

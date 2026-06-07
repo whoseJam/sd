@@ -43,8 +43,7 @@ function makeMGrid(
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const cellCx = cx - matrixW / 2 + j * (CELL_W + GAP) + CELL_W / 2;
-      const cellCy =
-        cy + matrixH / 2 - (i + 1) * CELL_H - i * GAP + CELL_H / 2;
+      const cellCy = cy + matrixH / 2 - (i + 1) * CELL_H - i * GAP + CELL_H / 2;
       cells.push({
         question: new sd.Math({
           targetNode: svg,
@@ -112,8 +111,7 @@ function makeSimpleGrid(
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const cellCx = cx - matrixW / 2 + j * (CELL_W + GAP) + CELL_W / 2;
-      const cellCy =
-        cy + matrixH / 2 - (i + 1) * CELL_H - i * GAP + CELL_H / 2;
+      const cellCy = cy + matrixH / 2 - (i + 1) * CELL_H - i * GAP + CELL_H / 2;
       cells.push(
         new sd.Math({
           targetNode: svg,
