@@ -48,7 +48,20 @@ initSessions({
   menu: $("#session-menu"),
   new: $("#session-new"),
   list: $("#session-list"),
+  onSwitched: handleSessionSwitched,
 });
+
+function handleSessionSwitched() {
+  clearMessages();
+  refreshSessions();
+  let n = 0;
+  const tick = async () => {
+    await catchUpMessages();
+    scrollToBottom();
+    if (++n < 5) setTimeout(tick, 400);
+  };
+  tick();
+}
 
 async function catchUpMessages() {
   const wasAtBottom = isNearBottom();
@@ -63,8 +76,6 @@ async function loadInitialPreview() {
   if (j) applyStage(j.preview);
 }
 
-// SSE: live updates. Polling is a 30s backup in case SSE silently dies
-// behind a proxy. On (re)connect we also catch up via /api/messages.
 const es = connectSSE({
   onMessage(m) {
     const wasAtBottom = isNearBottom();
@@ -73,13 +84,6 @@ const es = connectSSE({
   },
   onPreview(j) {
     applyStage(j.preview);
-  },
-  onSessionChanged() {
-    // New session pinned server-side: wipe chat, refetch (server is
-    // already replaying the new JSONL into the cache).
-    clearMessages();
-    refreshSessions();
-    catchUpMessages().then(scrollToBottom);
   },
   onReconnect() {
     catchUpMessages();
@@ -92,10 +96,7 @@ catchUpMessages().then(scrollToBottom);
 loadInitialPreview();
 pollStatus();
 setInterval(pollStatus, 5000);
-// 2s message poll regardless of SSE: cloudflared quick tunnels swallow
-// event-stream chunks, so SSE never delivers there even when es.readyState
-// is OPEN. Direct LAN / localhost users pay an extra 2 req/s but get the
-// same instant feel.
+// SSE doesn't flow through cloudflared quick tunnels — poll regardless.
 setInterval(catchUpMessages, 2000);
 
 async function submit() {

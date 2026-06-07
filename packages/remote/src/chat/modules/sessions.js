@@ -1,12 +1,3 @@
-// Session picker — dropdown lets the user list / switch / create Claude
-// sessions (each session = one JSONL file). The picker button shows the
-// active session's AI title; clicking opens a menu of recent sessions.
-//
-// Server-side, switching just rewrites the watcher pin + resets the cache;
-// creating a new session restarts Claude in tmux. The client refetches
-// /api/sessions and clears messages when the SSE 'session-changed' event
-// fires.
-
 import { el, escapeHtml } from "./dom.js";
 import { fetchSessions, newSession, switchSession } from "./api.js";
 
@@ -94,15 +85,17 @@ async function onSwitch(path) {
     return;
   }
   closeMenu();
-  await switchSession(path);
-  // The SSE 'session-changed' event triggers chat clear + refetch in app.js.
+  const ok = await switchSession(path);
+  if (ok) refs.onSwitched?.();
 }
 
 async function onNew() {
   closeMenu();
   refs.title.textContent = "starting new session…";
   const r = await newSession();
-  if (!r.ok) {
+  if (r.ok) {
+    refs.onSwitched?.();
+  } else {
     refs.title.textContent = "failed: " + (r.error ?? "unknown");
     setTimeout(refresh, 2000);
   }
