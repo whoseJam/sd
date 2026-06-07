@@ -203,6 +203,7 @@ async function main(): Promise<void> {
     const toolName = input.tool_name ?? "?";
     const toolInput = input.tool_input ?? {};
     const summary = summarizeToolInput(toolName, toolInput);
+    const imagePaths = extractImagePaths(toolName, toolInput);
     try {
       await fetch(`http://127.0.0.1:${PORT}/api/tool-call`, {
         method: "POST",
@@ -211,13 +212,37 @@ async function main(): Promise<void> {
           tool_name: toolName,
           summary,
           raw: toolInput,
+          image_paths: imagePaths,
         }),
       });
-      logLine(`  posted tool: ${toolName} ${summary.slice(0, 60)}`);
+      logLine(
+        `  posted tool: ${toolName} ${summary.slice(0, 60)} images=${imagePaths.length}`,
+      );
     } catch (e) {
       logLine(`  tool POST ERROR: ${e}`);
     }
     return;
+  }
+}
+
+// If the tool is about to *use* a local image (Read on a PNG, NotebookEdit on
+// a notebook with images, etc.), return the file paths so they can be shown
+// inline in chat. The user sees what Claude is looking at.
+function extractImagePaths(
+  toolName: string,
+  input: Record<string, unknown>,
+): string[] {
+  const get = (k: string): string =>
+    typeof input[k] === "string" ? (input[k] as string) : "";
+  const isImage = (p: string): boolean =>
+    /\.(?:png|jpe?g|gif|webp|bmp|svg)$/i.test(p);
+  switch (toolName) {
+    case "Read": {
+      const p = get("file_path");
+      return p && isImage(p) ? [p] : [];
+    }
+    default:
+      return [];
   }
 }
 

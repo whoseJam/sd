@@ -108,6 +108,21 @@
     display: inline-block;
   }
   .tool-chip .tool-name { color: #b0b0b0; }
+  .tool-wrap { margin-bottom: 4px; }
+  .tool-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 0 16px;
+  }
+  .tool-images img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    border: 1px solid #333;
+  }
   .tool-chip pre.raw {
     margin: 4px 0 4px 12px;
     padding: 6px 8px;
@@ -237,6 +252,12 @@
   <script src="https://cdn.jsdelivr.net/npm/marked@13/marked.min.js"></script>
 </head>
 <body>
+<div class="preview-panel" id="preview">
+  <span class="preview-label" id="preview-label"></span>
+  <button class="preview-close" id="preview-close" type="button">close</button>
+  <iframe id="preview-iframe" src="about:blank"></iframe>
+</div>
+<div id="app">
 <header>
   <div class="title">sd remote</div>
   <button class="status-pill" id="status" type="button">
@@ -253,6 +274,7 @@
   <textarea id="input" placeholder="Send a message..." rows="1"></textarea>
   <button id="send">Send</button>
 </footer>
+</div>
 <script>
 const messages = document.getElementById('messages');
 const input = document.getElementById('input');
@@ -265,8 +287,12 @@ function renderMsg(m) {
   seen.add(m.id);
 
   // Tool calls render as a small gray monospace line that expands to show the
-  // full tool_input JSON when tapped.
+  // full tool_input JSON when tapped. Attached images (e.g. Read on a PNG)
+  // render below the chip as visible thumbnails — the user sees what Claude
+  // is looking at, even without expanding.
   if (m.from === 'system' && m.kind === 'tool') {
+    const wrap = document.createElement('div');
+    wrap.className = 'tool-wrap';
     const det = document.createElement('details');
     det.className = 'tool-chip';
     const sum = document.createElement('summary');
@@ -289,7 +315,20 @@ function renderMsg(m) {
       }
       det.appendChild(pre);
     }
-    messages.appendChild(det);
+    wrap.appendChild(det);
+    if (m.images && m.images.length) {
+      const imgs = document.createElement('div');
+      imgs.className = 'tool-images';
+      for (const f of m.images) {
+        const img = document.createElement('img');
+        img.src = '/snapshots/' + f;
+        img.loading = 'lazy';
+        img.addEventListener('click', () => window.open(img.src, '_blank'));
+        imgs.appendChild(img);
+      }
+      wrap.appendChild(imgs);
+    }
+    messages.appendChild(wrap);
     if (m.ts > lastTs) lastTs = m.ts;
     return;
   }
@@ -390,17 +429,55 @@ function appendIfNew(m) {
 // a safety net in case SSE silently dies under a proxy.
 poll().then(() => { messages.scrollTop = messages.scrollHeight; });
 
+const previewPanel = document.getElementById('preview');
+const previewIframe = document.getElementById('preview-iframe');
+const previewLabel = document.getElementById('preview-label');
+const previewClose = document.getElementById('preview-close');
+let currentPreviewUrl = '';
+function applyPreview(p) {
+  const url = p && p.url ? p.url : '';
+  if (url === currentPreviewUrl) return;
+  currentPreviewUrl = url;
+  if (url) {
+    previewIframe.src = url;
+    previewLabel.textContent = (p && p.label) || url;
+    previewPanel.classList.add('show');
+  } else {
+    previewPanel.classList.remove('show');
+    setTimeout(() => { if (!currentPreviewUrl) previewIframe.src = 'about:blank'; }, 250);
+  }
+}
+previewClose.addEventListener('click', async () => {
+  applyPreview(null);
+  try { await fetch('/api/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: '' }) }); } catch {}
+});
+async function pollPreview() {
+  try {
+    const r = await fetch('/api/preview');
+    if (!r.ok) return;
+    const j = await r.json();
+    applyPreview(j.preview);
+  } catch {}
+}
+pollPreview();
+
 let es;
 function connectSSE() {
   try {
     es = new EventSource('/api/stream');
-    es.onmessage = (e) => {
+    es.addEventListener('message', (e) => {
       try {
         const m = JSON.parse(e.data);
         appendIfNew(m);
       } catch {}
-    };
-    es.onopen = () => { poll(); };  // catch up on anything missed during reconnect
+    });
+    es.addEventListener('preview', (e) => {
+      try {
+        const j = JSON.parse(e.data);
+        applyPreview(j.preview);
+      } catch {}
+    });
+    es.onopen = () => { poll(); pollPreview(); };
     es.onerror = () => { /* EventSource auto-reconnects */ };
   } catch {
     setInterval(poll, 3000);

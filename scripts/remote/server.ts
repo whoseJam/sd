@@ -49,6 +49,11 @@ interface Message {
 let responding = false;
 let respondingSince = 0;
 
+// At most one live preview can be active at a time. URL is relative to the
+// server root (e.g. "/reveal/index.html" or "/animation/状态设置.html").
+// Agent flips this via POST /api/preview; chat clients subscribe via SSE.
+let currentPreview: { url: string; label: string } | null = null;
+
 let messages: Message[] = [];
 if (existsSync(MESSAGES_FILE)) {
   try {
@@ -71,7 +76,13 @@ const sseStreams = new Map<
 const sseEncoder = new TextEncoder();
 
 function sseBroadcast(msg: Message): void {
-  const chunk = sseEncoder.encode(`data: ${JSON.stringify(msg)}\n\n`);
+  sseSend("message", msg);
+}
+
+function sseSend(event: string, data: unknown): void {
+  const chunk = sseEncoder.encode(
+    `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`,
+  );
   for (const [id, controller] of sseStreams) {
     try {
       controller.enqueue(chunk);
@@ -229,6 +240,12 @@ Bun.serve({
         start(controller) {
           sseStreams.set(id, controller);
           controller.enqueue(sseEncoder.encode(": connected\n\n"));
+          // Send initial preview state so a fresh client sees what's active.
+          controller.enqueue(
+            sseEncoder.encode(
+              `event: preview\ndata: ${JSON.stringify({ preview: currentPreview })}\n\n`,
+            ),
+          );
         },
         cancel() {
           sseStreams.delete(id);
@@ -260,10 +277,26 @@ Bun.serve({
         tool_name?: string;
         summary?: string;
         raw?: unknown;
+        // Filesystem paths to image files we should copy into snapshots/ and
+        // attach to this tool chip (e.g. Read on a PNG → user sees what
+        // Claude is looking at).
+        image_paths?: string[];
       };
       const tool = String(body.tool_name ?? "?");
       const summary = String(body.summary ?? "").trim();
       const text = summary ? `${tool}  ${summary}` : tool;
+      const images: string[] = [];
+      for (const p of body.image_paths ?? []) {
+        if (typeof p !== "string" || !existsSync(p)) continue;
+        const safe = basename(p).replace(/[^\w.\-]/g, "_");
+        const fname = `tool-${Date.now()}-${safe}`;
+        try {
+          copyFileSync(p, join(SNAPSHOTS_DIR, fname));
+          images.push(fname);
+        } catch {
+          // skip unreadable
+        }
+      }
       const msg: Message = {
         id: newId(),
         ts: Date.now(),
@@ -271,6 +304,7 @@ Bun.serve({
         kind: "tool",
         text,
         raw: body.raw,
+        ...(images.length > 0 && { images }),
       };
       messages.push(msg);
       sseBroadcast(msg);
@@ -281,6 +315,29 @@ Bun.serve({
     if (path === "/api/responding-clear" && req.method === "POST") {
       responding = false;
       return Response.json({ ok: true });
+    }
+
+    if (path === "/api/preview") {
+      if (req.method === "GET") {
+        return Response.json({ preview: currentPreview });
+      }
+      if (req.method === "POST") {
+        const body = (await req.json()) as {
+          url?: unknown;
+          label?: unknown;
+        };
+        const url = typeof body.url === "string" ? body.url.trim() : "";
+        if (!url) {
+          currentPreview = null;
+        } else {
+          currentPreview = {
+            url,
+            label: typeof body.label === "string" ? body.label : "",
+          };
+        }
+        sseSend("preview", { preview: currentPreview });
+        return Response.json({ preview: currentPreview });
+      }
     }
 
     if (path === "/api/restart-claude" && req.method === "POST") {
