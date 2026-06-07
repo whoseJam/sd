@@ -55,7 +55,6 @@ export function apply(p) {
   if (hasUrl && !minimized) {
     panelEl.classList.add("show");
     pillEl.classList.remove("show");
-    requestAnimationFrame(rescale);
   } else if (hasUrl && minimized) {
     panelEl.classList.remove("show");
     pillEl.classList.add("show");
@@ -66,18 +65,20 @@ export function apply(p) {
       if (!current || !current.url) iframeEl.src = "about:blank";
     }, 240);
   }
+  // rescale runs after every state change so any inline panel height /
+  // iframe transform left over from a previous expanded state always
+  // gets cleared when we collapse back to the pill.
+  requestAnimationFrame(rescale);
 }
 
 function isMobile() {
   return window.matchMedia("(max-width: 899px)").matches;
 }
 
-/** Reveal.js layout() throws on narrow viewports — we pin the iframe to
- *  a fixed desktop-sized 960×720 inner viewport (set in CSS) and scale
- *  it with transform so it fits the panel. Recompute on every show / on
- *  window resize. */
 /** Mobile only: iframe is pinned to 960×720 in CSS, we scale it down with
- *  transform to fit the panel and shrink the panel to the scaled height. */
+ *  transform to fit the panel and shrink the panel to the scaled height.
+ *  Outside of mobile-show state, clear any inline styles so the static
+ *  CSS takes over (and the panel collapses cleanly on minimize). */
 function rescale() {
   if (!iframeEl) return;
   if (!isMobile() || !panelEl.classList.contains("show")) {
