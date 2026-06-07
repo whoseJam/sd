@@ -5,16 +5,13 @@
   "description": "Phone ↔ desktop Claude Code remote chat: Bun HTTP/SSE server, mobile chat UI, tmux Claude hooks, cloudflared tunnel orchestration",
   "type": "module",
   "bin": {
-    "sd-remote-start": "./bin/start-session.sh",
-    "sd-remote-stop": "./bin/stop.sh",
-    "sd-remote-tunnel": "./bin/tunnel.sh",
-    "sd-remote-server": "./src/server.ts",
-    "sd-remote-post": "./src/cli/post.ts",
+    "sd-remote-start": "./bin/start.ts",
+    "sd-remote-stop": "./bin/stop.ts",
     "sd-remote-preview": "./src/cli/preview.ts"
   },
   "scripts": {
-    "server": "bun src/server.ts",
-    "start": "./bin/start-session.sh",
-    "stop": "./bin/stop.sh"
+    "start": "./bin/start.ts",
+    "stop": "./bin/stop.ts",
+    "server": "bun src/server.ts"
   }
 }

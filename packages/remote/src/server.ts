@@ -327,7 +327,7 @@ Bun.serve({
         if (!tmuxHasSession()) {
           appendMessage(
             makeSystemMsg(
-              "tmux session 'claude-dev' isn't running. Run packages/remote/bin/start-session.sh on the Mac first.",
+              "tmux session 'claude-dev' isn't running. Run packages/remote/bin/start.ts on the Mac first.",
             ),
           );
         } else if (!claudeRunning()) {

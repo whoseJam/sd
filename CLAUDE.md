@@ -185,9 +185,9 @@ E.g. with the canonical loop running, `bun .claude/tools/sd-ppt-snapshot.ts http
 
 stdout = output PNG absolute path (only line). stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean run; exit 1 = errors (PNG still produced for partial-state inspection).
 
-## Remote chat workflow (when running in tmux from start-session.sh)
+## Remote chat workflow (when running in tmux from bin/start.ts)
 
-If `$TMUX` is set you're inside the `claude-dev` session driven by `packages/remote/bin/start-session.sh`. The user is on their phone watching `packages/remote/src/chat.html` (served by `@sd/remote`'s Bun server on :8765). Conventions:
+If `$TMUX` is set you're inside the `claude-dev` session driven by `packages/remote/bin/start.ts`. The user is on their phone watching the chat UI (served by `@sd/remote`'s Bun server on :8765 → cloudflared tunnel). Conventions:
 
 - **Showing a slide or animation = snapshot + chat post, never a link.** They can't render iframes in chat. Use the wrapper:
   ```bash

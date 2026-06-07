@@ -13,8 +13,7 @@
 // Linux) and has edge cases around file rotation. A 400ms stat-poll is
 // negligible cost and gets us identical semantics everywhere.
 
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readFileSync, statSync } from "node:fs";
 
 import type { Message } from "../message";
 import type { AgentAdapter } from "../adapters/types";
@@ -62,8 +61,8 @@ export class TranscriptWatcher {
   }
 
   /** Lock the watcher to a specific transcript path if pinned. Pinning lives
-   *  in /tmp/sd-test/transcript-path.txt (written by start-session.sh after
-   *  it launches Claude in tmux) and falls back to the env var override. The
+   *  in /tmp/sd-test/transcript-path.txt (written by bin/start.ts after it
+   *  launches Claude in tmux) and falls back to the env var override. The
    *  newest-mtime auto-pick is only used when nothing is pinned — useful in
    *  test/dev but leaks parent Claude sessions into chat if the user runs
    *  one in the same project dir. */
@@ -78,31 +77,13 @@ export class TranscriptWatcher {
   }
 
   private tick(): void {
-    let target: string;
     const pinned = this.pinnedPath();
-    if (pinned) {
-      if (!existsSync(pinned)) return;
-      target = pinned;
-    } else {
-      const dir = this.opts.adapter.getTranscriptDir(this.opts.cwd);
-      if (!existsSync(dir)) return;
-      let files: { full: string; mtime: number }[] = [];
-      try {
-        files = readdirSync(dir)
-          .filter((f) => f.endsWith(".jsonl"))
-          .map((f) => {
-            const full = join(dir, f);
-            return { full, mtime: statSync(full).mtimeMs };
-          });
-      } catch {
-        return;
-      }
-      if (files.length === 0) return;
-      files.sort((a, b) => b.mtime - a.mtime);
-      target = files[0].full;
-    }
+    // Without a pin we deliberately track nothing — the alternative
+    // ("mtime newest") leaks parent Claude sessions running in the same
+    // project dir. The user picks a session from the chat header instead.
+    if (!pinned || !existsSync(pinned)) return;
 
-    const newest = target;
+    const newest = pinned;
     if (newest !== this.activeFile) {
       this.activeFile = newest;
     }
