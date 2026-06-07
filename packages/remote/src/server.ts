@@ -22,11 +22,22 @@
 //   /snapshots/<file>        image attachments (referenced from messages)
 //   /<anything-else>         static files under REVEAL_ROOT
 
-import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+} from "node:fs";
 import { extname, join } from "node:path";
 
 import { claudeCodeAdapter } from "./adapters/claude-code";
 import type { Message } from "./message";
+import {
+  getPinnedPath,
+  listSessions,
+  pinSession,
+} from "./sessions";
 import { TranscriptWatcher } from "./watcher/transcript-watcher";
 
 const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
@@ -173,6 +184,67 @@ const watcher = new TranscriptWatcher({
 });
 watcher.start();
 
+// ── Session switching ────────────────────────────────────────────────────
+function switchSession(path: string): void {
+  pinSession(path);
+  messages = [];
+  watcher.reset();
+  sseSend("session-changed", { pinned: path });
+}
+
+interface NewSessionResult {
+  ok: boolean;
+  pinned?: string;
+  error?: string;
+}
+
+async function newSession(): Promise<NewSessionResult> {
+  if (!tmuxHasSession()) {
+    return { ok: false, error: "tmux session not running" };
+  }
+  const dir = claudeCodeAdapter.getTranscriptDir(REPO);
+  const before = new Set(snapshotJsonls(dir));
+  // Best-effort exit current Claude. Ctrl-C twice clears the input then
+  // exits Claude Code's TUI more reliably than typing /quit.
+  Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
+  await sleep(150);
+  Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
+  await sleep(500);
+  // Wait for pane to land back in a shell.
+  for (let i = 0; i < 20; i++) {
+    const cmd = tmuxPaneCommand().toLowerCase();
+    if (!cmd || SHELL_NAMES.has(cmd)) break;
+    await sleep(200);
+  }
+  // Relaunch.
+  tmuxStartClaude();
+  // Wait for the new JSONL to appear.
+  for (let i = 0; i < 40; i++) {
+    await sleep(300);
+    const after = snapshotJsonls(dir);
+    const fresh = after.find((p) => !before.has(p));
+    if (fresh) {
+      switchSession(fresh);
+      return { ok: true, pinned: fresh };
+    }
+  }
+  return { ok: false, error: "new transcript not detected within 12s" };
+}
+
+function snapshotJsonls(dir: string): string[] {
+  try {
+    return readdirSync(dir)
+      .filter((f) => f.endsWith(".jsonl"))
+      .map((f) => join(dir, f));
+  } catch {
+    return [];
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 // ── Static asset paths ────────────────────────────────────────────────────
 const CHAT_DIR = new URL("./chat/", import.meta.url).pathname;
 const CHAT_HTML_PATH = join(CHAT_DIR, "index.html");
@@ -291,6 +363,33 @@ Bun.serve({
       }
       tmuxStartClaude();
       return Response.json({ ok: true });
+    }
+
+    if (path === "/api/sessions" && req.method === "GET") {
+      const dir = claudeCodeAdapter.getTranscriptDir(REPO);
+      const pinned = getPinnedPath();
+      return Response.json({
+        pinned,
+        sessions: listSessions(dir, pinned),
+      });
+    }
+
+    if (path === "/api/sessions/switch" && req.method === "POST") {
+      const body = (await req.json()) as { path?: unknown };
+      const target = typeof body.path === "string" ? body.path : "";
+      if (!target || !target.endsWith(".jsonl")) {
+        return Response.json({ ok: false, error: "bad path" }, { status: 400 });
+      }
+      switchSession(target);
+      return Response.json({ ok: true, pinned: target });
+    }
+
+    if (path === "/api/sessions/new" && req.method === "POST") {
+      const result = await newSession();
+      if (!result.ok) {
+        return Response.json(result, { status: 500 });
+      }
+      return Response.json(result);
     }
 
     if (path === "/api/preview") {

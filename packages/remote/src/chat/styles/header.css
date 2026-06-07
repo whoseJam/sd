@@ -1,4 +1,4 @@
-/* Chat header — title, status pill, links. */
+/* Chat header — session picker, status pill, links. */
 header {
   display: flex;
   align-items: center;
@@ -8,12 +8,8 @@ header {
   background: var(--bg-1);
   border-bottom: 1px solid var(--border-1);
   flex-shrink: 0;
-}
-header .title {
-  font-size: var(--fs-md);
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.2px;
+  position: relative;
+  z-index: 20;
 }
 header .links {
   font-size: var(--fs-xs);
@@ -22,6 +18,113 @@ header .links {
 }
 header .links a { color: var(--fg-2); }
 header .links a:hover { color: var(--fg-0); }
+
+/* Session picker: brand + current session title + caret. Click opens the
+   session menu below the header. */
+.session-picker {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 4px 6px;
+  margin-left: -6px;
+  border-radius: var(--radius-sm);
+  color: var(--fg-0);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 0;
+  max-width: 70%;
+  transition: background var(--t-fast);
+}
+.session-picker:hover { background: var(--bg-2); }
+.session-picker[aria-expanded="true"] { background: var(--bg-2); }
+.session-picker .brand {
+  color: var(--accent);
+  font-weight: 600;
+}
+.session-picker .sep {
+  color: var(--fg-3);
+}
+.session-picker .session-title {
+  color: var(--fg-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
+}
+.session-picker .caret {
+  color: var(--fg-3);
+  font-size: var(--fs-xs);
+  align-self: center;
+}
+
+/* Dropdown anchored below the header. */
+.session-menu {
+  position: absolute;
+  top: 100%;
+  left: var(--space-3);
+  right: var(--space-3);
+  max-width: 480px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 30;
+  padding: 6px 0;
+}
+.session-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 8px var(--space-4);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--t-fast);
+}
+.session-item:hover { background: var(--bg-2); }
+.session-item .session-title {
+  color: var(--fg-0);
+  font-size: var(--fs-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+.session-item .session-meta {
+  color: var(--fg-3);
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+}
+.session-item.active .session-title {
+  color: var(--accent);
+  font-weight: 600;
+}
+.session-item.active::after {
+  content: "active";
+  position: absolute;
+  right: var(--space-4);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  margin-top: 2px;
+}
+.session-item.active { position: relative; }
+.session-item.new .session-title { color: var(--accent); font-weight: 600; }
+.session-divider {
+  height: 1px;
+  background: var(--border-1);
+  margin: 6px 0;
+}
 
 .status-pill {
   display: inline-flex;

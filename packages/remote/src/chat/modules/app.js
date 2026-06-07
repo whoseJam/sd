@@ -9,12 +9,14 @@ import {
 } from "./api.js";
 import { connectSSE } from "./sse.js";
 import {
+  clearMessages,
   initMessages,
   isNearBottom,
   latestTs,
   renderMsg,
   scrollToBottom,
 } from "./messages.js";
+import { initSessions, refresh as refreshSessions } from "./sessions.js";
 import { initStage, apply as applyStage } from "./stage.js";
 import { initStatus, poll as pollStatus } from "./status.js";
 
@@ -40,6 +42,14 @@ initStage({
   close: $("#stage-close"),
 });
 
+initSessions({
+  picker: $("#session-picker"),
+  title: $("#session-title"),
+  menu: $("#session-menu"),
+  new: $("#session-new"),
+  list: $("#session-list"),
+});
+
 async function catchUpMessages() {
   const wasAtBottom = isNearBottom();
   const since = latestTs();
@@ -63,6 +73,13 @@ const es = connectSSE({
   },
   onPreview(j) {
     applyStage(j.preview);
+  },
+  onSessionChanged() {
+    // New session pinned server-side: wipe chat, refetch (server is
+    // already replaying the new JSONL into the cache).
+    clearMessages();
+    refreshSessions();
+    catchUpMessages().then(scrollToBottom);
   },
   onReconnect() {
     catchUpMessages();

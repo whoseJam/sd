@@ -48,3 +48,35 @@ export async function restartClaude() {
     await fetch("/api/restart-claude", { method: "POST" });
   } catch {}
 }
+
+export async function fetchSessions() {
+  try {
+    const r = await fetch("/api/sessions");
+    if (!r.ok) return { pinned: "", sessions: [] };
+    return r.json();
+  } catch {
+    return { pinned: "", sessions: [] };
+  }
+}
+
+export async function switchSession(path) {
+  try {
+    const r = await fetch("/api/sessions/switch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path }),
+    });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function newSession() {
+  try {
+    const r = await fetch("/api/sessions/new", { method: "POST" });
+    return r.json();
+  } catch {
+    return { ok: false };
+  }
+}

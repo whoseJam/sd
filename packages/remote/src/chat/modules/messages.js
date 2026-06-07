@@ -13,6 +13,14 @@ export function initMessages(el) {
   listEl = el;
 }
 
+/** Wipe the chat: used when switching sessions so the next render starts
+ *  empty before the new session's history streams in. */
+export function clearMessages() {
+  seen.clear();
+  lastTs = 0;
+  if (listEl) listEl.innerHTML = "";
+}
+
 export function latestTs() {
   return lastTs;
 }

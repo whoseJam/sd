@@ -33,13 +33,26 @@
   </div>
 
   <header>
-    <span class="title">sd remote</span>
+    <button class="session-picker" id="session-picker" type="button" aria-expanded="false" aria-haspopup="menu">
+      <span class="brand">sd</span>
+      <span class="sep">/</span>
+      <span class="session-title" id="session-title">…</span>
+      <span class="caret">▾</span>
+    </button>
     <button class="status-pill" id="status" type="button">
       <span class="dot"></span>
       <span id="status-text">checking…</span>
     </button>
     <div class="links">
       <a href="/reveal/index.html" target="_blank">deck</a>
+    </div>
+    <div class="session-menu" id="session-menu" role="menu" hidden>
+      <button class="session-item new" id="session-new" type="button">
+        <span class="session-title">＋ Start new session</span>
+        <span class="session-meta">tmux restart Claude</span>
+      </button>
+      <div class="session-divider"></div>
+      <div class="session-list" id="session-list"></div>
     </div>
   </header>
 
