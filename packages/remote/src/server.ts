@@ -453,8 +453,16 @@ Bun.serve({
           });
         }
       }
+      // Static assets (JS / CSS / fonts / images): let the browser cache
+      // for a few minutes so 27 sd-animation iframes don't each pay the
+      // full download cost through the tunnel. The reload-token poller
+      // forces a full page reload when watchers rewrite anything under
+      // /tmp/sd-test/, so cache staleness is bounded by that.
       return new Response(Bun.file(filePath), {
-        headers: { "Content-Type": ct },
+        headers: {
+          "Content-Type": ct,
+          "Cache-Control": "public, max-age=300",
+        },
       });
     }
     return new Response("not found", { status: 404 });
