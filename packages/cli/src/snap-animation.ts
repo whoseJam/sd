@@ -17,7 +17,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import sharp from "sharp";
 
-import { attachIssueCollector, openInViewer, stitchGrid } from "./grid";
+import { attachIssueCollector, openInViewer, stitchGrid } from "./snap-grid";
 
 interface Args {
   url: string;

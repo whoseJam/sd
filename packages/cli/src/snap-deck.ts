@@ -14,7 +14,7 @@
 import path from "node:path";
 import { chromium } from "playwright";
 
-import { attachIssueCollector, openInViewer, stitchGrid } from "./grid";
+import { attachIssueCollector, openInViewer, stitchGrid } from "./snap-grid";
 
 type Framework = "reveal" | "webslides" | "impress";
 

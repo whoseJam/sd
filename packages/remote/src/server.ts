@@ -27,6 +27,7 @@ import {
   mkdirSync,
   readFileSync,
   statSync,
+  watch,
 } from "node:fs";
 import { extname, join } from "node:path";
 
@@ -188,6 +189,25 @@ setInterval(() => {
     }
   }
 }, 25000);
+
+// ── Reload epoch: watch /tmp/sd-test for any file change and bump a token
+//    that injected client scripts poll. Polling (not SSE) so it works
+//    through cloudflared too. Debounced so a webpack rebuild burst counts
+//    as one reload.
+let reloadEpoch = 0;
+let reloadTimer: ReturnType<typeof setTimeout> | null = null;
+try {
+  watch(REVEAL_ROOT, { recursive: true }, () => {
+    if (reloadTimer) clearTimeout(reloadTimer);
+    reloadTimer = setTimeout(() => {
+      reloadEpoch++;
+    }, 200);
+  });
+} catch {
+  // fs.watch recursive not supported on this platform; silent.
+}
+
+const RELOAD_SCRIPT = `<script>(function(){let l=null;setInterval(function(){fetch('/api/reload-token').then(function(r){return r.json()}).then(function(j){if(l!==null&&j.epoch!==l)location.reload();l=j.epoch})},1000);})();</script>`;
 
 // ── Transcript watcher ────────────────────────────────────────────────────
 // Single dispatch point for agent-side messages. Adapter decides what each
@@ -358,6 +378,10 @@ Bun.serve({
       return Response.json({ ok: true });
     }
 
+    if (path === "/api/reload-token") {
+      return Response.json({ epoch: reloadEpoch });
+    }
+
     if (path === "/api/sessions" && req.method === "GET") {
       const dir = claudeCodeAdapter.getTranscriptDir(REPO);
       const pinned = getPinnedPath();
@@ -444,8 +468,22 @@ Bun.serve({
       return new Response("forbidden", { status: 403 });
     }
     if (existsSync(filePath) && statSync(filePath).isFile()) {
+      const ct = contentType(filePath);
+      // Inject reload poller into served HTML so the deck / animation
+      // iframes reload when the watchers rewrite /tmp/sd-test.
+      if (ct.startsWith("text/html")) {
+        let html = readFileSync(filePath, "utf-8");
+        if (html.includes("</body>")) {
+          html = html.replace("</body>", RELOAD_SCRIPT + "</body>");
+        } else {
+          html += RELOAD_SCRIPT;
+        }
+        return new Response(html, {
+          headers: { "Content-Type": ct, "Cache-Control": "no-store" },
+        });
+      }
       return new Response(Bun.file(filePath), {
-        headers: { "Content-Type": contentType(filePath) },
+        headers: { "Content-Type": ct },
       });
     }
     return new Response("not found", { status: 404 });

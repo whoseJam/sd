@@ -4,14 +4,7 @@
   "private": true,
   "description": "Phone ↔ desktop Claude Code remote chat: Bun HTTP/SSE server, mobile chat UI, tmux Claude hooks, cloudflared tunnel orchestration",
   "type": "module",
-  "bin": {
-    "sd-remote-start": "./bin/start.ts",
-    "sd-remote-stop": "./bin/stop.ts",
-    "sd-remote-preview": "./src/cli/preview.ts"
-  },
   "scripts": {
-    "start": "./bin/start.ts",
-    "stop": "./bin/stop.ts",
     "server": "bun src/server.ts"
   }
 }

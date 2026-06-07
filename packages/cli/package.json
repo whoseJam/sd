@@ -8,7 +8,9 @@
     "@sd/impress": "workspace:*",
     "@sd/reveal": "workspace:*",
     "@sd/webslides": "workspace:*",
-    "sass-loader": "^17.0.0"
+    "playwright": "^1.49.0",
+    "sass-loader": "^17.0.0",
+    "sharp": "^0.34.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",

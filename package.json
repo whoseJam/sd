@@ -23,7 +23,14 @@
     "format": "oxfmt && oxlint --fix",
     "lint": "oxlint",
     "check:format": "oxfmt --check",
-    "check:lint": "oxlint"
+    "check:lint": "oxlint",
+    "start:local": "bun packages/cli/src/serve.ts start local",
+    "start:remote": "bun packages/cli/src/serve.ts start remote",
+    "stop:local": "bun packages/cli/src/serve.ts stop local",
+    "stop:remote": "bun packages/cli/src/serve.ts stop remote",
+    "open": "bun packages/cli/src/view.ts show",
+    "close": "bun packages/cli/src/view.ts hide",
+    "snap": "bun packages/cli/src/snap.ts"
   },
   "devDependencies": {
     "@svgdotjs/svg.js": "^3.2.0",
@@ -36,5 +43,8 @@
     "oxfmt": "^0.41.0",
     "oxlint": "^1.58.0",
     "typescript": "^5.5.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["sharp"]
   }
 }

@@ -1,15 +1,9 @@
 #!/usr/bin/env bun
-// One-shot launcher: chat server + cloudflared tunnel + tmux Claude session.
-//
-// Pair with bin/stop.ts. Inverse operation is "stop" — symmetric naming.
-//
-// Why this is in TypeScript and not a shell script: bash isn't portable to
-// Windows / non-POSIX environments, and the orchestration logic (poll for
-// URL, diff jsonl set, pin watcher) is more readable as TS. tmux,
-// cloudflared, and bun must still be installed as CLI binaries; we just
-// shell out to them.
-//
-// Idempotent. Re-running reuses existing server / tunnel / session.
+// Unified launcher. Driven by pnpm scripts:
+//   pnpm start:local   chat server + watcher only
+//   pnpm start:remote  + cloudflared tunnel + tmux Claude
+//   pnpm stop:local    kill chat server
+//   pnpm stop:remote   kill all of the above
 
 import { spawn, spawnSync } from "node:child_process";
 import {
@@ -17,11 +11,15 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { createConnection } from "node:net";
 import { homedir } from "node:os";
 import { join } from "node:path";
+
+type Mode = "local" | "remote";
+type Verb = "start" | "stop";
 
 const SESSION = process.env.SESSION ?? "claude-dev";
 const REPO = process.env.REPO ?? join(homedir(), "Desktop", "sd");
@@ -41,26 +39,102 @@ main().catch((e) => {
 });
 
 async function main(): Promise<void> {
-  for (const cmd of ["tmux", "cloudflared", "bun"]) {
+  const verb = process.argv[2] as Verb | undefined;
+  const mode = process.argv[3] as Mode | undefined;
+  if (
+    (verb !== "start" && verb !== "stop") ||
+    (mode !== "local" && mode !== "remote")
+  ) {
+    console.error("usage: serve.ts <start|stop> <local|remote>");
+    process.exit(1);
+  }
+  if (verb === "start") await start(mode);
+  else await stop(mode);
+}
+
+async function start(mode: Mode): Promise<void> {
+  const needs = mode === "remote"
+    ? ["bun", "tmux", "cloudflared"]
+    : ["bun"];
+  for (const cmd of needs) {
     if (!which(cmd)) die(`missing: ${cmd} (brew install ${cmd})`);
   }
 
   await ensureServer();
+  if (mode === "local") {
+    console.log(`\n  open: http://127.0.0.1:${PORT}/\n`);
+    openBrowser(`http://127.0.0.1:${PORT}/`);
+    return;
+  }
+
   const url = await ensureTunnel();
   const needPin = ensureTmuxSession();
   if (needPin) pinTranscript();
   pinTmuxStatusBar(url);
   openBrowser(url);
-
-  if (process.env.OPEN_BROWSER !== "0" && process.stdout.isTTY) {
-    console.log(`\n  chat: ${url}\n`);
-  }
-
-  // Land the user inside the tmux session by default. Skip with NO_ATTACH=1
-  // for headless / CI invocations (the watcher + tunnel keep running).
+  console.log(`\n  chat: ${url}\n`);
   if (process.env.NO_ATTACH === "1") return;
   const r = spawnSync("tmux", ["attach", "-t", SESSION], { stdio: "inherit" });
   if (r.status !== 0) process.exit(r.status ?? 1);
+}
+
+async function stop(mode: Mode): Promise<void> {
+  killViewWatchers();
+  if (mode === "remote") {
+    if (spawnSync("tmux", ["has-session", "-t", SESSION]).status === 0) {
+      spawnSync("tmux", ["kill-session", "-t", SESSION]);
+      console.log(`✓ tmux session '${SESSION}' killed`);
+    } else {
+      console.log(`  tmux session '${SESSION}' not running`);
+    }
+    const cfPattern = `cloudflared.*--url.*:${PORT}`;
+    if (pgrepHas(cfPattern)) {
+      pkill(cfPattern);
+      console.log("✓ cloudflared killed");
+    } else {
+      console.log("  cloudflared not running");
+    }
+    if (existsSync(URL_FILE)) rmSync(URL_FILE);
+  }
+
+  const lsof = spawnSync(
+    "lsof",
+    ["-nP", `-iTCP:${PORT}`, "-sTCP:LISTEN", "-t"],
+    { encoding: "utf-8" },
+  );
+  const pids = (lsof.stdout ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((s) => /^\d+$/.test(s));
+  if (pids.length) {
+    spawnSync("kill", pids);
+    console.log(`✓ chat server on :${PORT} killed`);
+  } else {
+    console.log("  chat server not running");
+  }
+  console.log("done.");
+}
+
+function killViewWatchers(): void {
+  const file = join(REVEAL_ROOT, "view-pids.json");
+  if (!existsSync(file)) return;
+  let pids: number[] = [];
+  try {
+    pids = JSON.parse(readFileSync(file, "utf-8"));
+  } catch {
+    return;
+  }
+  let killed = 0;
+  for (const p of pids) {
+    try {
+      process.kill(p);
+      killed++;
+    } catch {
+      // already dead
+    }
+  }
+  if (killed) console.log(`✓ killed ${killed} view watchers`);
+  rmSync(file);
 }
 
 async function ensureServer(): Promise<void> {
@@ -69,8 +143,6 @@ async function ensureServer(): Promise<void> {
     return;
   }
   console.log("  starting chat server...");
-  const log = Bun.file(SERVER_LOG);
-  // Detach via setsid-equivalent: stdio: 'ignore' + ref decreases child link.
   const child = spawn(
     "bun",
     [join(REPO, "packages", "remote", "src", "server.ts")],
@@ -80,13 +152,11 @@ async function ensureServer(): Promise<void> {
       stdio: ["ignore", "pipe", "pipe"],
     },
   );
-  const writer = Bun.write(log, ""); // truncate
-  await writer;
+  await Bun.write(Bun.file(SERVER_LOG), "");
   const out = Bun.file(SERVER_LOG).writer();
   child.stdout.on("data", (d) => out.write(d));
   child.stderr.on("data", (d) => out.write(d));
   child.unref();
-
   for (let i = 0; i < 20; i++) {
     await sleep(500);
     if (await portInUse(PORT)) {
@@ -101,35 +171,25 @@ async function ensureTunnel(): Promise<string> {
   if (existsSync(URL_FILE)) {
     const candidate = readFileSync(URL_FILE, "utf-8").trim();
     if (candidate && pgrepHas(`cloudflared.*--url.*:${PORT}`)) {
-      const alive = await httpAlive(candidate, 3000);
-      if (alive) {
+      if (await httpAlive(candidate, 3000)) {
         console.log(`✓ tunnel: ${candidate}  (reused)`);
         return candidate;
       }
     }
   }
-
-  // Restart fresh so the log we read for URL parsing is always ours.
   pkill(`cloudflared.*--url.*:${PORT}`);
   await sleep(1000);
   writeFileSync(TUNNEL_LOG, "");
   console.log("  starting cloudflared...");
-  // --protocol http2: SSE doesn't survive cloudflared's default QUIC
-  // (events sit buffered indefinitely client-side). HTTP/2 flushes
-  // chunks immediately.
   const child = spawn(
     "cloudflared",
     ["tunnel", "--url", `http://127.0.0.1:${PORT}`, "--protocol", "http2"],
-    {
-      detached: true,
-      stdio: ["ignore", "pipe", "pipe"],
-    },
+    { detached: true, stdio: ["ignore", "pipe", "pipe"] },
   );
   const out = Bun.file(TUNNEL_LOG).writer();
   child.stdout.on("data", (d) => out.write(d));
   child.stderr.on("data", (d) => out.write(d));
   child.unref();
-
   for (let i = 0; i < 30; i++) {
     await sleep(1000);
     const url = extractTunnelUrl();
@@ -153,7 +213,6 @@ function extractTunnelUrl(): string {
 }
 
 const SHELL_RE = /^(fish|bash|zsh|sh|dash|ksh)$/;
-
 const CLAUDE_CMD = "claude --dangerously-skip-permissions";
 
 function ensureTmuxSession(): boolean {
@@ -166,7 +225,6 @@ function ensureTmuxSession(): boolean {
       "-F",
       "#{pane_current_command}",
     ]).stdout.trim();
-
     if (!paneCmd || SHELL_RE.test(paneCmd)) {
       console.log(
         `  Claude not running in tmux (pane: ${paneCmd || "?"}) — relaunching...`,
@@ -178,17 +236,12 @@ function ensureTmuxSession(): boolean {
     console.log(`✓ tmux session '${SESSION}' (Claude alive: ${paneCmd})`);
     return false;
   }
-
   tmux(["new-session", "-d", "-s", SESSION, "-c", REPO, "-n", "main"]);
   tmux(["send-keys", "-t", `${SESSION}:main`, CLAUDE_CMD, "Enter"]);
   console.log(`✓ tmux session '${SESSION}' (created)`);
   return true;
 }
 
-/** Snapshot the existing jsonl set + mark the pin as PENDING. The watcher
- *  will adopt whichever jsonl appears in this dir that isn't in the
- *  snapshot — which is exactly the one this tmux Claude will write to
- *  when it processes its first prompt. */
 function pinTranscript(): void {
   const claudeDir = join(
     homedir(),
@@ -218,7 +271,6 @@ function pinTmuxStatusBar(url: string): void {
 
 function openBrowser(url: string): void {
   if (process.env.OPEN_BROWSER === "0") return;
-  // macOS only; harmless if it fails elsewhere.
   if (process.platform === "darwin") {
     spawn("open", [url], { stdio: "ignore", detached: true }).unref();
   } else if (process.platform === "linux") {
@@ -227,8 +279,6 @@ function openBrowser(url: string): void {
     spawn("cmd", ["/c", "start", url], { stdio: "ignore", detached: true }).unref();
   }
 }
-
-// ── helpers ──────────────────────────────────────────────────────────────
 
 function tmux(args: string[]): { status: number | null; stdout: string } {
   const r = spawnSync("tmux", args, { encoding: "utf-8" });
@@ -245,8 +295,7 @@ function which(cmd: string): boolean {
 }
 
 function pgrepHas(pattern: string): boolean {
-  const r = spawnSync("pgrep", ["-f", pattern]);
-  return r.status === 0;
+  return spawnSync("pgrep", ["-f", pattern]).status === 0;
 }
 
 function pkill(pattern: string): void {

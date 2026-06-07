@@ -58,24 +58,34 @@ The `dist/` outputs from `gulp sd`, `gulp reveal`, `gulp element` are written to
 
 ## Build and Development Commands
 
-### Develop a deck locally (the canonical loop)
+### Develop a deck (the canonical loop)
 
 Decks under `examples/decks/<name>/` are split: `reveal/` holds `ppt.html` + slide HTML; `animation/` holds the per-slide bundles. The slide HTML references its bundle via `<sd-animation src="../../animation/<name>/<name>.js">`, so the two trees must land at sibling output paths.
 
-Run these **four in background**:
+**One command:**
 
 ```bash
-gulp sd -w                                                                          # rebuild dist/sd.js on core changes
-gulp ppt           -i examples/decks/<deck>/reveal    -o /tmp/sd-test/reveal -l -w  # deck HTML + reveal bundle
-gulp animation-group -i examples/decks/<deck>/animation -o /tmp/sd-test/animation -l -w  # per-slide animation bundles
-gulp serve -o /tmp/sd-test -p 8765                                                  # live-server: no-cache + page auto-reload
+pnpm open <deck-name>     # spawn watchers, embed the deck in the chat stage + open local browser
+pnpm close                # stop watching + clear the stage panel
 ```
 
-`-l` copies the locally-built `sd.js` / `reveal.js` into the output dir (otherwise the HTML loads them from `https://whosejam.site/public/`).
+For phone access: `pnpm start:remote` first (adds a cloudflared tunnel + tmux Claude session). Then `pnpm open <deck-name>` works the same — the chat's stage panel shows the deck on the phone over the tunnel. `pnpm stop:remote` tears it all down.
 
-Browser: **http://127.0.0.1:8765/reveal/index.html** — and **in DevTools turn on "Disable cache"**. Chrome's in-memory cache for `<sd-animation>` iframes survives `Cache-Control: no-store`; live-server's WebSocket-triggered full-page reload (fired when any file under `-o` changes) is what reliably flushes those iframes. A dumb static server (`npx http-server`, `python -m http.server`) does NOT work here — no auto-reload means the iframe sits on the old bundle indefinitely.
+`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and POSTs `/reveal/index.html` to `/api/preview`. Locally it also `open`s `http://127.0.0.1:8765/` in your browser.
 
-If `gulp` isn't on PATH, prefix with `pnpm exec`.
+The Bun server injects a 1-line reload poller into every HTML it serves, so watcher rebuilds refresh the iframe automatically — no DevTools "Disable cache" toggle needed.
+
+Full set of commands:
+
+```bash
+pnpm open <name>          watch + preview a deck/animation
+pnpm close                stop watching + clear preview
+pnpm snap <url>            one-shot screenshot (see "Snapshot tool" below)
+pnpm start:local          boot the Bun server (auto-called by open)
+pnpm stop:local           stop the Bun server
+pnpm start:remote         server + cloudflared tunnel + tmux Claude (phone access)
+pnpm stop:remote          tear down all of remote
+```
 
 ### Other tasks
 
@@ -157,49 +167,46 @@ Default style for animations written in `examples/decks/<deck>/animation/*.ts`. 
 - **Visual elements carry algorithmic meaning.** The end state should let a viewer read the answer (Σ area, coverage `n/W`, invariants) without further animation. Don't rely on motion alone — load each element with semantic payload.
 - **Background scaffolding is low-presence:** opacity 0.30–0.40, `strokeWidth` 0.6–0.8, `strokeDashArray: [2, 3]`. Fade these in first.
 
-## Snapshot tools (visual feedback for AI agents)
+## Snapshot tool
 
-Two tools under `.claude/tools/`, both stitch per-frame screenshots into one labeled grid PNG via headless chromium. Shared helpers (label SVG, grid stitcher, browser-issue collector) live in `.claude/tools/grid.ts`. The tools do NOT spawn their own HTTP server — point them at the URL of an already-running dev server (the canonical deck loop above).
-
-`sd-animation-snapshot.ts` — drives a built animation through its `sd.pause()` boundaries. Relies on `sd.Window.PUPPETEER` (toggles iframe-sizing chatter) and `sd.device().keyDown("N")` (programmatic frame advance).
-
-`sd-ppt-snapshot.ts` — drives a built deck (reveal / webslides / impress) through every slide and screenshots each at its initial state (no per-iframe pause advance). Auto-detects the framework from window globals: `Reveal`, `ws`, or `impress`. Idle wait per slide defaults to 1000ms; override with `--idle`.
+`pnpm snap <url>` stitches per-frame screenshots into one labeled grid PNG via headless chromium. The URL must point at something already being served — `pnpm open <name>` is the easiest way to get a server up.
 
 ```bash
-# one-time setup
-cd .claude/tools && pnpm install --ignore-workspace && npx playwright install chromium
-
-# animations: default 5×5 grid of pauses 1-25
-bun .claude/tools/sd-animation-snapshot.ts <url>
-bun .claude/tools/sd-animation-snapshot.ts <url> --pause 7
-bun .claude/tools/sd-animation-snapshot.ts <url> --from 10 --to 14
-
-# decks: default = all slides
-bun .claude/tools/sd-ppt-snapshot.ts <deck-url>
-bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --slide 3
-bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --from 5 --to 8
-bun .claude/tools/sd-ppt-snapshot.ts <deck-url> --idle 1500
+pnpm snap /reveal/index.html                    # all slides grid
+pnpm snap /reveal/index.html --slide 6          # single slide
+pnpm snap /reveal/index.html --from 5 --to 8    # range
+pnpm snap /animation/foo.html                   # animation grid of pauses 1-25
+pnpm snap /animation/foo.html --pause 7
+pnpm snap /animation/foo.html --from 10 --to 14
 ```
 
-E.g. with the canonical loop running, `bun .claude/tools/sd-ppt-snapshot.ts http://127.0.0.1:8765/reveal/index.html --slide 16`.
+Relative URLs (starting with `/`) resolve against `http://127.0.0.1:8765`. Pass a full URL (incl. the cloudflare tunnel one) to override. The path itself determines mode: `/reveal/` → deck mode, `/animation/` → animation mode.
 
-stdout = output PNG absolute path (only line). stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean run; exit 1 = errors (PNG still produced for partial-state inspection).
+stdout = absolute PNG path. stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean; exit 1 = errors (PNG still produced).
 
-## Remote chat workflow (when running in tmux from bin/start.ts)
+Implementations: `packages/cli/src/snap.ts` (dispatcher), `snap-deck.ts`, `snap-animation.ts`, `snap-grid.ts` (shared label/stitch helpers).
 
-If `$TMUX` is set you're inside the `claude-dev` session driven by `packages/remote/bin/start.ts`. The user is on their phone watching the chat UI (served by `@sd/remote`'s Bun server on :8765 → cloudflared tunnel). Conventions:
+## Remote chat workflow (when running in tmux from pnpm start:remote)
 
-- **Showing a slide or animation = snapshot + chat post, never a link.** They can't render iframes in chat. Use the wrapper:
+If `$TMUX` is set you're inside the `claude-dev` session that `pnpm start:remote` boots. The user is on their phone hitting the same Bun server (:8765) you can reach locally — `pnpm start:remote` just adds a cloudflared tunnel pointing at it. Local URL and tunneled URL serve identical paths.
+
+How to show the user something:
+
+- **Live deck or animation** — same commands as locally:
   ```bash
-  bun packages/remote/src/cli/preview.ts slide 6              # snapshot slide 6 → posts to chat
-  bun packages/remote/src/cli/preview.ts slides 5 8           # snapshot slides 5-8 grid
-  bun packages/remote/src/cli/preview.ts animation 状态设置    # snapshot animation by name
-  bun packages/remote/src/cli/preview.ts animation 状态设置 --pause 4
-  bun packages/remote/src/cli/preview.ts deck                 # all slides grid
+  pnpm open <deck-name>
+  pnpm open <animation-name>
+  pnpm close
   ```
-  Resolves URLs against `http://127.0.0.1:$PORT/{reveal,animation}/...` automatically.
-- **Inline image references** (`/tmp/sd-...png`) in your text reply also auto-attach via the Stop hook regex — fine for one-off snapshots you take with the underlying tools directly.
-- **Status reports** are normal chat messages; the dev loop watchers (gulp -w) you start with `&` keep running across turns.
+  Spawns watchers + pushes the URL into the chat's stage panel. Watcher rebuilds refresh the iframe automatically.
+
+- **Static snapshot** — `pnpm snap <url>` writes a PNG to `/tmp/sd-test/snapshots/` and prints its path. Reference it as a markdown image in your chat reply:
+  ```
+  ![slide 6](/snapshots/<filename>.png)
+  ```
+  The chat client renders markdown; image appears inline. Relative URLs resolve the same locally and through the tunnel.
+
+- **Status reports** are normal chat messages.
 
 ## Loader / Plugin Hoisting
 
