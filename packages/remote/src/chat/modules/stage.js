@@ -62,6 +62,7 @@ export function apply(p) {
   if (hasUrl && !minimized) {
     panelEl.classList.add("show");
     pillEl.classList.remove("show");
+    requestAnimationFrame(rescale);
   } else if (hasUrl && minimized) {
     panelEl.classList.remove("show");
     pillEl.classList.add("show");
@@ -77,3 +78,23 @@ export function apply(p) {
 function isMobile() {
   return window.matchMedia("(max-width: 899px)").matches;
 }
+
+/** Reveal.js layout() throws on narrow viewports — we pin the iframe to
+ *  a fixed desktop-sized 960×720 inner viewport (set in CSS) and scale
+ *  it with transform so it fits the panel. Recompute on every show / on
+ *  window resize. */
+function rescale() {
+  if (!iframeEl) return;
+  if (!isMobile() || !panelEl.classList.contains("show")) {
+    iframeEl.style.transform = "";
+    panelEl.style.height = "";
+    return;
+  }
+  const w = panelEl.clientWidth;
+  const s = w / 960;
+  iframeEl.style.transform = `scale(${s})`;
+  // Match the panel height to the scaled iframe so there's no gap below.
+  panelEl.style.height = `${720 * s}px`;
+}
+
+window.addEventListener("resize", () => requestAnimationFrame(rescale));

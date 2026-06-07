@@ -72,10 +72,6 @@ body { display: flex; flex-direction: column; }
     align-items: center;
     justify-content: center;
   }
-  /* Constrain the iframe to the deck's intrinsic 4:3 aspect so reveal
-     doesn't end up letterboxing inside a tall container with the slide
-     content stuck near the top. Anything outside the iframe shows the
-     stage bg. */
   #stage iframe {
     flex: 0 0 auto;
     width: auto;
@@ -83,5 +79,23 @@ body { display: flex; flex-direction: column; }
     max-width: 100%;
     max-height: 100%;
     aspect-ratio: 4 / 3;
+  }
+}
+/* Mobile: reveal.js's layout() throws on narrow viewports (TypeError
+   inside a reveal-internal innerHTML assign). Force the iframe to a
+   desktop-sized inner viewport (960×720) and CSS-scale the whole
+   thing down to fit the panel. JS in stage.js computes the scale
+   on .show and on resize, and sizes the panel to match. */
+@media (max-width: 899px) {
+  #stage.show {
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: auto;
+  }
+  #stage.show iframe {
+    flex: 0 0 auto;
+    width: 960px;
+    height: 720px;
+    transform-origin: top left;
   }
 }

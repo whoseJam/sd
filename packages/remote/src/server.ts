@@ -469,18 +469,18 @@ Bun.serve({
     }
     if (existsSync(filePath) && statSync(filePath).isFile()) {
       const ct = contentType(filePath);
-      // Inject reload poller into served HTML so the deck / animation
-      // iframes reload when the watchers rewrite /tmp/sd-test.
+      // Inject reload poller into served HTML — but ONLY into full
+      // documents. include-html fetches fragment .html files (just a
+      // <section>...) and inlines them; appending a <script> to those
+      // ends up duplicated all over the deck and breaks layout.
       if (ct.startsWith("text/html")) {
         let html = readFileSync(filePath, "utf-8");
         if (html.includes("</body>")) {
           html = html.replace("</body>", RELOAD_SCRIPT + "</body>");
-        } else {
-          html += RELOAD_SCRIPT;
+          return new Response(html, {
+            headers: { "Content-Type": ct, "Cache-Control": "no-store" },
+          });
         }
-        return new Response(html, {
-          headers: { "Content-Type": ct, "Cache-Control": "no-store" },
-        });
       }
       return new Response(Bun.file(filePath), {
         headers: { "Content-Type": ct },
