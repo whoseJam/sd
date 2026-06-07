@@ -83,6 +83,8 @@ function isMobile() {
  *  a fixed desktop-sized 960×720 inner viewport (set in CSS) and scale
  *  it with transform so it fits the panel. Recompute on every show / on
  *  window resize. */
+/** Mobile only: iframe is pinned to 960×720 in CSS, we scale it down with
+ *  transform to fit the panel and shrink the panel to the scaled height. */
 function rescale() {
   if (!iframeEl) return;
   if (!isMobile() || !panelEl.classList.contains("show")) {
@@ -93,7 +95,6 @@ function rescale() {
   const w = panelEl.clientWidth;
   const s = w / 960;
   iframeEl.style.transform = `scale(${s})`;
-  // Match the panel height to the scaled iframe so there's no gap below.
   panelEl.style.height = `${720 * s}px`;
 }
 

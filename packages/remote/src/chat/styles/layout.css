@@ -59,33 +59,41 @@ body { display: flex; flex-direction: column; }
     width: auto;
   }
 }
+/* iframe matches the deck's intrinsic 960×700 aspect so reveal.js draws
+   slide content flush against the iframe edges — no internal letterbox.
+   Container queries pick whichever stage dimension is binding (when the
+   stage is wider than the deck ratio, bind by height; otherwise bind by
+   width). Anything outside the iframe shows the stage bg. */
+#stage {
+  container-type: size;
+  container-name: stage;
+}
 #stage iframe {
-  width: 100%;
-  height: 100%;
   border: none;
-  background: #fff;
+  background: var(--bg-3);
   display: block;
-  flex: 1;
+  flex: 0 0 auto;
 }
-@media (min-width: 900px) {
-  #stage.show {
-    align-items: center;
-    justify-content: center;
-  }
+#stage.show {
+  align-items: center;
+  justify-content: center;
+}
+@container stage (min-aspect-ratio: 960/700) {
   #stage iframe {
-    flex: 0 0 auto;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    aspect-ratio: 4 / 3;
+    height: 100cqh;
+    width: calc(100cqh * 960 / 700);
   }
 }
-/* Mobile: reveal.js's layout() throws on narrow viewports (TypeError
-   inside a reveal-internal innerHTML assign). Force the iframe to a
-   desktop-sized inner viewport (960×720) and CSS-scale the whole
-   thing down to fit the panel. JS in stage.js computes the scale
-   on .show and on resize, and sizes the panel to match. */
+@container stage (max-aspect-ratio: 960/700) {
+  #stage iframe {
+    width: 100cqw;
+    height: calc(100cqw * 700 / 960);
+  }
+}
+/* Mobile: reveal.js's layout() throws on narrow viewports. Pin the
+   iframe to a desktop-sized 960×720 inner viewport and CSS-scale it
+   down (JS sets the scale + matching panel height; CSS can't do
+   pixel/pixel arithmetic into a unitless scale value). */
 @media (max-width: 899px) {
   #stage.show {
     align-items: flex-start;
