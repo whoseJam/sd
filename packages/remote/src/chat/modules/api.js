@@ -35,14 +35,6 @@ export async function fetchPreview() {
   }
 }
 
-export async function setPreview(url, label = "") {
-  await fetch("/api/preview", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url, label }),
-  });
-}
-
 export async function restartClaude() {
   try {
     await fetch("/api/restart-claude", { method: "POST" });
