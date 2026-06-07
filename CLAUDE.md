@@ -71,7 +71,7 @@ pnpm close                # stop watching + clear the stage panel
 
 For phone access: `pnpm start:remote` first (adds a cloudflared tunnel + tmux Claude session). Then `pnpm open <deck-name>` works the same — the chat's stage panel shows the deck on the phone over the tunnel. `pnpm stop:remote` tears it all down.
 
-`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and POSTs `/reveal/index.html` to `/api/preview`. Locally it also `open`s `http://127.0.0.1:8765/` in your browser.
+`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and writes `/reveal/index.html` into `/tmp/sd-test/preview-url.txt` (the chat client polls that file every 2s). Locally it also `open`s `http://127.0.0.1:8765/` in your browser.
 
 The Bun server injects a 1-line reload poller into every HTML it serves, so watcher rebuilds refresh the iframe automatically — no DevTools "Disable cache" toggle needed.
 

@@ -2,7 +2,7 @@
   "name": "@sd/remote",
   "version": "0.0.0",
   "private": true,
-  "description": "Phone ↔ desktop Claude Code remote chat: Bun HTTP/SSE server, mobile chat UI, tmux Claude hooks, cloudflared tunnel orchestration",
+  "description": "Phone ↔ desktop Claude Code remote chat: Bun HTTP/SSE server, mobile chat UI, JSONL transcript watcher, file-based preview state",
   "type": "module",
   "scripts": {
     "server": "bun src/server.ts"

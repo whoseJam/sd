@@ -1,48 +1,39 @@
 # @sd/remote — phone ↔ desktop Claude chat
 
-Self-contained workspace package that lets you talk to a Claude Code session
-running on your Mac from a phone, with live preview of decks/animations,
-inline snapshots, and visibility into Claude's tool use.
+Workspace package that lets you talk to a Claude Code session running on
+your Mac from a phone, with live deck/animation preview and inline tool
+chips.
 
 ## Architecture
 
 ```
 phone Safari ⇄ cloudflared ⇄ chat server (Bun :8765)
                                   │
+                                  ├─ TranscriptWatcher
+                                  │     polls ~/.claude/projects/<cwd>/<id>.jsonl
+                                  │     dispatches new lines via the
+                                  │     Claude Code adapter
+                                  │
                                   ├─ POST /api/messages
-                                  │     → save + tmux send-keys
-                                  │     → set responding=true
+                                  │     → tmux send-keys to Claude
                                   │
-                                  ├─ POST /api/post-agent
-                                  │     ← on-hook.ts (Stop) posts assistant reply
-                                  │     ← post.ts (manual)
-                                  │     → set responding=false
+                                  ├─ GET  /api/messages?since=<ts>
+                                  │     ← chat client polls every 2s
                                   │
-                                  ├─ POST /api/tool-call
-                                  │     ← on-hook.ts (PreToolUse) posts chip
-                                  │     → auto-attaches image_paths
+                                  ├─ GET  /api/status, /api/sessions,
+                                  │       /api/reload-token
                                   │
-                                  ├─ POST /api/preview
-                                  │     ← preview.ts show/hide
-                                  │     → SSE event "preview"
+                                  ├─ GET  /api/stream  (SSE; broken
+                                  │       through cloudflared so client
+                                  │       also polls)
                                   │
-                                  ├─ GET  /api/status
-                                  │     → {session, claude, responding}
-                                  │
-                                  ├─ GET  /api/stream  (SSE)
-                                  │     → push new messages + preview state
-                                  │
-                                  └─ static  /reveal/* /animation/* /snapshots/*
+                                  └─ static  /reveal/* /animation/*
+                                            /snapshots/*  /preview-url.txt
 ```
 
-After each Claude turn the **Stop hook** (`src/hooks/on-hook.ts`, wired via
-`.claude/settings.json`) reads the assistant text from the hook input and
-POSTs to `/api/post-agent`. PreToolUse fires per tool call and posts a chip
-with the tool name + raw input (and the image itself when Claude is Reading
-a PNG/JPG).
-
-Both hooks are **inert outside the tmux workflow**: they POST only when
-`$TMUX` is set AND the chat server is reachable on `PORT`.
+JSONL is the single source of truth: there are no hooks installed on the
+user's machine, no `.claude/settings.json` to wire up. The watcher reads
+whatever Claude Code writes anyway and serializes it into chat messages.
 
 ## Layout
 
@@ -50,99 +41,94 @@ Both hooks are **inert outside the tmux workflow**: they POST only when
 packages/remote/
 ├── package.json
 ├── README.md                  # this file
-├── bin/
-│   ├── start-session.sh       # boot server + tunnel + tmux + browser
-│   ├── stop.sh                # nuke everything
-│   └── tunnel.sh              # standalone tunnel runner
 └── src/
-    ├── server.ts              # Bun HTTP + SSE
-    ├── chat.html              # phone-friendly UI (marked.js for markdown)
-    ├── hooks/
-    │   └── on-hook.ts         # Stop + PreToolUse handler
-    └── cli/
-        ├── post.ts            # manually post a chat message
-        └── preview.ts         # show/hide preview panel; snap slides/animations
+    ├── server.ts              # Bun HTTP + SSE + reload-token
+    ├── message.ts             # shared Message type
+    ├── sessions.ts            # pin file / baseline / list sessions
+    ├── adapters/
+    │   ├── types.ts           # AgentAdapter contract
+    │   └── claude-code.ts     # parses Claude Code JSONL
+    ├── watcher/
+    │   └── transcript-watcher.ts
+    └── chat/
+        ├── index.html
+        ├── styles/*.css
+        └── modules/*.js       # api / app / dom / messages / preview / …
 ```
 
-The Stop hook is wired in repo-root `.claude/settings.json`:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      { "hooks": [{ "type": "command", "command": "bun ${CLAUDE_PROJECT_DIR}/packages/remote/src/hooks/on-hook.ts" }] }
-    ],
-    "Stop": [
-      { "hooks": [{ "type": "command", "command": "bun ${CLAUDE_PROJECT_DIR}/packages/remote/src/hooks/on-hook.ts" }] }
-    ]
-  }
-}
-```
+CLI entry points (start / stop / open / close / snap) live one package
+over, under `packages/cli/src/`, since they're project-level commands
+alongside `sd-animation` etc.
 
 ## Prerequisites
 
-- macOS or Linux. macOS Sharing → Remote Login = on (only if you also want SSH access)
-- `brew install tmux cloudflared` (or apt/dnf equivalent on Linux)
-- Phone: just Safari/Chrome, no app needed
+- macOS or Linux
+- `brew install tmux cloudflared`
+- Phone: just Safari/Chrome
 
 ## Daily flow
 
 ### Start
 
 ```bash
-./packages/remote/bin/start-session.sh
-# prints chat URL, saves to /tmp/sd-test/url.txt, pins to tmux status bar,
-# auto-opens desktop browser, attaches the claude-dev tmux session
+pnpm start:remote
+# boots: chat server :8765, cloudflared tunnel, tmux 'claude-dev' running
+#   `claude --dangerously-skip-permissions`. Prints + pins the tunnel URL
+#   to the tmux status bar, opens your Mac browser, attaches the tmux
+#   session. Re-running reuses what's already alive.
 ```
 
-Detach with `Ctrl-b d`. Re-running attaches; if Claude died inside the
-existing tmux session, it auto-relaunches it.
+Detach with `Ctrl-b d`.
+
+For local-only viewing (no tunnel, no tmux) use `pnpm start:local`.
 
 ### On the phone
 
-Open the trycloudflare URL.
+Open the cloudflare URL.
 
-- Green pill `Claude` in header = good
-- Red pill `restart Claude (fish)` = Claude died; tap to relaunch
-- Tool chips appear inline as Claude runs Bash/Read/Edit/etc. Tap to expand the full input JSON.
-- Preview panel slides in at top (mobile) or left (desktop) when Claude calls `preview.ts show ...`. Tap close to dismiss.
+- `● Claude` green pill = tmux Claude alive
+- `restart Claude (fish)` red pill = died; tap to relaunch
+- Header session picker: pick any prior session to `claude --resume` it,
+  or "+ Start new session" to fork
+- Tool calls render as inline chips (tap to expand the raw input JSON)
+- Preview panel embeds whatever `pnpm open` last pointed at — `tap to
+  show ↗` on mobile to expand
 
-### Claude in tmux — posting replies + previews
-
-The Stop hook handles assistant text automatically. For visual content the
-tmux Claude calls:
+### Showing the user something (tmux Claude)
 
 ```bash
-# Open the live deck in the phone's preview panel
-bun packages/remote/src/cli/preview.ts show deck
+pnpm open <deck-name>          # examples/decks/<deck-name>
+pnpm open <animation-name>     # examples/animations/<animation-name>.ts
+pnpm close                     # stop watching + clear preview
 
-# Or an animation
-bun packages/remote/src/cli/preview.ts show animation 状态设置
+pnpm snap <url>                # one-shot PNG into /tmp/sd-test/snapshots/
+pnpm snap /reveal/index.html --slide 6
+pnpm snap /animation/foo.html --pause 4
+```
 
-# Or an arbitrary in-repo URL
-bun packages/remote/src/cli/preview.ts show /reveal/index.html "deck"
+`pnpm open` spawns the `gulp sd -w` / `gulp ppt -w` / `gulp
+animation-group -w` watchers, tracks their PIDs in
+`/tmp/sd-test/view-pids.json`, and writes the preview URL into
+`/tmp/sd-test/preview-url.txt`. The chat client fetches that file
+every 2s and updates the iframe.
 
-# Close the preview panel
-bun packages/remote/src/cli/preview.ts hide
+To embed a snapshot in a chat reply, reference it as a relative URL:
 
-# Static snapshot of a single slide/animation pause (for an exact moment)
-bun packages/remote/src/cli/preview.ts snap slide 6
-bun packages/remote/src/cli/preview.ts snap animation 状态设置 --pause 4
+```
+![slide 6](/snapshots/<file>.png)
 ```
 
 ### Stop
 
 ```bash
-./packages/remote/bin/stop.sh
-# kills tmux session, cloudflared, chat server; leaves messages.json + snapshots
+pnpm stop:remote
+# kills view watchers + tmux + cloudflared + bun server.
 ```
-
-To nuke everything including history: `rm -rf /tmp/sd-test` after stop.
 
 ## Stable tunnel URL
 
-Quick tunnels reset their URL on each run. For a stable URL register a named
-Cloudflare tunnel + your domain:
+Quick tunnels reset their URL on each run. For a stable URL register a
+named Cloudflare tunnel + your domain:
 
 1. `cloudflared tunnel login`
 2. `cloudflared tunnel create sd-dev`
@@ -160,12 +146,24 @@ Cloudflare tunnel + your domain:
 
 ## Troubleshooting
 
-**Phone messages reach the shell instead of Claude** ("fish: Unknown command: hi" in tmux) — Claude isn't running in the pane. Tap the red pill in the chat header to relaunch, run `claude` directly in the tmux pane, or re-run `start-session.sh`.
+**Phone messages reach the shell instead of Claude** (`fish: Unknown
+command: ...` in tmux) — Claude isn't running in the pane. Tap the red
+status pill to relaunch, or run `claude --dangerously-skip-permissions`
+directly in the pane.
 
-**Hook doesn't fire / phone never sees AI replies** — Stop hook only runs when (a) inside tmux (`$TMUX` set) AND (b) chat server reachable on `PORT`. Verify the tmux Claude was launched via `start-session.sh`. Set `HOOK_DEBUG=1` to log every invocation to `/tmp/sd-test/hook-debug.log`.
+**Chat shows another Claude's messages** — the transcript watcher is
+pinned to the wrong jsonl. `pnpm start:remote` should pin correctly on
+boot; if it's wrong, edit `/tmp/sd-test/transcript-path.txt` to the
+right absolute path, or use the session picker in the chat header.
 
-**Tunnel URL keeps changing** — that's quick-tunnel behavior. See "Stable tunnel URL" above.
+**Phone sees the deck but content is empty** — reveal.js's `layout()`
+throws on narrow viewports. The chat embeds the deck iframe at a fixed
+960×720 inner viewport and CSS-scales it down, so this should be
+invisible to the user; if you load `/reveal/index.html` directly on a
+phone browser instead of through the chat, you'll hit the bug.
 
-**Mac sleeps and kills everything** — `caffeinate -i` in front of `start-session.sh`, or in System Settings disable display sleep while plugged in.
+**Mac sleeps and kills everything** — `caffeinate -i pnpm start:remote`,
+or in System Settings disable display sleep while plugged in.
 
-**Clear chat history** — `rm /tmp/sd-test/messages.json` then restart the server (`./packages/remote/bin/stop.sh && ./packages/remote/bin/start-session.sh`).
+**Tunnel URL keeps changing** — that's quick-tunnel behavior. See
+"Stable tunnel URL" above.
