@@ -1,44 +1,28 @@
 // TranscriptWatcher.
 //
-// Watches an agent's transcript directory for the most recently modified
-// .jsonl file, then polls that file for new bytes. Each newly-appearing line
-// is parsed by the adapter into 0+ Messages which are handed to the
-// onMessage callback (the server saves + SSE-broadcasts them).
+// Watches one agent transcript JSONL and dispatches new lines as Messages
+// via the adapter. JSONL is the single source of truth: on first attach we
+// replay the entire file from offset 0 so the chat reflects the current
+// session's full history, then tail for live activity.
+//
+// State (offset, seen UUIDs) is in-memory only — the server can rebuild it
+// at any time by re-parsing the JSONL. No disk persistence.
 //
 // Why polling (vs fs.watch): fs.watch's behavior is inconsistent across
 // platforms (FSEvents on macOS coalesces events differently than inotify on
 // Linux) and has edge cases around file rotation. A 400ms stat-poll is
 // negligible cost and gets us identical semantics everywhere.
-//
-// State is persisted to /tmp/sd-test/watcher-state.json so a server restart
-// resumes from the right byte offset and doesn't re-broadcast history.
-// First-run skips historical content (starts at current EOF).
 
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
-import { dirname, join } from "node:path";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
 
 import type { Message } from "../message";
 import type { AgentAdapter } from "../adapters/types";
 
 interface PerFileState {
   offset: number;
-  seenUuids: string[];
+  seenUuids: Set<string>;
 }
-
-interface WatcherState {
-  /** Map: absolute jsonl path → offset/uuids. */
-  files: Record<string, PerFileState>;
-}
-
-const STATE_FILE =
-  process.env.WATCHER_STATE_FILE ?? "/tmp/sd-test/watcher-state.json";
 
 export interface WatcherOptions {
   /** Working directory whose Claude session we want to follow. */
@@ -55,12 +39,9 @@ export interface WatcherOptions {
 export class TranscriptWatcher {
   private timer: ReturnType<typeof setInterval> | null = null;
   private activeFile: string | null = null;
-  private state: WatcherState;
-  private bootstrapped = false;
+  private files = new Map<string, PerFileState>();
 
-  constructor(private readonly opts: WatcherOptions) {
-    this.state = loadState();
-  }
+  constructor(private readonly opts: WatcherOptions) {}
 
   start(): void {
     if (this.timer) return;
@@ -71,6 +52,13 @@ export class TranscriptWatcher {
   stop(): void {
     if (this.timer) clearInterval(this.timer);
     this.timer = null;
+  }
+
+  /** Drop all per-file state so the next tick re-reads the (possibly new)
+   *  pinned file from offset 0. Used when the user switches sessions. */
+  reset(): void {
+    this.files.clear();
+    this.activeFile = null;
   }
 
   /** Lock the watcher to a specific transcript path if pinned. Pinning lives
@@ -119,20 +107,13 @@ export class TranscriptWatcher {
       this.activeFile = newest;
     }
 
-    let perFile = this.state.files[newest];
-
-    // First time we ever see this file: skip everything that's already in it
-    // (we only want to forward live activity, not replay history). After
-    // bootstrap we follow the tail.
+    let perFile = this.files.get(newest);
+    // First time we see this file: start from offset 0 so we replay the
+    // entire history into chat. Subsequent ticks tail from where we left off.
     if (!perFile) {
-      const size = safeSize(newest);
-      perFile = { offset: size, seenUuids: [] };
-      this.state.files[newest] = perFile;
-      saveState(this.state);
-      this.bootstrapped = true;
-      return;
+      perFile = { offset: 0, seenUuids: new Set() };
+      this.files.set(newest, perFile);
     }
-    this.bootstrapped = true;
 
     const size = safeSize(newest);
     if (size <= perFile.offset) return;
@@ -156,7 +137,7 @@ export class TranscriptWatcher {
     }
     perFile.offset += consumedBytes;
 
-    const seen = new Set(perFile.seenUuids);
+    const seen = perFile.seenUuids;
     for (const line of lines) {
       if (!line) continue;
       let entry: unknown;
@@ -175,8 +156,11 @@ export class TranscriptWatcher {
       for (const m of messages) this.opts.onMessage(m);
       if (uuid) seen.add(uuid);
     }
-    perFile.seenUuids = [...seen].slice(-1000);
-    saveState(this.state);
+    // Cap the seen-set to bound memory across a long-running session.
+    if (seen.size > 5000) {
+      const trimmed = [...seen].slice(-2000);
+      perFile.seenUuids = new Set(trimmed);
+    }
   }
 }
 
@@ -185,25 +169,5 @@ function safeSize(path: string): number {
     return statSync(path).size;
   } catch {
     return 0;
-  }
-}
-
-function loadState(): WatcherState {
-  if (!existsSync(STATE_FILE)) return { files: {} };
-  try {
-    const j = JSON.parse(readFileSync(STATE_FILE, "utf-8"));
-    if (!j.files) return { files: {} };
-    return j;
-  } catch {
-    return { files: {} };
-  }
-}
-
-function saveState(state: WatcherState): void {
-  try {
-    mkdirSync(dirname(STATE_FILE), { recursive: true });
-    writeFileSync(STATE_FILE, JSON.stringify(state));
-  } catch {
-    // ignore — best-effort persistence
   }
 }

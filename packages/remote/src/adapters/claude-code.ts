@@ -9,15 +9,19 @@
 //       { type: "text", text },
 //       { type: "tool_use", id, name, input },
 //   ]}}
+//   { type: "user", uuid, timestamp, message: { content: <string> }}
+//       — a plain text prompt the user typed (in tmux or via web POST)
 //   { type: "user", uuid, timestamp, message: { content: [
 //       { type: "tool_result", tool_use_id, content: [
 //           { type: "image", source: { type: "base64", media_type, data } },
 //       ]},
 //   ]}}
 //
+// Plain user prompts ARE parsed: JSONL is the single source of truth, so
+// boot-time replay must include user-typed lines. The server dedupes
+// optimistic POST-rendered user messages against JSONL replays by text+ts.
 // Everything else (file-history-snapshot, attachment, system, queue-
-// operation, ai-title, last-prompt, plain text user prompts) is ignored —
-// user prompts already enter chat via POST /api/messages.
+// operation, ai-title, last-prompt) is ignored.
 
 import { writeFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -34,7 +38,10 @@ interface JsonlEntry {
   uuid?: string;
   timestamp?: string;
   message?: {
-    content?: Block[];
+    /** Assistant entries always use Block[]. User entries are either a
+     *  Block[] (tool_result responses) or a plain string (the user's
+     *  typed prompt). */
+    content?: Block[] | string;
   };
 }
 
@@ -72,8 +79,9 @@ export const claudeCodeAdapter: AgentAdapter = {
     const baseId = entry.uuid ?? `anon-${ts}`;
 
     if (entry.type === "assistant") {
-      const blocks = entry.message?.content;
-      if (!Array.isArray(blocks)) return out;
+      const content = entry.message?.content;
+      if (!Array.isArray(content)) return out;
+      const blocks = content;
 
       // Combine all text blocks in this entry into one agent bubble. tool_use
       // blocks become separate chips, each with its own id derived from the
@@ -110,8 +118,19 @@ export const claudeCodeAdapter: AgentAdapter = {
         });
       }
     } else if (entry.type === "user") {
-      const blocks = entry.message?.content;
-      if (!Array.isArray(blocks)) return out;
+      const content = entry.message?.content;
+
+      // Plain user prompt: content is a string. Surface it as a user bubble.
+      if (typeof content === "string") {
+        const text = content.trim();
+        if (text) {
+          out.push({ id: `${baseId}-user`, ts, from: "user", text });
+        }
+        return out;
+      }
+
+      if (!Array.isArray(content)) return out;
+      const blocks = content;
 
       let imgIdx = 0;
       for (const b of blocks) {

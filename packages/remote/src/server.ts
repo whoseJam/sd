@@ -1,11 +1,13 @@
 #!/usr/bin/env bun
 // Chat server for the remote phone-↔-desktop-Claude workflow.
 //
-// Architecture: agent transcripts are the single source of truth. The
-// TranscriptWatcher polls the active agent's session JSONL and dispatches
-// each new line into chat messages via an adapter. No hook system needs to
-// be installed on the user's machine; we just read what Claude Code (or any
-// agent) writes anyway.
+// JSONL is the single source of truth. The TranscriptWatcher polls the
+// pinned agent session JSONL and dispatches each new line into chat
+// messages via an adapter. The `messages` array is an in-memory cache of
+// "what the current session's JSONL parses into" — never written to disk.
+// On boot the watcher replays the file from offset 0, rebuilding the cache;
+// on session switch we reset and re-parse the new file. No hook system
+// needs to be installed on the user's machine.
 //
 // Routes:
 //   GET  /                   chat UI (chat/index.html)
@@ -20,13 +22,7 @@
 //   /snapshots/<file>        image attachments (referenced from messages)
 //   /<anything-else>         static files under REVEAL_ROOT
 
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 
 import { claudeCodeAdapter } from "./adapters/claude-code";
@@ -37,7 +33,6 @@ const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const TMUX_SESSION = process.env.TMUX_SESSION ?? "claude-dev";
 const PORT = Number(process.env.PORT ?? 8765);
 const REPO = process.env.REPO ?? process.cwd();
-const MESSAGES_FILE = join(REVEAL_ROOT, "messages.json");
 const SNAPSHOTS_DIR = join(REVEAL_ROOT, "snapshots");
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
@@ -47,31 +42,31 @@ let responding = false;
 let respondingSince = 0;
 let currentPreview: { url: string; label: string } | null = null;
 
+// In-memory only. Rebuilt from JSONL on every boot via the watcher.
 let messages: Message[] = [];
-if (existsSync(MESSAGES_FILE)) {
-  try {
-    messages = JSON.parse(readFileSync(MESSAGES_FILE, "utf-8"));
-  } catch {
-    console.warn("messages.json corrupt, starting fresh");
-  }
-}
 
-function save(): void {
-  writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
-}
-
-// Centralized message ingest. The watcher, the user POST handler, and the
-// system-message helpers all funnel through here so SSE broadcast and
-// persistence happen in exactly one place.
+// Centralized message ingest. Watcher, user POST handler, and system-msg
+// helpers all funnel through here so SSE broadcast happens once.
 function appendMessage(m: Message): void {
   // Idempotent: skip if we've already stored this id.
   if (messages.some((existing) => existing.id === m.id)) return;
+  // Optimistic POST → JSONL replay dedup: a user prompt is rendered the
+  // moment the client POSTs, then again ~1s later when Claude flushes the
+  // entry to JSONL. We coalesce by text equality within a 60s window so
+  // exactly one bubble survives.
+  if (m.from === "user" && m.text) {
+    const text = m.text.trim();
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const x = messages[i];
+      if (m.ts - x.ts > 60_000) break;
+      if (x.from === "user" && x.text.trim() === text) return;
+    }
+  }
   messages.push(m);
   sseBroadcast(m);
   if (m.from === "agent" && (m.text || (m.images?.length ?? 0) > 0)) {
     responding = false;
   }
-  save();
 }
 
 function newId(): string {
@@ -369,4 +364,4 @@ console.log(
 console.log(
   `transcript watcher: ${claudeCodeAdapter.name}, cwd=${REPO}, polling ~/.claude/projects/`,
 );
-console.log(`messages.json: ${MESSAGES_FILE} (${messages.length} loaded)`);
+console.log("messages: in-memory cache, rebuilt from JSONL each boot");
