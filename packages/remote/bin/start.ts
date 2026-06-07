@@ -154,6 +154,8 @@ function extractTunnelUrl(): string {
 
 const SHELL_RE = /^(fish|bash|zsh|sh|dash|ksh)$/;
 
+const CLAUDE_CMD = "claude --dangerously-skip-permissions";
+
 function ensureTmuxSession(): boolean {
   if (tmux(["has-session", "-t", SESSION]).status === 0) {
     const paneCmd = tmux([
@@ -169,7 +171,7 @@ function ensureTmuxSession(): boolean {
       console.log(
         `  Claude not running in tmux (pane: ${paneCmd || "?"}) — relaunching...`,
       );
-      tmux(["send-keys", "-t", `${SESSION}:main`, "claude", "Enter"]);
+      tmux(["send-keys", "-t", `${SESSION}:main`, CLAUDE_CMD, "Enter"]);
       console.log(`✓ tmux session '${SESSION}' (Claude relaunched)`);
       return true;
     }
@@ -178,7 +180,7 @@ function ensureTmuxSession(): boolean {
   }
 
   tmux(["new-session", "-d", "-s", SESSION, "-c", REPO, "-n", "main"]);
-  tmux(["send-keys", "-t", `${SESSION}:main`, "claude", "Enter"]);
+  tmux(["send-keys", "-t", `${SESSION}:main`, CLAUDE_CMD, "Enter"]);
   console.log(`✓ tmux session '${SESSION}' (created)`);
   return true;
 }

@@ -129,8 +129,24 @@ function tmuxSendKeys(text: string): void {
   });
 }
 
-function tmuxStartClaude(): void {
-  tmuxSendKeys("claude");
+const CLAUDE_BASE_FLAGS = ["--dangerously-skip-permissions"];
+
+function tmuxStartClaude(opts: { resume?: string } = {}): void {
+  const parts = ["claude", ...CLAUDE_BASE_FLAGS];
+  if (opts.resume) parts.push("--resume", opts.resume);
+  tmuxSendKeys(parts.join(" "));
+}
+
+async function tmuxQuitClaude(): Promise<void> {
+  Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
+  await sleep(150);
+  Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
+  await sleep(500);
+  for (let i = 0; i < 20; i++) {
+    const cmd = tmuxPaneCommand().toLowerCase();
+    if (!cmd || SHELL_NAMES.has(cmd)) break;
+    await sleep(200);
+  }
 }
 
 function makeSystemMsg(text: string): Message {
@@ -185,10 +201,16 @@ const watcher = new TranscriptWatcher({
 watcher.start();
 
 // ── Session switching ────────────────────────────────────────────────────
-function switchSession(path: string): void {
+async function switchSession(path: string): Promise<void> {
   pinSession(path);
   messages = [];
   watcher.reset();
+  const sessionId =
+    path.split("/").pop()?.replace(/\.jsonl$/, "") ?? "";
+  if (sessionId && tmuxHasSession()) {
+    await tmuxQuitClaude();
+    tmuxStartClaude({ resume: sessionId });
+  }
   sseSend("session-changed", { pinned: path });
 }
 
@@ -201,19 +223,8 @@ async function newSession(): Promise<NewSessionResult> {
   if (!tmuxHasSession()) {
     return { ok: false, error: "tmux session not running" };
   }
-  // Snapshot the existing jsonl set BEFORE restarting Claude so the watcher
-  // can later promote whichever jsonl wasn't in the snapshot. Deterministic
-  // — no birthtime / mtime / clock heuristics.
   writeBaseline(claudeCodeAdapter.getTranscriptDir(REPO));
-  Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
-  await sleep(150);
-  Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
-  await sleep(500);
-  for (let i = 0; i < 20; i++) {
-    const cmd = tmuxPaneCommand().toLowerCase();
-    if (!cmd || SHELL_NAMES.has(cmd)) break;
-    await sleep(200);
-  }
+  await tmuxQuitClaude();
   tmuxStartClaude();
   pinSession("PENDING");
   messages = [];
@@ -362,7 +373,7 @@ Bun.serve({
       if (!target || !target.endsWith(".jsonl")) {
         return Response.json({ ok: false, error: "bad path" }, { status: 400 });
       }
-      switchSession(target);
+      await switchSession(target);
       return Response.json({ ok: true, pinned: target });
     }
 
