@@ -1,96 +1,109 @@
-# Remote dev workflow (phone ↔ desktop Claude)
+# Remote chat workflow (phone ↔ desktop Claude)
 
-Goal: see Claude's work-in-progress from your phone (live deck + snapshots +
-git state) and type prompts back to the same Claude session running on your
-Mac.
+Goal: chat with Claude from your phone. Messages appear in a thread (like
+iMessage). Your messages get injected into the tmux session where Claude is
+running on the Mac. Claude's replies are pushed back to the same thread as
+chat messages, with optional image attachments (snapshots).
 
-Two channels:
+## How it works
 
-- **Visualization** — `/tmp/sd-test/dashboard.html` served over a Cloudflare
-  tunnel. Phone Safari renders it. Auto-refresh 15s.
-- **Input** — SSH into the Mac, attach to a tmux session where Claude Code is
-  running. Both your local terminal and the phone share the session.
+```
+phone Safari ⇄ trycloudflare URL ⇄ chat server (Bun, port 8765)
+                                         │
+                                         ├─ POST /api/messages (from phone)
+                                         │     ↓ saved to messages.json
+                                         │     ↓ tmux send-keys → Claude
+                                         │
+                                         ├─ POST /api/post-agent (from Claude in tmux)
+                                         │     ↓ saved to messages.json
+                                         │     ↑ phone polls /api/messages every 3s
+                                         │
+                                         └─ serves chat.html, snapshots/, /reveal/*
+```
 
-## Prerequisites
+Both you (in phone Safari) and Claude (in tmux on Mac) see the same accumulating
+chat log. No refresh — phone polls for new messages every 3s and appends them.
 
-- macOS Sharing → Remote Login = on (System Settings → General → Sharing)
-- `brew install tmux cloudflared`
-- Phone SSH client: Blink Shell or Termius
-- SSH key from phone added to `~/.ssh/authorized_keys` on the Mac
-
-## Pieces
+## Files
 
 | File | What |
 |---|---|
-| `scripts/remote/start-session.sh` | Create/attach a tmux session running `claude` |
-| `scripts/remote/tunnel.sh` | Start a Cloudflare quick tunnel for live-server :8765 |
-| `scripts/remote/dashboard.ts` | Regenerate `dashboard.html` from git state + snapshots |
+| `scripts/remote/server.ts` | Bun HTTP server: chat API + static; replaces live-server on 8765 |
+| `scripts/remote/chat.html` | Mobile-friendly chat UI; polls every 3s |
+| `scripts/remote/post.ts` | CLI: Claude calls this to post a message into the thread |
+| `scripts/remote/start-session.sh` | Start (or attach to) tmux session `claude-dev` running Claude Code |
+| `scripts/remote/tunnel.sh` | Cloudflare quick tunnel for port 8765 |
 
-## First-time setup
+## Prerequisites
 
-```bash
-chmod +x scripts/remote/start-session.sh scripts/remote/tunnel.sh
-```
-
-(No global install needed beyond `brew install tmux cloudflared`.)
+- macOS Sharing → Remote Login = on (optional; only if you also want SSH access)
+- `brew install tmux cloudflared`
+- Phone: just Safari, no app needed
 
 ## Daily flow
 
 ### Mac side
 
-Terminal A — Claude session:
+Terminal A — Claude in tmux:
 ```bash
 ./scripts/remote/start-session.sh
 ```
-You'll land inside tmux with Claude running. Detach with `Ctrl-b d`. The
-session keeps running in the background.
+Detach with `Ctrl-b d`. Session survives.
 
-Terminal B — dev loop (the usual sd watchers + live-server):
+Terminal B — chat server (replaces live-server):
 ```bash
-# (as before — gulp sd / ppt / animation-group / live-server :8765)
+bun scripts/remote/server.ts
 ```
 
 Terminal C — tunnel:
 ```bash
 ./scripts/remote/tunnel.sh
 ```
-Look for `https://*.trycloudflare.com` in the output — that's your public
-URL. The URL is random per run; for a stable URL, register a named tunnel
-under a Cloudflare account.
+Note the printed `https://*.trycloudflare.com` URL.
+
+(Plus your usual sd watchers: `gulp sd -w`, `gulp ppt -i <deck> -o /tmp/sd-test/reveal -l -w`, `gulp animation-group -i <deck> -o /tmp/sd-test/animation -l -w`.)
 
 ### Phone side
 
-Two browser tabs:
+Open `https://<tunnel>/` in Safari. That's the chat. Type messages, see Claude's
+replies. Open `https://<tunnel>/reveal/index.html` in another tab for the live
+deck preview.
 
-- `https://<tunnel>/dashboard.html` — dashboard (auto-refreshes)
-- `https://<tunnel>/reveal/index.html` — full-screen deck
+### Claude in tmux — posting replies
 
-One SSH session:
-```
-ssh whosejam@<mac-ip-or-tailscale-name>
-tmux attach -t claude-dev
-```
-You're now inside the same Claude session you started on the Mac. Type
-prompts, see responses. Detach with `Ctrl-b d`.
+Inside tmux Claude can post replies to the chat thread by running:
 
-### When Claude finishes a chunk of work
-
-Claude (or you) runs:
 ```bash
-bun scripts/remote/dashboard.ts
+# text only
+bun scripts/remote/post.ts "finished the LIS animation, take a look"
+
+# text + images (snapshots show inline in chat)
+bun scripts/remote/post.ts "see slide 6" /tmp/sd-ppt-snapshot-s6.png
+
+# stdin
+echo "long multi-line text..." | bun scripts/remote/post.ts -
 ```
-Regenerates `/tmp/sd-test/dashboard.html` with the latest git state and
-snapshots. The phone tab will pick it up on next refresh.
 
-## Stable tunnel URL (optional)
+Convention: post a short summary at the end of each work chunk so you can
+follow along without watching the terminal.
 
-Quick tunnels reset their URL on each run. For a stable URL:
+## Why not just a dashboard
 
-1. `cloudflared tunnel login` (browser flow)
+A dashboard would be a "current state" view — useful for status but breaks the
+flow when you want to align thinking with Claude. A chat is cumulative: every
+message stays, no auto-refresh erases context. Text-only chat for "let me
+think through this with you", attachments only when there's something visual
+to share.
+
+## Stable tunnel URL
+
+`trycloudflare` URLs are random per run. For a stable URL register a named
+tunnel + your domain:
+
+1. `cloudflared tunnel login`
 2. `cloudflared tunnel create sd-dev`
-3. Add a CNAME `dev.yourdomain.com` → `<tunnel-id>.cfargotunnel.com` in
-   Cloudflare DNS
-4. Create `~/.cloudflared/config.yml`:
+3. DNS: CNAME `dev.yourdomain.com` → `<tunnel-id>.cfargotunnel.com`
+4. `~/.cloudflared/config.yml`:
    ```yaml
    tunnel: sd-dev
    credentials-file: /Users/whosejam/.cloudflared/<tunnel-id>.json
@@ -101,23 +114,19 @@ Quick tunnels reset their URL on each run. For a stable URL:
    ```
 5. `cloudflared tunnel run sd-dev`
 
-Now `https://dev.yourdomain.com/dashboard.html` is permanent.
-
 ## Troubleshooting
 
-**`tmux attach` from phone says "no server running"** — start-session.sh
-hasn't been run on the Mac yet, or the Mac rebooted (kills the tmux server).
-Run start-session.sh on the Mac first.
+**Phone shows old chat, no new messages** — chat server might be down. Check
+Terminal B; restart `bun scripts/remote/server.ts`.
 
-**Phone can SSH but tunnel URL 404s** — live-server isn't running on :8765.
-Check Terminal B.
+**Tmux session not receiving my messages** — `tmux ls` to verify
+`claude-dev` is running. Start it via `start-session.sh`. The chat server
+logs `tmux session: claude-dev (has-session: true)` on startup if found.
 
-**Dashboard shows old commit** — Claude hasn't regenerated it. Tell Claude to
-run `bun scripts/remote/dashboard.ts`.
+**Tunnel URL keeps changing** — that's quick-tunnel behavior. See "Stable
+tunnel URL" above.
 
-**Tunnel URL keeps changing** — that's how trycloudflare works. Use named
-tunnel (see "Stable tunnel URL" above) for a permanent URL.
+**Mac sleeps and kills the tunnel** — `caffeinate -i` in front of the tunnel
+command, or in System Settings disable display sleep while plugged in.
 
-**Mac sleeps and kills everything** — caffeinate the terminal where the
-tunnel runs (`caffeinate -i ./scripts/remote/tunnel.sh`), or in System
-Settings disable display sleep while plugged in.
+**Clear chat history** — `rm /tmp/sd-test/messages.json` then restart server.
