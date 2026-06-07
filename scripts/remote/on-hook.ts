@@ -22,6 +22,10 @@ interface HookInput {
   transcript_path?: string;
   hook_event_name?: string;
   stop_hook_active?: boolean;
+  // Stop hook input includes the assistant text directly. Use this instead of
+  // reading the JSONL transcript, which lags behind by one turn (Claude Code
+  // fires the hook before flushing the JSONL).
+  last_assistant_message?: string;
 }
 
 interface HookState {
@@ -42,6 +46,15 @@ async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
   for await (const chunk of Bun.stdin.stream()) chunks.push(Buffer.from(chunk));
   return Buffer.concat(chunks).toString("utf-8");
+}
+
+const DEBUG = process.env.HOOK_DEBUG === "1";
+
+function logLine(line: string): void {
+  if (!DEBUG) return;
+  try {
+    writeFileSync("/tmp/sd-test/hook-debug.log", line + "\n", { flag: "a" });
+  } catch {}
 }
 
 function loadState(): HookState {
@@ -113,18 +126,80 @@ async function postToChat(text: string): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  const raw = await readStdin();
+  if (DEBUG) {
+    logLine(
+      `${new Date().toISOString()}  TMUX=${process.env.TMUX ? "yes" : "no"}  raw=${raw.slice(0, 400)}`,
+    );
+  }
+
   if (!process.env.TMUX) return;
 
   let input: HookInput;
   try {
-    input = JSON.parse(await readStdin());
+    input = JSON.parse(raw);
   } catch {
+    logLine("  return: bad json");
     return;
   }
-  if (input.stop_hook_active) return;
+  if (input.stop_hook_active) {
+    logLine("  return: stop_hook_active");
+    return;
+  }
 
+  // Stop hook: use last_assistant_message from the hook input directly. The
+  // JSONL transcript lags one turn behind (Claude Code fires Stop before
+  // flushing JSONL to disk), which used to cause messages to drop.
+  if (input.hook_event_name === "Stop") {
+    const text = (input.last_assistant_message ?? "").trim();
+    if (text) {
+      try {
+        await postToChat(text);
+        logLine(`  posted (Stop) text=${text.slice(0, 80)}`);
+      } catch (e) {
+        logLine(`  POST ERROR: ${e}`);
+      }
+    }
+    // Wait briefly for the JSONL to flush, then sync state by marking every
+    // assistant uuid currently in the transcript as posted. This prevents the
+    // next PreToolUse from re-posting entries Stop already handled.
+    await new Promise((r) => setTimeout(r, 1200));
+    if (input.transcript_path && existsSync(input.transcript_path)) {
+      let state = loadState();
+      if (state.session_id !== input.session_id) {
+        state = { session_id: input.session_id, posted_uuids: [] };
+      }
+      const postedSet = new Set(state.posted_uuids ?? []);
+      const lines = readFileSync(input.transcript_path, "utf-8")
+        .split("\n")
+        .filter(Boolean);
+      for (const line of lines) {
+        try {
+          const entry = JSON.parse(line) as TranscriptEntry;
+          if (entry.type === "assistant" && entry.uuid) {
+            postedSet.add(entry.uuid);
+          }
+        } catch {
+          // skip
+        }
+      }
+      state.posted_uuids = [...postedSet];
+      if (state.posted_uuids.length > 500) {
+        state.posted_uuids = state.posted_uuids.slice(-500);
+      }
+      saveState(state);
+      logLine(`  state synced: ${state.posted_uuids.length} uuids tracked`);
+    }
+    return;
+  }
+
+  // PreToolUse: try transcript reading. State tracks posted uuids to avoid
+  // duplicates across hook fires within one turn.
   const transcript = input.transcript_path;
-  if (!transcript || !existsSync(transcript)) return;
+  if (!transcript || !existsSync(transcript)) {
+    logLine(`  return: no transcript (${transcript})`);
+    return;
+  }
 
   let state = loadState();
   if (state.session_id !== input.session_id) {
@@ -146,11 +221,22 @@ async function main(): Promise<void> {
     newEntries.push(entry);
   }
 
+  logLine(
+    `  state.posted_uuids=${state.posted_uuids?.length}  newEntries=${newEntries.length}  uuids=[${newEntries.map((e) => e.uuid?.slice(0, 8)).join(",")}]`,
+  );
+
   if (newEntries.length === 0) return;
 
   for (const entry of newEntries) {
     const text = extractText(entry);
-    if (text) await postToChat(text);
+    if (text) {
+      try {
+        await postToChat(text);
+        logLine(`  posted ${entry.uuid?.slice(0, 8)} text=${text.slice(0, 40)}`);
+      } catch (e) {
+        logLine(`  POST ERROR ${entry.uuid?.slice(0, 8)}: ${e}`);
+      }
+    }
     if (entry.uuid) postedSet.add(entry.uuid);
   }
 
