@@ -25,13 +25,19 @@ export async function fetchStatus() {
   }
 }
 
+/** Read the preview state directly from the static file the server serves
+ *  out of /tmp/sd-test/. view.ts writes it on open/close; no API endpoint
+ *  involved. File format: "url\tlabel" (or empty for no preview). */
 export async function fetchPreview() {
   try {
-    const r = await fetch("/api/preview");
-    if (!r.ok) return null;
-    return r.json();
+    const r = await fetch("/preview-url.txt", { cache: "no-store" });
+    if (!r.ok) return { preview: null };
+    const line = (await r.text()).trim();
+    if (!line) return { preview: null };
+    const [url, label = ""] = line.split("\t");
+    return { preview: { url, label } };
   } catch {
-    return null;
+    return { preview: null };
   }
 }
 

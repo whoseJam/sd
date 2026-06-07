@@ -4,7 +4,6 @@
 
 export function connectSSE({
   onMessage,
-  onPreview,
   onSessionChanged,
   onReconnect,
 } = {}) {
@@ -14,12 +13,6 @@ export function connectSSE({
     if (!onMessage) return;
     try {
       onMessage(JSON.parse(e.data));
-    } catch {}
-  });
-  es.addEventListener("preview", (e) => {
-    if (!onPreview) return;
-    try {
-      onPreview(JSON.parse(e.data));
     } catch {}
   });
   es.addEventListener("session-changed", (e) => {

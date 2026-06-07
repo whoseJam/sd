@@ -52,7 +52,6 @@ mkdirSync(SNAPSHOTS_DIR, { recursive: true });
 
 let responding = false;
 let respondingSince = 0;
-let currentPreview: { url: string; label: string } | null = null;
 
 // In-memory only. Rebuilt from JSONL on every boot via the watcher.
 let messages: Message[] = [];
@@ -409,29 +408,6 @@ Bun.serve({
       return Response.json(result);
     }
 
-    if (path === "/api/preview") {
-      if (req.method === "GET") {
-        return Response.json({ preview: currentPreview });
-      }
-      if (req.method === "POST") {
-        const body = (await req.json()) as {
-          url?: unknown;
-          label?: unknown;
-        };
-        const url = typeof body.url === "string" ? body.url.trim() : "";
-        if (!url) {
-          currentPreview = null;
-        } else {
-          currentPreview = {
-            url,
-            label: typeof body.label === "string" ? body.label : "",
-          };
-        }
-        sseSend("preview", { preview: currentPreview });
-        return Response.json({ preview: currentPreview });
-      }
-    }
-
     if (path === "/api/stream") {
       // SSE works fine over localhost but Cloudflare quick tunnels swallow
       // event-stream chunks, so the client also polls /api/messages every
@@ -441,11 +417,6 @@ Bun.serve({
         start(controller) {
           sseStreams.set(id, controller);
           controller.enqueue(sseEncoder.encode(": connected\n\n"));
-          controller.enqueue(
-            sseEncoder.encode(
-              `event: preview\ndata: ${JSON.stringify({ preview: currentPreview })}\n\n`,
-            ),
-          );
         },
         cancel() {
           sseStreams.delete(id);

@@ -32,7 +32,7 @@ const sub = process.argv[2];
 
 if (sub === "hide") {
   await killExisting();
-  await pushPreview("", "");
+  writePreview("", "");
   console.log("✓ hidden");
   process.exit(0);
 }
@@ -56,7 +56,7 @@ writeFileSync(PIDS_FILE, JSON.stringify(pids));
 
 const url = isDeck ? "/reveal/index.html" : `/animation/${name}.html`;
 const label = isDeck ? `deck ${name}` : `animation ${name}`;
-await pushPreview(url, label);
+writePreview(url, label);
 openBrowser(`${SERVER}/`);
 console.log(`showing ${name}  →  ${url}`);
 
@@ -148,16 +148,12 @@ function spawnWatcher(tag: string, cmd: string[]): number {
   return child.pid!;
 }
 
-async function pushPreview(url: string, label: string): Promise<void> {
-  try {
-    await fetch(`${SERVER}/api/preview`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, label }),
-    });
-  } catch {
-    console.warn("  could not POST /api/preview — chat may not be open");
-  }
+/** Single source of truth for "what URL should the chat's stage panel
+ *  iframe show". server.ts reads this file on each /api/preview hit
+ *  and broadcasts SSE on every write via its fs.watch. */
+function writePreview(url: string, label: string): void {
+  const line = url ? `${url}\t${label}` : "";
+  writeFileSync(join(REVEAL_ROOT, "preview-url.txt"), line);
 }
 
 function openBrowser(url: string): void {

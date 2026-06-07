@@ -1,5 +1,5 @@
-/* Stage toolbar — label + minimize/close. Sits over the iframe. */
-#stage .label {
+/* Preview toolbar — label + minimize. Sits over the iframe. */
+#preview .label {
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
@@ -19,7 +19,7 @@
   white-space: nowrap;
   pointer-events: none;
 }
-#stage .toolbar {
+#preview .toolbar {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
@@ -27,7 +27,7 @@
   gap: var(--space-1);
   z-index: 10;
 }
-#stage .toolbar button {
+#preview .toolbar button {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-sm);
@@ -43,12 +43,12 @@
   align-items: center;
   justify-content: center;
 }
-#stage .toolbar button:hover { background: rgba(20, 22, 26, 0.85); }
-#stage .toolbar button:active { transform: scale(0.95); }
+#preview .toolbar button:hover { background: rgba(20, 22, 26, 0.85); }
+#preview .toolbar button:active { transform: scale(0.95); }
 
-/* Pill at top of chat column when user minimized the stage but server still
-   has a URL queued. Tap to restore. */
-.stage-pill {
+/* Pill at top of chat column when user minimized the preview but the
+   server still has a URL queued. Tap to restore. */
+.preview-pill {
   flex: 0 0 auto;
   display: none;
   align-items: center;
@@ -62,13 +62,13 @@
   user-select: none;
   transition: background var(--t-fast);
 }
-.stage-pill.show { display: flex; }
-.stage-pill:hover { background: var(--bg-2); color: var(--fg-0); }
-.stage-pill .icon {
+.preview-pill.show { display: flex; }
+.preview-pill:hover { background: var(--bg-2); color: var(--fg-0); }
+.preview-pill .icon {
   color: var(--fg-1);
   font-size: var(--fs-md);
   display: inline-flex;
   align-items: center;
 }
-.stage-pill .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.stage-pill .hint { color: var(--fg-2); font-size: var(--fs-xs); }
+.preview-pill .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-pill .hint { color: var(--fg-2); font-size: var(--fs-xs); }

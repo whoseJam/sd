@@ -1,15 +1,15 @@
-// Stage panel state machine.
+// Preview panel state machine.
 //
 // Server holds the canonical "currently displayed URL". Client tracks an
 // additional "minimized" flag that's per-client (so one phone minimizing
 // doesn't affect another). When the server URL changes, we reset minimized
-// to false — a new stage announcement is meant to be seen.
+// to false — a new preview announcement is meant to be seen.
 
 let panelEl, iframeEl, labelEl, pillEl, pillLabelEl;
 let current = null;
 let minimized = false;
 
-export function initStage(refs) {
+export function initPreview(refs) {
   panelEl = refs.panel;
   iframeEl = refs.iframe;
   labelEl = refs.label;

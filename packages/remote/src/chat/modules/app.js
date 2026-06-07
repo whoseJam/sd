@@ -1,5 +1,5 @@
 // Chat client entry. Wires up the DOM refs, SSE stream, polling fallbacks,
-// status updates, and stage panel. Everything else lives in feature modules.
+// status updates, and preview panel. Everything else lives in feature modules.
 
 import { $ } from "./dom.js";
 import {
@@ -17,7 +17,7 @@ import {
   scrollToBottom,
 } from "./messages.js";
 import { initSessions, refresh as refreshSessions } from "./sessions.js";
-import { initStage, apply as applyStage } from "./stage.js";
+import { initPreview, apply as applyPreview } from "./preview.js";
 import { initStatus, poll as pollStatus } from "./status.js";
 
 const messagesEl = $("#messages");
@@ -32,13 +32,13 @@ initStatus({
   typing: $("#typing"),
 });
 
-initStage({
-  panel: $("#stage"),
-  iframe: $("#stage-iframe"),
-  label: $("#stage-label"),
-  pill: $("#stage-pill"),
-  pillLabel: $("#stage-pill-label"),
-  minimize: $("#stage-minimize"),
+initPreview({
+  panel: $("#preview"),
+  iframe: $("#preview-iframe"),
+  label: $("#preview-label"),
+  pill: $("#preview-pill"),
+  pillLabel: $("#preview-pill-label"),
+  minimize: $("#preview-minimize"),
 });
 
 initSessions({
@@ -72,7 +72,7 @@ async function catchUpMessages() {
 
 async function loadInitialPreview() {
   const j = await fetchPreview();
-  if (j) applyStage(j.preview);
+  if (j) applyPreview(j.preview);
 }
 
 const es = connectSSE({
@@ -80,9 +80,6 @@ const es = connectSSE({
     const wasAtBottom = isNearBottom();
     renderMsg(m);
     if (wasAtBottom) scrollToBottom();
-  },
-  onPreview(j) {
-    applyStage(j.preview);
   },
   onReconnect() {
     catchUpMessages();
@@ -98,6 +95,7 @@ setInterval(pollStatus, 5000);
 // SSE doesn't flow through cloudflared quick tunnels — poll regardless.
 setInterval(catchUpMessages, 2000);
 setInterval(refreshSessions, 5000);
+setInterval(loadInitialPreview, 2000);
 
 async function submit() {
   const text = inputEl.value.trim();
