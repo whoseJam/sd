@@ -185,6 +185,22 @@ E.g. with the canonical loop running, `bun .claude/tools/sd-ppt-snapshot.ts http
 
 stdout = output PNG absolute path (only line). stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean run; exit 1 = errors (PNG still produced for partial-state inspection).
 
+## Remote chat workflow (when running in tmux from start-session.sh)
+
+If `$TMUX` is set you're inside the `claude-dev` session driven by `scripts/remote/start-session.sh`. The user is on their phone watching `scripts/remote/chat.html`. Conventions:
+
+- **Showing a slide or animation = snapshot + chat post, never a link.** They can't render iframes in chat. Use the wrapper:
+  ```bash
+  bun scripts/remote/preview.ts slide 6              # snapshot slide 6 → posts to chat
+  bun scripts/remote/preview.ts slides 5 8           # snapshot slides 5-8 grid
+  bun scripts/remote/preview.ts animation 状态设置    # snapshot animation by name
+  bun scripts/remote/preview.ts animation 状态设置 --pause 4
+  bun scripts/remote/preview.ts deck                 # all slides grid
+  ```
+  Resolves URLs against `http://127.0.0.1:$PORT/{reveal,animation}/...` automatically.
+- **Inline image references** (`/tmp/sd-...png`) in your text reply also auto-attach via the Stop hook regex — fine for one-off snapshots you take with the underlying tools directly.
+- **Status reports** are normal chat messages; the dev loop watchers (gulp -w) you start with `&` keep running across turns.
+
 ## Loader / Plugin Hoisting
 
 `.npmrc` hoists `*-loader`, `*-webpack-plugin`, `webpack`, and `webpack-stream` to the workspace root `node_modules`. This is needed because `gulpfile.js` is at the workspace root but the per-task webpack configs live in `packages/cli/src/`; without hoisting, webpack-stream (running from cwd = root) cannot resolve loaders that pnpm installed under `packages/cli/node_modules/`.
