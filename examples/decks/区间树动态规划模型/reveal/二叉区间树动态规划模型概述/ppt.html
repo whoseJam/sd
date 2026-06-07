@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>二叉区间树动态规划模型</h1>
+    </section>
+    <section>
+        <h2>二叉区间树动态规划模型</h2>
+        <p>这类区间树的特点是它一定是二叉的</p>
+        <sd-animation src="../../animation/二叉区间树动态规划模型概述/二叉区间树.js"
+            style="margin: 0 auto; width: 1000px; height: 220px;"></sd-animation>
+        <p class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间建立为一棵区间树，区间树的根对应的区间为 $[l,r]$，这棵区间树的<b>得分最大值/得分最小值/方案数</b></p>
+        <p class="fragment">转移时考虑 $[l,r]$ 这段区间的根节点，其两个子节点对应的区间是什么</p>
+        <p class="fragment" style="font-size: 20px;">
+            $$
+            f_{l,r}=\begin{cases}
+            \sum_{k} (f_{l,k}+f_{k+1,r}+\square) \\
+            \max\limits_{k} \{f_{l,k}+f_{k+1,r}+\square\} \\
+            \min\limits_{k} \{f_{l,k}+f_{k+1,r}+\square\}
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment quote">很多区间合并的题目都是这个类型</p>
+    </section>
+</section>

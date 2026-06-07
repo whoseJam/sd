@@ -1,0 +1,16 @@
+<section>
+    <section>
+        <h1>多叉区间树动态规划模型</h1>
+    </section>
+    <section>
+        <h2>多叉区间树动态规划模型</h2>
+        <p>这类区间树的形态不固定，根节点可能拆为任意多个子区间</p>
+        <p class="fragment">把转移设计为<b>只考虑一叉的代价</b>：枚举其中一个子区间，剩余部分递归到同形子问题</p>
+        <p class="fragment" style="font-size: 22px;">
+            $$
+            f_{l,r}=\bigoplus\limits_{l\le k\le r}\{ f_{l,k-1}\oplus f_{k+1,r}\oplus \square \}
+            $$
+        </p>
+        <p class="fragment quote">$\oplus$ 表示 $\min/\max/\sum$ 等聚合操作</p>
+    </section>
+</section>
