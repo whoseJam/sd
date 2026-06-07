@@ -57,17 +57,13 @@ body { display: flex; flex-direction: column; }
     display: flex;
     flex: 1 1 auto;
     width: auto;
+    height: 100vh;
   }
 }
 /* iframe matches the deck's intrinsic 960×700 aspect so reveal.js draws
-   slide content flush against the iframe edges — no internal letterbox.
-   Container queries pick whichever stage dimension is binding (when the
-   stage is wider than the deck ratio, bind by height; otherwise bind by
-   width). Anything outside the iframe shows the stage bg. */
-#stage {
-  container-type: size;
-  container-name: stage;
-}
+   slide content flush against the iframe edges. Pure-CSS sizing: stage
+   on desktop is (100vw − 460px chat column) wide × 100vh tall, so the
+   largest 4:3-ish box that fits is min of the two binding dimensions. */
 #stage iframe {
   border: none;
   background: var(--bg-3);
@@ -78,16 +74,10 @@ body { display: flex; flex-direction: column; }
   align-items: center;
   justify-content: center;
 }
-@container stage (min-aspect-ratio: 960/700) {
-  #stage iframe {
-    height: 100cqh;
-    width: calc(100cqh * 960 / 700);
-  }
-}
-@container stage (max-aspect-ratio: 960/700) {
-  #stage iframe {
-    width: 100cqw;
-    height: calc(100cqw * 700 / 960);
+@media (min-width: 900px) {
+  #stage.show iframe {
+    width: min(calc(100vw - 460px), calc(100vh * 960 / 700));
+    height: min(100vh, calc((100vw - 460px) * 700 / 960));
   }
 }
 /* Mobile: reveal.js's layout() throws on narrow viewports. Pin the
