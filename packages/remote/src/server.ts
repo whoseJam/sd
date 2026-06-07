@@ -184,11 +184,23 @@ function contentType(path: string): string {
   return MIME[extname(path).toLowerCase()] ?? "application/octet-stream";
 }
 
+function decodePath(p: string): string {
+  try {
+    return decodeURIComponent(p);
+  } catch {
+    return p;
+  }
+}
+
 Bun.serve({
   port: PORT,
   async fetch(req) {
     const url = new URL(req.url);
-    const path = url.pathname;
+    // URL.pathname keeps non-ASCII percent-encoded. The reveal deck uses
+    // Chinese subdir names (枚举概述, etc.) so we MUST decode before
+    // looking up on disk — otherwise the browser's /reveal/%E6%9E%9A... is
+    // looked up as a literal %-encoded filename which doesn't exist.
+    const path = decodePath(url.pathname);
 
     if (path === "/" || path === "/chat" || path === "/chat.html") {
       return new Response(readFileSync(CHAT_HTML_PATH), {
