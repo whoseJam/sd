@@ -233,41 +233,41 @@ function summarizeToolInput(
     typeof input[k] === "string" ? (input[k] as string) : "";
 
   switch (toolName) {
-    case "Bash":
-      return trunc(get("command"));
+    // Tools whose summary is reliably short: filename, pattern, id.
+    // Show inline so the chip is scannable.
     case "Read":
     case "Write":
     case "Edit":
     case "NotebookEdit":
-      return trunc(get("file_path").replace(/^.*\//, ""));
+      return trunc(get("file_path").replace(/^.*\//, ""), 50);
     case "Grep":
-      return trunc(get("pattern"));
     case "Glob":
-      return trunc(get("pattern"));
+      return trunc(get("pattern"), 50);
     case "WebFetch":
     case "WebSearch":
-      return trunc(get("url") || get("query"));
+      return trunc(get("url") || get("query"), 50);
     case "Task":
     case "Agent":
-      return trunc(get("description") || get("subagent_type"));
+      return trunc(get("description") || get("subagent_type"), 50);
     case "TaskCreate":
-      return trunc(get("subject"));
+      return trunc(get("subject"), 50);
     case "TaskUpdate":
-      return trunc(get("taskId") + " " + (get("status") || get("subject")));
+      return trunc(
+        get("taskId") + " " + (get("status") || get("subject")),
+        50,
+      );
     case "TaskStop":
-      return trunc(get("task_id") || get("shell_id"));
+      return trunc(get("task_id") || get("shell_id"), 30);
     case "ToolSearch":
-      return trunc(get("query"));
+      return trunc(get("query"), 40);
+    // Tools whose first param is arbitrarily long (command, pasted text):
+    // show only the tool name. The full param is in the expanded details.
+    case "Bash":
+    case "BashOutput":
     case "AskUserQuestion":
-      return ""; // questions are an array; raw view shows them
-    default: {
-      // Generic fallback: first string-valued field, truncated.
-      for (const key of Object.keys(input)) {
-        const v = input[key];
-        if (typeof v === "string" && v.length > 0) return trunc(v);
-      }
       return "";
-    }
+    default:
+      return "";
   }
 }
 
