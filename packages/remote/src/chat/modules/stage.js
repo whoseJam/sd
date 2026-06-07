@@ -46,7 +46,10 @@ export function apply(p) {
   const oldUrl = (current && current.url) || "";
 
   if (newUrl !== oldUrl) {
-    minimized = false;
+    // Auto-expand the panel on desktop where there's room; on mobile the
+    // iframe taking 50vh on first arrival is overwhelming, so we land at
+    // the pill state and let the user tap to expand.
+    minimized = isMobile();
     if (newUrl) {
       iframeEl.src = newUrl;
       labelEl.textContent = (p && p.label) || newUrl;
@@ -69,4 +72,8 @@ export function apply(p) {
       if (!current || !current.url) iframeEl.src = "about:blank";
     }, 240);
   }
+}
+
+function isMobile() {
+  return window.matchMedia("(max-width: 899px)").matches;
 }

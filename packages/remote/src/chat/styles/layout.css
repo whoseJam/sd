@@ -67,3 +67,21 @@ body { display: flex; flex-direction: column; }
   display: block;
   flex: 1;
 }
+@media (min-width: 900px) {
+  #stage.show {
+    align-items: center;
+    justify-content: center;
+  }
+  /* Constrain the iframe to the deck's intrinsic 4:3 aspect so reveal
+     doesn't end up letterboxing inside a tall container with the slide
+     content stuck near the top. Anything outside the iframe shows the
+     stage bg. */
+  #stage iframe {
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 4 / 3;
+  }
+}
