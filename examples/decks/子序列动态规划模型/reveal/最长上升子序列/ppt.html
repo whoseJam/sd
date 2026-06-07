@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>最长上升子序列</h1>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/B3637" target="_blank" data-preview-link>B3637</a></p>
+        <p>给出一个由 $n$ 个正整数组成的序列，请输出这个序列的<b>最长上升子序列</b>的长度</p>
+        <p class="fragment">最长上升子序列：从原序列中按顺序取出一些数字排在一起，这些数字逐渐增大</p>
+        <div class="fragment quote">
+            $[1,3,6,7]$ 是 $[1,5,3,5,6,5,8,7]$ 的一个上升子序列
+        </div>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>设 $f(i)$ 表示以 $a_i$ 为结尾的最长上升子序列的长度</p>
+        <sd-animation src="../../animation/最长上升子序列/状态转移.js"
+            style="margin: 0 auto; width: 800px; height: 150px;"></sd-animation>
+        <p>子序列中最后一个元素为 $a_i$，考虑倒数第二个元素为 $a_j$</p>
+        <p class="fragment">
+            $$
+            f(i)=\max\limits_{\substack{j \lt i\\ a_j \lt a_i}} \{f(j)+1\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>
+            $$
+            f(i)=\max\limits_{\substack{j \lt i\\ a_j \lt a_i}} \{f(j)+1\}
+            $$
+        </p>
+        <sd-animation src="../../animation/最长上升子序列/最长上升子序列.js"
+            style="margin: 0 auto; width: 800px; height: 350px;"></sd-animation>
+    </section>
+    <section>
+        <h2>最长上升子序列</h2>
+        <p>考虑倒数第二个位置 $j$ 的转移来源</p>
+        <sd-animation src="../../animation/最长上升子序列/减少状态转移数量.js"
+            style="margin: 0 auto; width: 800px; height: 240px;"></sd-animation>
+        <p class="fragment">维护一个"值 → 最大 $f$"的桶（树状数组 / 线段树）</p>
+        <p class="fragment quote">$f(i) = \text{queryMax}(1, a_i - 1) + 1$，处理 $a_i$ 后把 $(a_i, f(i))$ 插入</p>
+    </section>
+</section>

@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>小Z的笔记</h1>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2187" target="_blank" data-preview-link>P2187</a></p>
+        <p>给出一个<b>禁用字典</b>，字典中的单词都是长度恰好为 $2$ 的字符串</p>
+        <p class="fragment">给出一个字符串序列；删掉一些字符，使之不包含任何一个禁用单词</p>
+        <p class="fragment">求至少要删掉多少个字符</p>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p class="quote">为什么这是一个子序列动态规划模型？</p>
+        <sd-animation src="../../animation/小Z的笔记/子序列模型.js"
+            style="margin: 0 auto; width: 800px; height: 110px;"></sd-animation>
+        <p class="fragment">禁用单词长度恰好为 $2$，只需要保证"保留下来的子序列相邻两项"不构成禁用单词</p>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p>设 $f(i)$ 表示子序列末尾为 $a_i$，至少需要擦掉多少个字符才能合法</p>
+        <sd-animation src="../../animation/小Z的笔记/状态转移.js" class="fragment"
+            style="margin: 0 auto; width: 800px; height: 150px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f(i) = \min\limits_{\substack{j \lt i\\ a_j a_i\ \text{合法}}} \{f(j) + i - j - 1\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>小Z的笔记</h2>
+        <p style="margin-top: -10px;">
+            $$
+            f(i) = \min\limits_{\substack{j \lt i\\ a_j a_i\ \text{合法}}} \{f(j) + i - j - 1\}
+            $$
+        </p>
+        <div class="fragment">
+            <sd-animation src="../../animation/小Z的笔记/减少状态转移数量.js"
+                style="margin: 0 auto; width: 800px; height: 180px;"></sd-animation>
+            <p style="text-align: center; font-size: 20px; margin-top: -10px;">例如 $\texttt{bc}$ 被禁用</p>
+        </div>
+        <p class="fragment">按上一个字符开桶，每个桶里只存 $f(j) - j$ 最小的那个 $j$；当前 $a_i$ 转移时遍历可作上一字符的桶即可</p>
+    </section>
+</section>

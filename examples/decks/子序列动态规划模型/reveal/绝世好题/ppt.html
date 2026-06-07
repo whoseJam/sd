@@ -1,0 +1,34 @@
+<section>
+    <section>
+        <h1>绝世好题</h1>
+    </section>
+    <section>
+        <h2>绝世好题</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4310" target="_blank" data-preview-link>P4310</a></p>
+        <p>给定长度为 $n$ 的数列 $\{a_i\}$，从中选出子序列 $\{b_i\}$，要求</p>
+        <p>
+            $$
+            b_i \,\&\, b_{i-1} \ne 0
+            $$
+        </p>
+        <p class="fragment">求 $\{b_i\}$ 的最长长度</p>
+    </section>
+    <section>
+        <h2>绝世好题</h2>
+        <p>设 $f_i$ 表示以 $a_i$ 为结尾、满足条件的子序列最长长度</p>
+        <sd-animation src="../../animation/绝世好题/状态转移.js"
+            style="margin: 0 auto; width: 800px; height: 150px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f(i) = \max\limits_{\substack{j \lt i\\ a_j \,\&\, a_i \ne 0}} \{f(j) + 1\}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>绝世好题</h2>
+        <p>考虑倒数第二个位置 $j$ 的合法条件<span class="fragment">：必然存在某个二进制位，使得 $a_i$ 和 $a_j$ 在这个位上都是 $1$</span></p>
+        <sd-animation src="../../animation/绝世好题/减少状态转移数量.js"
+            style="margin: 0 auto; width: 800px; height: 220px;"></sd-animation>
+        <p class="fragment">对每个二进制位维护一个桶，存"该位为 $1$ 的 $j$ 中最大的 $f(j)$"</p>
+    </section>
+</section>

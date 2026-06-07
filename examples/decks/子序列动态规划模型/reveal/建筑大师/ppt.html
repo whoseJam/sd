@@ -1,0 +1,53 @@
+<section>
+    <section>
+        <h1>建筑大师</h1>
+    </section>
+    <section>
+        <h2>建筑大师</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P6811" target="_blank" data-preview-link>P6811</a></p>
+        <p>给定 $n$，$q$ 次询问；每次询问给出 $m$，按规则放置 $n$ 个数字</p>
+        <sd-animation src="../../animation/建筑大师/样例解释.js"
+            style="margin: 0 auto; width: 600px; height: 130px;"></sd-animation>
+        <p class="fragment">求这 $n$ 个数字本质不同的子序列数量</p>
+    </section>
+    <section>
+        <h2>建筑大师</h2>
+        <p>设 $f_i$ 表示以 $a_i$ 结尾的本质不同子序列数量；转移与优化类似上一题</p>
+        <sd-animation src="../../animation/建筑大师/减少状态转移数量.js"
+            style="margin: 0 auto; width: 800px; height: 220px;"></sd-animation>
+        <p class="fragment">维护 $\{f\}$ 的前缀和</p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            s_i &= \sum_{j \le i} f_j \\
+                &= f_i + \sum_{j \lt i} f_j \\
+                &= (s_{i-1} - s_{i-m-1}) + s_{i-1} \\
+                &= 2 s_{i-1} - s_{i-m-1}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>建筑大师</h2>
+        <p>
+            $$
+            s_i = 2 s_{i-1} - s_{i-m-1}
+            $$
+        </p>
+        <p class="fragment">考虑从组合意义出发，优化 $\{s_i\}$ 的求解</p>
+        <ul>
+            <li class="fragment">有一个权值为 $1$ 的小球从 $0$ 出发</li>
+            <li class="fragment">从 $i \rightarrow i+1$，权值翻倍</li>
+            <li class="fragment">从 $i \rightarrow i+m+1$，权值取负</li>
+        </ul>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            \text{answer} &= \sum_{\text{路径}\,P} f(P) \\
+                          &= \sum_{\text{路径}\,P} 2^{\text{翻倍次数}}(-1)^{\text{取负次数}} \\
+                          &= \sum_i (-1)^i 2^{n - (m+1)i} \binom{i + n - (m+1)i}{i}
+            \end{aligned}
+            $$
+        </p>
+    </section>
+</section>

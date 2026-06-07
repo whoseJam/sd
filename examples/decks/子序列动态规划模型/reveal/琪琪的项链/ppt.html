@@ -1,0 +1,42 @@
+<section>
+    <section>
+        <h1>琪琪的项链</h1>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2267" target="_blank" data-preview-link>P2267</a></p>
+        <p>给定一排 $n$ 颗珠子，从左往右选一些构成一条项链</p>
+        <sd-animation src="../../animation/琪琪的项链/样例解释.js"
+            style="margin: 0 auto; width: 800px; height: 100px;"></sd-animation>
+        <p class="fragment">求一共能构成多少种<b>本质不同</b>的项链</p>
+        <p class="fragment quote">一串项链显然可以被看作一个子序列</p>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <p>对子序列进行计数，但不同子序列可能对应<b>同一条</b>项链，需要去重</p>
+        <div>
+            <p style="text-align: center; font-size: 20px; margin-bottom: -10px;">以<b style="color: red;">红</b>，<b style="color: green;">绿</b>项链为例</p>
+            <sd-animation src="../../animation/琪琪的项链/排除重复.js"
+                style="margin: 0 auto; width: 800px; height: 110px;"></sd-animation>
+        </div>
+        <p class="fragment quote">约定：任意一种被计入统计的方案，每一个 ✔ 都应尽量往后靠</p>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <sd-animation src="../../animation/琪琪的项链/转移裁剪.js"
+            style="margin: 0 auto; width: 800px; height: 160px;"></sd-animation>
+        <p>设 $f_i$ 表示第 $i$ 颗珠子<b>一定被选且作为项链末尾</b>的方案数</p>
+        <p class="fragment" style="font-size: 20px;">
+            $$
+            f_i = 1 + \sum_{\substack{j \lt i\\ \neg\,\text{has}(j+1, i-1, a_j)}} f_j
+            $$
+        </p>
+        <p class="fragment">直接转移 $O(n^2)$ 枚举 $j$，遇到已见过的颜色就跳过</p>
+    </section>
+    <section>
+        <h2>琪琪的项链</h2>
+        <sd-animation src="../../animation/琪琪的项链/减少状态转移数量.js"
+            style="margin: 0 auto; width: 800px; height: 220px;"></sd-animation>
+        <p>对每种颜色开一个桶存最近一次的 $f$；$f_i = 1 + \sum_\text{所有桶} \text{bucket}[c]$</p>
+    </section>
+</section>

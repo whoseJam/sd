@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>数字划分</h1>
+    </section>
+    <section>
+        <h2>数字划分</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4349" target="_blank" data-preview-link>P4349</a></p>
+        <p>给定一个长度为 $n$ 的数码串，把这个数码串划分成若干段，使得每一段都是 $m$ 的倍数</p>
+        <sd-animation src="../../animation/数字划分/样例解释.js"
+            style="margin: 0 auto; width: 600px; height: 100px;"></sd-animation>
+        <p class="fragment">求总共有多少种划分方案</p>
+    </section>
+    <section>
+        <h2>数字划分</h2>
+        <p class="quote">这个为什么也归于子序列模型？它明明是在对序列进行划分</p>
+        <sd-animation src="../../animation/数字划分/从划分到子序列.js"
+            style="margin: 0 auto; width: 800px; height: 120px;"></sd-animation>
+        <p class="fragment">把每个划分段的<b>最后一个元素</b>提取出来，认为它们组成一个子序列</p>
+        <p class="fragment">设 $f_i$ 表示划分末尾为 $a_i$ 的合法方案数；转移是否合法只和前一个划分的末尾位置有关</p>
+        <p class="fragment">
+            $$
+            f_i = \sum_{\substack{j \lt i\\ \overline{a_{j+1} \ldots a_i}\ \text{是}\ m\ \text{的倍数}}} f_j
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>数字划分</h2>
+        <p>怎么快速判一段是 $m$ 的倍数？检查它对 $m$ 取模的结果是否为 $0$</p>
+        <p class="fragment quote">如何快速提取一段数码对 $m$ 取模的结果？</p>
+        <sd-animation src="../../animation/数字划分/检验.js" class="fragment"
+            style="margin: 0 auto; width: 800px; height: 130px;"></sd-animation>
+        <p class="fragment quote">$s_i = \overline{a_1 a_2 \ldots a_i} \pmod m$ 可以 $O(n)$ 递推：$s_i = (10 \cdot s_{i-1} + a_i) \bmod m$，思路源自字符串哈希</p>
+    </section>
+    <section>
+        <h2>数字划分</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            f_i &= \sum_{\substack{j \lt i\\ \overline{a_{j+1} \ldots a_i}\ \text{是}\ m\ \text{的倍数}}} f_j \\
+                &= \sum_{\substack{j \lt i\\ s_i - 10^{i-j} s_j \equiv 0 \pmod m}} f_j \\
+                &= \sum_{\substack{j \lt i\\ s_i \equiv 10^{i-j} s_j \pmod m}} f_j
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>数字划分</h2>
+        <p style="font-size: 20px;">
+            $$
+            f_i = \sum_{\substack{j \lt i\\ s_i \equiv 10^{i-j} s_j \pmod m}} f_j
+            $$
+        </p>
+        <sd-animation src="../../animation/数字划分/状态转移.js"
+            style="margin: 0 auto; width: 800px; height: 160px;"></sd-animation>
+        <p class="fragment">可以认为只有 $s_i \equiv 0 \pmod m$ 的 $i$ 可以参与转移；做前缀和后 $O(n)$ 一遍即可</p>
+    </section>
+</section>
