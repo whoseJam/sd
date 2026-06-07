@@ -92,7 +92,11 @@ catchUpMessages().then(scrollToBottom);
 loadInitialPreview();
 pollStatus();
 setInterval(pollStatus, 5000);
-setInterval(catchUpMessages, es ? 30000 : 3000);
+// 2s message poll regardless of SSE: cloudflared quick tunnels swallow
+// event-stream chunks, so SSE never delivers there even when es.readyState
+// is OPEN. Direct LAN / localhost users pay an extra 2 req/s but get the
+// same instant feel.
+setInterval(catchUpMessages, 2000);
 
 async function submit() {
   const text = inputEl.value.trim();

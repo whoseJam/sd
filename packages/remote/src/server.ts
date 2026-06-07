@@ -245,6 +245,7 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+
 // ── Static asset paths ────────────────────────────────────────────────────
 const CHAT_DIR = new URL("./chat/", import.meta.url).pathname;
 const CHAT_HTML_PATH = join(CHAT_DIR, "index.html");
@@ -416,6 +417,9 @@ Bun.serve({
     }
 
     if (path === "/api/stream") {
+      // SSE works fine over localhost but Cloudflare quick tunnels swallow
+      // event-stream chunks, so the client also polls /api/messages every
+      // 2s as the real transport over the tunnel.
       const id = nextStreamId++;
       const stream = new ReadableStream<Uint8Array>({
         start(controller) {

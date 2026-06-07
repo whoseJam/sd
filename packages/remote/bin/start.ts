@@ -113,9 +113,12 @@ async function ensureTunnel(): Promise<string> {
   await sleep(1000);
   writeFileSync(TUNNEL_LOG, "");
   console.log("  starting cloudflared...");
+  // --protocol http2: SSE doesn't survive cloudflared's default QUIC
+  // (events sit buffered indefinitely client-side). HTTP/2 flushes
+  // chunks immediately.
   const child = spawn(
     "cloudflared",
-    ["tunnel", "--url", `http://127.0.0.1:${PORT}`],
+    ["tunnel", "--url", `http://127.0.0.1:${PORT}`, "--protocol", "http2"],
     {
       detached: true,
       stdio: ["ignore", "pipe", "pipe"],
