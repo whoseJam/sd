@@ -26,6 +26,9 @@ interface HookInput {
   // reading the JSONL transcript, which lags behind by one turn (Claude Code
   // fires the hook before flushing the JSONL).
   last_assistant_message?: string;
+  // PreToolUse provides the tool being called.
+  tool_name?: string;
+  tool_input?: Record<string, unknown>;
 }
 
 interface HookState {
@@ -193,58 +196,79 @@ async function main(): Promise<void> {
     return;
   }
 
-  // PreToolUse: try transcript reading. State tracks posted uuids to avoid
-  // duplicates across hook fires within one turn.
-  const transcript = input.transcript_path;
-  if (!transcript || !existsSync(transcript)) {
-    logLine(`  return: no transcript (${transcript})`);
+  // PreToolUse: post a compact tool chip to chat. We don't read the transcript
+  // here — the tool_name + tool_input come directly in the hook input, and
+  // the assistant text introducing this tool call will be posted by Stop.
+  if (input.hook_event_name === "PreToolUse") {
+    const toolName = input.tool_name ?? "?";
+    const toolInput = input.tool_input ?? {};
+    const summary = summarizeToolInput(toolName, toolInput);
+    try {
+      await fetch(`http://127.0.0.1:${PORT}/api/tool-call`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tool_name: toolName,
+          summary,
+          raw: toolInput,
+        }),
+      });
+      logLine(`  posted tool: ${toolName} ${summary.slice(0, 60)}`);
+    } catch (e) {
+      logLine(`  tool POST ERROR: ${e}`);
+    }
     return;
   }
+}
 
-  let state = loadState();
-  if (state.session_id !== input.session_id) {
-    state = { session_id: input.session_id, posted_uuids: [] };
-  }
-  const postedSet = new Set(state.posted_uuids ?? []);
+// Render a one-line summary of a tool's input. Goal: feel like the `⏺ Bash(gulp
+// sd -w)` line you see in the terminal, but short enough for a phone chip.
+function summarizeToolInput(
+  toolName: string,
+  input: Record<string, unknown>,
+): string {
+  const trunc = (s: string, n = 80): string =>
+    s.length > n ? s.slice(0, n - 1) + "…" : s;
+  const get = (k: string): string =>
+    typeof input[k] === "string" ? (input[k] as string) : "";
 
-  const lines = readFileSync(transcript, "utf-8").split("\n").filter(Boolean);
-  const newEntries: TranscriptEntry[] = [];
-  for (const line of lines) {
-    let entry: TranscriptEntry;
-    try {
-      entry = JSON.parse(line);
-    } catch {
-      continue;
-    }
-    if (entry.type !== "assistant") continue;
-    if (!entry.uuid || postedSet.has(entry.uuid)) continue;
-    newEntries.push(entry);
-  }
-
-  logLine(
-    `  state.posted_uuids=${state.posted_uuids?.length}  newEntries=${newEntries.length}  uuids=[${newEntries.map((e) => e.uuid?.slice(0, 8)).join(",")}]`,
-  );
-
-  if (newEntries.length === 0) return;
-
-  for (const entry of newEntries) {
-    const text = extractText(entry);
-    if (text) {
-      try {
-        await postToChat(text);
-        logLine(`  posted ${entry.uuid?.slice(0, 8)} text=${text.slice(0, 40)}`);
-      } catch (e) {
-        logLine(`  POST ERROR ${entry.uuid?.slice(0, 8)}: ${e}`);
+  switch (toolName) {
+    case "Bash":
+      return trunc(get("command"));
+    case "Read":
+    case "Write":
+    case "Edit":
+    case "NotebookEdit":
+      return trunc(get("file_path").replace(/^.*\//, ""));
+    case "Grep":
+      return trunc(get("pattern"));
+    case "Glob":
+      return trunc(get("pattern"));
+    case "WebFetch":
+    case "WebSearch":
+      return trunc(get("url") || get("query"));
+    case "Task":
+    case "Agent":
+      return trunc(get("description") || get("subagent_type"));
+    case "TaskCreate":
+      return trunc(get("subject"));
+    case "TaskUpdate":
+      return trunc(get("taskId") + " " + (get("status") || get("subject")));
+    case "TaskStop":
+      return trunc(get("task_id") || get("shell_id"));
+    case "ToolSearch":
+      return trunc(get("query"));
+    case "AskUserQuestion":
+      return ""; // questions are an array; raw view shows them
+    default: {
+      // Generic fallback: first string-valued field, truncated.
+      for (const key of Object.keys(input)) {
+        const v = input[key];
+        if (typeof v === "string" && v.length > 0) return trunc(v);
       }
+      return "";
     }
-    if (entry.uuid) postedSet.add(entry.uuid);
   }
-
-  state.posted_uuids = [...postedSet];
-  if (state.posted_uuids.length > 500) {
-    state.posted_uuids = state.posted_uuids.slice(-500);
-  }
-  saveState(state);
 }
 
 main().catch(() => {});

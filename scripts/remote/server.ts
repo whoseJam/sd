@@ -33,9 +33,21 @@ interface Message {
   id: string;
   ts: number;
   from: "user" | "agent" | "system";
+  // For system messages: "tool" → render as inline gray chip (PreToolUse).
+  // Undefined / "info" → render as default centered italic system bubble.
+  kind?: "tool" | "info";
   text: string;
   images?: string[];
+  // Raw tool_input JSON for tool chips. The UI shows a collapsed <details> the
+  // user can tap to see the full parameters (file paths, full Bash commands,
+  // task subjects, etc.).
+  raw?: unknown;
 }
+
+// Tracks whether the in-tmux Claude is currently working on a user prompt.
+// Set when a user message comes in, cleared when Stop hook posts the reply.
+let responding = false;
+let respondingSince = 0;
 
 let messages: Message[] = [];
 if (existsSync(MESSAGES_FILE)) {
@@ -189,6 +201,8 @@ Bun.serve({
         };
         messages.push(msg);
         sseBroadcast(msg);
+        responding = true;
+        respondingSince = Date.now();
         if (!tmuxHasSession()) {
           const sysMsg = makeSystemMsg(
             "tmux session 'claude-dev' isn't running. Run scripts/remote/start-session.sh on the Mac first.",
@@ -233,7 +247,40 @@ Bun.serve({
       const session = tmuxHasSession();
       const cmd = session ? tmuxPaneCommand() : "";
       const claude = session && cmd && !SHELL_NAMES.has(cmd.toLowerCase());
-      return Response.json({ session, cmd, claude });
+      // Auto-clear stale responding flag after 5 min — guards against hook
+      // never firing because of crash/disconnect.
+      if (responding && Date.now() - respondingSince > 5 * 60_000) {
+        responding = false;
+      }
+      return Response.json({ session, cmd, claude, responding });
+    }
+
+    if (path === "/api/tool-call" && req.method === "POST") {
+      const body = (await req.json()) as {
+        tool_name?: string;
+        summary?: string;
+        raw?: unknown;
+      };
+      const tool = String(body.tool_name ?? "?");
+      const summary = String(body.summary ?? "").trim();
+      const text = summary ? `${tool}  ${summary}` : tool;
+      const msg: Message = {
+        id: newId(),
+        ts: Date.now(),
+        from: "system",
+        kind: "tool",
+        text,
+        raw: body.raw,
+      };
+      messages.push(msg);
+      sseBroadcast(msg);
+      save();
+      return Response.json(msg);
+    }
+
+    if (path === "/api/responding-clear" && req.method === "POST") {
+      responding = false;
+      return Response.json({ ok: true });
     }
 
     if (path === "/api/restart-claude" && req.method === "POST") {
@@ -270,6 +317,7 @@ Bun.serve({
       };
       messages.push(msg);
       sseBroadcast(msg);
+      responding = false;
       save();
       return Response.json(msg);
     }

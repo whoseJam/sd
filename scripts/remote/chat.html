@@ -82,6 +82,110 @@
     font-style: italic;
     text-align: center;
   }
+  .tool-chip {
+    font-family: ui-monospace, "SF Mono", Monaco, Menlo, monospace;
+    font-size: 11px;
+    color: #888;
+    padding: 2px 14px 4px;
+    margin-bottom: 2px;
+    text-align: left;
+    line-height: 1.4;
+    word-break: break-all;
+    user-select: text;
+  }
+  .tool-chip summary {
+    list-style: none;
+    cursor: pointer;
+    display: block;
+    outline: none;
+  }
+  .tool-chip summary::-webkit-details-marker { display: none; }
+  .tool-chip[open] summary .marker { transform: rotate(90deg); display: inline-block; }
+  .tool-chip .marker {
+    color: #5cd57d;
+    margin-right: 6px;
+    transition: transform 0.12s ease;
+    display: inline-block;
+  }
+  .tool-chip .tool-name { color: #b0b0b0; }
+  .tool-chip pre.raw {
+    margin: 4px 0 4px 12px;
+    padding: 6px 8px;
+    background: #111;
+    color: #999;
+    border-radius: 4px;
+    font-size: 10.5px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 360px;
+    overflow-y: auto;
+    border-left: 2px solid #2a5a30;
+  }
+  .agent .bubble { white-space: normal; }
+  .agent .bubble p { margin: 0 0 6px; white-space: pre-wrap; }
+  .agent .bubble p:last-child { margin-bottom: 0; }
+  .agent .bubble pre {
+    background: #111;
+    color: #c0c0c0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 12px;
+    margin: 4px 0;
+    line-height: 1.4;
+  }
+  .agent .bubble code {
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 12.5px;
+    background: #1c1c1c;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .agent .bubble pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+  }
+  .agent .bubble ul, .agent .bubble ol {
+    margin: 2px 0;
+    padding-left: 20px;
+  }
+  .agent .bubble li { margin: 0; }
+  .agent .bubble li + li { margin-top: 2px; }
+  .agent .bubble li p { margin: 0; }
+  .agent .bubble h1, .agent .bubble h2, .agent .bubble h3 {
+    margin: 6px 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .agent .bubble strong { font-weight: 600; }
+  .agent .bubble a { color: #5fa9ff; }
+  .agent .bubble blockquote {
+    margin: 4px 0;
+    padding-left: 10px;
+    border-left: 3px solid #444;
+    color: #aaa;
+  }
+  .agent .bubble hr { border: none; border-top: 1px solid #333; margin: 6px 0; }
+  .typing {
+    color: #888;
+    font-size: 13px;
+    padding: 6px 14px;
+    font-style: italic;
+    display: none;
+  }
+  .typing.show { display: block; }
+  .typing .dot {
+    display: inline-block;
+    animation: blink 1.2s infinite;
+  }
+  .typing .dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+  }
   .images { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .images img {
     max-width: 200px;
@@ -130,6 +234,7 @@
   }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked@13/marked.min.js"></script>
 </head>
 <body>
 <header>
@@ -143,6 +248,7 @@
   </div>
 </header>
 <main id="messages"></main>
+<div class="typing" id="typing">Claude is responding<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
 <footer>
   <textarea id="input" placeholder="Send a message..." rows="1"></textarea>
   <button id="send">Send</button>
@@ -157,14 +263,49 @@ const seen = new Set();
 function renderMsg(m) {
   if (seen.has(m.id)) return;
   seen.add(m.id);
+
+  // Tool calls render as a small gray monospace line that expands to show the
+  // full tool_input JSON when tapped.
+  if (m.from === 'system' && m.kind === 'tool') {
+    const det = document.createElement('details');
+    det.className = 'tool-chip';
+    const sum = document.createElement('summary');
+    const space = m.text.indexOf('  ');
+    if (space > 0) {
+      const tool = m.text.slice(0, space);
+      const rest = m.text.slice(space + 2);
+      sum.innerHTML = '<span class="marker">▸</span><span class="tool-name">' + escapeHtml(tool) + '</span>  ' + escapeHtml(rest);
+    } else {
+      sum.innerHTML = '<span class="marker">▸</span>' + escapeHtml(m.text);
+    }
+    det.appendChild(sum);
+    if (m.raw !== undefined && m.raw !== null) {
+      const pre = document.createElement('pre');
+      pre.className = 'raw';
+      try {
+        pre.textContent = JSON.stringify(m.raw, null, 2);
+      } catch {
+        pre.textContent = String(m.raw);
+      }
+      det.appendChild(pre);
+    }
+    messages.appendChild(det);
+    if (m.ts > lastTs) lastTs = m.ts;
+    return;
+  }
+
   const div = document.createElement('div');
   div.className = 'msg ' + m.from;
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
   if (m.text) {
-    const span = document.createElement('span');
-    span.textContent = m.text;
-    bubble.appendChild(span);
+    if (m.from === 'agent' && typeof marked !== 'undefined') {
+      bubble.innerHTML = marked.parse(m.text, { gfm: true, breaks: true });
+    } else {
+      const span = document.createElement('span');
+      span.textContent = m.text;
+      bubble.appendChild(span);
+    }
   }
   if (m.images && m.images.length) {
     const wrap = document.createElement('div');
@@ -181,6 +322,14 @@ function renderMsg(m) {
   div.appendChild(bubble);
   messages.appendChild(div);
   if (m.ts > lastTs) lastTs = m.ts;
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
 }
 
 function isNearBottom() {
@@ -267,6 +416,8 @@ if (typeof EventSource !== 'undefined') {
 const statusBtn = document.getElementById('status');
 const statusText = document.getElementById('status-text');
 
+const typing = document.getElementById('typing');
+
 async function pollStatus() {
   try {
     const r = await fetch('/api/status');
@@ -282,6 +433,9 @@ async function pollStatus() {
       statusBtn.className = 'status-pill down';
       statusText.textContent = `restart Claude (${s.cmd || '?'})`;
     }
+    const wasNearBottom = isNearBottom();
+    typing.classList.toggle('show', !!s.responding);
+    if (wasNearBottom) messages.scrollTop = messages.scrollHeight;
   } catch {}
 }
 
