@@ -231,8 +231,38 @@ input.addEventListener('input', () => {
   input.style.height = Math.min(input.scrollHeight, 120) + 'px';
 });
 
+function appendIfNew(m) {
+  const wasNearBottom = isNearBottom();
+  renderMsg(m);
+  if (wasNearBottom) messages.scrollTop = messages.scrollHeight;
+}
+
+// Initial backfill, then connect SSE for live updates. Keep a slow poll as
+// a safety net in case SSE silently dies under a proxy.
 poll().then(() => { messages.scrollTop = messages.scrollHeight; });
-setInterval(poll, 3000);
+
+let es;
+function connectSSE() {
+  try {
+    es = new EventSource('/api/stream');
+    es.onmessage = (e) => {
+      try {
+        const m = JSON.parse(e.data);
+        appendIfNew(m);
+      } catch {}
+    };
+    es.onopen = () => { poll(); };  // catch up on anything missed during reconnect
+    es.onerror = () => { /* EventSource auto-reconnects */ };
+  } catch {
+    setInterval(poll, 3000);
+  }
+}
+if (typeof EventSource !== 'undefined') {
+  connectSSE();
+  setInterval(poll, 30000);
+} else {
+  setInterval(poll, 3000);
+}
 
 const statusBtn = document.getElementById('status');
 const statusText = document.getElementById('status-text');

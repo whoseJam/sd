@@ -1,11 +1,21 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun ${CLAUDE_PROJECT_DIR}/scripts/remote/on-hook.ts"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bun ${CLAUDE_PROJECT_DIR}/scripts/remote/on-stop.ts"
+            "command": "bun ${CLAUDE_PROJECT_DIR}/scripts/remote/on-hook.ts"
           }
         ]
       }

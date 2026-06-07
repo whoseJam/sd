@@ -50,6 +50,36 @@ function save(): void {
   writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
 }
 
+// SSE: track open streams so we can push new messages immediately.
+let nextStreamId = 0;
+const sseStreams = new Map<
+  number,
+  ReadableStreamDefaultController<Uint8Array>
+>();
+const sseEncoder = new TextEncoder();
+
+function sseBroadcast(msg: Message): void {
+  const chunk = sseEncoder.encode(`data: ${JSON.stringify(msg)}\n\n`);
+  for (const [id, controller] of sseStreams) {
+    try {
+      controller.enqueue(chunk);
+    } catch {
+      sseStreams.delete(id);
+    }
+  }
+}
+
+setInterval(() => {
+  const ping = sseEncoder.encode(": ping\n\n");
+  for (const [id, controller] of sseStreams) {
+    try {
+      controller.enqueue(ping);
+    } catch {
+      sseStreams.delete(id);
+    }
+  }
+}, 25000);
+
 function newId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
@@ -158,24 +188,45 @@ Bun.serve({
           text,
         };
         messages.push(msg);
+        sseBroadcast(msg);
         if (!tmuxHasSession()) {
-          messages.push(
-            makeSystemMsg(
-              "tmux session 'claude-dev' isn't running. Run scripts/remote/start-session.sh on the Mac first.",
-            ),
+          const sysMsg = makeSystemMsg(
+            "tmux session 'claude-dev' isn't running. Run scripts/remote/start-session.sh on the Mac first.",
           );
+          messages.push(sysMsg);
+          sseBroadcast(sysMsg);
         } else if (!claudeRunning()) {
-          messages.push(
-            makeSystemMsg(
-              `Claude isn't running in tmux (shell: ${tmuxPaneCommand() || "?"}). Tap the status pill to restart it, or type 'claude' in the tmux pane.`,
-            ),
+          const sysMsg = makeSystemMsg(
+            `Claude isn't running in tmux (shell: ${tmuxPaneCommand() || "?"}). Tap the status pill to restart it, or type 'claude' in the tmux pane.`,
           );
+          messages.push(sysMsg);
+          sseBroadcast(sysMsg);
         } else {
           tmuxSendKeys(text);
         }
         save();
         return Response.json(msg);
       }
+    }
+
+    if (path === "/api/stream") {
+      const id = nextStreamId++;
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          sseStreams.set(id, controller);
+          controller.enqueue(sseEncoder.encode(": connected\n\n"));
+        },
+        cancel() {
+          sseStreams.delete(id);
+        },
+      });
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "X-Accel-Buffering": "no",
+        },
+      });
     }
 
     if (path === "/api/status") {
@@ -218,6 +269,7 @@ Bun.serve({
         ...(images.length > 0 && { images }),
       };
       messages.push(msg);
+      sseBroadcast(msg);
       save();
       return Response.json(msg);
     }
