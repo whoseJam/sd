@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>涂色</h1>
+    </section>
+    <section>
+        <h2>涂色</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4170" target="_blank" data-preview-link>P4170</a></p>
+        <p>有一个长度为 $n$ 的木板，最初木板没有任何颜色，每次可以选择一段连续的区间，把这段区间涂上相同的颜色</p>
+        <sd-animation src="../../../animation/区间树动态规划模型/涂色/样例解释.js"
+            style="margin: 0 auto; width: 800px; height: 200px;"></sd-animation>
+        <p class="fragment">求至少要涂多少次才能让木板变成目标模样</p>
+        <p class="fragment quote">手玩一些小样例容易发现，区间树形式的染色方案具有<b>不劣性</b>，染色成本就是区间树上的节点个数</p>
+    </section>
+    <section>
+        <h2>涂色</h2>
+        <ul>
+            <li class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间染为正确的颜色，至少需要做多少次染色</li>
+        </ul>
+        <sd-animation src="../../../animation/区间树动态规划模型/涂色/状态转移.js"
+            style="margin: 0 auto; width: 800px; height: 180px;"></sd-animation>
+        <p class="fragment math-fragment">
+            $$
+            f_{l,r}=\min\begin{cases}
+            \min(f_{l+1,r},\ f_{l,r-1}) & C_l = C_r \\
+            f_{l,k}+f_{k+1,r}
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">初始化 $f_{i,i}=1$</p>
+    </section>
+</section>

@@ -1,0 +1,58 @@
+<section>
+    <section>
+        <h1>括号染色</h1>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <p>Codeforces <a href="https://codeforces.com/problemset/problem/149/D" target="_blank" data-preview-link>149D</a></p>
+        <p>给出一个匹配的括号序列，按照如下规则染色</p>
+        <ul>
+            <li>一个括号可以被染成红色，蓝色，或者不染色</li>
+            <li>一对匹配的括号<b>恰有一个</b>被染色</li>
+            <li>相邻两个括号的颜色不能相同</li>
+        </ul>
+        <sd-animation src="../../../animation/区间树动态规划模型/括号染色/样例解释.js"
+            style="margin: 0 auto; width: 600px; height: 140px;"></sd-animation>
+        <p class="fragment">求合法染色方案数，对 $10^9+7$ 取模</p>
+        <p class="fragment quote">一个合法的括号序列暗藏了一棵区间树，把匹配的括号连线就能看出来</p>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <p>设 $f_{l,r,c_l,c_r}$ 表示考虑 $[l,r]$ 这段区间，左端点染成 $c_l$ 色，右端点染成 $c_r$ 色，合法的染色方案数</p>
+        <p class="quote">$c_l, c_r \in \{0,1,2\}$，$0$ 对应不染色，$1$ 对应红色，$2$ 对应蓝色</p>
+        <div class="fragment">
+            <p>若 $l+1=r$（$[l,r]$ 构成的括号序列合法），只有这四种情况</p>
+            <sd-animation src="../../../animation/区间树动态规划模型/括号染色/状态转移1.js"
+                style="margin: 0 auto; width: 600px; height: 80px;"></sd-animation>
+            <span class="fragment">$$f_{l,r,1,0}=f_{l,r,0,1}=f_{l,r,2,0}=f_{l,r,0,2}=1$$</span>
+        </div>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <p>若 $l$ 端点和 $r$ 端点的括号匹配，外层和内层独立</p>
+        <sd-animation src="../../../animation/区间树动态规划模型/括号染色/状态转移2.js"
+            style="margin: 0 auto; width: 600px; height: 90px;"></sd-animation>
+        <span class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            f_{l,r,1,0} &= \sum_{i \ne 1,\ j} f_{l+1,r-1,i,j} \\
+            f_{l,r,2,0} &= \sum_{i \ne 2,\ j} f_{l+1,r-1,i,j} \\
+            f_{l,r,0,1} &= \sum_{i,\ j \ne 1} f_{l+1,r-1,i,j} \\
+            f_{l,r,0,2} &= \sum_{i,\ j \ne 2} f_{l+1,r-1,i,j}
+            \end{aligned}
+            $$
+        </span>
+    </section>
+    <section>
+        <h2>括号染色</h2>
+        <p>若 $l$ 端点和 $r$ 端点的括号不匹配，设与 $l$ 处左括号匹配的右括号位置为 $m$</p>
+        <sd-animation src="../../../animation/区间树动态规划模型/括号染色/状态转移3.js"
+            style="margin: 0 auto; width: 700px; height: 90px;"></sd-animation>
+        <span class="fragment">
+            $$
+            f_{l,r,c_l,c_r}=\sum_{i,j} f_{l,m,c_l,i}\cdot f_{m+1,r,j,c_r}
+            $$
+        </span>
+        <p class="fragment">需要保证 $c_l$ 和 $i$ 恰有一个有颜色，$i$ 和 $j$ 不同色（可同为 $0$）</p>
+    </section>
+</section>

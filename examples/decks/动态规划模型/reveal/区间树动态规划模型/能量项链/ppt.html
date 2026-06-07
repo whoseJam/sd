@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>能量项链</h1>
+    </section>
+    <section>
+        <h2>能量项链</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1063" target="_blank" data-preview-link>P1063</a></p>
+        <p>有 $n$ 个能量珠构成一条项链（项链是一个环），第 $i$ 个能量珠的头标记为 $h_i$，尾标记为 $t_i$，保证 $\forall i, t_i = h_{i+1}$</p>
+        <sd-animation src="../../../animation/区间树动态规划模型/能量项链/样例解释.js"
+            style="margin: 0 auto; width: 400px; height: 240px;"></sd-animation>
+        <p>合并相邻两颗能量珠产生的能量为 $h_i t_i t_{i+1}$（也可以写作 $h_i h_{i+1} t_{i+1}$），合并后的新能量珠头标记为 $h_i$，尾标记为 $t_{i+1}$</p>
+        <p class="fragment">最大化合并过程中产生的总能量</p>
+    </section>
+    <section>
+        <h2>能量项链</h2>
+        <p>合并类的问题总能转化为二叉区间树，只是这棵树在环上不好处理，需要拆环为链</p>
+        <sd-animation src="../../../animation/区间树动态规划模型/能量项链/状态转移.js"
+            style="margin: 0 auto; width: 800px; height: 260px;"></sd-animation>
+        <p class="fragment">设 $f_{l,r}$ 表示把 $[l,r]$ 这段区间做合并，产生的最大能量</p>
+        <p class="fragment">
+            $$
+            f_{l,r}=\max\limits_{l\le k\lt r}\{f_{l,k}+f_{k+1,r}+h_l t_k t_r\}
+            $$
+        </p>
+    </section>
+</section>
