@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrowedArc } from "../_/arrow";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -57,22 +59,17 @@ for (let j = I - 1; j >= 0; j--) {
   validJ.push(j);
 }
 
-function makeArc(jPos: number, iPos: number, color: string): sd.Path {
-  const x1 = cxOf(jPos);
-  const x2 = cxOf(iPos);
-  const y = CELL_H;
-  const arcH = 16 + (iPos - jPos) * 4;
-  return new sd.Path({
-    targetNode: svg,
-    d: `M ${x1} ${y} Q ${(x1 + x2) / 2} ${y + arcH} ${x2} ${y}`,
-    stroke: color,
-    strokeWidth: 1.4,
-    fill: "none",
-    opacity: 0,
-  });
-}
-
-const arcs = validJ.map((j) => makeArc(j, I, PALETTE[pattern[j]]));
+const arcs = validJ.map((j) =>
+  arrowedArc(
+    svg,
+    cxOf(j),
+    CELL_H,
+    cxOf(I),
+    CELL_H,
+    PALETTE[pattern[j]],
+    16 + (I - j) * 4,
+  ),
+);
 
 const iTick = new sd.Line({
   targetNode: svg,
@@ -101,6 +98,9 @@ sd.main(async () => {
   fadeIn(iTick, 0);
   await sd.pause();
 
-  for (let k = 0; k < arcs.length; k++) fadeIn(arcs[k], k * 150);
+  for (let k = 0; k < arcs.length; k++) {
+    fadeIn(arcs[k].arc, k * 150);
+    fadeIn(arcs[k].head, k * 150 + 80);
+  }
   await sd.pause();
 });

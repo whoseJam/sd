@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrowedArc, type ArrowedArc } from "../_/arrow";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -49,24 +51,19 @@ for (let i = 1; i <= N; i++) {
   });
 }
 
-function makeArc(jPos: number, iPos: number, color: string): sd.Path {
-  const x1 = cxOf(jPos);
-  const x2 = cxOf(iPos);
-  const y = CELL_H;
-  const arcH = 14 + (iPos - jPos) * 4;
-  return new sd.Path({
-    targetNode: svg,
-    d: `M ${x1} ${y} Q ${(x1 + x2) / 2} ${y + arcH} ${x2} ${y}`,
-    stroke: color,
-    strokeWidth: 1.4,
-    fill: "none",
-    opacity: 0,
-  });
-}
-
-const arcs: sd.Path[] = [];
+const arcs: ArrowedArc[] = [];
 for (let k = 0; k + 1 < picks.length; k++) {
-  arcs.push(makeArc(picks[k], picks[k + 1], ARC));
+  arcs.push(
+    arrowedArc(
+      svg,
+      cxOf(picks[k]),
+      CELL_H,
+      cxOf(picks[k + 1]),
+      CELL_H,
+      ARC,
+      14 + (picks[k + 1] - picks[k]) * 4,
+    ),
+  );
 }
 
 const DUR = 280;
@@ -94,6 +91,9 @@ sd.main(async () => {
     setFill(cells[p - 1].bg, PICK, k * 100);
     setFill(cells[p - 1].text, "#ffffff", k * 100 + 50);
   }
-  for (let k = 0; k < arcs.length; k++) fadeIn(arcs[k], 200 + k * 100);
+  for (let k = 0; k < arcs.length; k++) {
+    fadeIn(arcs[k].arc, 200 + k * 100);
+    fadeIn(arcs[k].head, 280 + k * 100);
+  }
   await sd.pause();
 });

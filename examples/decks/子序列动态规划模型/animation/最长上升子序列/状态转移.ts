@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrowedArc } from "../_/arrow";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -69,16 +71,7 @@ const jLabel = new sd.Math({
   opacity: 0,
 });
 
-const x1 = cxOf(J);
-const x2 = cxOf(I);
-const arc = new sd.Path({
-  targetNode: svg,
-  d: `M ${x1} ${CELL_H} Q ${(x1 + x2) / 2} ${CELL_H + 30} ${x2} ${CELL_H}`,
-  stroke: J_HL,
-  strokeWidth: 1.4,
-  fill: "none",
-  opacity: 0,
-});
+const arrow = arrowedArc(svg, cxOf(J), CELL_H, cxOf(I), CELL_H, J_HL, 30);
 
 const DUR = 280;
 type AnyEl = sd.Rect | sd.Text | sd.Math | sd.Path;
@@ -108,6 +101,7 @@ sd.main(async () => {
   setFill(cells[J - 1].bg, J_HL);
   setFill(cells[J - 1].text, "#ffffff", 80);
   fadeIn(jLabel, 100);
-  fadeIn(arc, 200);
+  fadeIn(arrow.arc, 200);
+  fadeIn(arrow.head, 280);
   await sd.pause();
 });

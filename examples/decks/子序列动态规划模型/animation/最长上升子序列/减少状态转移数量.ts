@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrowedArc } from "../_/arrow";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -108,24 +110,6 @@ const bucketTitle = new sd.Text({
   opacity: 0,
 });
 
-function makeArrow(
-  fromX: number,
-  fromY: number,
-  toX: number,
-  toY: number,
-  color: string,
-): sd.Path {
-  const mid = `${(fromX + toX) / 2} ${(fromY + toY) / 2 + 10}`;
-  return new sd.Path({
-    targetNode: svg,
-    d: `M ${fromX} ${fromY} Q ${mid} ${toX} ${toY}`,
-    stroke: color,
-    strokeWidth: 1.2,
-    fill: "none",
-    opacity: 0,
-  });
-}
-
 const DUR = 280;
 type AnyEl = sd.Rect | sd.Text | sd.Math | sd.Path;
 function fadeIn(el: AnyEl, delay = 0) {
@@ -165,7 +149,6 @@ sd.main(async () => {
   fadeIn(bucketTitle, MAX_V * 30 + 80);
   await sd.pause();
 
-  const arrows: sd.Path[] = [];
   for (let i = 0; i < N - 1; i++) {
     if (data[i] >= target) continue;
     const v = data[i];
@@ -173,9 +156,9 @@ sd.main(async () => {
     const fromY = CELL_H;
     const toX = BUCKET_X - BUCKET_W / 2;
     const toY = BUCKET_Y0 + (MAX_V - v) * (BUCKET_H + 2) + BUCKET_H / 2;
-    const arrow = makeArrow(fromX, fromY, toX, toY, VALID);
-    arrows.push(arrow);
-    fadeIn(arrow, i * 50);
+    const a = arrowedArc(svg, fromX, fromY, toX, toY, VALID, 14);
+    fadeIn(a.arc, i * 50);
+    fadeIn(a.head, i * 50 + 80);
   }
   await sd.pause();
 });

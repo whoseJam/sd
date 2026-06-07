@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrowedArc } from "../_/arrow";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -81,22 +83,17 @@ const fLabel = new sd.Math({
   opacity: 0,
 });
 
-function makeArc(jPos: number, iPos: number, color: string): sd.Path {
-  const x1 = cxOf(jPos);
-  const x2 = cxOf(iPos);
-  const y = F_Y + CELL_H;
-  const arcH = 14 + (iPos - jPos) * 3;
-  return new sd.Path({
-    targetNode: svg,
-    d: `M ${x1} ${y} Q ${(x1 + x2) / 2} ${y + arcH} ${x2} ${y}`,
-    stroke: color,
-    strokeWidth: 1.4,
-    fill: "none",
-    opacity: 0,
-  });
-}
-
-const arcs = zeroIndex.map((idx) => makeArc(0, idx, ARC));
+const arcs = zeroIndex.map((idx) =>
+  arrowedArc(
+    svg,
+    cxOf(0),
+    F_Y + CELL_H,
+    cxOf(idx),
+    F_Y + CELL_H,
+    ARC,
+    14 + idx * 3,
+  ),
+);
 
 const DUR = 280;
 type AnyEl = sd.Rect | sd.Text | sd.Math | sd.Path;
@@ -128,6 +125,9 @@ sd.main(async () => {
     setFill(fRow[idx].bg, ZERO);
     setFill(fRow[idx].text, "#ffffff", 60);
   }
-  for (const arc of arcs) fadeIn(arc, 200);
+  for (let k = 0; k < arcs.length; k++) {
+    fadeIn(arcs[k].arc, 200 + k * 80);
+    fadeIn(arcs[k].head, 280 + k * 80);
+  }
   await sd.pause();
 });

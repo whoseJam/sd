@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrowedArc } from "../_/arrow";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -95,25 +97,6 @@ const bucketTitle = new sd.Text({
   opacity: 0,
 });
 
-function makeArrow(
-  fromX: number,
-  fromY: number,
-  toX: number,
-  toY: number,
-  color: string,
-): sd.Path {
-  const ctrlX = (fromX + toX) / 2;
-  const ctrlY = (fromY + toY) / 2 + 16;
-  return new sd.Path({
-    targetNode: svg,
-    d: `M ${fromX} ${fromY} Q ${ctrlX} ${ctrlY} ${toX} ${toY}`,
-    stroke: color,
-    strokeWidth: 1.2,
-    fill: "none",
-    opacity: 0,
-  });
-}
-
 const seen = new Set<string>();
 const validJ: number[] = [];
 for (let j = I - 1; j >= 0; j--) {
@@ -131,7 +114,7 @@ const arrows = validJ.map((j) => {
     BUCKET_Y0 +
     (colorOrder.length - 1 - colorIdx) * (BUCKET_H + 2) +
     BUCKET_H / 2;
-  return makeArrow(fromX, fromY, toX, toY, PALETTE[pattern[j]]);
+  return arrowedArc(svg, fromX, fromY, toX, toY, PALETTE[pattern[j]], 16);
 });
 
 const DUR = 280;
@@ -154,6 +137,9 @@ sd.main(async () => {
   }
   await sd.pause();
 
-  for (let k = 0; k < arrows.length; k++) fadeIn(arrows[k], k * 150);
+  for (let k = 0; k < arrows.length; k++) {
+    fadeIn(arrows[k].arc, k * 150);
+    fadeIn(arrows[k].head, k * 150 + 80);
+  }
   await sd.pause();
 });
