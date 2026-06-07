@@ -38,7 +38,7 @@ if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
   echo "✓ chat server on :$PORT"
 else
   echo "  starting chat server..."
-  ( cd "$REPO" && nohup bun scripts/remote/server.ts > "$SERVER_LOG" 2>&1 & )
+  ( cd "$REPO" && nohup bun packages/remote/src/server.ts > "$SERVER_LOG" 2>&1 & )
   for _ in $(seq 1 10); do
     sleep 0.5
     if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then break; fi

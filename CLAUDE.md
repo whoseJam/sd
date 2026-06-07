@@ -187,15 +187,15 @@ stdout = output PNG absolute path (only line). stderr = browser issues (pageerro
 
 ## Remote chat workflow (when running in tmux from start-session.sh)
 
-If `$TMUX` is set you're inside the `claude-dev` session driven by `scripts/remote/start-session.sh`. The user is on their phone watching `scripts/remote/chat.html`. Conventions:
+If `$TMUX` is set you're inside the `claude-dev` session driven by `packages/remote/bin/start-session.sh`. The user is on their phone watching `packages/remote/src/chat.html` (served by `@sd/remote`'s Bun server on :8765). Conventions:
 
 - **Showing a slide or animation = snapshot + chat post, never a link.** They can't render iframes in chat. Use the wrapper:
   ```bash
-  bun scripts/remote/preview.ts slide 6              # snapshot slide 6 → posts to chat
-  bun scripts/remote/preview.ts slides 5 8           # snapshot slides 5-8 grid
-  bun scripts/remote/preview.ts animation 状态设置    # snapshot animation by name
-  bun scripts/remote/preview.ts animation 状态设置 --pause 4
-  bun scripts/remote/preview.ts deck                 # all slides grid
+  bun packages/remote/src/cli/preview.ts slide 6              # snapshot slide 6 → posts to chat
+  bun packages/remote/src/cli/preview.ts slides 5 8           # snapshot slides 5-8 grid
+  bun packages/remote/src/cli/preview.ts animation 状态设置    # snapshot animation by name
+  bun packages/remote/src/cli/preview.ts animation 状态设置 --pause 4
+  bun packages/remote/src/cli/preview.ts deck                 # all slides grid
   ```
   Resolves URLs against `http://127.0.0.1:$PORT/{reveal,animation}/...` automatically.
 - **Inline image references** (`/tmp/sd-...png`) in your text reply also auto-attach via the Stop hook regex — fine for one-off snapshots you take with the underlying tools directly.

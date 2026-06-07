@@ -3,15 +3,15 @@
 // chunk of work). Default is text-only; images are optional attachments.
 //
 // Usage:
-//   bun scripts/remote/post.ts "text here"
-//   bun scripts/remote/post.ts "text here" img1.png img2.png
-//   echo "text from stdin" | bun scripts/remote/post.ts -
+//   bun packages/remote/src/cli/post.ts "text here"
+//   bun packages/remote/src/cli/post.ts "text here" img1.png img2.png
+//   echo "text from stdin" | bun packages/remote/src/cli/post.ts -
 
 const PORT = Number(process.env.PORT ?? 8765);
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.error("usage: bun scripts/remote/post.ts <text|-> [images...]");
+  console.error("usage: bun packages/remote/src/cli/post.ts <text|-> [images...]");
   process.exit(1);
 }
 

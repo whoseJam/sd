@@ -216,7 +216,7 @@ Bun.serve({
         respondingSince = Date.now();
         if (!tmuxHasSession()) {
           const sysMsg = makeSystemMsg(
-            "tmux session 'claude-dev' isn't running. Run scripts/remote/start-session.sh on the Mac first.",
+            "tmux session 'claude-dev' isn't running. Run packages/remote/bin/start-session.sh on the Mac first.",
           );
           messages.push(sysMsg);
           sseBroadcast(sysMsg);

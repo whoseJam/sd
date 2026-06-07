@@ -10,14 +10,14 @@
 // animation).
 //
 // Usage:
-//   bun scripts/remote/preview.ts show deck
-//   bun scripts/remote/preview.ts show animation <name>
-//   bun scripts/remote/preview.ts show <relative-url> [label]
-//   bun scripts/remote/preview.ts hide
+//   bun packages/remote/src/cli/preview.ts show deck
+//   bun packages/remote/src/cli/preview.ts show animation <name>
+//   bun packages/remote/src/cli/preview.ts show <relative-url> [label]
+//   bun packages/remote/src/cli/preview.ts hide
 //
-//   bun scripts/remote/preview.ts snap slide <N> [label]
-//   bun scripts/remote/preview.ts snap slides <FROM> <TO> [label]
-//   bun scripts/remote/preview.ts snap animation <name> [--pause N | --from N --to M] [label]
+//   bun packages/remote/src/cli/preview.ts snap slide <N> [label]
+//   bun packages/remote/src/cli/preview.ts snap slides <FROM> <TO> [label]
+//   bun packages/remote/src/cli/preview.ts snap animation <name> [--pause N | --from N --to M] [label]
 
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
