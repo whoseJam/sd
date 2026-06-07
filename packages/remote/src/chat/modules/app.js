@@ -1,5 +1,4 @@
-// Chat client entry. Wires up the DOM refs, SSE stream, polling fallbacks,
-// status updates, and preview panel. Everything else lives in feature modules.
+// Chat client entry. Wires DOM refs + SSE + polling + sub-modules.
 
 import { $ } from "./dom.js";
 import {
@@ -20,11 +19,11 @@ import { initSessions, refresh as refreshSessions } from "./sessions.js";
 import { initPreview, apply as applyPreview } from "./preview.js";
 import { initStatus, poll as pollStatus } from "./status.js";
 
-const messagesEl = $("#messages");
-const inputEl = $("#input");
-const sendEl = $("#send");
+const messages = $("#messages");
+const input = $("#input");
+const send = $("#send");
 
-initMessages(messagesEl);
+initMessages(messages);
 
 initStatus({
   pill: $("#status"),
@@ -52,33 +51,33 @@ initSessions({
 
 function handleSessionSwitched() {
   clearMessages();
-  let n = 0;
+  // Watcher is still replaying the new JSONL — retry a few times.
+  let attempt = 0;
   const tick = async () => {
     await catchUpMessages();
     refreshSessions();
     scrollToBottom();
-    if (++n < 20) setTimeout(tick, 500);
+    if (++attempt < 20) setTimeout(tick, 500);
   };
   tick();
 }
 
 async function catchUpMessages() {
   const wasAtBottom = isNearBottom();
-  const since = latestTs();
-  const msgs = await fetchMessages(since);
-  for (const m of msgs) renderMsg(m);
-  if (msgs.length && wasAtBottom) scrollToBottom();
+  const newMessages = await fetchMessages(latestTs());
+  for (const message of newMessages) renderMsg(message);
+  if (newMessages.length && wasAtBottom) scrollToBottom();
 }
 
 async function loadInitialPreview() {
-  const j = await fetchPreview();
-  if (j) applyPreview(j.preview);
+  const response = await fetchPreview();
+  if (response) applyPreview(response.preview);
 }
 
-const es = connectSSE({
-  onMessage(m) {
+connectSSE({
+  onMessage(message) {
     const wasAtBottom = isNearBottom();
-    renderMsg(m);
+    renderMsg(message);
     if (wasAtBottom) scrollToBottom();
   },
   onReconnect() {
@@ -92,32 +91,32 @@ catchUpMessages().then(scrollToBottom);
 loadInitialPreview();
 pollStatus();
 setInterval(pollStatus, 5000);
-// SSE doesn't flow through cloudflared quick tunnels — poll regardless.
+// SSE is swallowed by cloudflared quick tunnels — poll regardless.
 setInterval(catchUpMessages, 2000);
 setInterval(refreshSessions, 5000);
 setInterval(loadInitialPreview, 2000);
 
 async function submit() {
-  const text = inputEl.value.trim();
+  const text = input.value.trim();
   if (!text) return;
-  inputEl.value = "";
-  inputEl.style.height = "36px";
-  sendEl.disabled = true;
+  input.value = "";
+  input.style.height = "36px";
+  send.disabled = true;
   try {
     await sendUserMessage(text);
   } finally {
-    sendEl.disabled = false;
-    inputEl.focus();
+    send.disabled = false;
+    input.focus();
   }
 }
-sendEl.addEventListener("click", submit);
-inputEl.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
+send.addEventListener("click", submit);
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
     submit();
   }
 });
-inputEl.addEventListener("input", () => {
-  inputEl.style.height = "36px";
-  inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + "px";
+input.addEventListener("input", () => {
+  input.style.height = "36px";
+  input.style.height = Math.min(input.scrollHeight, 140) + "px";
 });

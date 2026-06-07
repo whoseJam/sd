@@ -1,8 +1,5 @@
-// Session management: list / switch / create.
-//
 // A "session" is one Claude Code JSONL file. The watcher follows whichever
-// session is currently pinned; switching just rewrites the pin and resets
-// the watcher so it re-reads the new file from offset 0.
+// is currently pinned.
 
 import {
   existsSync,
@@ -14,18 +11,11 @@ import {
 import { join } from "node:path";
 
 export interface SessionInfo {
-  /** UUID — file basename without ".jsonl". */
   id: string;
-  /** Absolute path to the JSONL. */
   path: string;
-  /** AI-generated title; falls back to first user prompt; "(empty)" if both
-   *  are missing. */
   title: string;
-  /** File mtime in epoch ms. */
   mtime: number;
-  /** Whether this matches the currently pinned transcript. */
   isActive: boolean;
-  /** Approximate line count. */
   entryCount: number;
 }
 
@@ -48,20 +38,18 @@ export function pinSession(path: string): void {
   writeFileSync(PIN_FILE, path);
 }
 
-/** Snapshot the existing jsonl set so the watcher can later identify a
- *  freshly-created session by set difference. Used by /api/sessions/new
- *  to mark "the next genuinely new file in this dir is the active
- *  session". */
+// Snapshot the existing jsonl set; the watcher identifies a newly-created
+// session by set difference.
 export function writeBaseline(dir: string): void {
-  const list: string[] = [];
+  const baseline: string[] = [];
   try {
-    for (const f of readdirSync(dir)) {
-      if (f.endsWith(".jsonl")) list.push(join(dir, f));
+    for (const filename of readdirSync(dir)) {
+      if (filename.endsWith(".jsonl")) baseline.push(join(dir, filename));
     }
   } catch {
-    // ignore — empty baseline means any new file is fresh
+    // empty baseline means any new file is fresh
   }
-  writeFileSync(BASELINE_FILE, list.join("\n"));
+  writeFileSync(BASELINE_FILE, baseline.join("\n"));
 }
 
 export function readBaseline(): Set<string> {
@@ -69,7 +57,7 @@ export function readBaseline(): Set<string> {
     return new Set(
       readFileSync(BASELINE_FILE, "utf-8")
         .split("\n")
-        .map((s) => s.trim())
+        .map((line) => line.trim())
         .filter(Boolean),
     );
   } catch {
@@ -79,67 +67,63 @@ export function readBaseline(): Set<string> {
 
 export function listSessions(dir: string, pinned: string): SessionInfo[] {
   if (!existsSync(dir)) return [];
-  const out: SessionInfo[] = [];
-  for (const f of readdirSync(dir)) {
-    if (!f.endsWith(".jsonl")) continue;
-    const full = join(dir, f);
+  const result: SessionInfo[] = [];
+  for (const filename of readdirSync(dir)) {
+    if (!filename.endsWith(".jsonl")) continue;
+    const path = join(dir, filename);
     let mtime = 0;
     try {
-      mtime = statSync(full).mtimeMs;
+      mtime = statSync(path).mtimeMs;
     } catch {
       continue;
     }
-    const id = f.slice(0, -".jsonl".length);
-    const { title, entryCount } = readMeta(full);
-    out.push({
+    const id = filename.slice(0, -".jsonl".length);
+    const { title, entryCount } = readMeta(path);
+    result.push({
       id,
-      path: full,
+      path,
       title,
       mtime,
-      isActive: full === pinned,
+      isActive: path === pinned,
       entryCount,
     });
   }
-  out.sort((a, b) => b.mtime - a.mtime);
-  return out;
+  result.sort((a, b) => b.mtime - a.mtime);
+  return result;
 }
 
-/** Walk the JSONL once for the latest aiTitle and the first user prompt.
- *  We do a string pre-filter so JSON.parse only runs on candidate lines —
- *  cheap enough to re-run on every /api/sessions hit for a directory with
- *  dozens of files. */
+// Walk the JSONL once for the latest aiTitle + first user prompt. Cheap
+// enough to re-run on every /api/sessions hit for ~40 files.
 function readMeta(path: string): { title: string; entryCount: number } {
   let title = "";
   let firstPrompt = "";
-  let count = 0;
-  let buf: string;
+  let entryCount = 0;
+  let buffer: string;
   try {
-    buf = readFileSync(path, "utf-8");
+    buffer = readFileSync(path, "utf-8");
   } catch {
     return { title: "(unreadable)", entryCount: 0 };
   }
-  for (const line of buf.split("\n")) {
+  for (const line of buffer.split("\n")) {
     if (!line) continue;
-    count++;
+    entryCount++;
     const head = line.slice(0, 80);
     if (head.includes('"aiTitle"')) {
       try {
-        const e = JSON.parse(line) as { aiTitle?: unknown };
-        if (typeof e.aiTitle === "string") title = e.aiTitle;
-      } catch {
-        // ignore
-      }
+        const entry = JSON.parse(line) as { aiTitle?: unknown };
+        if (typeof entry.aiTitle === "string") title = entry.aiTitle;
+      } catch {}
     } else if (!firstPrompt && head.includes('"type":"user"')) {
       try {
-        const e = JSON.parse(line) as {
+        const entry = JSON.parse(line) as {
           message?: { content?: unknown };
         };
-        const c = e.message?.content;
-        if (typeof c === "string") firstPrompt = c.trim().slice(0, 80);
-      } catch {
-        // ignore
-      }
+        const content = entry.message?.content;
+        if (typeof content === "string") {
+          firstPrompt = content.trim().slice(0, 80);
+        }
+      } catch {}
     }
   }
-  return { title: title || firstPrompt || "(empty)", entryCount: count };
+  return { title: title || firstPrompt || "(empty)", entryCount };
 }

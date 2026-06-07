@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-// Unified launcher. Driven by pnpm scripts:
-//   pnpm start:local   chat server + watcher only
+// Unified launcher.
+//   pnpm start:local   chat server only
 //   pnpm start:remote  + cloudflared tunnel + tmux Claude
 //   pnpm stop:local    kill chat server
 //   pnpm stop:remote   kill all of the above
@@ -33,8 +33,8 @@ const BASELINE_FILE = join(REVEAL_ROOT, "transcript-baseline.txt");
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
-main().catch((e) => {
-  console.error(e instanceof Error ? e.message : String(e));
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);
 });
 
@@ -53,11 +53,9 @@ async function main(): Promise<void> {
 }
 
 async function start(mode: Mode): Promise<void> {
-  const needs = mode === "remote"
-    ? ["bun", "tmux", "cloudflared"]
-    : ["bun"];
-  for (const cmd of needs) {
-    if (!which(cmd)) die(`missing: ${cmd} (brew install ${cmd})`);
+  const required = mode === "remote" ? ["bun", "tmux", "cloudflared"] : ["bun"];
+  for (const command of required) {
+    if (!which(command)) die(`missing: ${command} (brew install ${command})`);
   }
 
   await ensureServer();
@@ -74,8 +72,10 @@ async function start(mode: Mode): Promise<void> {
   openBrowser(url);
   console.log(`\n  chat: ${url}\n`);
   if (process.env.NO_ATTACH === "1") return;
-  const r = spawnSync("tmux", ["attach", "-t", SESSION], { stdio: "inherit" });
-  if (r.status !== 0) process.exit(r.status ?? 1);
+  const result = spawnSync("tmux", ["attach", "-t", SESSION], {
+    stdio: "inherit",
+  });
+  if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
 async function stop(mode: Mode): Promise<void> {
@@ -87,9 +87,9 @@ async function stop(mode: Mode): Promise<void> {
     } else {
       console.log(`  tmux session '${SESSION}' not running`);
     }
-    const cfPattern = `cloudflared.*--url.*:${PORT}`;
-    if (pgrepHas(cfPattern)) {
-      pkill(cfPattern);
+    const cloudflaredPattern = `cloudflared.*--url.*:${PORT}`;
+    if (pgrepHas(cloudflaredPattern)) {
+      pkill(cloudflaredPattern);
       console.log("✓ cloudflared killed");
     } else {
       console.log("  cloudflared not running");
@@ -104,8 +104,8 @@ async function stop(mode: Mode): Promise<void> {
   );
   const pids = (lsof.stdout ?? "")
     .split("\n")
-    .map((s) => s.trim())
-    .filter((s) => /^\d+$/.test(s));
+    .map((line) => line.trim())
+    .filter((line) => /^\d+$/.test(line));
   if (pids.length) {
     spawnSync("kill", pids);
     console.log(`✓ chat server on :${PORT} killed`);
@@ -125,9 +125,9 @@ function killViewWatchers(): void {
     return;
   }
   let killed = 0;
-  for (const p of pids) {
+  for (const pid of pids) {
     try {
-      process.kill(p);
+      process.kill(pid);
       killed++;
     } catch {
       // already dead
@@ -153,11 +153,11 @@ async function ensureServer(): Promise<void> {
     },
   );
   await Bun.write(Bun.file(SERVER_LOG), "");
-  const out = Bun.file(SERVER_LOG).writer();
-  child.stdout.on("data", (d) => out.write(d));
-  child.stderr.on("data", (d) => out.write(d));
+  const log = Bun.file(SERVER_LOG).writer();
+  child.stdout.on("data", (chunk) => log.write(chunk));
+  child.stderr.on("data", (chunk) => log.write(chunk));
   child.unref();
-  for (let i = 0; i < 20; i++) {
+  for (let attempt = 0; attempt < 20; attempt++) {
     await sleep(500);
     if (await portInUse(PORT)) {
       console.log(`✓ chat server on :${PORT}`);
@@ -186,11 +186,11 @@ async function ensureTunnel(): Promise<string> {
     ["tunnel", "--url", `http://127.0.0.1:${PORT}`, "--protocol", "http2"],
     { detached: true, stdio: ["ignore", "pipe", "pipe"] },
   );
-  const out = Bun.file(TUNNEL_LOG).writer();
-  child.stdout.on("data", (d) => out.write(d));
-  child.stderr.on("data", (d) => out.write(d));
+  const log = Bun.file(TUNNEL_LOG).writer();
+  child.stdout.on("data", (chunk) => log.write(chunk));
+  child.stderr.on("data", (chunk) => log.write(chunk));
   child.unref();
-  for (let i = 0; i < 30; i++) {
+  for (let attempt = 0; attempt < 30; attempt++) {
     await sleep(1000);
     const url = extractTunnelUrl();
     if (url) {
@@ -205,8 +205,8 @@ async function ensureTunnel(): Promise<string> {
 function extractTunnelUrl(): string {
   try {
     const log = readFileSync(TUNNEL_LOG, "utf-8");
-    const m = log.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
-    return m ? m[0] : "";
+    const match = log.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
+    return match ? match[0] : "";
   } catch {
     return "";
   }
@@ -217,7 +217,7 @@ const CLAUDE_CMD = "claude --dangerously-skip-permissions";
 
 function ensureTmuxSession(): boolean {
   if (tmux(["has-session", "-t", SESSION]).status === 0) {
-    const paneCmd = tmux([
+    const paneCommand = tmux([
       "display-message",
       "-p",
       "-t",
@@ -225,15 +225,15 @@ function ensureTmuxSession(): boolean {
       "-F",
       "#{pane_current_command}",
     ]).stdout.trim();
-    if (!paneCmd || SHELL_RE.test(paneCmd)) {
+    if (!paneCommand || SHELL_RE.test(paneCommand)) {
       console.log(
-        `  Claude not running in tmux (pane: ${paneCmd || "?"}) — relaunching...`,
+        `  Claude not running in tmux (pane: ${paneCommand || "?"}) — relaunching...`,
       );
       tmux(["send-keys", "-t", `${SESSION}:main`, CLAUDE_CMD, "Enter"]);
       console.log(`✓ tmux session '${SESSION}' (Claude relaunched)`);
       return true;
     }
-    console.log(`✓ tmux session '${SESSION}' (Claude alive: ${paneCmd})`);
+    console.log(`✓ tmux session '${SESSION}' (Claude alive: ${paneCommand})`);
     return false;
   }
   tmux(["new-session", "-d", "-s", SESSION, "-c", REPO, "-n", "main"]);
@@ -249,8 +249,7 @@ function pinTranscript(): void {
     "projects",
     REPO.replace(/\//g, "-"),
   );
-  const baseline = listJsonl(claudeDir);
-  writeFileSync(BASELINE_FILE, baseline.join("\n"));
+  writeFileSync(BASELINE_FILE, listJsonl(claudeDir).join("\n"));
   writeFileSync(PIN_FILE, "PENDING");
   console.log("✓ watcher armed (waits for tmux Claude's first jsonl)");
 }
@@ -258,12 +257,18 @@ function pinTranscript(): void {
 function listJsonl(dir: string): string[] {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((f) => f.endsWith(".jsonl"))
-    .map((f) => join(dir, f));
+    .filter((filename) => filename.endsWith(".jsonl"))
+    .map((filename) => join(dir, filename));
 }
 
 function pinTmuxStatusBar(url: string): void {
-  tmux(["set-option", "-t", SESSION, "status-style", "bg=#1d4ed8,fg=#ffffff,bold"]);
+  tmux([
+    "set-option",
+    "-t",
+    SESSION,
+    "status-style",
+    "bg=#1d4ed8,fg=#ffffff,bold",
+  ]);
   tmux(["set-option", "-t", SESSION, "status-left-length", "200"]);
   tmux(["set-option", "-t", SESSION, "status-left", ` chat: ${url} `]);
   tmux(["set-option", "-t", SESSION, "status-right", ""]);
@@ -276,22 +281,25 @@ function openBrowser(url: string): void {
   } else if (process.platform === "linux") {
     spawn("xdg-open", [url], { stdio: "ignore", detached: true }).unref();
   } else if (process.platform === "win32") {
-    spawn("cmd", ["/c", "start", url], { stdio: "ignore", detached: true }).unref();
+    spawn("cmd", ["/c", "start", url], {
+      stdio: "ignore",
+      detached: true,
+    }).unref();
   }
 }
 
 function tmux(args: string[]): { status: number | null; stdout: string } {
-  const r = spawnSync("tmux", args, { encoding: "utf-8" });
-  return { status: r.status, stdout: r.stdout ?? "" };
+  const result = spawnSync("tmux", args, { encoding: "utf-8" });
+  return { status: result.status, stdout: result.stdout ?? "" };
 }
 
-function which(cmd: string): boolean {
-  const r = spawnSync(
+function which(command: string): boolean {
+  const result = spawnSync(
     process.platform === "win32" ? "where" : "command",
-    process.platform === "win32" ? [cmd] : ["-v", cmd],
+    process.platform === "win32" ? [command] : ["-v", command],
     { encoding: "utf-8", shell: process.platform !== "win32" },
   );
-  return r.status === 0 && (r.stdout ?? "").trim().length > 0;
+  return result.status === 0 && (result.stdout ?? "").trim().length > 0;
 }
 
 function pgrepHas(pattern: string): boolean {
@@ -304,13 +312,13 @@ function pkill(pattern: string): void {
 
 function portInUse(port: number): Promise<boolean> {
   return new Promise((resolve) => {
-    const sock = createConnection({ port, host: "127.0.0.1" }, () => {
-      sock.destroy();
+    const socket = createConnection({ port, host: "127.0.0.1" }, () => {
+      socket.destroy();
       resolve(true);
     });
-    sock.on("error", () => resolve(false));
+    socket.on("error", () => resolve(false));
     setTimeout(() => {
-      sock.destroy();
+      socket.destroy();
       resolve(false);
     }, 1500);
   });
@@ -318,10 +326,10 @@ function portInUse(port: number): Promise<boolean> {
 
 async function httpAlive(url: string, timeoutMs: number): Promise<boolean> {
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), timeoutMs);
-    await fetch(url, { signal: ctrl.signal });
-    clearTimeout(t);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
     return true;
   } catch {
     return false;
@@ -329,10 +337,10 @@ async function httpAlive(url: string, timeoutMs: number): Promise<boolean> {
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function die(msg: string): never {
-  console.error(msg);
+function die(message: string): never {
+  console.error(message);
   process.exit(1);
 }

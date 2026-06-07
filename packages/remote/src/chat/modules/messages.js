@@ -1,24 +1,21 @@
-// Message list rendering. Append-only; each Message ID is deduped via a Set.
-// Auto-scroll only when the user is already near the bottom (don't yank them
-// down if they're scrolled up reading history).
+// Auto-scroll only when the user is already near the bottom — don't yank
+// them down if they're scrolled up reading history.
 
 import { el, escapeHtml } from "./dom.js";
 import { renderMarkdown } from "./markdown.js";
 
 const seen = new Set();
 let lastTs = 0;
-let listEl = null;
+let list = null;
 
-export function initMessages(el) {
-  listEl = el;
+export function initMessages(element) {
+  list = element;
 }
 
-/** Wipe the chat: used when switching sessions so the next render starts
- *  empty before the new session's history streams in. */
 export function clearMessages() {
   seen.clear();
   lastTs = 0;
-  if (listEl) listEl.innerHTML = "";
+  if (list) list.innerHTML = "";
 }
 
 export function latestTs() {
@@ -26,35 +23,35 @@ export function latestTs() {
 }
 
 export function isNearBottom() {
-  if (!listEl) return true;
-  return listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 80;
+  if (!list) return true;
+  return list.scrollTop + list.clientHeight >= list.scrollHeight - 80;
 }
 
 export function scrollToBottom() {
-  if (listEl) listEl.scrollTop = listEl.scrollHeight;
+  if (list) list.scrollTop = list.scrollHeight;
 }
 
-export function renderMsg(m) {
-  if (seen.has(m.id)) return;
-  seen.add(m.id);
-  if (m.ts > lastTs) lastTs = m.ts;
+export function renderMsg(message) {
+  if (seen.has(message.id)) return;
+  seen.add(message.id);
+  if (message.ts > lastTs) lastTs = message.ts;
 
-  if (m.from === "system" && m.kind === "tool") {
-    listEl.appendChild(renderToolChip(m));
+  if (message.from === "system" && message.kind === "tool") {
+    list.appendChild(renderToolChip(message));
     return;
   }
-  listEl.appendChild(renderBubble(m));
+  list.appendChild(renderBubble(message));
 }
 
-function renderToolChip(m) {
-  const wrap = el("div", { class: "tool-wrap" });
-  const det = el("details", { class: "tool-chip" });
+function renderToolChip(message) {
+  const wrapper = el("div", { class: "tool-wrap" });
+  const details = el("details", { class: "tool-chip" });
 
-  const space = m.text.indexOf("  ");
+  const space = message.text.indexOf("  ");
   const summary = el("summary");
   if (space > 0) {
-    const tool = m.text.slice(0, space);
-    const rest = m.text.slice(space + 2);
+    const tool = message.text.slice(0, space);
+    const rest = message.text.slice(space + 2);
     summary.innerHTML =
       '<span class="marker">▸</span><span class="tool-name">' +
       escapeHtml(tool) +
@@ -62,47 +59,47 @@ function renderToolChip(m) {
       escapeHtml(rest);
   } else {
     summary.innerHTML =
-      '<span class="marker">▸</span>' + escapeHtml(m.text);
+      '<span class="marker">▸</span>' + escapeHtml(message.text);
   }
-  det.appendChild(summary);
+  details.appendChild(summary);
 
-  if (m.raw !== undefined && m.raw !== null) {
+  if (message.raw !== undefined && message.raw !== null) {
     const pre = el("pre", { class: "raw" });
     try {
-      pre.textContent = JSON.stringify(m.raw, null, 2);
+      pre.textContent = JSON.stringify(message.raw, null, 2);
     } catch {
-      pre.textContent = String(m.raw);
+      pre.textContent = String(message.raw);
     }
-    det.appendChild(pre);
+    details.appendChild(pre);
   }
 
-  wrap.appendChild(det);
+  wrapper.appendChild(details);
 
-  if (m.images?.length) {
-    wrap.appendChild(renderImages(m.images));
+  if (message.images?.length) {
+    wrapper.appendChild(renderImages(message.images));
   }
-  return wrap;
+  return wrapper;
 }
 
-function renderBubble(m) {
-  const row = el("div", { class: "msg " + m.from });
+function renderBubble(message) {
+  const row = el("div", { class: "msg " + message.from });
   const bubble = el("div", { class: "bubble" });
 
-  if (m.text) {
-    if (m.from === "agent") {
-      const html = renderMarkdown(m.text);
+  if (message.text) {
+    if (message.from === "agent") {
+      const html = renderMarkdown(message.text);
       if (html != null) {
         bubble.innerHTML = html;
       } else {
-        bubble.textContent = m.text;
+        bubble.textContent = message.text;
       }
     } else {
-      bubble.textContent = m.text;
+      bubble.textContent = message.text;
     }
   }
 
-  if (m.images?.length) {
-    bubble.appendChild(renderImages(m.images));
+  if (message.images?.length) {
+    bubble.appendChild(renderImages(message.images));
   }
 
   row.appendChild(bubble);
@@ -110,15 +107,15 @@ function renderBubble(m) {
 }
 
 function renderImages(images) {
-  const wrap = el("div", { class: "images" });
-  for (const f of images) {
+  const wrapper = el("div", { class: "images" });
+  for (const filename of images) {
     const img = el("img", {
-      attrs: { src: "/snapshots/" + f, loading: "lazy", alt: "" },
+      attrs: { src: "/snapshots/" + filename, loading: "lazy", alt: "" },
       on: {
-        click: () => window.open("/snapshots/" + f, "_blank"),
+        click: () => window.open("/snapshots/" + filename, "_blank"),
       },
     });
-    wrap.appendChild(img);
+    wrapper.appendChild(img);
   }
-  return wrap;
+  return wrapper;
 }

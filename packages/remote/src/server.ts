@@ -1,26 +1,7 @@
 #!/usr/bin/env bun
-// Chat server for the remote phone-↔-desktop-Claude workflow.
-//
-// JSONL is the single source of truth. The TranscriptWatcher polls the
-// pinned agent session JSONL and dispatches each new line into chat
-// messages via an adapter. The `messages` array is an in-memory cache of
-// "what the current session's JSONL parses into" — never written to disk.
-// On boot the watcher replays the file from offset 0, rebuilding the cache;
-// on session switch we reset and re-parse the new file. No hook system
-// needs to be installed on the user's machine.
-//
-// Routes:
-//   GET  /                   chat UI (chat/index.html)
-//   /chat/*                  chat client static assets
-//   GET  /api/messages?since=<ts>
-//   POST /api/messages       user-sent message; forwarded to tmux send-keys
-//   GET  /api/status         {session, claude, responding}
-//   POST /api/restart-claude relaunch Claude in tmux
-//   GET  /api/preview        current preview state
-//   POST /api/preview        set/clear preview URL
-//   GET  /api/stream         SSE: live messages + preview events
-//   /snapshots/<file>        image attachments (referenced from messages)
-//   /<anything-else>         static files under REVEAL_ROOT
+// Chat server. JSONL is the single source of truth — TranscriptWatcher polls
+// the pinned session JSONL and dispatches each new line via an adapter. The
+// `messages` array is an in-memory cache rebuilt on every boot.
 
 import {
   existsSync,
@@ -52,30 +33,28 @@ mkdirSync(SNAPSHOTS_DIR, { recursive: true });
 
 let responding = false;
 let respondingSince = 0;
-
-// In-memory only. Rebuilt from JSONL on every boot via the watcher.
 let messages: Message[] = [];
 
-// Centralized message ingest. Watcher, user POST handler, and system-msg
-// helpers all funnel through here so SSE broadcast happens once.
-function appendMessage(m: Message): void {
-  // Idempotent: skip if we've already stored this id.
-  if (messages.some((existing) => existing.id === m.id)) return;
-  // Optimistic POST → JSONL replay dedup: a user prompt is rendered the
-  // moment the client POSTs, then again ~1s later when Claude flushes the
-  // entry to JSONL. We coalesce by text equality within a 60s window so
-  // exactly one bubble survives.
-  if (m.from === "user" && m.text) {
-    const text = m.text.trim();
+// Centralized message ingest — watcher, POST handler, and system helpers
+// all funnel through here so SSE broadcast happens once.
+function appendMessage(message: Message): void {
+  if (messages.some((existing) => existing.id === message.id)) return;
+  // A user prompt arrives optimistically on POST and again ~1s later from
+  // the JSONL replay. Coalesce by text within a 60s window.
+  if (message.from === "user" && message.text) {
+    const text = message.text.trim();
     for (let i = messages.length - 1; i >= 0; i--) {
-      const x = messages[i];
-      if (m.ts - x.ts > 60_000) break;
-      if (x.from === "user" && x.text.trim() === text) return;
+      const previous = messages[i];
+      if (message.ts - previous.ts > 60_000) break;
+      if (previous.from === "user" && previous.text.trim() === text) return;
     }
   }
-  messages.push(m);
-  sseBroadcast(m);
-  if (m.from === "agent" && (m.text || (m.images?.length ?? 0) > 0)) {
+  messages.push(message);
+  sseBroadcast(message);
+  if (
+    message.from === "agent" &&
+    (message.text || (message.images?.length ?? 0) > 0)
+  ) {
     responding = false;
   }
 }
@@ -85,16 +64,16 @@ function newId(): string {
 }
 
 function tmuxHasSession(): boolean {
-  const r = Bun.spawnSync({
+  const result = Bun.spawnSync({
     cmd: ["tmux", "has-session", "-t", TMUX_SESSION],
     stdout: "pipe",
     stderr: "pipe",
   });
-  return r.exitCode === 0;
+  return result.exitCode === 0;
 }
 
 function tmuxPaneCommand(): string {
-  const r = Bun.spawnSync({
+  const result = Bun.spawnSync({
     cmd: [
       "tmux",
       "display-message",
@@ -107,17 +86,17 @@ function tmuxPaneCommand(): string {
     stdout: "pipe",
     stderr: "pipe",
   });
-  if (r.exitCode !== 0) return "";
-  return new TextDecoder().decode(r.stdout).trim();
+  if (result.exitCode !== 0) return "";
+  return new TextDecoder().decode(result.stdout).trim();
 }
 
 const SHELL_NAMES = new Set(["fish", "bash", "zsh", "sh", "dash", "ksh"]);
 
 function claudeRunning(): boolean {
   if (!tmuxHasSession()) return false;
-  const cmd = tmuxPaneCommand().toLowerCase();
-  if (!cmd) return false;
-  return !SHELL_NAMES.has(cmd);
+  const command = tmuxPaneCommand().toLowerCase();
+  if (!command) return false;
+  return !SHELL_NAMES.has(command);
 }
 
 function tmuxSendKeys(text: string): void {
@@ -131,9 +110,9 @@ function tmuxSendKeys(text: string): void {
 
 const CLAUDE_BASE_FLAGS = ["--dangerously-skip-permissions"];
 
-function tmuxStartClaude(opts: { resume?: string } = {}): void {
+function tmuxStartClaude(options: { resume?: string } = {}): void {
   const parts = ["claude", ...CLAUDE_BASE_FLAGS];
-  if (opts.resume) parts.push("--resume", opts.resume);
+  if (options.resume) parts.push("--resume", options.resume);
   tmuxSendKeys(parts.join(" "));
 }
 
@@ -142,18 +121,18 @@ async function tmuxQuitClaude(): Promise<void> {
   await sleep(150);
   Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
   await sleep(500);
-  for (let i = 0; i < 20; i++) {
-    const cmd = tmuxPaneCommand().toLowerCase();
-    if (!cmd || SHELL_NAMES.has(cmd)) break;
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const command = tmuxPaneCommand().toLowerCase();
+    if (!command || SHELL_NAMES.has(command)) break;
     await sleep(200);
   }
 }
 
-function makeSystemMsg(text: string): Message {
+function makeSystemMessage(text: string): Message {
   return { id: newId(), ts: Date.now(), from: "system", text };
 }
 
-// ── SSE infrastructure ────────────────────────────────────────────────────
+// ── SSE ──────────────────────────────────────────────────────────────────
 let nextStreamId = 0;
 const sseStreams = new Map<
   number,
@@ -161,8 +140,8 @@ const sseStreams = new Map<
 >();
 const sseEncoder = new TextEncoder();
 
-function sseBroadcast(msg: Message): void {
-  sseSend("message", msg);
+function sseBroadcast(message: Message): void {
+  sseSend("message", message);
 }
 
 function sseSend(event: string, data: unknown): void {
@@ -189,10 +168,9 @@ setInterval(() => {
   }
 }, 25000);
 
-// ── Reload epoch: watch /tmp/sd-test for any file change and bump a token
-//    that injected client scripts poll. Polling (not SSE) so it works
-//    through cloudflared too. Debounced so a webpack rebuild burst counts
-//    as one reload.
+// ── Reload epoch ─────────────────────────────────────────────────────────
+// Polled by an injected client script (SSE-free so it works through
+// cloudflared). Debounced so a webpack rebuild burst counts as one reload.
 let reloadEpoch = 0;
 let reloadTimer: ReturnType<typeof setTimeout> | null = null;
 try {
@@ -208,10 +186,7 @@ try {
 
 const RELOAD_SCRIPT = `<script>(function(){let l=null;setInterval(function(){fetch('/api/reload-token').then(function(r){return r.json()}).then(function(j){if(l!==null&&j.epoch!==l)location.reload();l=j.epoch})},1000);})();</script>`;
 
-// ── Transcript watcher ────────────────────────────────────────────────────
-// Single dispatch point for agent-side messages. Adapter decides what each
-// transcript line means; watcher handles polling, byte offsets, dedup
-// across restarts. Server stays adapter-agnostic.
+// ── Transcript watcher ───────────────────────────────────────────────────
 const watcher = new TranscriptWatcher({
   cwd: REPO,
   adapter: claudeCodeAdapter,
@@ -224,8 +199,7 @@ async function switchSession(path: string): Promise<void> {
   pinSession(path);
   messages = [];
   watcher.reset();
-  const sessionId =
-    path.split("/").pop()?.replace(/\.jsonl$/, "") ?? "";
+  const sessionId = path.split("/").pop()?.replace(/\.jsonl$/, "") ?? "";
   if (sessionId && tmuxHasSession()) {
     await tmuxQuitClaude();
     tmuxStartClaude({ resume: sessionId });
@@ -253,11 +227,10 @@ async function newSession(): Promise<NewSessionResult> {
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-
-// ── Static asset paths ────────────────────────────────────────────────────
+// ── Static asset paths ───────────────────────────────────────────────────
 const CHAT_DIR = new URL("./chat/", import.meta.url).pathname;
 const CHAT_HTML_PATH = join(CHAT_DIR, "index.html");
 
@@ -281,19 +254,19 @@ function contentType(path: string): string {
   return MIME[extname(path).toLowerCase()] ?? "application/octet-stream";
 }
 
-function decodePath(p: string): string {
+function decodePath(path: string): string {
   try {
-    return decodeURIComponent(p);
+    return decodeURIComponent(path);
   } catch {
-    return p;
+    return path;
   }
 }
 
-// ── HTTP server ───────────────────────────────────────────────────────────
+// ── HTTP server ──────────────────────────────────────────────────────────
 Bun.serve({
   port: PORT,
-  async fetch(req) {
-    const url = new URL(req.url);
+  async fetch(request) {
+    const url = new URL(request.url);
     const path = decodePath(url.pathname);
 
     if (path === "/" || path === "/chat" || path === "/chat.html") {
@@ -303,8 +276,8 @@ Bun.serve({
     }
 
     if (path.startsWith("/chat/")) {
-      const rel = path.slice("/chat/".length);
-      const filePath = join(CHAT_DIR, rel);
+      const relative = path.slice("/chat/".length);
+      const filePath = join(CHAT_DIR, relative);
       if (
         filePath.startsWith(CHAT_DIR) &&
         existsSync(filePath) &&
@@ -317,56 +290,55 @@ Bun.serve({
       return new Response("not found", { status: 404 });
     }
 
-    // ── Chat API ────────────────────────────────────────────────────────
     if (path === "/api/messages") {
-      if (req.method === "GET") {
+      if (request.method === "GET") {
         const since = Number(url.searchParams.get("since") ?? 0);
         return Response.json(messages.filter((m) => m.ts > since));
       }
-      if (req.method === "POST") {
-        const body = (await req.json()) as { text?: unknown };
+      if (request.method === "POST") {
+        const body = (await request.json()) as { text?: unknown };
         const text = String(body.text ?? "").trim();
         if (!text) return new Response("empty", { status: 400 });
-        const msg: Message = {
+        const message: Message = {
           id: newId(),
           ts: Date.now(),
           from: "user",
           text,
         };
-        appendMessage(msg);
+        appendMessage(message);
         responding = true;
         respondingSince = Date.now();
         if (!tmuxHasSession()) {
           appendMessage(
-            makeSystemMsg(
+            makeSystemMessage(
               "tmux session 'claude-dev' isn't running. Run packages/remote/bin/start.ts on the Mac first.",
             ),
           );
         } else if (!claudeRunning()) {
           appendMessage(
-            makeSystemMsg(
+            makeSystemMessage(
               `Claude isn't running in tmux (shell: ${tmuxPaneCommand() || "?"}). Tap the status pill to restart it, or type 'claude' in the tmux pane.`,
             ),
           );
         } else {
           tmuxSendKeys(text);
         }
-        return Response.json(msg);
+        return Response.json(message);
       }
     }
 
     if (path === "/api/status") {
       const session = tmuxHasSession();
-      const cmd = session ? tmuxPaneCommand() : "";
+      const command = session ? tmuxPaneCommand() : "";
       const claude =
-        session && cmd && !SHELL_NAMES.has(cmd.toLowerCase());
+        session && command && !SHELL_NAMES.has(command.toLowerCase());
       if (responding && Date.now() - respondingSince > 5 * 60_000) {
         responding = false;
       }
-      return Response.json({ session, cmd, claude, responding });
+      return Response.json({ session, cmd: command, claude, responding });
     }
 
-    if (path === "/api/restart-claude" && req.method === "POST") {
+    if (path === "/api/restart-claude" && request.method === "POST") {
       if (!tmuxHasSession()) {
         return Response.json(
           { ok: false, error: "no session" },
@@ -381,7 +353,7 @@ Bun.serve({
       return Response.json({ epoch: reloadEpoch });
     }
 
-    if (path === "/api/sessions" && req.method === "GET") {
+    if (path === "/api/sessions" && request.method === "GET") {
       const dir = claudeCodeAdapter.getTranscriptDir(REPO);
       const pinned = getPinnedPath();
       return Response.json({
@@ -390,28 +362,28 @@ Bun.serve({
       });
     }
 
-    if (path === "/api/sessions/switch" && req.method === "POST") {
-      const body = (await req.json()) as { path?: unknown };
+    if (path === "/api/sessions/switch" && request.method === "POST") {
+      const body = (await request.json()) as { path?: unknown };
       const target = typeof body.path === "string" ? body.path : "";
       if (!target || !target.endsWith(".jsonl")) {
-        return Response.json({ ok: false, error: "bad path" }, { status: 400 });
+        return Response.json(
+          { ok: false, error: "bad path" },
+          { status: 400 },
+        );
       }
       await switchSession(target);
       return Response.json({ ok: true, pinned: target });
     }
 
-    if (path === "/api/sessions/new" && req.method === "POST") {
+    if (path === "/api/sessions/new" && request.method === "POST") {
       const result = await newSession();
-      if (!result.ok) {
-        return Response.json(result, { status: 500 });
-      }
+      if (!result.ok) return Response.json(result, { status: 500 });
       return Response.json(result);
     }
 
     if (path === "/api/stream") {
-      // SSE works fine over localhost but Cloudflare quick tunnels swallow
-      // event-stream chunks, so the client also polls /api/messages every
-      // 2s as the real transport over the tunnel.
+      // cloudflared quick tunnels swallow text/event-stream chunks, so the
+      // client also polls /api/messages every 2s as the real transport.
       const id = nextStreamId++;
       const stream = new ReadableStream<Uint8Array>({
         start(controller) {
@@ -431,36 +403,32 @@ Bun.serve({
       });
     }
 
-    // ── Static fallback ────────────────────────────────────────────────
-    let p = path;
-    if (p.endsWith("/")) p += "index.html";
-    const filePath = join(REVEAL_ROOT, p);
+    // ── Static fallback under REVEAL_ROOT ─────────────────────────────────
+    let resolvedPath = path;
+    if (resolvedPath.endsWith("/")) resolvedPath += "index.html";
+    const filePath = join(REVEAL_ROOT, resolvedPath);
     if (!filePath.startsWith(REVEAL_ROOT)) {
       return new Response("forbidden", { status: 403 });
     }
     if (existsSync(filePath) && statSync(filePath).isFile()) {
-      const ct = contentType(filePath);
-      // HTML — full docs get the reload poller injected, fragments
-      // (include-html targets) stay clean. Either way, no-store: the
-      // watcher rewrites these on every edit so we never want a stale
-      // copy from the browser cache.
-      if (ct.startsWith("text/html")) {
+      const mime = contentType(filePath);
+      // HTML — full docs get the reload poller injected, fragments stay
+      // clean. Either way no-store: the watcher rewrites these on every edit.
+      if (mime.startsWith("text/html")) {
         let html = readFileSync(filePath, "utf-8");
         if (html.includes("</body>")) {
           html = html.replace("</body>", RELOAD_SCRIPT + "</body>");
         }
         return new Response(html, {
-          headers: { "Content-Type": ct, "Cache-Control": "no-store" },
+          headers: { "Content-Type": mime, "Cache-Control": "no-store" },
         });
       }
-      // Static assets (JS / CSS / fonts / images): cache for a few minutes
-      // so 27 sd-animation iframes don't each pay the full download cost
-      // through the tunnel. The reload-token poller forces a full page
-      // reload when watchers rewrite anything, so cache staleness is
-      // bounded by that.
+      // JS / CSS / fonts / images: cached so 27 sd-animation iframes don't
+      // each pay the full download cost through the tunnel. Reload-token
+      // forces a full page reload on watcher rewrites, bounding staleness.
       return new Response(Bun.file(filePath), {
         headers: {
-          "Content-Type": ct,
+          "Content-Type": mime,
           "Cache-Control": "public, max-age=300",
         },
       });

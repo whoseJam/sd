@@ -1,10 +1,7 @@
-// Thin wrappers around the chat server's JSON / form endpoints. Centralized
-// so future swaps (e.g. WebSocket transport, retry) happen in one place.
-
 export async function fetchMessages(sinceMs) {
-  const r = await fetch(`/api/messages?since=${sinceMs}`);
-  if (!r.ok) return [];
-  return r.json();
+  const response = await fetch(`/api/messages?since=${sinceMs}`);
+  if (!response.ok) return [];
+  return response.json();
 }
 
 export async function sendUserMessage(text) {
@@ -17,22 +14,21 @@ export async function sendUserMessage(text) {
 
 export async function fetchStatus() {
   try {
-    const r = await fetch("/api/status");
-    if (!r.ok) return null;
-    return r.json();
+    const response = await fetch("/api/status");
+    if (!response.ok) return null;
+    return response.json();
   } catch {
     return null;
   }
 }
 
-/** Read the preview state directly from the static file the server serves
- *  out of /tmp/sd-test/. view.ts writes it on open/close; no API endpoint
- *  involved. File format: "url\tlabel" (or empty for no preview). */
+// view.ts writes /preview-url.txt under /tmp/sd-test/; server already serves
+// that path statically, so no API endpoint is involved here.
 export async function fetchPreview() {
   try {
-    const r = await fetch("/preview-url.txt", { cache: "no-store" });
-    if (!r.ok) return { preview: null };
-    const line = (await r.text()).trim();
+    const response = await fetch("/preview-url.txt", { cache: "no-store" });
+    if (!response.ok) return { preview: null };
+    const line = (await response.text()).trim();
     if (!line) return { preview: null };
     const [url, label = ""] = line.split("\t");
     return { preview: { url, label } };
@@ -49,9 +45,9 @@ export async function restartClaude() {
 
 export async function fetchSessions() {
   try {
-    const r = await fetch("/api/sessions");
-    if (!r.ok) return { pinned: "", sessions: [] };
-    return r.json();
+    const response = await fetch("/api/sessions");
+    if (!response.ok) return { pinned: "", sessions: [] };
+    return response.json();
   } catch {
     return { pinned: "", sessions: [] };
   }
@@ -59,12 +55,12 @@ export async function fetchSessions() {
 
 export async function switchSession(path) {
   try {
-    const r = await fetch("/api/sessions/switch", {
+    const response = await fetch("/api/sessions/switch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path }),
     });
-    return r.ok;
+    return response.ok;
   } catch {
     return false;
   }
@@ -72,8 +68,8 @@ export async function switchSession(path) {
 
 export async function newSession() {
   try {
-    const r = await fetch("/api/sessions/new", { method: "POST" });
-    return r.json();
+    const response = await fetch("/api/sessions/new", { method: "POST" });
+    return response.json();
   } catch {
     return { ok: false };
   }

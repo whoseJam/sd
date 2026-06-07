@@ -1,17 +1,9 @@
-// TranscriptWatcher.
-//
 // Watches one agent transcript JSONL and dispatches new lines as Messages
-// via the adapter. JSONL is the single source of truth: on first attach we
-// replay the entire file from offset 0 so the chat reflects the current
-// session's full history, then tail for live activity.
+// via the adapter. On first attach we replay from offset 0 (the chat
+// reflects full session history); thereafter we tail.
 //
-// State (offset, seen UUIDs) is in-memory only — the server can rebuild it
-// at any time by re-parsing the JSONL. No disk persistence.
-//
-// Why polling (vs fs.watch): fs.watch's behavior is inconsistent across
-// platforms (FSEvents on macOS coalesces events differently than inotify on
-// Linux) and has edge cases around file rotation. A 400ms stat-poll is
-// negligible cost and gets us identical semantics everywhere.
+// State is in-memory only — the server can always rebuild it by re-parsing
+// the JSONL. Polling (vs fs.watch) for cross-platform consistency.
 
 import {
   existsSync,
@@ -35,14 +27,9 @@ const PIN_FILE =
   process.env.TRANSCRIPT_PIN_FILE ?? "/tmp/sd-test/transcript-path.txt";
 
 export interface WatcherOptions {
-  /** Working directory whose Claude session we want to follow. */
   cwd: string;
-  /** Adapter that knows where its agent's logs live and how to parse them. */
   adapter: AgentAdapter;
-  /** Called per parsed message. The watcher does NOT throttle, dedupe by
-   *  content, or buffer — implement that downstream if needed. */
-  onMessage: (m: Message) => void;
-  /** Stat poll interval in milliseconds. Default 400. */
+  onMessage: (message: Message) => void;
   intervalMs?: number;
 }
 
@@ -51,12 +38,15 @@ export class TranscriptWatcher {
   private activeFile: string | null = null;
   private files = new Map<string, PerFileState>();
 
-  constructor(private readonly opts: WatcherOptions) {}
+  constructor(private readonly options: WatcherOptions) {}
 
   start(): void {
     if (this.timer) return;
     this.tick();
-    this.timer = setInterval(() => this.tick(), this.opts.intervalMs ?? 400);
+    this.timer = setInterval(
+      () => this.tick(),
+      this.options.intervalMs ?? 400,
+    );
   }
 
   stop(): void {
@@ -64,8 +54,7 @@ export class TranscriptWatcher {
     this.timer = null;
   }
 
-  /** Drop all per-file state so the next tick re-reads the (possibly new)
-   *  pinned file from offset 0. Used when the user switches sessions. */
+  // Used on session switch.
   reset(): void {
     this.files.clear();
     this.activeFile = null;
@@ -80,26 +69,25 @@ export class TranscriptWatcher {
     }
   }
 
-  /** "PENDING" marker means "first jsonl that appears in the project dir
-   *  that wasn't in the baseline snapshot taken before tmux Claude was
-   *  restarted". Deterministic set-difference; no time-based heuristics. */
+  // "PENDING" marker = "first jsonl that appears in the project dir which
+  // wasn't in the baseline snapshot". Deterministic set-difference.
   private resolvePin(): string {
     const raw = this.rawPin();
     if (!raw) return "";
     if (raw !== "PENDING") return raw;
-    const dir = this.opts.adapter.getTranscriptDir(this.opts.cwd);
+    const dir = this.options.adapter.getTranscriptDir(this.options.cwd);
     if (!existsSync(dir)) return "";
     const baseline = readBaseline();
     try {
-      for (const f of readdirSync(dir)) {
-        if (!f.endsWith(".jsonl")) continue;
-        const full = join(dir, f);
-        if (baseline.has(full)) continue;
-        writeFileSync(PIN_FILE, full);
-        return full;
+      for (const filename of readdirSync(dir)) {
+        if (!filename.endsWith(".jsonl")) continue;
+        const fullPath = join(dir, filename);
+        if (baseline.has(fullPath)) continue;
+        writeFileSync(PIN_FILE, fullPath);
+        return fullPath;
       }
     } catch {
-      // ignore — try next tick
+      // try next tick
     }
     return "";
   }
@@ -108,42 +96,39 @@ export class TranscriptWatcher {
     const pinned = this.resolvePin();
     if (!pinned || !existsSync(pinned)) return;
 
-    const newest = pinned;
-    if (newest !== this.activeFile) {
-      this.activeFile = newest;
+    if (pinned !== this.activeFile) {
+      this.activeFile = pinned;
     }
 
-    let perFile = this.files.get(newest);
-    // First time we see this file: start from offset 0 so we replay the
-    // entire history into chat. Subsequent ticks tail from where we left off.
-    if (!perFile) {
-      perFile = { offset: 0, seenUuids: new Set() };
-      this.files.set(newest, perFile);
+    let state = this.files.get(pinned);
+    if (!state) {
+      state = { offset: 0, seenUuids: new Set() };
+      this.files.set(pinned, state);
     }
 
-    const size = safeSize(newest);
-    if (size <= perFile.offset) return;
+    const size = safeSize(pinned);
+    if (size <= state.offset) return;
 
-    let buf: Buffer;
+    let buffer: Buffer;
     try {
-      buf = readFileSync(newest);
+      buffer = readFileSync(pinned);
     } catch {
       return;
     }
-    const slice = buf.subarray(perFile.offset);
+    const slice = buffer.subarray(state.offset);
     const text = slice.toString("utf-8");
 
-    // If the file ends mid-line (writer hasn't flushed the final newline),
-    // hold back the last fragment until the next tick.
+    // Hold back any mid-line tail until the next tick (writer hasn't
+    // flushed its trailing newline yet).
     let consumedBytes = slice.length;
-    let lines = text.split("\n");
+    const lines = text.split("\n");
     if (!text.endsWith("\n")) {
       const tail = lines.pop() ?? "";
       consumedBytes -= Buffer.byteLength(tail, "utf-8");
     }
-    perFile.offset += consumedBytes;
+    state.offset += consumedBytes;
 
-    const seen = perFile.seenUuids;
+    const seen = state.seenUuids;
     for (const line of lines) {
       if (!line) continue;
       let entry: unknown;
@@ -158,14 +143,13 @@ export class TranscriptWatcher {
           : "";
       if (uuid && seen.has(uuid)) continue;
 
-      const messages = this.opts.adapter.parseEntry(entry);
-      for (const m of messages) this.opts.onMessage(m);
+      const messages = this.options.adapter.parseEntry(entry);
+      for (const message of messages) this.options.onMessage(message);
       if (uuid) seen.add(uuid);
     }
-    // Cap the seen-set to bound memory across a long-running session.
+    // Cap the seen-set so it doesn't grow unbounded.
     if (seen.size > 5000) {
-      const trimmed = [...seen].slice(-2000);
-      perFile.seenUuids = new Set(trimmed);
+      state.seenUuids = new Set([...seen].slice(-2000));
     }
   }
 }

@@ -1,6 +1,5 @@
-// Subscribe to /api/stream and dispatch named events to handlers.
-// EventSource auto-reconnects on disconnect; on reconnect we call the
-// onReconnect callback so the caller can run a catch-up fetch.
+// EventSource auto-reconnects; on (re)connect we call onReconnect so the
+// caller can run a catch-up fetch.
 
 export function connectSSE({
   onMessage,
@@ -8,21 +7,21 @@ export function connectSSE({
   onReconnect,
 } = {}) {
   if (typeof EventSource === "undefined") return null;
-  const es = new EventSource("/api/stream");
-  es.addEventListener("message", (e) => {
+  const stream = new EventSource("/api/stream");
+  stream.addEventListener("message", (event) => {
     if (!onMessage) return;
     try {
-      onMessage(JSON.parse(e.data));
+      onMessage(JSON.parse(event.data));
     } catch {}
   });
-  es.addEventListener("session-changed", (e) => {
+  stream.addEventListener("session-changed", (event) => {
     if (!onSessionChanged) return;
     try {
-      onSessionChanged(JSON.parse(e.data));
+      onSessionChanged(JSON.parse(event.data));
     } catch {}
   });
-  es.addEventListener("open", () => {
+  stream.addEventListener("open", () => {
     if (onReconnect) onReconnect();
   });
-  return es;
+  return stream;
 }

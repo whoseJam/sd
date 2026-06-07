@@ -1,12 +1,9 @@
 #!/usr/bin/env bun
-// Backs `pnpm show <name>` and `pnpm hide`.
-//
-// show: ensures local server is running, kills any previous watchers,
-// spawns watchers for the target deck/animation, POSTs /api/preview so
-// the chat's stage panel shows the iframe, opens a local browser tab.
-//
-// hide: kills the watchers and clears the stage panel. Doesn't touch the
-// server — use `pnpm stop:local` / `pnpm stop:remote` for that.
+// Backs `pnpm open <name>` and `pnpm close`.
+//   open:  ensure server, kill prior watchers, spawn watchers for the
+//          target deck/animation, write the preview-url marker, open the
+//          local browser.
+//   close: kill watchers, clear the preview-url marker.
 
 import { spawn, spawnSync } from "node:child_process";
 import {
@@ -23,32 +20,33 @@ const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const PORT = Number(process.env.PORT ?? 8765);
 const PIDS_FILE = join(REVEAL_ROOT, "view-pids.json");
 const LOG_DIR = join(REVEAL_ROOT, "view-logs");
+const PREVIEW_FILE = join(REVEAL_ROOT, "preview-url.txt");
 const SERVER = `http://127.0.0.1:${PORT}`;
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 mkdirSync(LOG_DIR, { recursive: true });
 
-const sub = process.argv[2];
+const subcommand = process.argv[2];
 
-if (sub === "hide") {
+if (subcommand === "hide") {
   await killExisting();
   writePreview("", "");
   console.log("✓ hidden");
   process.exit(0);
 }
 
-if (sub !== "show") usage();
+if (subcommand !== "show") usage();
 const name = process.argv[3];
 if (!name) usage();
 
 await ensureServer();
 await killExisting();
 const isDeck = existsSync(join(REPO, "examples", "decks", name));
-const isAnim = existsSync(join(REPO, "examples", "animations", `${name}.ts`));
-if (!isDeck && !isAnim) {
-  die(
-    `not found: examples/decks/${name} or examples/animations/${name}.ts`,
-  );
+const isAnimation = existsSync(
+  join(REPO, "examples", "animations", `${name}.ts`),
+);
+if (!isDeck && !isAnimation) {
+  die(`not found: examples/decks/${name} or examples/animations/${name}.ts`);
 }
 
 const pids = isDeck ? startDeckWatchers(name) : startAnimationWatchers(name);
@@ -60,13 +58,13 @@ writePreview(url, label);
 openBrowser(`${SERVER}/`);
 console.log(`showing ${name}  →  ${url}`);
 
-// ── implementations ─────────────────────────────────────────────────────
+// ── helpers ──────────────────────────────────────────────────────────────
 
 async function ensureServer(): Promise<void> {
   if (await portInUse(PORT)) return;
   console.log("  chat server not running — booting pnpm start:local...");
   spawnSync("pnpm", ["start:local"], { cwd: REPO, stdio: "inherit" });
-  for (let i = 0; i < 20; i++) {
+  for (let attempt = 0; attempt < 20; attempt++) {
     if (await portInUse(PORT)) return;
     await sleep(500);
   }
@@ -81,33 +79,33 @@ async function killExisting(): Promise<void> {
   } catch {
     return;
   }
-  for (const p of pids) {
+  for (const pid of pids) {
     try {
-      process.kill(p);
+      process.kill(pid);
     } catch {
       // already dead
     }
   }
 }
 
-function startDeckWatchers(name: string): number[] {
+function startDeckWatchers(deckName: string): number[] {
   return [
     spawnWatcher("sd", ["gulp", "sd", "-w"]),
-    spawnWatcher(`ppt-${name}`, [
+    spawnWatcher(`ppt-${deckName}`, [
       "gulp",
       "ppt",
       "-i",
-      `examples/decks/${name}/reveal`,
+      `examples/decks/${deckName}/reveal`,
       "-o",
       join(REVEAL_ROOT, "reveal"),
       "-l",
       "-w",
     ]),
-    spawnWatcher(`anim-${name}`, [
+    spawnWatcher(`anim-${deckName}`, [
       "gulp",
       "animation-group",
       "-i",
-      `examples/decks/${name}/animation`,
+      `examples/decks/${deckName}/animation`,
       "-o",
       join(REVEAL_ROOT, "animation"),
       "-l",
@@ -116,14 +114,14 @@ function startDeckWatchers(name: string): number[] {
   ];
 }
 
-function startAnimationWatchers(name: string): number[] {
+function startAnimationWatchers(animationName: string): number[] {
   return [
     spawnWatcher("sd", ["gulp", "sd", "-w"]),
-    spawnWatcher(`anim-${name}`, [
+    spawnWatcher(`anim-${animationName}`, [
       "gulp",
       "animation",
       "-i",
-      `examples/animations/${name}.ts`,
+      `examples/animations/${animationName}.ts`,
       "-o",
       join(REVEAL_ROOT, "animation"),
       "-l",
@@ -132,28 +130,26 @@ function startAnimationWatchers(name: string): number[] {
   ];
 }
 
-function spawnWatcher(tag: string, cmd: string[]): number {
+function spawnWatcher(tag: string, command: string[]): number {
   const logPath = join(LOG_DIR, `${tag}.log`);
   writeFileSync(logPath, "");
-  const child = spawn("pnpm", ["exec", ...cmd], {
+  const child = spawn("pnpm", ["exec", ...command], {
     cwd: REPO,
     detached: true,
     stdio: ["ignore", "pipe", "pipe"],
   });
   const writer = Bun.file(logPath).writer();
-  child.stdout.on("data", (d) => writer.write(d));
-  child.stderr.on("data", (d) => writer.write(d));
+  child.stdout.on("data", (chunk) => writer.write(chunk));
+  child.stderr.on("data", (chunk) => writer.write(chunk));
   child.unref();
   console.log(`  ${tag}: pid ${child.pid}  log ${logPath}`);
   return child.pid!;
 }
 
-/** Single source of truth for "what URL should the chat's stage panel
- *  iframe show". server.ts reads this file on each /api/preview hit
- *  and broadcasts SSE on every write via its fs.watch. */
+// Single source of truth for the chat's preview iframe URL. server.ts reads
+// this file as a static asset; no API endpoint involved.
 function writePreview(url: string, label: string): void {
-  const line = url ? `${url}\t${label}` : "";
-  writeFileSync(join(REVEAL_ROOT, "preview-url.txt"), line);
+  writeFileSync(PREVIEW_FILE, url ? `${url}\t${label}` : "");
 }
 
 function openBrowser(url: string): void {
@@ -163,37 +159,40 @@ function openBrowser(url: string): void {
   } else if (process.platform === "linux") {
     spawn("xdg-open", [url], { detached: true, stdio: "ignore" }).unref();
   } else if (process.platform === "win32") {
-    spawn("cmd", ["/c", "start", url], { detached: true, stdio: "ignore" }).unref();
+    spawn("cmd", ["/c", "start", url], {
+      detached: true,
+      stdio: "ignore",
+    }).unref();
   }
 }
 
 function portInUse(port: number): Promise<boolean> {
-  return new Promise((res) => {
-    const s = createConnection({ port, host: "127.0.0.1" }, () => {
-      s.destroy();
-      res(true);
+  return new Promise((resolve) => {
+    const socket = createConnection({ port, host: "127.0.0.1" }, () => {
+      socket.destroy();
+      resolve(true);
     });
-    s.on("error", () => res(false));
+    socket.on("error", () => resolve(false));
     setTimeout(() => {
-      s.destroy();
-      res(false);
+      socket.destroy();
+      resolve(false);
     }, 1500);
   });
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function usage(): never {
   console.error(`usage:
-  pnpm show <deck-name>
-  pnpm show <animation-name>
-  pnpm hide`);
+  pnpm open <deck-name>
+  pnpm open <animation-name>
+  pnpm close`);
   process.exit(1);
 }
 
-function die(msg: string): never {
-  console.error(msg);
+function die(message: string): never {
+  console.error(message);
   process.exit(1);
 }

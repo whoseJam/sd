@@ -5,15 +5,15 @@ let refs = null;
 let sessions = [];
 let pinned = "";
 
-export function initSessions(r) {
-  refs = r;
+export function initSessions(options) {
+  refs = options;
   refs.picker.addEventListener("click", toggleMenu);
   refs.new.addEventListener("click", onNew);
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", (event) => {
     if (
       refs.menu.hidden ||
-      refs.picker.contains(e.target) ||
-      refs.menu.contains(e.target)
+      refs.picker.contains(event.target) ||
+      refs.menu.contains(event.target)
     ) {
       return;
     }
@@ -23,44 +23,44 @@ export function initSessions(r) {
 }
 
 export async function refresh() {
-  const j = await fetchSessions();
-  pinned = j.pinned ?? "";
-  sessions = j.sessions ?? [];
+  const response = await fetchSessions();
+  pinned = response.pinned ?? "";
+  sessions = response.sessions ?? [];
   renderPicker();
   renderMenu();
 }
 
 function renderPicker() {
-  const active = sessions.find((s) => s.isActive);
+  const active = sessions.find((session) => session.isActive);
   refs.title.textContent = active ? active.title : "no session";
 }
 
 function renderMenu() {
   refs.list.innerHTML = "";
-  for (const s of sessions.slice(0, 30)) {
+  for (const session of sessions.slice(0, 30)) {
     const item = el("button", {
-      class: "session-item" + (s.isActive ? " active" : ""),
+      class: "session-item" + (session.isActive ? " active" : ""),
       attrs: { type: "button" },
     });
     item.innerHTML =
       '<span class="session-title">' +
-      escapeHtml(s.title) +
+      escapeHtml(session.title) +
       '</span><span class="session-meta">' +
-      humanTime(s.mtime) +
+      humanTime(session.mtime) +
       " · " +
-      s.entryCount +
+      session.entryCount +
       "</span>";
-    item.addEventListener("click", () => onSwitch(s.path));
+    item.addEventListener("click", () => onSwitch(session.path));
     refs.list.appendChild(item);
   }
 }
 
 function humanTime(ms) {
-  const dt = Date.now() - ms;
-  if (dt < 60_000) return "now";
-  if (dt < 3600_000) return Math.floor(dt / 60_000) + "m";
-  if (dt < 86_400_000) return Math.floor(dt / 3600_000) + "h";
-  return Math.floor(dt / 86_400_000) + "d";
+  const delta = Date.now() - ms;
+  if (delta < 60_000) return "now";
+  if (delta < 3600_000) return Math.floor(delta / 60_000) + "m";
+  if (delta < 86_400_000) return Math.floor(delta / 3600_000) + "h";
+  return Math.floor(delta / 86_400_000) + "d";
 }
 
 function toggleMenu() {
@@ -92,11 +92,11 @@ async function onSwitch(path) {
 async function onNew() {
   closeMenu();
   refs.title.textContent = "starting new session…";
-  const r = await newSession();
-  if (r.ok) {
+  const result = await newSession();
+  if (result.ok) {
     refs.onSwitched?.();
   } else {
-    refs.title.textContent = "failed: " + (r.error ?? "unknown");
+    refs.title.textContent = "failed: " + (result.error ?? "unknown");
     setTimeout(refresh, 2000);
   }
 }
