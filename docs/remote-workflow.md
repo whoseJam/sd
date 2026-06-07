@@ -42,26 +42,23 @@ chat log. No refresh — phone polls for new messages every 3s and appends them.
 
 ## Daily flow
 
-### Mac side
+### Mac side — one command
 
-Terminal A — Claude in tmux:
 ```bash
 ./scripts/remote/start-session.sh
 ```
-Detach with `Ctrl-b d`. Session survives.
 
-Terminal B — chat server (replaces live-server):
-```bash
-bun scripts/remote/server.ts
-```
+Idempotent: starts chat server on :8765, starts cloudflared tunnel,
+captures the URL, prints it (and saves to `/tmp/sd-test/url.txt`), then
+creates/attaches the tmux `claude-dev` session running Claude. Tmux status
+bar shows the URL while you're attached. Detach with `Ctrl-b d`; the
+session, server, and tunnel keep running. Re-run anytime to reattach +
+re-print URL.
 
-Terminal C — tunnel:
-```bash
-./scripts/remote/tunnel.sh
-```
-Note the printed `https://*.trycloudflare.com` URL.
+If you ever need just the tunnel or the server alone, the underlying
+scripts are `scripts/remote/tunnel.sh` and `bun scripts/remote/server.ts`.
 
-(Plus your usual sd watchers: `gulp sd -w`, `gulp ppt -i <deck> -o /tmp/sd-test/reveal -l -w`, `gulp animation-group -i <deck> -o /tmp/sd-test/animation -l -w`.)
+(Plus your usual sd watchers in another terminal: `gulp sd -w`, `gulp ppt -i <deck> -o /tmp/sd-test/reveal -l -w`, `gulp animation-group -i <deck> -o /tmp/sd-test/animation -l -w`.)
 
 ### Phone side
 
