@@ -1,0 +1,99 @@
+/* Two-region layout: preview on top (mobile) / left (desktop), chat column
+   on the bottom / right. Preview collapses to 0 when empty. */
+body { display: flex; flex-direction: column; }
+@media (min-width: 900px) {
+  body { flex-direction: row-reverse; }
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  height: 100%;
+  background: var(--bg-0);
+  position: relative;
+}
+@media (min-width: 900px) {
+  #app {
+    height: 100vh;
+    flex: 1 1 auto;
+  }
+  /* Only narrow the chat column to a side panel when the preview is showing
+     a preview. With no preview, chat takes the whole viewport — no big
+     empty white square on the right. */
+  body:has(#preview.show) #app {
+    flex: 0 0 460px;
+    border-left: 1px solid var(--border-1);
+  }
+}
+
+/* Preview = the PPT/animation preview iframe. Collapsed to nothing when
+   no preview is set (mobile: height 0 + display none; desktop: flex 0
+   + display none). The .show class is added by preview.js when the server
+   broadcasts a preview URL. */
+#preview {
+  flex: 0 0 auto;
+  background: var(--bg-3);
+  position: relative;
+  overflow: hidden;
+  height: 0;
+  transition: height var(--t-base);
+  border-bottom: 1px solid var(--border-1);
+  display: none;
+}
+#preview.show { display: flex; height: 50vh; }
+@media (min-width: 900px) {
+  #preview {
+    flex: 0 0 0;
+    width: 0;
+    height: 100vh;
+    transition: width var(--t-base), flex-basis var(--t-base);
+    border-bottom: none;
+    border-right: 1px solid var(--border-1);
+  }
+  #preview.show {
+    display: flex;
+    flex: 1 1 auto;
+    width: auto;
+    height: 100vh;
+  }
+}
+/* iframe matches the deck's intrinsic 960×700 aspect so reveal.js draws
+   slide content flush against the iframe edges. Pure-CSS sizing: preview
+   on desktop is (100vw − 460px chat column) wide × 100vh tall, so the
+   largest 4:3-ish box that fits is min of the two binding dimensions. */
+#preview iframe {
+  border: none;
+  background: var(--bg-3);
+  display: block;
+  flex: 0 0 auto;
+}
+#preview.show {
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 900px) {
+  #preview.show iframe {
+    width: min(calc(100vw - 460px), calc(100vh * 960 / 700));
+    height: min(100vh, calc((100vw - 460px) * 700 / 960));
+  }
+}
+/* Mobile: reveal.js's layout() throws on narrow viewports. Pin the
+   iframe to a desktop-sized 960×720 inner viewport and CSS-scale it
+   down (JS sets the scale + matching panel height; CSS can't do
+   pixel/pixel arithmetic into a unitless scale value). */
+@media (max-width: 899px) {
+  #preview.show {
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: auto;
+  }
+  #preview.show iframe {
+    flex: 0 0 auto;
+    width: 960px;
+    height: 720px;
+    transform-origin: top left;
+  }
+}

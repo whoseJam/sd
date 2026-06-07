@@ -46,8 +46,8 @@ const data: IntervalData[] = [
 const MAX_DEPTH = 4;
 const NODE_H = 6;
 const LAYER_GAP = 16;
-const LAYER1_BOTTOM = CELL_H + 12;
-const yBottomOf = (d: number) => LAYER1_BOTTOM + (MAX_DEPTH - d) * LAYER_GAP;
+const ROOT_TOP = -12;
+const yBottomOf = (d: number) => ROOT_TOP - NODE_H - d * LAYER_GAP;
 
 interface Cell {
   bg: sd.Rect;

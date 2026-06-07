@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fixed 960 viewport so mobile browsers don't squeeze the layout when
+         this page is loaded directly OR inside a CSS-scaled iframe.
+         Reveal's intrinsic width is 960; we let it design at 960 and the
+         outer page (chat stage iframe) handles user-facing scale. -->
+    <meta name="viewport" content="width=960, initial-scale=1.0">
     <script src="<%= base %>/vendor/font-awesome.js"></script>
     <link rel="stylesheet" href="<%= base %>/vendor/font-awesome.css">
     <script src="<%= base %>/vendor/customcontrols.js"></script>
