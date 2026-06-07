@@ -31,6 +31,7 @@ const SERVER_LOG = join(REVEAL_ROOT, "server.log");
 const TUNNEL_LOG = join(REVEAL_ROOT, "tunnel.log");
 const URL_FILE = join(REVEAL_ROOT, "url.txt");
 const PIN_FILE = join(REVEAL_ROOT, "transcript-path.txt");
+const BASELINE_FILE = join(REVEAL_ROOT, "transcript-baseline.txt");
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
@@ -47,7 +48,7 @@ async function main(): Promise<void> {
   await ensureServer();
   const url = await ensureTunnel();
   const needPin = ensureTmuxSession();
-  if (needPin) await pinTranscript();
+  if (needPin) pinTranscript();
   pinTmuxStatusBar(url);
   openBrowser(url);
 
@@ -182,28 +183,21 @@ function ensureTmuxSession(): boolean {
   return true;
 }
 
-async function pinTranscript(): Promise<void> {
+/** Snapshot the existing jsonl set + mark the pin as PENDING. The watcher
+ *  will adopt whichever jsonl appears in this dir that isn't in the
+ *  snapshot — which is exactly the one this tmux Claude will write to
+ *  when it processes its first prompt. */
+function pinTranscript(): void {
   const claudeDir = join(
     homedir(),
     ".claude",
     "projects",
     REPO.replace(/\//g, "-"),
   );
-  const before = new Set(listJsonl(claudeDir));
-  console.log("  detecting Claude's transcript file...");
-  for (let i = 0; i < 30; i++) {
-    await sleep(500);
-    const after = listJsonl(claudeDir);
-    const fresh = after.find((p) => !before.has(p));
-    if (fresh) {
-      writeFileSync(PIN_FILE, fresh);
-      console.log(
-        `✓ watcher pinned to ${fresh.split("/").pop()?.replace(/\.jsonl$/, "")}`,
-      );
-      return;
-    }
-  }
-  console.warn("  watcher pin: new transcript not detected within 15s");
+  const baseline = listJsonl(claudeDir);
+  writeFileSync(BASELINE_FILE, baseline.join("\n"));
+  writeFileSync(PIN_FILE, "PENDING");
+  console.log("✓ watcher armed (waits for tmux Claude's first jsonl)");
 }
 
 function listJsonl(dir: string): string[] {

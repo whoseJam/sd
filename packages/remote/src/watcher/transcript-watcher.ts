@@ -13,8 +13,16 @@
 // Linux) and has edge cases around file rotation. A 400ms stat-poll is
 // negligible cost and gets us identical semantics everywhere.
 
-import { existsSync, readFileSync, statSync } from "node:fs";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { join } from "node:path";
 
+import { readBaseline } from "../sessions";
 import type { Message } from "../message";
 import type { AgentAdapter } from "../adapters/types";
 
@@ -22,6 +30,9 @@ interface PerFileState {
   offset: number;
   seenUuids: Set<string>;
 }
+
+const PIN_FILE =
+  process.env.TRANSCRIPT_PIN_FILE ?? "/tmp/sd-test/transcript-path.txt";
 
 export interface WatcherOptions {
   /** Working directory whose Claude session we want to follow. */
@@ -60,27 +71,41 @@ export class TranscriptWatcher {
     this.activeFile = null;
   }
 
-  /** Lock the watcher to a specific transcript path if pinned. Pinning lives
-   *  in /tmp/sd-test/transcript-path.txt (written by bin/start.ts after it
-   *  launches Claude in tmux) and falls back to the env var override. The
-   *  newest-mtime auto-pick is only used when nothing is pinned — useful in
-   *  test/dev but leaks parent Claude sessions into chat if the user runs
-   *  one in the same project dir. */
-  private pinnedPath(): string {
-    const env = process.env.TRANSCRIPT_PATH;
-    if (env) return env;
+  private rawPin(): string {
+    if (process.env.TRANSCRIPT_PATH) return process.env.TRANSCRIPT_PATH;
     try {
-      return readFileSync("/tmp/sd-test/transcript-path.txt", "utf-8").trim();
+      return readFileSync(PIN_FILE, "utf-8").trim();
     } catch {
       return "";
     }
   }
 
+  /** "PENDING" marker means "first jsonl that appears in the project dir
+   *  that wasn't in the baseline snapshot taken before tmux Claude was
+   *  restarted". Deterministic set-difference; no time-based heuristics. */
+  private resolvePin(): string {
+    const raw = this.rawPin();
+    if (!raw) return "";
+    if (raw !== "PENDING") return raw;
+    const dir = this.opts.adapter.getTranscriptDir(this.opts.cwd);
+    if (!existsSync(dir)) return "";
+    const baseline = readBaseline();
+    try {
+      for (const f of readdirSync(dir)) {
+        if (!f.endsWith(".jsonl")) continue;
+        const full = join(dir, f);
+        if (baseline.has(full)) continue;
+        writeFileSync(PIN_FILE, full);
+        return full;
+      }
+    } catch {
+      // ignore — try next tick
+    }
+    return "";
+  }
+
   private tick(): void {
-    const pinned = this.pinnedPath();
-    // Without a pin we deliberately track nothing — the alternative
-    // ("mtime newest") leaks parent Claude sessions running in the same
-    // project dir. The user picks a session from the chat header instead.
+    const pinned = this.resolvePin();
     if (!pinned || !existsSync(pinned)) return;
 
     const newest = pinned;

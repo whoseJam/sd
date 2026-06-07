@@ -31,6 +31,9 @@ export interface SessionInfo {
 
 const PIN_FILE =
   process.env.TRANSCRIPT_PIN_FILE ?? "/tmp/sd-test/transcript-path.txt";
+const BASELINE_FILE =
+  process.env.TRANSCRIPT_BASELINE_FILE ??
+  "/tmp/sd-test/transcript-baseline.txt";
 
 export function getPinnedPath(): string {
   if (process.env.TRANSCRIPT_PATH) return process.env.TRANSCRIPT_PATH;
@@ -43,6 +46,35 @@ export function getPinnedPath(): string {
 
 export function pinSession(path: string): void {
   writeFileSync(PIN_FILE, path);
+}
+
+/** Snapshot the existing jsonl set so the watcher can later identify a
+ *  freshly-created session by set difference. Used by /api/sessions/new
+ *  to mark "the next genuinely new file in this dir is the active
+ *  session". */
+export function writeBaseline(dir: string): void {
+  const list: string[] = [];
+  try {
+    for (const f of readdirSync(dir)) {
+      if (f.endsWith(".jsonl")) list.push(join(dir, f));
+    }
+  } catch {
+    // ignore — empty baseline means any new file is fresh
+  }
+  writeFileSync(BASELINE_FILE, list.join("\n"));
+}
+
+export function readBaseline(): Set<string> {
+  try {
+    return new Set(
+      readFileSync(BASELINE_FILE, "utf-8")
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    );
+  } catch {
+    return new Set();
+  }
 }
 
 export function listSessions(dir: string, pinned: string): SessionInfo[] {

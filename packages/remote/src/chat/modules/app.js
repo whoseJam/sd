@@ -53,12 +53,12 @@ initSessions({
 
 function handleSessionSwitched() {
   clearMessages();
-  refreshSessions();
   let n = 0;
   const tick = async () => {
     await catchUpMessages();
+    refreshSessions();
     scrollToBottom();
-    if (++n < 5) setTimeout(tick, 400);
+    if (++n < 20) setTimeout(tick, 500);
   };
   tick();
 }
@@ -98,6 +98,7 @@ pollStatus();
 setInterval(pollStatus, 5000);
 // SSE doesn't flow through cloudflared quick tunnels — poll regardless.
 setInterval(catchUpMessages, 2000);
+setInterval(refreshSessions, 5000);
 
 async function submit() {
   const text = inputEl.value.trim();

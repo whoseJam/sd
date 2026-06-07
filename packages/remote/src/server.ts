@@ -26,7 +26,6 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   statSync,
 } from "node:fs";
 import { extname, join } from "node:path";
@@ -37,6 +36,7 @@ import {
   getPinnedPath,
   listSessions,
   pinSession,
+  writeBaseline,
 } from "./sessions";
 import { TranscriptWatcher } from "./watcher/transcript-watcher";
 
@@ -194,7 +194,6 @@ function switchSession(path: string): void {
 
 interface NewSessionResult {
   ok: boolean;
-  pinned?: string;
   error?: string;
 }
 
@@ -202,43 +201,25 @@ async function newSession(): Promise<NewSessionResult> {
   if (!tmuxHasSession()) {
     return { ok: false, error: "tmux session not running" };
   }
-  const dir = claudeCodeAdapter.getTranscriptDir(REPO);
-  const before = new Set(snapshotJsonls(dir));
-  // Best-effort exit current Claude. Ctrl-C twice clears the input then
-  // exits Claude Code's TUI more reliably than typing /quit.
+  // Snapshot the existing jsonl set BEFORE restarting Claude so the watcher
+  // can later promote whichever jsonl wasn't in the snapshot. Deterministic
+  // — no birthtime / mtime / clock heuristics.
+  writeBaseline(claudeCodeAdapter.getTranscriptDir(REPO));
   Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
   await sleep(150);
   Bun.spawnSync({ cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "C-c"] });
   await sleep(500);
-  // Wait for pane to land back in a shell.
   for (let i = 0; i < 20; i++) {
     const cmd = tmuxPaneCommand().toLowerCase();
     if (!cmd || SHELL_NAMES.has(cmd)) break;
     await sleep(200);
   }
-  // Relaunch.
   tmuxStartClaude();
-  // Wait for the new JSONL to appear.
-  for (let i = 0; i < 40; i++) {
-    await sleep(300);
-    const after = snapshotJsonls(dir);
-    const fresh = after.find((p) => !before.has(p));
-    if (fresh) {
-      switchSession(fresh);
-      return { ok: true, pinned: fresh };
-    }
-  }
-  return { ok: false, error: "new transcript not detected within 12s" };
-}
-
-function snapshotJsonls(dir: string): string[] {
-  try {
-    return readdirSync(dir)
-      .filter((f) => f.endsWith(".jsonl"))
-      .map((f) => join(dir, f));
-  } catch {
-    return [];
-  }
+  pinSession("PENDING");
+  messages = [];
+  watcher.reset();
+  sseSend("session-changed", { pinned: "" });
+  return { ok: true };
 }
 
 function sleep(ms: number): Promise<void> {
