@@ -5,8 +5,6 @@
 // doesn't affect another). When the server URL changes, we reset minimized
 // to false — a new stage announcement is meant to be seen.
 
-import { setPreview } from "./api.js";
-
 let panelEl, iframeEl, labelEl, pillEl, pillLabelEl;
 let current = null;
 let minimized = false;
@@ -22,11 +20,6 @@ export function initStage(refs) {
     e.stopPropagation();
     minimized = true;
     apply(current);
-  });
-  refs.close.addEventListener("click", async (e) => {
-    e.stopPropagation();
-    await setPreview("", "");
-    // server SSE will broadcast the cleared state back to us
   });
   pillEl.addEventListener("click", () => {
     minimized = false;

@@ -39,7 +39,6 @@ initStage({
   pill: $("#stage-pill"),
   pillLabel: $("#stage-pill-label"),
   minimize: $("#stage-minimize"),
-  close: $("#stage-close"),
 });
 
 initSessions({
