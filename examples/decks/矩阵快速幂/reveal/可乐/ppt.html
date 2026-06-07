@@ -1,19 +1,51 @@
 <section>
     <section>
         <h1>可乐</h1>
-        <p>luogu P3758 — 邻接矩阵幂</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P3758" target="_blank" data-preview-link>P3758</a></p>
     </section>
     <section>
-        <h2>题意</h2>
-        <p>图上机器人，每时刻自爆 / 走邻边 / 不动。求 $t$ 时刻方案数。</p>
-        <p class="fragment">自爆：新增汇点 $B$，每点连边到 $B$。不动：自环。</p>
+        <h2>可乐</h2>
+        <p>机器人在图上移动，每时刻可选：<b>自爆</b> / <b>走邻边</b> / <b>站着不动</b>。求 $t$ 个时刻后的行为方案总数。</p>
+        <div class="fragment" style="display: flex; gap: 32px; justify-content: center; align-items: center; margin-top: 12px;">
+            <div style="text-align: center;">
+                <sd-animation src="../../animation/可乐/样例.js"
+                    style="display: block; margin: 0 auto; width: 220px; height: 90px;"></sd-animation>
+                <p style="font-size: 18px; margin-top: 4px;">$t = 2$，机器人初始在 $1$</p>
+            </div>
+            <div>
+                <p style="margin: 0; font-size: 18px;">$8$ 种方案：</p>
+                <ul style="font-size: 17px; margin: 4px 0 0; columns: 2; column-gap: 20px;">
+                    <li>$1 \to b$</li>
+                    <li>$1 \to 1 \to b$</li>
+                    <li>$1 \to 2 \to b$</li>
+                    <li>$1 \to 1 \to 1$</li>
+                    <li>$1 \to 1 \to 2$</li>
+                    <li>$1 \to 2 \to 1$</li>
+                    <li>$1 \to 2 \to 2$</li>
+                    <li>$1 \to 2 \to 3$</li>
+                </ul>
+            </div>
+        </div>
     </section>
     <section>
-        <h2>邻接矩阵幂</h2>
-        <p>$G$ 是邻接矩阵，$f_t(u)$ = $t$ 步走到 $u$ 的方案数：</p>
+        <h2>化简</h2>
+        <p class="fragment quote">自爆和站着不动有点麻烦，先把它们转成「走一条边」。</p>
+        <sd-animation src="../../animation/可乐/化简.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 480px; height: 220px;"></sd-animation>
+        <ul>
+            <li class="fragment">自爆：新建虚拟点 $B$，每个原点都向 $B$ 连一条单向边，$B$ 没有出边。走到 $B$ 就相当于自爆了。</li>
+            <li class="fragment">站着不动：每个原点加一条自环 $u \to u$。走自环就相当于站着不动。</li>
+        </ul>
+        <p class="fragment">问题转化为：给定一张有向图，机器人每个单位时刻在图上走一条边，求 $t$ 个时刻后的方案数。</p>
+    </section>
+    <section>
+        <h2>递推</h2>
+        <p>设 $f_t(u)$ 为 $t$ 个单位时间后机器人走到 $u$ 的方案数。</p>
         <p class="fragment">
-            $$f_t = G^T f_{t-1} \Rightarrow f_t = (G^T)^t f_0$$
+            $$f_t(u) = \sum_{(v, u) \in E} f_{t-1}(v)$$
         </p>
-        <p class="fragment">用矩阵快速幂算 $(G^T)^t$ — $O(n^3 \log t)$。</p>
+        <sd-animation src="../../animation/可乐/邻接矩阵幂.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 560px; height: 240px;"></sd-animation>
+        <p class="fragment">$f_0$ 是机器人初始位置（one-hot），走 $t$ 步的总方案数 = $f_t$ 各 entry 之和。用矩阵快速幂 $O(n^3 \log t)$。</p>
     </section>
 </section>

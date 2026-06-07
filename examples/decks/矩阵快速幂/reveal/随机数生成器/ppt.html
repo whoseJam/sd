@@ -1,17 +1,36 @@
 <section>
     <section>
         <h1>随机数生成器</h1>
-        <p>luogu P2044</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2044" target="_blank" data-preview-link>P2044</a></p>
     </section>
     <section>
-        <h2>非齐次递推</h2>
-        <p>$X_{n+1} = (a X_n + c) \bmod m$ — 把常数项 $c$ 也塞进列向量：</p>
-        <p class="fragment">
-            $$
-            \begin{pmatrix} a & 1 \\ 0 & 1 \end{pmatrix}
-            \begin{pmatrix} X_n \\ c \end{pmatrix}
-            = \begin{pmatrix} X_{n+1} \\ c \end{pmatrix}
-            $$
+        <h2>随机数生成器</h2>
+        <p>题目给出递推
+            $$X_{n+1} = (a X_n + c) \bmod m$$
+            求 $X_n$。
         </p>
+        <p class="fragment quote">$n \le 10^{18}$</p>
+        <p class="fragment">这是<b style="color: purple;">非齐次</b>递推（多了常数项 $c$）。把 $c$ 也塞进列向量，递推就线性化了：</p>
+        <p class="fragment">
+            $$\begin{pmatrix} ? & ? \\ ? & ? \end{pmatrix}
+            \begin{pmatrix} X_n \\ c \end{pmatrix}
+            = \begin{pmatrix} X_{n+1} \\ c \end{pmatrix}$$
+        </p>
+        <sd-animation src="../../animation/随机数生成器/矩阵递推.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 520px; height: 180px;"></sd-animation>
+    </section>
+    <section>
+        <h2>转移矩阵</h2>
+        <p>
+            $$\begin{pmatrix} a & 1 \\ 0 & 1 \end{pmatrix}
+            \begin{pmatrix} X_n \\ c \end{pmatrix}
+            = \begin{pmatrix} X_{n+1} \\ c \end{pmatrix}$$
+        </p>
+        <p class="fragment">所以
+            $$\begin{pmatrix} a & 1 \\ 0 & 1 \end{pmatrix}^{n}
+            \begin{pmatrix} X_0 \\ c \end{pmatrix}
+            = \begin{pmatrix} X_n \\ c \end{pmatrix}$$
+        </p>
+        <p class="fragment">用矩阵快速幂 $O(\log n)$。</p>
     </section>
 </section>
