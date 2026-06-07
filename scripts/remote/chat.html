@@ -26,7 +26,29 @@
     padding-top: env(safe-area-inset-top, 10px);
   }
   .title { font-size: 13px; font-weight: 600; color: #ffa647; }
-  .links { font-size: 11px; margin-left: auto; }
+  .status-pill {
+    background: transparent;
+    border: 1px solid #555;
+    color: #ccc;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    cursor: default;
+  }
+  .status-pill.alive { color: #5cd57d; border-color: #2e5a39; }
+  .status-pill.down { color: #ff7878; border-color: #5a2e2e; cursor: pointer; }
+  .status-pill.down:active { background: #3a1f1f; }
+  .status-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #888;
+  }
+  .status-pill.alive .dot { background: #5cd57d; }
+  .status-pill.down .dot { background: #ff7878; }
+  .links { font-size: 11px; }
   .links a { color: #888; text-decoration: none; margin-left: 8px; }
   .links a:hover { color: #ccc; }
   main {
@@ -112,6 +134,10 @@
 <body>
 <header>
   <div class="title">sd remote</div>
+  <button class="status-pill" id="status" type="button">
+    <span class="dot"></span>
+    <span id="status-text">checking…</span>
+  </button>
   <div class="links">
     <a href="/reveal/index.html" target="_blank">preview</a>
   </div>
@@ -207,6 +233,39 @@ input.addEventListener('input', () => {
 
 poll().then(() => { messages.scrollTop = messages.scrollHeight; });
 setInterval(poll, 3000);
+
+const statusBtn = document.getElementById('status');
+const statusText = document.getElementById('status-text');
+
+async function pollStatus() {
+  try {
+    const r = await fetch('/api/status');
+    if (!r.ok) return;
+    const s = await r.json();
+    if (!s.session) {
+      statusBtn.className = 'status-pill down';
+      statusText.textContent = 'tmux down';
+    } else if (s.claude) {
+      statusBtn.className = 'status-pill alive';
+      statusText.textContent = 'Claude';
+    } else {
+      statusBtn.className = 'status-pill down';
+      statusText.textContent = `restart Claude (${s.cmd || '?'})`;
+    }
+  } catch {}
+}
+
+statusBtn.addEventListener('click', async () => {
+  if (!statusBtn.classList.contains('down')) return;
+  statusText.textContent = 'restarting…';
+  try {
+    await fetch('/api/restart-claude', { method: 'POST' });
+  } catch {}
+  setTimeout(pollStatus, 1500);
+});
+
+pollStatus();
+setInterval(pollStatus, 5000);
 </script>
 </body>
 </html>

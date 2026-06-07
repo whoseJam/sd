@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
-# All-in-one launcher for the remote chat workflow.
+# One-shot launcher: chat server + cloudflared tunnel + tmux Claude session.
 #
-# Idempotent: if chat server / tunnel / tmux session are already running, this
-# just reattaches and re-prints the URL. Safe to re-run.
+# Design goals (after user feedback that the previous UX was terrible):
+#   1. Single command to run.
+#   2. Each step prints ✓ when ready. No "info box" that gets wiped.
+#   3. URL is shown ONCE while it's still your terminal, then pinned to the
+#      tmux status bar (blue bar at the bottom) so it's visible forever after
+#      attaching.
+#   4. The desktop browser opens to the chat URL automatically — proves the
+#      tunnel works, gives you something to bookmark.
+#   5. Auto-attach. You land at the Claude prompt with the URL visible at
+#      the bottom of the screen.
 #
-# Outputs:
-#   - prints chat URL prominently before attaching
-#   - saves URL to /tmp/sd-test/url.txt (cat it anytime)
-#   - sets tmux status bar to show the URL while you're attached
+# Idempotent. Re-running reuses existing server/tunnel/session.
 
 set -euo pipefail
 
@@ -28,65 +33,83 @@ for cmd in tmux cloudflared bun; do
   fi
 done
 
-# 1. Chat server
+# ── chat server ────────────────────────────────────────────────────────────
 if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
-  echo "[chat] server already on :$PORT"
+  echo "✓ chat server on :$PORT"
 else
-  echo "[chat] starting server on :$PORT..."
+  echo "  starting chat server..."
   ( cd "$REPO" && nohup bun scripts/remote/server.ts > "$SERVER_LOG" 2>&1 & )
   for _ in $(seq 1 10); do
     sleep 0.5
     if lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then break; fi
   done
+  if ! lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+    echo "✗ chat server failed (check $SERVER_LOG)" >&2
+    exit 1
+  fi
+  echo "✓ chat server on :$PORT"
 fi
 
-# 2. Cloudflared tunnel
-if pgrep -f "cloudflared.*tunnel.*--url.*:$PORT" >/dev/null; then
-  echo "[tunnel] already running"
-else
-  echo "[tunnel] starting cloudflared..."
+# ── tunnel ─────────────────────────────────────────────────────────────────
+# Reuse if URL file matches a live tunnel; otherwise restart fresh so our log
+# always has the URL we'll display.
+URL=""
+if [ -f "$URL_FILE" ] && pgrep -f "cloudflared.*--url.*:$PORT" >/dev/null 2>&1; then
+  CANDIDATE=$(cat "$URL_FILE")
+  if curl -s -o /dev/null --max-time 3 "$CANDIDATE" 2>/dev/null; then
+    URL="$CANDIDATE"
+    echo "✓ tunnel: $URL  (reused)"
+  fi
+fi
+
+if [ -z "$URL" ]; then
+  pkill -f "cloudflared.*--url.*:$PORT" 2>/dev/null || true
+  sleep 1
   : > "$TUNNEL_LOG"
+  echo "  starting cloudflared..."
   nohup cloudflared tunnel --url "http://127.0.0.1:$PORT" > "$TUNNEL_LOG" 2>&1 &
   for _ in $(seq 1 30); do
-    if grep -qE "https://[a-z0-9-]+\.trycloudflare\.com" "$TUNNEL_LOG"; then break; fi
+    URL=$(grep -oE "https://[a-z0-9-]+\.trycloudflare\.com" "$TUNNEL_LOG" | head -1 || true)
+    if [ -n "$URL" ]; then break; fi
     sleep 1
   done
-fi
-
-URL=$(grep -oE "https://[a-z0-9-]+\.trycloudflare\.com" "$TUNNEL_LOG" | head -1 || true)
-if [ -n "$URL" ]; then
+  if [ -z "$URL" ]; then
+    echo "✗ tunnel: no URL after 30s (check $TUNNEL_LOG)" >&2
+    exit 1
+  fi
   echo "$URL" > "$URL_FILE"
+  echo "✓ tunnel: $URL"
 fi
 
-cat <<EOF
-
-┌──────────────────────────────────────────────────────────────
-│  chat URL:  ${URL:-(check $TUNNEL_LOG)}
-│  preview:   ${URL:-...}/reveal/index.html
-│  url file:  $URL_FILE
-│  server log: $SERVER_LOG
-│  tunnel log: $TUNNEL_LOG
-└──────────────────────────────────────────────────────────────
-
-EOF
-
-# 3. tmux session (create if missing, but do NOT auto-attach — printing the
-# URL box and then immediately attaching causes the URL to be cleared by tmux
-# taking over the screen. Let the user attach explicitly.)
+# ── tmux session ───────────────────────────────────────────────────────────
+SHELLS_RE='^(fish|bash|zsh|sh|dash|ksh)$'
 if tmux has-session -t "$SESSION" 2>/dev/null; then
-  echo "[tmux] session '$SESSION' already exists"
+  PANE_CMD=$(tmux display-message -p -t "$SESSION" -F '#{pane_current_command}' 2>/dev/null || echo "")
+  if [[ "$PANE_CMD" =~ $SHELLS_RE ]] || [ -z "$PANE_CMD" ]; then
+    echo "  Claude not running in tmux (pane: ${PANE_CMD:-?}) — relaunching..."
+    tmux send-keys -t "$SESSION":main "claude" Enter
+    echo "✓ tmux session '$SESSION' (Claude relaunched)"
+  else
+    echo "✓ tmux session '$SESSION' (Claude alive: $PANE_CMD)"
+  fi
 else
-  echo "[tmux] creating '$SESSION'..."
   cd "$REPO"
   tmux new-session -d -s "$SESSION" -c "$REPO" -n main
   tmux send-keys -t "$SESSION":main "claude" Enter
+  echo "✓ tmux session '$SESSION' (created)"
 fi
 
-if [ -n "$URL" ]; then
-  tmux set-option -t "$SESSION" status-right " chat: $URL " >/dev/null 2>&1 || true
+# Pin URL to the status bar in a hard-to-miss blue bar. status-left is
+# left-aligned with plenty of room, won't truncate like status-right.
+tmux set-option -t "$SESSION" status-style "bg=#1d4ed8,fg=#ffffff,bold" >/dev/null
+tmux set-option -t "$SESSION" status-left-length 200 >/dev/null
+tmux set-option -t "$SESSION" status-left " chat: $URL " >/dev/null
+tmux set-option -t "$SESSION" status-right "" >/dev/null
+
+# ── desktop browser preview ────────────────────────────────────────────────
+if command -v open >/dev/null && [ "${OPEN_BROWSER:-1}" = "1" ]; then
+  open "$URL" 2>/dev/null || true
 fi
 
-echo
-echo "attach with:  tmux attach -t $SESSION"
-echo "detach:       Ctrl-b d"
-echo "re-print url: cat $URL_FILE"
+# ── attach ─────────────────────────────────────────────────────────────────
+exec tmux attach -t "$SESSION"

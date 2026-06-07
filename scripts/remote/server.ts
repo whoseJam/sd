@@ -63,6 +63,33 @@ function tmuxHasSession(): boolean {
   return r.exitCode === 0;
 }
 
+function tmuxPaneCommand(): string {
+  const r = Bun.spawnSync({
+    cmd: [
+      "tmux",
+      "display-message",
+      "-p",
+      "-t",
+      TMUX_SESSION,
+      "-F",
+      "#{pane_current_command}",
+    ],
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  if (r.exitCode !== 0) return "";
+  return new TextDecoder().decode(r.stdout).trim();
+}
+
+const SHELL_NAMES = new Set(["fish", "bash", "zsh", "sh", "dash", "ksh"]);
+
+function claudeRunning(): boolean {
+  if (!tmuxHasSession()) return false;
+  const cmd = tmuxPaneCommand().toLowerCase();
+  if (!cmd) return false;
+  return !SHELL_NAMES.has(cmd);
+}
+
 function tmuxSendKeys(text: string): void {
   // Send literal text then Enter; -l prevents key-name interpretation
   Bun.spawnSync({
@@ -71,6 +98,14 @@ function tmuxSendKeys(text: string): void {
   Bun.spawnSync({
     cmd: ["tmux", "send-keys", "-t", TMUX_SESSION, "Enter"],
   });
+}
+
+function tmuxStartClaude(): void {
+  tmuxSendKeys("claude");
+}
+
+function makeSystemMsg(text: string): Message {
+  return { id: newId(), ts: Date.now(), from: "system", text };
 }
 
 const CHAT_HTML_PATH = new URL("./chat.html", import.meta.url).pathname;
@@ -123,10 +158,42 @@ Bun.serve({
           text,
         };
         messages.push(msg);
+        if (!tmuxHasSession()) {
+          messages.push(
+            makeSystemMsg(
+              "tmux session 'claude-dev' isn't running. Run scripts/remote/start-session.sh on the Mac first.",
+            ),
+          );
+        } else if (!claudeRunning()) {
+          messages.push(
+            makeSystemMsg(
+              `Claude isn't running in tmux (shell: ${tmuxPaneCommand() || "?"}). Tap the status pill to restart it, or type 'claude' in the tmux pane.`,
+            ),
+          );
+        } else {
+          tmuxSendKeys(text);
+        }
         save();
-        if (tmuxHasSession()) tmuxSendKeys(text);
         return Response.json(msg);
       }
+    }
+
+    if (path === "/api/status") {
+      const session = tmuxHasSession();
+      const cmd = session ? tmuxPaneCommand() : "";
+      const claude = session && cmd && !SHELL_NAMES.has(cmd.toLowerCase());
+      return Response.json({ session, cmd, claude });
+    }
+
+    if (path === "/api/restart-claude" && req.method === "POST") {
+      if (!tmuxHasSession()) {
+        return Response.json(
+          { ok: false, error: "no session" },
+          { status: 400 },
+        );
+      }
+      tmuxStartClaude();
+      return Response.json({ ok: true });
     }
 
     if (path === "/api/post-agent" && req.method === "POST") {
@@ -172,5 +239,7 @@ Bun.serve({
 });
 
 console.log(`chat server listening on http://127.0.0.1:${PORT}`);
-console.log(`tmux session: ${TMUX_SESSION} (has-session: ${tmuxHasSession()})`);
+console.log(
+  `tmux session: ${TMUX_SESSION} (alive: ${tmuxHasSession()}, claude: ${claudeRunning()}, pane: ${tmuxPaneCommand() || "—"})`,
+);
 console.log(`messages.json: ${MESSAGES_FILE} (${messages.length} loaded)`);

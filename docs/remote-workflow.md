@@ -1,96 +1,100 @@
 # Remote chat workflow (phone ↔ desktop Claude)
 
-Goal: chat with Claude from your phone. Messages appear in a thread (like
-iMessage). Your messages get injected into the tmux session where Claude is
-running on the Mac. Claude's replies are pushed back to the same thread as
-chat messages, with optional image attachments (snapshots).
+Goal: chat with Claude from your phone. Your messages go through `tmux
+send-keys` into the Claude session on the Mac. Claude's replies come back
+automatically via a Stop hook that reads the conversation JSONL transcript
+and posts the assistant text (with any referenced local images) to the chat.
 
-## How it works
+## Architecture
 
 ```
-phone Safari ⇄ trycloudflare URL ⇄ chat server (Bun, port 8765)
-                                         │
-                                         ├─ POST /api/messages (from phone)
-                                         │     ↓ saved to messages.json
-                                         │     ↓ tmux send-keys → Claude
-                                         │
-                                         ├─ POST /api/post-agent (from Claude in tmux)
-                                         │     ↓ saved to messages.json
-                                         │     ↑ phone polls /api/messages every 3s
-                                         │
-                                         └─ serves chat.html, snapshots/, /reveal/*
+phone Safari ⇄ cloudflared ⇄ chat server (Bun :8765)
+                                  │
+                                  ├─ POST /api/messages (you typed something)
+                                  │     → save to messages.json
+                                  │     → tmux send-keys to claude-dev session
+                                  │     → Claude reads it as input
+                                  │
+                                  ├─ POST /api/post-agent (from on-stop.ts)
+                                  │     → save as 'agent' message
+                                  │     → auto-attach any /tmp/...png paths
+                                  │       mentioned in the reply
+                                  │
+                                  ├─ GET  /api/status  (chat polls every 5s)
+                                  │     → tmux session alive? Claude running?
+                                  │     → drives the green/red pill in header
+                                  │
+                                  ├─ POST /api/restart-claude
+                                  │     → tmux send-keys "claude" to relaunch
+                                  │
+                                  └─ serves chat.html, /reveal/*, /snapshots/*
 ```
 
-Both you (in phone Safari) and Claude (in tmux on Mac) see the same accumulating
-chat log. No refresh — phone polls for new messages every 3s and appends them.
+After each Claude turn, the Stop hook (`on-stop.ts`, configured in
+`.claude/settings.json`) reads the transcript JSONL, extracts the last
+assistant text, finds any local image paths in it (regex on `/tmp/...png`
+etc.), and POSTs `text + images` to `/api/post-agent`. The phone sees the
+reply within a few seconds, snapshots inline.
+
+The hook is inert outside the tmux workflow — it only POSTs when `TMUX`
+env var is set AND the chat server is reachable.
 
 ## Files
 
 | File | What |
 |---|---|
-| `scripts/remote/server.ts` | Bun HTTP server: chat API + static; replaces live-server on 8765 |
-| `scripts/remote/chat.html` | Mobile-friendly chat UI; polls every 3s |
-| `scripts/remote/post.ts` | CLI: Claude calls this to post a message into the thread |
-| `scripts/remote/start-session.sh` | Start (or attach to) tmux session `claude-dev` running Claude Code |
-| `scripts/remote/tunnel.sh` | Cloudflare quick tunnel for port 8765 |
+| `scripts/remote/server.ts` | Bun chat server; replaces live-server on :8765 |
+| `scripts/remote/chat.html` | Phone-friendly UI; polls every 3s; green/red Claude status pill |
+| `scripts/remote/on-stop.ts` | Stop hook: reads transcript, posts assistant reply + images |
+| `scripts/remote/post.ts` | Manual posting CLI (rarely needed once the hook works) |
+| `scripts/remote/start-session.sh` | Boots everything: server + tunnel + tmux + opens browser |
+| `scripts/remote/stop.sh` | Tears it all down (tmux, tunnel, server, URL file) |
+| `scripts/remote/tunnel.sh` | Standalone tunnel runner (if you only want that piece) |
+| `.claude/settings.json` | Wires the Stop hook into Claude Code |
 
 ## Prerequisites
 
-- macOS Sharing → Remote Login = on (optional; only if you also want SSH access)
+- macOS Sharing → Remote Login = on (only if you also want SSH access)
 - `brew install tmux cloudflared`
 - Phone: just Safari, no app needed
 
 ## Daily flow
 
-### Mac side — one command
+### Start
 
 ```bash
 ./scripts/remote/start-session.sh
 ```
 
-Idempotent: starts chat server on :8765, starts cloudflared tunnel,
-captures the URL, prints it (and saves to `/tmp/sd-test/url.txt`), then
-creates/attaches the tmux `claude-dev` session running Claude. Tmux status
-bar shows the URL while you're attached. Detach with `Ctrl-b d`; the
-session, server, and tunnel keep running. Re-run anytime to reattach +
-re-print URL.
+Idempotent. Prints `✓` lines for chat server, tunnel URL, tmux session;
+saves URL to `/tmp/sd-test/url.txt`; pins URL to the tmux status bar (blue
+bar at bottom); opens the chat in your desktop browser; auto-attaches the
+`claude-dev` tmux session running Claude. Detach with `Ctrl-b d`.
 
-If you ever need just the tunnel or the server alone, the underlying
-scripts are `scripts/remote/tunnel.sh` and `bun scripts/remote/server.ts`.
+If Claude died inside the existing tmux session, re-running this script
+detects the shell in the pane and `send-keys "claude"` to relaunch.
 
 (Plus your usual sd watchers in another terminal: `gulp sd -w`, `gulp ppt -i <deck> -o /tmp/sd-test/reveal -l -w`, `gulp animation-group -i <deck> -o /tmp/sd-test/animation -l -w`.)
 
-### Phone side
+### On the phone
 
-Open `https://<tunnel>/` in Safari. That's the chat. Type messages, see Claude's
-replies. Open `https://<tunnel>/reveal/index.html` in another tab for the live
-deck preview.
+Open the trycloudflare URL (in your browser address bar after `start-session.sh`).
+Type. Watch.
 
-### Claude in tmux — posting replies
+- Green pill `Claude` in the header = good
+- Red pill `restart Claude (fish)` = Claude died; tap to relaunch in tmux
+- Preview link in the header opens `/reveal/index.html` in a new tab
 
-Inside tmux Claude can post replies to the chat thread by running:
+### Stop
 
 ```bash
-# text only
-bun scripts/remote/post.ts "finished the LIS animation, take a look"
-
-# text + images (snapshots show inline in chat)
-bun scripts/remote/post.ts "see slide 6" /tmp/sd-ppt-snapshot-s6.png
-
-# stdin
-echo "long multi-line text..." | bun scripts/remote/post.ts -
+./scripts/remote/stop.sh
 ```
 
-Convention: post a short summary at the end of each work chunk so you can
-follow along without watching the terminal.
+Kills tmux session, cloudflared, chat server. Leaves `messages.json` and
+snapshots on disk so the next `start-session.sh` keeps history.
 
-## Why not just a dashboard
-
-A dashboard would be a "current state" view — useful for status but breaks the
-flow when you want to align thinking with Claude. A chat is cumulative: every
-message stays, no auto-refresh erases context. Text-only chat for "let me
-think through this with you", attachments only when there's something visual
-to share.
+To nuke everything including history: `rm -rf /tmp/sd-test` after stop.
 
 ## Stable tunnel URL
 
@@ -113,17 +117,25 @@ tunnel + your domain:
 
 ## Troubleshooting
 
-**Phone shows old chat, no new messages** — chat server might be down. Check
-Terminal B; restart `bun scripts/remote/server.ts`.
+**Phone messages reach the shell instead of Claude** ("fish: Unknown command:
+hi" in tmux) — Claude isn't running in the pane. Tap the red pill in the
+chat header to relaunch, or run `claude` directly in the tmux pane, or
+re-run `start-session.sh`.
 
-**Tmux session not receiving my messages** — `tmux ls` to verify
-`claude-dev` is running. Start it via `start-session.sh`. The chat server
-logs `tmux session: claude-dev (has-session: true)` on startup if found.
+**Hook doesn't fire / phone never sees AI replies** — Stop hook only runs
+when (a) inside tmux (`$TMUX` set) and (b) chat server reachable on
+`PORT`. Verify the tmux Claude was launched via `start-session.sh` (so it
+inherits `TMUX`).
 
-**Tunnel URL keeps changing** — that's quick-tunnel behavior. See "Stable
-tunnel URL" above.
+**Tunnel URL keeps changing** — see "Stable tunnel URL" above.
 
-**Mac sleeps and kills the tunnel** — `caffeinate -i` in front of the tunnel
-command, or in System Settings disable display sleep while plugged in.
+**Mac sleeps and kills everything** — `caffeinate -i` in front of
+`start-session.sh`, or in System Settings disable display sleep while
+plugged in.
 
-**Clear chat history** — `rm /tmp/sd-test/messages.json` then restart server.
+**Clear chat history** — `rm /tmp/sd-test/messages.json` then restart the
+server (`./scripts/remote/stop.sh && ./scripts/remote/start-session.sh`).
+
+**tmux status bar still shown after Claude exit** — by design: tmux
+session, server, and tunnel all keep running so you can re-attach later.
+Run `./scripts/remote/stop.sh` for a clean nuke.
