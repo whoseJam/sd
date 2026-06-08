@@ -93,19 +93,6 @@ export const claudeCodeAdapter: AgentAdapter = {
         if (block?.type !== "tool_use") continue;
         const tool = String(block.name ?? "?");
         const input = (block.input ?? {}) as Record<string, unknown>;
-
-        if (tool === "AskUserQuestion") {
-          out.push({
-            id: `${baseId}-question-${block.id ?? chipIndex}`,
-            ts: ts + ++chipIndex,
-            from: "system",
-            kind: "question",
-            text: tool,
-            raw: input,
-          });
-          continue;
-        }
-
         const summary = summarizeToolInput(tool, input);
         out.push({
           id: `${baseId}-tool-${block.id ?? chipIndex}`,
@@ -212,7 +199,6 @@ function summarizeToolInput(
       return truncate(field("query"), 40);
     case "Bash":
     case "BashOutput":
-    case "AskUserQuestion":
       return "";
     default:
       return "";
