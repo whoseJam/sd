@@ -103,7 +103,13 @@ function tmuxSendKeys(text: string): void {
   });
 }
 
-const CLAUDE_BASE_FLAGS = ["--dangerously-skip-permissions"];
+// AskUserQuestion's tool_use only flushes to jsonl when answered, so the
+// question never reaches phone chat while Claude is still waiting.
+const CLAUDE_BASE_FLAGS = [
+  "--dangerously-skip-permissions",
+  "--disallowedTools",
+  "AskUserQuestion",
+];
 
 function tmuxStartClaude(options: { resume?: string } = {}): void {
   const parts = ["claude", ...CLAUDE_BASE_FLAGS];
@@ -125,6 +131,41 @@ async function tmuxQuitClaude(): Promise<void> {
 
 function makeSystemMessage(text: string): Message {
   return { id: newId(), ts: Date.now(), from: "system", text };
+}
+
+function ensureClaudeInTmux(): void {
+  if (tmuxHasSession()) {
+    if (claudeRunning()) {
+      console.log(
+        `✓ tmux session '${TMUX_SESSION}' (claude alive: ${tmuxPaneCommand()})`,
+      );
+      return;
+    }
+    console.log(
+      `  tmux session '${TMUX_SESSION}' exists but no claude (pane: ${tmuxPaneCommand() || "?"}) — relaunching...`,
+    );
+  } else {
+    Bun.spawnSync({
+      cmd: [
+        "tmux",
+        "new-session",
+        "-d",
+        "-s",
+        TMUX_SESSION,
+        "-c",
+        REPO,
+        "-n",
+        "main",
+      ],
+    });
+    console.log(`✓ tmux session '${TMUX_SESSION}' (created)`);
+  }
+  // Baseline + pin must precede claude spawn so the watcher's set-difference
+  // catches the new jsonl.
+  writeBaseline(claudeCodeAdapter.getTranscriptDir(REPO));
+  pinSession("PENDING");
+  tmuxStartClaude();
+  console.log(`✓ claude launching (watcher armed for first jsonl)`);
 }
 
 // ── SSE ──────────────────────────────────────────────────────────────────
@@ -180,6 +221,8 @@ try {
 }
 
 const RELOAD_SCRIPT = `<script>(function(){let l=null;setInterval(function(){fetch('/api/reload-token').then(function(r){return r.json()}).then(function(j){if(l!==null&&j.epoch!==l)location.reload();l=j.epoch})},1000);})();</script>`;
+
+ensureClaudeInTmux();
 
 // ── Transcript watcher ───────────────────────────────────────────────────
 const watcher = new TranscriptWatcher({

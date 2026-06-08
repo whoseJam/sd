@@ -10,7 +10,6 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -27,8 +26,6 @@ const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const PORT = Number(process.env.PORT ?? 8765);
 const SERVER_LOG = join(REVEAL_ROOT, "server.log");
 const URL_FILE = join(REVEAL_ROOT, "url.txt");
-const PIN_FILE = join(REVEAL_ROOT, "transcript-path.txt");
-const BASELINE_FILE = join(REVEAL_ROOT, "transcript-baseline.txt");
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
@@ -65,8 +62,6 @@ async function start(mode: Mode): Promise<void> {
   }
 
   const url = await ensureTunnel();
-  const needPin = ensureTmuxSession();
-  if (needPin) pinTranscript();
   pinTmuxStatusBar(url);
   openBrowser(url);
   console.log(`\n  chat: ${url}\n`);
@@ -212,55 +207,6 @@ async function ensureTunnel(): Promise<string> {
   writeFileSync(URL_FILE, url);
   console.log(`✓ tunnel: ${url}`);
   return url;
-}
-
-const SHELL_RE = /^(fish|bash|zsh|sh|dash|ksh)$/;
-const CLAUDE_CMD = "claude --dangerously-skip-permissions";
-
-function ensureTmuxSession(): boolean {
-  if (tmux(["has-session", "-t", SESSION]).status === 0) {
-    const paneCommand = tmux([
-      "display-message",
-      "-p",
-      "-t",
-      SESSION,
-      "-F",
-      "#{pane_current_command}",
-    ]).stdout.trim();
-    if (!paneCommand || SHELL_RE.test(paneCommand)) {
-      console.log(
-        `  Claude not running in tmux (pane: ${paneCommand || "?"}) — relaunching...`,
-      );
-      tmux(["send-keys", "-t", `${SESSION}:main`, CLAUDE_CMD, "Enter"]);
-      console.log(`✓ tmux session '${SESSION}' (Claude relaunched)`);
-      return true;
-    }
-    console.log(`✓ tmux session '${SESSION}' (Claude alive: ${paneCommand})`);
-    return false;
-  }
-  tmux(["new-session", "-d", "-s", SESSION, "-c", REPO, "-n", "main"]);
-  tmux(["send-keys", "-t", `${SESSION}:main`, CLAUDE_CMD, "Enter"]);
-  console.log(`✓ tmux session '${SESSION}' (created)`);
-  return true;
-}
-
-function pinTranscript(): void {
-  const claudeDir = join(
-    homedir(),
-    ".claude",
-    "projects",
-    REPO.replace(/\//g, "-"),
-  );
-  writeFileSync(BASELINE_FILE, listJsonl(claudeDir).join("\n"));
-  writeFileSync(PIN_FILE, "PENDING");
-  console.log("✓ watcher armed (waits for tmux Claude's first jsonl)");
-}
-
-function listJsonl(dir: string): string[] {
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir)
-    .filter((filename) => filename.endsWith(".jsonl"))
-    .map((filename) => join(dir, filename));
 }
 
 function pinTmuxStatusBar(url: string): void {
