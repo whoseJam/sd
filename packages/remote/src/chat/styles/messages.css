@@ -171,6 +171,10 @@ footer {
   outline: none;
   border-color: var(--user);
   background: var(--bg-2);
+  /* Outer ring so the focus state stays visible next to the same-colored
+     Send button — without it the input's right border merges visually
+     into the button and looks clipped. */
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--user) 25%, transparent);
 }
 #input::placeholder { color: var(--fg-2); }
 #send {
