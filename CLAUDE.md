@@ -8,13 +8,16 @@ This is a pnpm-workspace monorepo. All library code lives under `packages/`; use
 
 ```
 packages/
-  core/       @sd/core       Rendering engine (Animate / Node / Layout / Renderer / Math / Utility / Interact)
-  reveal/     @sd/reveal     reveal.js integration layer (plugins, MathJax, theme SCSS)
-  webslides/  @sd/webslides  WebSlides host: framework + include-html walker, shipped as IIFE bundle
-  impress/    @sd/impress    impress.js host: framework + include-html walker, shipped as IIFE bundle
-  element/    @sd/element    <sd-animation> custom element that wraps an iframe (host-side embedding)
-  cli/        @sd/cli        Build tasks + CLI entries (sd-animation, sd-animation-group, sd-ppt, sd-config)
-  assets/     @sd/assets     Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
+  core/          @sd/core          Rendering engine (animate / node / renderer / math / utility / interact)
+  layout/        @sd/layout        Layout helpers (array / curve / graph / grid / two-node); depends on dagre
+  include-html/  @sd/include-html  DOM walker that inlines <... include-html="./xxx.html"> attributes
+  reveal/        @sd/reveal        reveal.js integration layer (plugins, MathJax, theme SCSS)
+  webslides/     @sd/webslides     WebSlides host: framework + include-html walker, shipped as IIFE bundle
+  impress/       @sd/impress       impress.js host: framework + include-html walker, shipped as IIFE bundle
+  element/       @sd/element       <sd-animation> custom element that wraps an iframe (host-side embedding)
+  cli/           @sd/cli           Build tasks + CLI entries (sd-animation, sd-animation-group, sd-ppt, sd-config)
+  remote/        @sd/remote        Phone ↔ desktop Claude Code remote chat (Bun HTTP/SSE server, mobile UI)
+  assets/        @sd/assets        Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
 examples/
   animations/  Single-animation demo scripts (former unit/)
   decks/       Sample PPT decks (former example/); each deck has `reveal/` + `animation/` subdirs
@@ -110,13 +113,21 @@ gulp theme   -o <output-dir>     # compile Reveal/css/theme/source/*.scss
 
 ### `@sd/core` (packages/core/src/)
 
-- `sd.ts` is the public surface — every visual primitive, layout, and utility is re-exported here.
-- All visual elements inherit from `SDNode` (`Node/SDNode.ts`, ~450 LOC) and specialize into `SDHTMLNode` / `SDSVGNode`.
-- Reactive system lives under `Node/Core/`.
-- `Animate/`: action-based animation. `Interp.ts` holds the interpolator implementations (number, color, path, points, matrix...). `Action.ts` records intent; `ActionList.ts` schedules a timeline; `Window.ts` drives stage transitions.
-- `Layout/`: `Array/` (Stack, Pile), `Curve/` (Bezier, Brace), `Graph/` (DAG, Bipartite), `Grid/`, `TwoNode/`.
-- `Renderer/`: dual SVG / HTML output via `RenderNode`.
+- `sd.ts` is the public surface — every visual primitive, color/easing utility, and animation API is re-exported here.
+- All visual elements inherit from `SDNode` (`node/node.ts`) and specialize into `SDSVGNode` (`node/svg-node.ts`) / `SDHTMLNode` (`node/html-node.ts`).
+- `animate/`: action-based animation. `interp.ts` holds the interpolator implementations (number, color, path, points, matrix...). `action.ts` records intent; `action-list.ts` schedules a timeline; `window.ts` drives stage transitions.
+- `node/`: visual primitives, organized by kind — `shape/` (Rect, Circle, Ellipse, Polygon, Image), `path/` (Line, Polyline, Path, PathPen), `text/` (Text, Math), `control/` (Button, Input, Slider), `filter/` (DropShadow, GaussianBlur, ColorMatrix, ...), `other/` (Group, Caption), `define/` (Marker).
+- `renderer/`: dual SVG / HTML output via `RenderNode`.
+- `math/`, `utility/`, `interact/`: helpers (vectors, easing, color, root canvas, device detection).
+- Layout helpers used to live here; they moved to the separate `@sd/layout` package.
 - TS path alias inside the package: `@/*` → `packages/core/src/*`.
+
+### `@sd/layout` (packages/layout/src/)
+
+- Exposes one factory: `import { layout } from "@sd/layout"; const L = layout();` returns an object bundling every layout class (`ArrayLayout`, `StackLayout`, `PileLayout`, `BezierLayout`, `CurveLayout`, `VHBezierLayout`, `BraceLayout`, `GridLayout`, `TinyGraphLayout`, `GridGraphLayout`, `BipartiteGraphLayout`, `DAGLayout`, `CenterLayout` + `Center{Content,Rect,Circle,Ellipse}ContentFitLayout`, `AsideLayout`, `BackgroundLayout`, `CircleBackgroundLayout`).
+- Source organized by category: `array/`, `curve/`, `graph/` (uses `dagre`), `grid/`, `two-node/`.
+- Path alias inside the package: `@/*` resolves to `packages/layout/src/*` first, then `packages/core/src/*` — so layouts can `import * as sd from "@/sd"` the same way core internals do.
+- Currently no examples/decks consume it; add `"@sd/layout": "workspace:*"` to your package's deps when you need it.
 
 ### `@sd/reveal` (packages/reveal/src/)
 
