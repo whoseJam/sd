@@ -4,13 +4,22 @@ import colors from "colors-console";
 import fs from "node:fs";
 import path from "node:path";
 
-const configKeys = ["animationOutputPath", "pptOutputPath"];
+const configKeys = [
+  "animationOutputPath",
+  "pptOutputPath",
+  "tunnelName",
+  "tunnelHostname",
+];
 
 const configHints: Record<string, string> = {
   animationOutputPath:
     "Default output path for animation (For example: C:/Users/xxx/Desktop/output)",
   pptOutputPath:
     "Default output path for PPT (For example: C:/Users/xxx/Desktop/output)",
+  tunnelName:
+    "Cloudflare named tunnel name (optional; see docs/named-tunnel-setup.md)",
+  tunnelHostname:
+    "Cloudflare named tunnel hostname, e.g. chat.example.xyz (optional; pairs with tunnelName)",
 };
 
 function printSupportedKeys(): void {

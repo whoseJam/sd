@@ -30,6 +30,33 @@ const TUNNEL_LOG = join(REVEAL_ROOT, "tunnel.log");
 const URL_FILE = join(REVEAL_ROOT, "url.txt");
 const PIN_FILE = join(REVEAL_ROOT, "transcript-path.txt");
 const BASELINE_FILE = join(REVEAL_ROOT, "transcript-baseline.txt");
+const CONFIG_PATH = join(REPO, "myconfig.json");
+
+const QUICK_TUNNEL_PATTERN = `cloudflared.*--url.*:${PORT}`;
+const NAMED_TUNNEL_PATTERN = (name: string): string =>
+  `cloudflared.*tunnel.*run.*${name}`;
+
+type TunnelConfig =
+  | { mode: "named"; name: string; hostname: string }
+  | { mode: "quick" };
+
+function readTunnelConfig(): TunnelConfig {
+  if (!existsSync(CONFIG_PATH)) return { mode: "quick" };
+  try {
+    const cfg = JSON.parse(readFileSync(CONFIG_PATH, "utf-8")) as Record<
+      string,
+      unknown
+    >;
+    const name =
+      typeof cfg.tunnelName === "string" ? cfg.tunnelName.trim() : "";
+    const hostname =
+      typeof cfg.tunnelHostname === "string" ? cfg.tunnelHostname.trim() : "";
+    if (name && hostname) return { mode: "named", name, hostname };
+    return { mode: "quick" };
+  } catch {
+    return { mode: "quick" };
+  }
+}
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
@@ -87,7 +114,11 @@ async function stop(mode: Mode): Promise<void> {
     } else {
       console.log(`  tmux session '${SESSION}' not running`);
     }
-    const cloudflaredPattern = `cloudflared.*--url.*:${PORT}`;
+    const tunnelConfig = readTunnelConfig();
+    const cloudflaredPattern =
+      tunnelConfig.mode === "named"
+        ? NAMED_TUNNEL_PATTERN(tunnelConfig.name)
+        : QUICK_TUNNEL_PATTERN;
     if (pgrepHas(cloudflaredPattern)) {
       pkill(cloudflaredPattern);
       console.log("✓ cloudflared killed");
@@ -168,31 +199,36 @@ async function ensureServer(): Promise<void> {
 }
 
 async function ensureTunnel(): Promise<string> {
+  const config = readTunnelConfig();
+  return config.mode === "named"
+    ? ensureNamedTunnel(config.name, config.hostname)
+    : ensureQuickTunnel();
+}
+
+async function ensureQuickTunnel(): Promise<string> {
   if (existsSync(URL_FILE)) {
     const candidate = readFileSync(URL_FILE, "utf-8").trim();
-    if (candidate && pgrepHas(`cloudflared.*--url.*:${PORT}`)) {
+    if (candidate && pgrepHas(QUICK_TUNNEL_PATTERN)) {
       if (await httpAlive(candidate, 3000)) {
         console.log(`✓ tunnel: ${candidate}  (reused)`);
         return candidate;
       }
     }
   }
-  pkill(`cloudflared.*--url.*:${PORT}`);
+  pkill(QUICK_TUNNEL_PATTERN);
   await sleep(1000);
   writeFileSync(TUNNEL_LOG, "");
-  console.log("  starting cloudflared...");
-  const child = spawn(
-    "cloudflared",
-    ["tunnel", "--url", `http://127.0.0.1:${PORT}`, "--protocol", "http2"],
-    { detached: true, stdio: ["ignore", "pipe", "pipe"] },
-  );
-  const log = Bun.file(TUNNEL_LOG).writer();
-  child.stdout.on("data", (chunk) => log.write(chunk));
-  child.stderr.on("data", (chunk) => log.write(chunk));
-  child.unref();
+  console.log("  starting cloudflared (quick tunnel)...");
+  spawnCloudflared([
+    "tunnel",
+    "--url",
+    `http://127.0.0.1:${PORT}`,
+    "--protocol",
+    "http2",
+  ]);
   for (let attempt = 0; attempt < 30; attempt++) {
     await sleep(1000);
-    const url = extractTunnelUrl();
+    const url = extractQuickTunnelUrl();
     if (url) {
       writeFileSync(URL_FILE, url);
       console.log(`✓ tunnel: ${url}`);
@@ -202,7 +238,51 @@ async function ensureTunnel(): Promise<string> {
   die(`✗ tunnel: no URL after 30s (check ${TUNNEL_LOG})`);
 }
 
-function extractTunnelUrl(): string {
+async function ensureNamedTunnel(
+  name: string,
+  hostname: string,
+): Promise<string> {
+  const url = `https://${hostname}`;
+  const pattern = NAMED_TUNNEL_PATTERN(name);
+  if (pgrepHas(pattern)) {
+    writeFileSync(URL_FILE, url);
+    console.log(`✓ tunnel: ${url}  (reused, named: ${name})`);
+    return url;
+  }
+  writeFileSync(TUNNEL_LOG, "");
+  console.log(`  starting cloudflared (named: ${name} → ${hostname})...`);
+  spawnCloudflared(["tunnel", "run", name]);
+  for (let attempt = 0; attempt < 30; attempt++) {
+    await sleep(1000);
+    const log = readFileSync(TUNNEL_LOG, "utf-8");
+    if (/tunnel( ".*")? not found|Couldn't find tunnel/i.test(log)) {
+      die(
+        `✗ tunnel '${name}' not found on this machine.\n` +
+          `  Did you run \`cloudflared tunnel create ${name}\`?\n` +
+          `  See docs/named-tunnel-setup.md`,
+      );
+    }
+    if (/Registered tunnel connection/.test(log)) {
+      writeFileSync(URL_FILE, url);
+      console.log(`✓ tunnel: ${url}`);
+      return url;
+    }
+  }
+  die(`✗ tunnel: '${name}' did not register after 30s (check ${TUNNEL_LOG})`);
+}
+
+function spawnCloudflared(args: string[]): void {
+  const child = spawn("cloudflared", args, {
+    detached: true,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  const log = Bun.file(TUNNEL_LOG).writer();
+  child.stdout.on("data", (chunk) => log.write(chunk));
+  child.stderr.on("data", (chunk) => log.write(chunk));
+  child.unref();
+}
+
+function extractQuickTunnelUrl(): string {
   try {
     const log = readFileSync(TUNNEL_LOG, "utf-8");
     const match = log.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);

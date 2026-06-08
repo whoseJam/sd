@@ -74,6 +74,8 @@ pnpm close                # stop watching + clear the stage panel
 
 For phone access: `pnpm start:remote` first (adds a cloudflared tunnel + tmux Claude session). Then `pnpm open <deck-name>` works the same — the chat's stage panel shows the deck on the phone over the tunnel. `pnpm stop:remote` tears it all down.
 
+By default `start:remote` uses a Cloudflare quick tunnel (zero config, random `*.trycloudflare.com` URL, SSE not guaranteed stable). For a fixed URL on your own domain + reliable long connections, set up a Cloudflare named tunnel — see [docs/named-tunnel-setup.md](docs/named-tunnel-setup.md). Opt-in via `tunnelName` + `tunnelHostname` in `myconfig.json`; absent → quick tunnel.
+
 `pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and writes `/reveal/index.html` into `/tmp/sd-test/preview-url.txt` (the chat client polls that file every 2s). Locally it also `open`s `http://127.0.0.1:8765/` in your browser.
 
 The Bun server injects a 1-line reload poller into every HTML it serves, so watcher rebuilds refresh the iframe automatically — no DevTools "Disable cache" toggle needed.
@@ -204,17 +206,21 @@ If `$TMUX` is set you're inside the `claude-dev` session that `pnpm start:remote
 How to show the user something:
 
 - **Live deck or animation** — same commands as locally:
+
   ```bash
   pnpm open <deck-name>
   pnpm open <animation-name>
   pnpm close
   ```
+
   Spawns watchers + pushes the URL into the chat's stage panel. Watcher rebuilds refresh the iframe automatically.
 
 - **Static snapshot** — `pnpm snap <url>` writes a PNG to `/tmp/sd-test/snapshots/` and prints its path. Reference it as a markdown image in your chat reply:
+
   ```
   ![slide 6](/snapshots/<filename>.png)
   ```
+
   The chat client renders markdown; image appears inline. Relative URLs resolve the same locally and through the tunnel.
 
 - **Status reports** are normal chat messages.
