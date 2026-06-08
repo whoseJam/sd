@@ -2,6 +2,7 @@
 #messages {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: var(--space-3) var(--space-3) 0;
   -webkit-overflow-scrolling: touch;
 }
@@ -16,11 +17,12 @@
 
 .bubble {
   max-width: 82%;
+  min-width: 0;
   padding: 8px 12px;
   border-radius: var(--radius-lg);
   font-size: var(--fs-base);
   line-height: var(--lh-normal);
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 .msg.user .bubble {
@@ -28,6 +30,17 @@
   color: #fff;
   border-bottom-right-radius: var(--radius-sm);
   box-shadow: var(--shadow-1);
+}
+.msg.user.failed .bubble {
+  background: var(--warn, #c2410c);
+  position: relative;
+}
+.msg.user.failed .bubble::after {
+  content: "✕ failed";
+  display: block;
+  font-size: var(--fs-xs);
+  margin-top: 4px;
+  opacity: 0.85;
 }
 .msg.agent .bubble {
   background: var(--bg-1);
@@ -86,6 +99,75 @@
   overflow-y: auto;
 }
 
+/* AskUserQuestion card — interactive single/multi-select. */
+.question-card {
+  margin-bottom: var(--space-2);
+  max-width: 82%;
+  align-self: flex-start;
+}
+.question-card .question + .question { margin-top: var(--space-3); }
+.question-card .question-text {
+  font-weight: 600;
+  color: var(--fg-0);
+  margin-bottom: var(--space-2);
+  padding: 0 var(--space-1);
+}
+.question-card .question-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.question-card .question-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  color: var(--fg-0);
+  cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.question-card .question-option:hover:not(:disabled) {
+  background: var(--bg-2);
+  border-color: var(--border-strong);
+}
+.question-card .question-option.selected {
+  border-color: var(--user);
+  background: color-mix(in srgb, var(--user) 18%, var(--bg-1));
+}
+.question-card .question-option .label {
+  font-weight: 500;
+  font-size: var(--fs-base);
+}
+.question-card .question-option .desc {
+  font-size: var(--fs-xs);
+  color: var(--fg-2);
+  margin-top: 2px;
+}
+.question-card .question-submit {
+  margin-top: var(--space-2);
+  padding: 8px var(--space-4);
+  background: var(--user);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  align-self: flex-start;
+}
+.question-card .question-submit:hover:not(:disabled) {
+  background: var(--user-hover);
+}
+.question-card.answered {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.question-card.failed .question-submit,
+.question-card.failed .question-option {
+  border-color: var(--warn, #c2410c);
+}
+
 /* Image attachments. */
 .tool-images, .agent .images, .user .images {
   display: flex;
@@ -104,6 +186,29 @@
   transition: transform var(--t-fast);
 }
 .tool-images img:active, .agent .images img:active { transform: scale(0.98); }
+
+/* Transient row shown while a freshly switched session's history streams in. */
+.msg-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--space-3) 0;
+  color: var(--fg-2);
+  font-size: var(--fs-xs);
+  font-style: italic;
+}
+.msg-loading .dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--fg-2);
+  animation: blink 1.2s infinite;
+}
+.msg-loading .dot:nth-child(2) { animation-delay: 0.18s; }
+.msg-loading .dot:nth-child(3) { animation-delay: 0.36s; }
+.msg-loading .text { margin-left: var(--space-2); }
 
 /* Typing indicator above the input. */
 .typing {
@@ -155,10 +260,16 @@ footer {
   min-height: 36px;
   max-height: 140px;
   transition: border-color var(--t-fast), background var(--t-fast);
+  /* Hide the rectangular browser scrollbar — it pokes into the rounded
+     corners and clips the focus outline. The textarea is short (≤140px),
+     touch / arrow-key scrolling is enough. */
+  scrollbar-width: none;
 }
+#input::-webkit-scrollbar { display: none; }
 #input:focus {
-  outline: none;
-  border-color: var(--user);
+  outline: 2px solid var(--user);
+  outline-offset: 2px;
+  border-color: transparent;
   background: var(--bg-2);
 }
 #input::placeholder { color: var(--fg-2); }

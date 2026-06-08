@@ -1,25 +1,25 @@
 export async function fetchMessages(sinceMs) {
   const response = await fetch(`/api/messages?since=${sinceMs}`);
-  if (!response.ok) return [];
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
 export async function sendUserMessage(text) {
-  await fetch("/api/messages", {
+  const response = await fetch("/api/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   });
+  if (!response.ok) {
+    throw new Error(`server returned ${response.status}`);
+  }
+  return response.json();
 }
 
 export async function fetchStatus() {
-  try {
-    const response = await fetch("/api/status");
-    if (!response.ok) return null;
-    return response.json();
-  } catch {
-    return null;
-  }
+  const response = await fetch("/api/status");
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
 }
 
 // view.ts writes /preview-url.txt under /tmp/sd-test/; server already serves

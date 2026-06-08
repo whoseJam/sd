@@ -5,8 +5,9 @@ export interface Message {
   id: string;
   ts: number;
   from: "user" | "agent" | "system";
-  // "tool" = inline chip; undefined = default system bubble.
-  kind?: "tool" | "info";
+  // "tool" = inline chip; "question" = interactive AskUserQuestion card;
+  // undefined = default system bubble.
+  kind?: "tool" | "info" | "question";
   text: string;
   // Filenames under /tmp/sd-test/snapshots/, served at /snapshots/<filename>.
   images?: string[];
