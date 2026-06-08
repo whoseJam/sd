@@ -68,6 +68,9 @@
 }
 .msg.agent .bubble a { color: var(--info); }
 .msg.agent .bubble table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   margin: var(--space-2) 0;
   font-size: var(--fs-sm);
@@ -77,6 +80,7 @@
   border: 1px solid var(--border-1);
   padding: 4px 8px;
   text-align: left;
+  white-space: nowrap;
 }
 .msg.agent .bubble th {
   background: var(--bg-2);

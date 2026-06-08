@@ -2,6 +2,7 @@
 #messages {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: var(--space-3) var(--space-3) 0;
   -webkit-overflow-scrolling: touch;
 }
@@ -16,11 +17,12 @@
 
 .bubble {
   max-width: 82%;
+  min-width: 0;
   padding: 8px 12px;
   border-radius: var(--radius-lg);
   font-size: var(--fs-base);
   line-height: var(--lh-normal);
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 .msg.user .bubble {
@@ -168,13 +170,10 @@ footer {
   transition: border-color var(--t-fast), background var(--t-fast);
 }
 #input:focus {
-  outline: none;
-  border-color: var(--user);
+  outline: 2px solid var(--user);
+  outline-offset: 2px;
+  border-color: transparent;
   background: var(--bg-2);
-  /* Outer ring so the focus state stays visible next to the same-colored
-     Send button — without it the input's right border merges visually
-     into the button and looks clipped. */
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--user) 25%, transparent);
 }
 #input::placeholder { color: var(--fg-2); }
 #send {
