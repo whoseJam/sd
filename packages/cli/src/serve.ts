@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Unified launcher.
 //   pnpm start:local   chat server only
-//   pnpm start:remote  + cloudflared tunnel + tmux Claude
+//   pnpm start:remote  + tailscale funnel + tmux Claude
 //   pnpm stop:local    kill chat server
 //   pnpm stop:remote   kill all of the above
 
@@ -26,37 +26,9 @@ const REPO = process.env.REPO ?? join(homedir(), "Desktop", "sd");
 const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const PORT = Number(process.env.PORT ?? 8765);
 const SERVER_LOG = join(REVEAL_ROOT, "server.log");
-const TUNNEL_LOG = join(REVEAL_ROOT, "tunnel.log");
 const URL_FILE = join(REVEAL_ROOT, "url.txt");
 const PIN_FILE = join(REVEAL_ROOT, "transcript-path.txt");
 const BASELINE_FILE = join(REVEAL_ROOT, "transcript-baseline.txt");
-const CONFIG_PATH = join(REPO, "myconfig.json");
-
-const QUICK_TUNNEL_PATTERN = `cloudflared.*--url.*:${PORT}`;
-const NAMED_TUNNEL_PATTERN = (name: string): string =>
-  `cloudflared.*tunnel.*run.*${name}`;
-
-type TunnelConfig =
-  | { mode: "named"; name: string; hostname: string }
-  | { mode: "quick" };
-
-function readTunnelConfig(): TunnelConfig {
-  if (!existsSync(CONFIG_PATH)) return { mode: "quick" };
-  try {
-    const cfg = JSON.parse(readFileSync(CONFIG_PATH, "utf-8")) as Record<
-      string,
-      unknown
-    >;
-    const name =
-      typeof cfg.tunnelName === "string" ? cfg.tunnelName.trim() : "";
-    const hostname =
-      typeof cfg.tunnelHostname === "string" ? cfg.tunnelHostname.trim() : "";
-    if (name && hostname) return { mode: "named", name, hostname };
-    return { mode: "quick" };
-  } catch {
-    return { mode: "quick" };
-  }
-}
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
@@ -80,7 +52,7 @@ async function main(): Promise<void> {
 }
 
 async function start(mode: Mode): Promise<void> {
-  const required = mode === "remote" ? ["bun", "tmux", "cloudflared"] : ["bun"];
+  const required = mode === "remote" ? ["bun", "tmux", "tailscale"] : ["bun"];
   for (const command of required) {
     if (!which(command)) die(`missing: ${command} (brew install ${command})`);
   }
@@ -114,17 +86,11 @@ async function stop(mode: Mode): Promise<void> {
     } else {
       console.log(`  tmux session '${SESSION}' not running`);
     }
-    const tunnelConfig = readTunnelConfig();
-    const cloudflaredPattern =
-      tunnelConfig.mode === "named"
-        ? NAMED_TUNNEL_PATTERN(tunnelConfig.name)
-        : QUICK_TUNNEL_PATTERN;
-    if (pgrepHas(cloudflaredPattern)) {
-      pkill(cloudflaredPattern);
-      console.log("✓ cloudflared killed");
-    } else {
-      console.log("  cloudflared not running");
-    }
+    const reset = spawnSync("tailscale", ["funnel", "reset"], {
+      encoding: "utf-8",
+    });
+    if (reset.status === 0) console.log("✓ tailscale funnel reset");
+    else console.log("  tailscale funnel reset failed (already off?)");
     if (existsSync(URL_FILE)) rmSync(URL_FILE);
   }
 
@@ -199,97 +165,53 @@ async function ensureServer(): Promise<void> {
 }
 
 async function ensureTunnel(): Promise<string> {
-  const config = readTunnelConfig();
-  return config.mode === "named"
-    ? ensureNamedTunnel(config.name, config.hostname)
-    : ensureQuickTunnel();
-}
-
-async function ensureQuickTunnel(): Promise<string> {
-  if (existsSync(URL_FILE)) {
-    const candidate = readFileSync(URL_FILE, "utf-8").trim();
-    if (candidate && pgrepHas(QUICK_TUNNEL_PATTERN)) {
-      if (await httpAlive(candidate, 3000)) {
-        console.log(`✓ tunnel: ${candidate}  (reused)`);
-        return candidate;
-      }
-    }
+  const status = spawnSync("tailscale", ["status", "--json"], {
+    encoding: "utf-8",
+  });
+  if (status.status !== 0) {
+    die(
+      "✗ tailscale not signed in. Run: sudo tailscale up\n" +
+        "  See docs/tailscale-funnel-setup.md",
+    );
   }
-  pkill(QUICK_TUNNEL_PATTERN);
-  await sleep(1000);
-  writeFileSync(TUNNEL_LOG, "");
-  console.log("  starting cloudflared (quick tunnel)...");
-  spawnCloudflared([
-    "tunnel",
-    "--url",
-    `http://127.0.0.1:${PORT}`,
-    "--protocol",
-    "http2",
-  ]);
-  for (let attempt = 0; attempt < 30; attempt++) {
-    await sleep(1000);
-    const url = extractQuickTunnelUrl();
-    if (url) {
-      writeFileSync(URL_FILE, url);
-      console.log(`✓ tunnel: ${url}`);
-      return url;
-    }
+  let dnsName = "";
+  try {
+    const data = JSON.parse(status.stdout) as { Self?: { DNSName?: string } };
+    dnsName = (data.Self?.DNSName ?? "").replace(/\.$/, "");
+  } catch {
+    die("✗ couldn't parse `tailscale status --json` output");
   }
-  die(`✗ tunnel: no URL after 30s (check ${TUNNEL_LOG})`);
-}
+  if (!dnsName) {
+    die(
+      "✗ tailscale has no DNSName for this machine. Sign in: sudo tailscale up",
+    );
+  }
+  const url = `https://${dnsName}`;
 
-async function ensureNamedTunnel(
-  name: string,
-  hostname: string,
-): Promise<string> {
-  const url = `https://${hostname}`;
-  const pattern = NAMED_TUNNEL_PATTERN(name);
-  if (pgrepHas(pattern)) {
+  const existing = spawnSync("tailscale", ["funnel", "status"], {
+    encoding: "utf-8",
+  });
+  if (
+    existing.status === 0 &&
+    new RegExp(`(127\\.0\\.0\\.1|localhost):${PORT}\\b`).test(existing.stdout)
+  ) {
     writeFileSync(URL_FILE, url);
-    console.log(`✓ tunnel: ${url}  (reused, named: ${name})`);
+    console.log(`✓ tunnel: ${url}  (reused)`);
     return url;
   }
-  writeFileSync(TUNNEL_LOG, "");
-  console.log(`  starting cloudflared (named: ${name} → ${hostname})...`);
-  spawnCloudflared(["tunnel", "run", name]);
-  for (let attempt = 0; attempt < 30; attempt++) {
-    await sleep(1000);
-    const log = readFileSync(TUNNEL_LOG, "utf-8");
-    if (/tunnel( ".*")? not found|Couldn't find tunnel/i.test(log)) {
-      die(
-        `✗ tunnel '${name}' not found on this machine.\n` +
-          `  Did you run \`cloudflared tunnel create ${name}\`?\n` +
-          `  See docs/named-tunnel-setup.md`,
-      );
-    }
-    if (/Registered tunnel connection/.test(log)) {
-      writeFileSync(URL_FILE, url);
-      console.log(`✓ tunnel: ${url}`);
-      return url;
-    }
-  }
-  die(`✗ tunnel: '${name}' did not register after 30s (check ${TUNNEL_LOG})`);
-}
 
-function spawnCloudflared(args: string[]): void {
-  const child = spawn("cloudflared", args, {
-    detached: true,
-    stdio: ["ignore", "pipe", "pipe"],
+  console.log(`  starting tailscale funnel → :${PORT}...`);
+  const result = spawnSync("tailscale", ["funnel", "--bg", String(PORT)], {
+    encoding: "utf-8",
   });
-  const log = Bun.file(TUNNEL_LOG).writer();
-  child.stdout.on("data", (chunk) => log.write(chunk));
-  child.stderr.on("data", (chunk) => log.write(chunk));
-  child.unref();
-}
-
-function extractQuickTunnelUrl(): string {
-  try {
-    const log = readFileSync(TUNNEL_LOG, "utf-8");
-    const match = log.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
-    return match ? match[0] : "";
-  } catch {
-    return "";
+  if (result.status !== 0) {
+    die(
+      `✗ tailscale funnel failed (status ${result.status}):\n${result.stderr || result.stdout || "(no output)"}`,
+    );
   }
+  writeFileSync(URL_FILE, url);
+  console.log(`✓ tunnel: ${url}`);
+  return url;
 }
 
 const SHELL_RE = /^(fish|bash|zsh|sh|dash|ksh)$/;
@@ -382,14 +304,6 @@ function which(command: string): boolean {
   return result.status === 0 && (result.stdout ?? "").trim().length > 0;
 }
 
-function pgrepHas(pattern: string): boolean {
-  return spawnSync("pgrep", ["-f", pattern]).status === 0;
-}
-
-function pkill(pattern: string): void {
-  spawnSync("pkill", ["-f", pattern]);
-}
-
 function portInUse(port: number): Promise<boolean> {
   return new Promise((resolve) => {
     const socket = createConnection({ port, host: "127.0.0.1" }, () => {
@@ -402,18 +316,6 @@ function portInUse(port: number): Promise<boolean> {
       resolve(false);
     }, 1500);
   });
-}
-
-async function httpAlive(url: string, timeoutMs: number): Promise<boolean> {
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    await fetch(url, { signal: controller.signal });
-    clearTimeout(timer);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 function sleep(ms: number): Promise<void> {
