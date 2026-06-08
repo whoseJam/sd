@@ -1,0 +1,81 @@
+<section>
+    <section>
+        <h1>传纸条</h1>
+        <p>一个空间，两个客体</p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1006" target="_blank" data-preview-link>P1006</a></p>
+        <p>$m\times n$ 的好感度矩阵 $C$，两张纸条都需要从 $(1,1)$ 传到 $(m,n)$，每步向右或向下，求两条路径上格子好感度之和的最大值（同一个格子不能被两张纸条同时占用）</p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>一个看上去合理的做法</p>
+        <ol>
+            <li>找一条 $(1,1)\to(m,n)$ 的最大路径</li>
+            <li>把这条路径上的好感度清零</li>
+            <li>在清零后的矩阵上再找一条 $(1,1)\to(m,n)$ 的最大路径</li>
+            <li>求二者之和</li>
+        </ol>
+        <sd-animation src="../../animation/传纸条/反例1.js"
+            style="margin: 0 auto; width: 700px; height: 220px;"></sd-animation>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>但是这样会丢掉某些只能<b>同时取</b>才最优的方案</p>
+        <sd-animation src="../../animation/传纸条/反例2.js"
+            style="margin: 0 auto; width: 950px; height: 320px;"></sd-animation>
+        <p class="fragment">贪心拿到 $70$，联合最优能拿到 <b style="color: #b4610e;">$80$</b></p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>关键在于<b style="color: red;">两条路径之间的相互影响</b>。路径是可逆的，可以视作两张纸条都从 $(1,1)$ 走向 $(m,n)$，<b>同时移动</b></p>
+        <sd-animation src="../../animation/传纸条/状态设置.js"
+            style="margin: 0 auto; width: 700px; height: 260px;"></sd-animation>
+        <p class="fragment">设 $f(x_1,y_1,x_2,y_2)$ 表示纸条 $1$ 到 $(x_1,y_1)$、纸条 $2$ 到 $(x_2,y_2)$ 时的最大好感度</p>
+        <p class="fragment" style="font-size: 20px;">
+            $$
+            f(x_1,y_1,x_2,y_2)=\max
+            \begin{cases}
+            f(x_1-1,y_1,x_2-1,y_2) \\
+            f(x_1,y_1-1,x_2-1,y_2) \\
+            f(x_1-1,y_1,x_2,y_2-1) \\
+            f(x_1,y_1-1,x_2,y_2-1)
+            \end{cases}
+            +C_{x_1,y_1}+C_{x_2,y_2}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>状态空间是 $m\times n\times m\times n$，但其中绝大多数状态不合法：</p>
+        <ul>
+            <li class="fragment">$f(3,4,3,4)$：两张纸条走到同一个格子</li>
+            <li class="fragment">$f(1,5,2,1)$：一张走了 $4$ 步，另一张只走了 $1$ 步（不可能同时到达）</li>
+        </ul>
+        <sd-animation src="../../animation/传纸条/减小状态空间.js" class="fragment"
+            style="margin: 0 auto; width: 700px; height: 220px;"></sd-animation>
+        <p class="fragment">既然两张纸条是<b>一起走</b>的，可以用<b>步数 + 两个横坐标</b>唯一确定状态</p>
+    </section>
+    <section>
+        <h2>传纸条</h2>
+        <p>设 $f(k,x_1,x_2)$ 表示两张纸条都走了 $k$ 步、横坐标分别是 $x_1,x_2$ 时的最大好感度</p>
+        <ul>
+            <li class="fragment">纸条 1 的纵坐标 $y_1=k-x_1$</li>
+            <li class="fragment">纸条 2 的纵坐标 $y_2=k-x_2$</li>
+        </ul>
+        <p class="fragment">
+            $$
+            f(k,x_1,x_2)=\max
+            \begin{cases}
+            f(k-1,x_1,x_2) \\
+            f(k-1,x_1-1,x_2) \\
+            f(k-1,x_1,x_2-1) \\
+            f(k-1,x_1-1,x_2-1)
+            \end{cases}
+            +C_{x_1,k-x_1}+C_{x_2,k-x_2}
+            $$
+        </p>
+        <p class="fragment">时空复杂度优化为 $O((n+m)\cdot n^2)$</p>
+    </section>
+</section>

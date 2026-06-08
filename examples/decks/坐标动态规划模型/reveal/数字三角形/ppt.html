@@ -1,0 +1,29 @@
+<section>
+    <section>
+        <h1>数字三角形</h1>
+        <p>一个客体在二维平面上移动</p>
+    </section>
+    <section>
+        <h2>数字三角形</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1216" target="_blank" data-preview-link>P1216</a></p>
+        <p>给定一个 $n$ 行的数字三角形，从顶端出发向下走，每一步可以走到下一行的<b>正下方</b>或<b>右下方</b>，求路径上数字之和的最大值</p>
+    </section>
+    <section>
+        <h2>数字三角形</h2>
+        <p>客体在一个三角形的二维空间中移动</p>
+        <sd-animation src="../../animation/数字三角形/状态转移.js"
+            style="margin: 0 auto; width: 700px; height: 300px;"></sd-animation>
+        <p class="fragment">设 $f(i,j)$ 表示从 $(1,1)$ 走到 $(i,j)$ 能拿到的最大价值</p>
+        <p class="fragment">
+            $$
+            f(i,j)=\max\{f(i-1,j-1),f(i-1,j)\}+a_{i,j}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>数字三角形</h2>
+        <p>样例：$f(n,*)$ 的最大值即为答案</p>
+        <sd-animation src="../../animation/数字三角形/数字三角形.js"
+            style="margin: 0 auto; width: 700px; height: 320px;"></sd-animation>
+    </section>
+</section>

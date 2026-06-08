@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>数楼梯</h1>
+        <p>一个客体在一条数轴上移动</p>
+    </section>
+    <section>
+        <h2>数楼梯</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1255" target="_blank" data-preview-link>P1255</a></p>
+        <p>有 $n$ 级楼梯，每次可以跨 $1$ 级或 $2$ 级，求从地面走到第 $n$ 级的方案数 ($n\le 5000$)</p>
+    </section>
+    <section>
+        <h2>数楼梯</h2>
+        <p>一个客体在一条数轴上移动，且每一步是单向往后跳</p>
+        <sd-animation src="../../animation/数楼梯/状态设置.js"
+            style="margin: 0 auto; width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">设 $f(i)$ 表示走到第 $i$ 级的方案数</p>
+        <p class="fragment">
+            $$
+            f(i)=f(i-1)+f(i-2)
+            $$
+        </p>
+        <p class="fragment quote">$n\le 5000$，答案会爆 long long，需要<b>高精度</b></p>
+    </section>
+</section>

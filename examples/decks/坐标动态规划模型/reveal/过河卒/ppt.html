@@ -1,0 +1,51 @@
+<section>
+    <section>
+        <h1>过河卒</h1>
+        <p>带禁区的二维移动</p>
+    </section>
+    <section>
+        <h2>过河卒</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1002" target="_blank" data-preview-link>P1002</a></p>
+        <sd-animation src="../../animation/过河卒/样例解释.js"
+            style="margin: 0 auto; width: 600px; height: 280px;"></sd-animation>
+        <p>象棋盘上某位置放着一匹<b>不会移动的</b>敌方马。过河卒要从 $(1,1)$ 走到 $(n,m)$，每步只能向右或向下走，且不能经过马或马能攻击到的格子</p>
+        <p class="fragment">求路径条数</p>
+    </section>
+    <section>
+        <h2>过河卒</h2>
+        <p>客体在二维空间中移动，多了一些禁区</p>
+        <sd-animation src="../../animation/过河卒/过河卒.js"
+            style="margin: 0 auto; width: 600px; height: 280px;"></sd-animation>
+        <p class="fragment">设 $f(i,j)$ 表示从 $(1,1)$ 走到 $(i,j)$ 的方案数</p>
+        <p class="fragment">
+            $$
+            f(i,j)=
+            \begin{cases}
+            f(i-1,j)+f(i,j-1) & (i,j)\text{ 不在禁区} \\
+            0 & (i,j)\text{ 在禁区}
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>过河卒</h2>
+        <p>
+            $$
+            f(i,j)=f(i-1,j)+f(i,j-1)
+            $$
+        </p>
+        <codeblock>
+            <script type="text/template">
+                f[1][1] = block[1][1] ? 0 : 1;
+                for (int i = 1; i <= n; i++)
+                    for (int j = 1; j <= m; j++) {
+                        if (i == 1 && j == 1) continue;
+                        if (block[i][j]) { f[i][j] = 0; continue; }
+                        f[i][j] = f[i - 1][j] + f[i][j - 1];
+                    }
+                cout << f[n][m] << endl;
+            </script>
+        </codeblock>
+        <p class="fragment">禁区格子不参与转移</p>
+    </section>
+</section>
