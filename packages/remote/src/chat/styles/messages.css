@@ -168,7 +168,12 @@ footer {
   min-height: 36px;
   max-height: 140px;
   transition: border-color var(--t-fast), background var(--t-fast);
+  /* Hide the rectangular browser scrollbar — it pokes into the rounded
+     corners and clips the focus outline. The textarea is short (≤140px),
+     touch / arrow-key scrolling is enough. */
+  scrollbar-width: none;
 }
+#input::-webkit-scrollbar { display: none; }
 #input:focus {
   outline: 2px solid var(--user);
   outline-offset: 2px;
