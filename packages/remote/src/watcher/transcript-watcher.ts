@@ -14,9 +14,10 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 
-import { readBaseline } from "../sessions";
-import type { Message } from "../message";
 import type { AgentAdapter } from "../adapters/types";
+import type { Message } from "../message";
+
+import { readBaseline } from "../sessions";
 
 interface PerFileState {
   offset: number;
@@ -43,10 +44,7 @@ export class TranscriptWatcher {
   start(): void {
     if (this.timer) return;
     this.tick();
-    this.timer = setInterval(
-      () => this.tick(),
-      this.options.intervalMs ?? 400,
-    );
+    this.timer = setInterval(() => this.tick(), this.options.intervalMs ?? 400);
   }
 
   stop(): void {

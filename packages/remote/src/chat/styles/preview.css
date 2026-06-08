@@ -38,13 +38,19 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 16px;
   line-height: 1;
-  transition: background var(--t-fast), transform var(--t-fast);
+  transition:
+    background var(--t-fast),
+    transform var(--t-fast);
   display: flex;
   align-items: center;
   justify-content: center;
 }
-#preview .toolbar button:hover { background: rgba(20, 22, 26, 0.85); }
-#preview .toolbar button:active { transform: scale(0.95); }
+#preview .toolbar button:hover {
+  background: rgba(20, 22, 26, 0.85);
+}
+#preview .toolbar button:active {
+  transform: scale(0.95);
+}
 
 /* Pill at top of chat column when user minimized the preview but the
    server still has a URL queued. Tap to restore. */
@@ -62,13 +68,27 @@
   user-select: none;
   transition: background var(--t-fast);
 }
-.preview-pill.show { display: flex; }
-.preview-pill:hover { background: var(--bg-2); color: var(--fg-0); }
+.preview-pill.show {
+  display: flex;
+}
+.preview-pill:hover {
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
 .preview-pill .icon {
   color: var(--fg-1);
   font-size: var(--fs-md);
   display: inline-flex;
   align-items: center;
 }
-.preview-pill .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.preview-pill .hint { color: var(--fg-2); font-size: var(--fs-xs); }
+.preview-pill .label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-pill .hint {
+  color: var(--fg-2);
+  font-size: var(--fs-xs);
+}

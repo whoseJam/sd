@@ -1,28 +1,22 @@
 // Chat client entry. Wires DOM refs + SSE + polling + sub-modules.
 
+import { fetchMessages, fetchPreview, sendUserMessage } from "./api.js";
 import { $ } from "./dom.js";
-import {
-  fetchMessages,
-  fetchPreview,
-  sendUserMessage,
-} from "./api.js";
-import { connectSSE } from "./sse.js";
 import {
   adoptServerId,
   clearLoading,
   clearMessages,
   clearOptimistic,
   initMessages,
-  isNearBottom,
   latestTs,
   markFailed,
   registerOptimistic,
   renderMsg,
-  scrollToBottom,
   showLoading,
 } from "./messages.js";
-import { initSessions, refresh as refreshSessions } from "./sessions.js";
 import { initPreview, apply as applyPreview } from "./preview.js";
+import { initSessions, refresh as refreshSessions } from "./sessions.js";
+import { connectSSE } from "./sse.js";
 import {
   initStatus,
   noteNetFailure,
@@ -76,7 +70,6 @@ function handleSessionSwitched(title) {
   const tick = async () => {
     await catchUpMessages();
     refreshSessions();
-    scrollToBottom();
     if (++attempt < 20) setTimeout(tick, 500);
     else clearLoading();
   };
@@ -84,7 +77,6 @@ function handleSessionSwitched(title) {
 }
 
 async function catchUpMessages() {
-  const wasAtBottom = isNearBottom();
   let newMessages;
   try {
     newMessages = await fetchMessages(latestTs());
@@ -96,15 +88,11 @@ async function catchUpMessages() {
   let sawAgentContent = false;
   for (const message of newMessages) {
     renderMsg(message);
-    if (
-      message.from === "agent" &&
-      (message.text || message.images?.length)
-    ) {
+    if (message.from === "agent" && (message.text || message.images?.length)) {
       sawAgentContent = true;
     }
   }
   if (sawAgentContent) setThinking(false);
-  if (newMessages.length && wasAtBottom) scrollToBottom();
 }
 
 async function loadInitialPreview() {
@@ -114,12 +102,10 @@ async function loadInitialPreview() {
 
 connectSSE({
   onMessage(message) {
-    const wasAtBottom = isNearBottom();
     renderMsg(message);
     if (message.from === "agent" && (message.text || message.images?.length)) {
       setThinking(false);
     }
-    if (wasAtBottom) scrollToBottom();
   },
   onReconnect() {
     catchUpMessages();
@@ -128,7 +114,7 @@ connectSSE({
   },
 });
 
-catchUpMessages().then(scrollToBottom);
+catchUpMessages();
 loadInitialPreview();
 pollStatus();
 setInterval(pollStatus, 5000);
@@ -151,7 +137,6 @@ async function submit() {
     text,
   });
   registerOptimistic(optimisticId, text);
-  scrollToBottom();
   setThinking(true);
 
   send.disabled = true;

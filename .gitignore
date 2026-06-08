@@ -11,3 +11,5 @@ dist
 myconfig.json
 tsconfig.tsbuildinfo
 packages/assets/themes/
+*.ts.net.crt
+*.ts.net.key

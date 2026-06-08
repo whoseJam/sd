@@ -1,6 +1,3 @@
-// Auto-scroll only when the user is already near the bottom — don't yank
-// them down if they're scrolled up reading history.
-
 import { sendUserMessage } from "./api.js";
 import { el, escapeHtml } from "./dom.js";
 import { renderMarkdown } from "./markdown.js";
@@ -34,7 +31,6 @@ export function showLoading(text) {
     '<span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="text"></span>';
   loadingNode.querySelector(".text").textContent = text;
   list.appendChild(loadingNode);
-  scrollToBottom();
 }
 
 export function clearLoading() {
@@ -54,15 +50,6 @@ export function clearOptimistic(text) {
 
 export function latestTs() {
   return lastTs;
-}
-
-export function isNearBottom() {
-  if (!list) return true;
-  return list.scrollTop + list.clientHeight >= list.scrollHeight - 80;
-}
-
-export function scrollToBottom() {
-  if (list) list.scrollTop = list.scrollHeight;
 }
 
 // Mark a server-issued id as already-rendered so its replay (via poll
@@ -115,7 +102,8 @@ export function renderMsg(message) {
 
 function renderQuestion(message) {
   const card = el("div", { class: "question-card" });
-  const data = message.raw && typeof message.raw === "object" ? message.raw : {};
+  const data =
+    message.raw && typeof message.raw === "object" ? message.raw : {};
   const questions = Array.isArray(data.questions) ? data.questions : [];
 
   for (const question of questions) {
@@ -136,9 +124,7 @@ function renderSingleQuestion(card, question) {
   const selected = new Set();
 
   for (const option of options) {
-    optionsRow.appendChild(
-      renderOption(card, block, option, multi, selected),
-    );
+    optionsRow.appendChild(renderOption(card, block, option, multi, selected));
   }
   block.appendChild(optionsRow);
 
@@ -163,8 +149,7 @@ function renderOption(card, block, option, multi, selected) {
     class: "question-option",
     attrs: { type: "button" },
   });
-  button.innerHTML =
-    '<span class="label"></span><span class="desc"></span>';
+  button.innerHTML = '<span class="label"></span><span class="desc"></span>';
   button.querySelector(".label").textContent = String(option.label ?? "");
   const description = String(option.description ?? "");
   const descNode = button.querySelector(".desc");

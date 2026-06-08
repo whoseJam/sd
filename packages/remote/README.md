@@ -92,7 +92,7 @@ Open the cloudflare URL.
   or "+ Start new session" to fork
 - Tool calls render as inline chips (tap to expand the raw input JSON)
 - Preview panel embeds whatever `pnpm open` last pointed at — `tap to
-  show ↗` on mobile to expand
+show ↗` on mobile to expand
 
 ### Showing the user something (tmux Claude)
 

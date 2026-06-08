@@ -1,5 +1,5 @@
-import { el, escapeHtml } from "./dom.js";
 import { fetchSessions, newSession, switchSession } from "./api.js";
+import { el, escapeHtml } from "./dom.js";
 
 let refs = null;
 let sessions = [];
