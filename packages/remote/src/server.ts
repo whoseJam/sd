@@ -3,17 +3,12 @@
 // the pinned session JSONL and dispatches each new line via an adapter. The
 // `messages` array is an in-memory cache rebuilt on every boot.
 
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  statSync,
-  watch,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync, watch } from "node:fs";
 import { extname, join } from "node:path";
 
-import { claudeCodeAdapter } from "./adapters/claude-code";
 import type { Message } from "./message";
+
+import { claudeCodeAdapter } from "./adapters/claude-code";
 import {
   getPinnedPath,
   listSessions,
@@ -199,7 +194,11 @@ async function switchSession(path: string): Promise<void> {
   pinSession(path);
   messages = [];
   watcher.reset();
-  const sessionId = path.split("/").pop()?.replace(/\.jsonl$/, "") ?? "";
+  const sessionId =
+    path
+      .split("/")
+      .pop()
+      ?.replace(/\.jsonl$/, "") ?? "";
   if (sessionId && tmuxHasSession()) {
     await tmuxQuitClaude();
     tmuxStartClaude({ resume: sessionId });
@@ -366,10 +365,7 @@ Bun.serve({
       const body = (await request.json()) as { path?: unknown };
       const target = typeof body.path === "string" ? body.path : "";
       if (!target || !target.endsWith(".jsonl")) {
-        return Response.json(
-          { ok: false, error: "bad path" },
-          { status: 400 },
-        );
+        return Response.json({ ok: false, error: "bad path" }, { status: 400 });
       }
       await switchSession(target);
       return Response.json({ ok: true, pinned: target });

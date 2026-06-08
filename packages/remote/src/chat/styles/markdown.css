@@ -1,11 +1,20 @@
 /* Markdown rendering inside agent bubbles. The bubble itself overrides
    white-space:pre-wrap (needed for user bubbles) so block elements collapse
    their inter-element whitespace; pre-wrap is reapplied to <p> content. */
-.msg.agent .bubble { white-space: normal; }
-.msg.agent .bubble > *:first-child { margin-top: 0; }
-.msg.agent .bubble > *:last-child { margin-bottom: 0; }
+.msg.agent .bubble {
+  white-space: normal;
+}
+.msg.agent .bubble > *:first-child {
+  margin-top: 0;
+}
+.msg.agent .bubble > *:last-child {
+  margin-bottom: 0;
+}
 
-.msg.agent .bubble p { margin: 0 0 var(--space-2); white-space: pre-wrap; }
+.msg.agent .bubble p {
+  margin: 0 0 var(--space-2);
+  white-space: pre-wrap;
+}
 .msg.agent .bubble h1,
 .msg.agent .bubble h2,
 .msg.agent .bubble h3 {
@@ -14,9 +23,17 @@
   font-weight: 600;
   color: var(--fg-0);
 }
-.msg.agent .bubble h1 { font-size: var(--fs-xl); }
-.msg.agent .bubble strong { font-weight: 600; color: var(--fg-0); }
-.msg.agent .bubble em { color: var(--fg-1); font-style: italic; }
+.msg.agent .bubble h1 {
+  font-size: var(--fs-xl);
+}
+.msg.agent .bubble strong {
+  font-weight: 600;
+  color: var(--fg-0);
+}
+.msg.agent .bubble em {
+  color: var(--fg-1);
+  font-style: italic;
+}
 
 .msg.agent .bubble code {
   font-family: var(--font-mono);
@@ -51,9 +68,15 @@
   margin: var(--space-1) 0;
   padding-left: var(--space-5);
 }
-.msg.agent .bubble li { margin: 0; }
-.msg.agent .bubble li + li { margin-top: 2px; }
-.msg.agent .bubble li p { margin: 0; }
+.msg.agent .bubble li {
+  margin: 0;
+}
+.msg.agent .bubble li + li {
+  margin-top: 2px;
+}
+.msg.agent .bubble li p {
+  margin: 0;
+}
 
 .msg.agent .bubble blockquote {
   margin: var(--space-2) 0;
@@ -66,7 +89,9 @@
   border-top: 1px solid var(--border-1);
   margin: var(--space-3) 0;
 }
-.msg.agent .bubble a { color: var(--info); }
+.msg.agent .bubble a {
+  color: var(--info);
+}
 .msg.agent .bubble table {
   display: block;
   max-width: 100%;

@@ -16,8 +16,12 @@ header .links {
   display: flex;
   gap: var(--space-3);
 }
-header .links a { color: var(--fg-2); }
-header .links a:hover { color: var(--fg-0); }
+header .links a {
+  color: var(--fg-2);
+}
+header .links a:hover {
+  color: var(--fg-0);
+}
 
 /* Session picker: brand + current session title + caret. Click opens the
    session menu below the header. */
@@ -39,8 +43,12 @@ header .links a:hover { color: var(--fg-0); }
   max-width: 70%;
   transition: background var(--t-fast);
 }
-.session-picker:hover { background: var(--bg-2); }
-.session-picker[aria-expanded="true"] { background: var(--bg-2); }
+.session-picker:hover {
+  background: var(--bg-2);
+}
+.session-picker[aria-expanded="true"] {
+  background: var(--bg-2);
+}
 .session-picker .brand {
   color: var(--accent);
   font-weight: 600;
@@ -92,7 +100,9 @@ header .links a:hover { color: var(--fg-0); }
   font-family: inherit;
   transition: background var(--t-fast);
 }
-.session-item:hover { background: var(--bg-2); }
+.session-item:hover {
+  background: var(--bg-2);
+}
 .session-item .session-title {
   color: var(--fg-0);
   font-size: var(--fs-sm);
@@ -118,8 +128,13 @@ header .links a:hover { color: var(--fg-0); }
   font-size: var(--fs-xs);
   margin-top: 2px;
 }
-.session-item.active { position: relative; }
-.session-item.new .session-title { color: var(--accent); font-weight: 600; }
+.session-item.active {
+  position: relative;
+}
+.session-item.new .session-title {
+  color: var(--accent);
+  font-weight: 600;
+}
 .session-divider {
   height: 1px;
   background: var(--border-1);
@@ -138,7 +153,9 @@ header .links a:hover { color: var(--fg-0); }
   padding: 4px 10px;
   font-size: var(--fs-xs);
   cursor: default;
-  transition: background var(--t-fast), color var(--t-fast);
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
 }
 .status-pill .dot {
   width: 6px;
@@ -149,20 +166,35 @@ header .links a:hover { color: var(--fg-0); }
 .status-pill.alive {
   color: var(--fg-0);
 }
-.status-pill.alive .dot { background: var(--ok); }
+.status-pill.alive .dot {
+  background: var(--ok);
+}
 .status-pill.down {
   color: var(--fg-0);
   cursor: pointer;
 }
-.status-pill.down .dot { background: var(--warn); }
-.status-pill.down:hover { background: var(--bg-1); }
-.status-pill.down:active { filter: brightness(1.2); }
-.status-pill.warn { color: var(--fg-0); }
+.status-pill.down .dot {
+  background: var(--warn);
+}
+.status-pill.down:hover {
+  background: var(--bg-1);
+}
+.status-pill.down:active {
+  filter: brightness(1.2);
+}
+.status-pill.warn {
+  color: var(--fg-0);
+}
 .status-pill.warn .dot {
   background: var(--warn, #d97706);
   animation: pulse-warn 1.2s ease-in-out infinite;
 }
 @keyframes pulse-warn {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
 }

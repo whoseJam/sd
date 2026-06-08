@@ -10,7 +10,7 @@
 
   /* Borders / dividers — translucent so they layer cleanly. */
   --border-1: rgba(255, 255, 255, 0.06);
-  --border-2: rgba(255, 255, 255, 0.10);
+  --border-2: rgba(255, 255, 255, 0.1);
   --border-strong: rgba(255, 255, 255, 0.18);
 
   /* Text. fg-0 primary, fg-1 muted (labels), fg-2 faint (timestamps). */
@@ -19,9 +19,9 @@
   --fg-2: #6c6e75;
 
   /* Accents. */
-  --accent: #fb923c;          /* sd brand orange */
+  --accent: #fb923c; /* sd brand orange */
   --accent-soft: rgba(251, 146, 60, 0.14);
-  --user: #2f7df2;            /* iMessage-ish blue */
+  --user: #2f7df2; /* iMessage-ish blue */
   --user-hover: #2667d3;
   --ok: #4ade80;
   --ok-soft: rgba(74, 222, 128, 0.14);
@@ -45,8 +45,9 @@
   --space-7: 32px;
 
   /* Type scale. */
-  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
-    "Helvetica Neue", system-ui, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+    system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --fs-xs: 11px;
   --fs-sm: 12px;

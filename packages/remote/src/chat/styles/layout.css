@@ -1,8 +1,13 @@
 /* Two-region layout: preview on top (mobile) / left (desktop), chat column
    on the bottom / right. Preview collapses to 0 when empty. */
-body { display: flex; flex-direction: column; }
+body {
+  display: flex;
+  flex-direction: column;
+}
 @media (min-width: 900px) {
-  body { flex-direction: row-reverse; }
+  body {
+    flex-direction: row-reverse;
+  }
 }
 
 #app {
@@ -43,13 +48,18 @@ body { display: flex; flex-direction: column; }
   border-bottom: 1px solid var(--border-1);
   display: none;
 }
-#preview.show { display: flex; height: 50vh; }
+#preview.show {
+  display: flex;
+  height: 50vh;
+}
 @media (min-width: 900px) {
   #preview {
     flex: 0 0 0;
     width: 0;
     height: 100vh;
-    transition: width var(--t-base), flex-basis var(--t-base);
+    transition:
+      width var(--t-base),
+      flex-basis var(--t-base);
     border-bottom: none;
     border-right: 1px solid var(--border-1);
   }

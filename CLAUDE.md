@@ -72,7 +72,9 @@ pnpm open <deck-name>     # spawn watchers, embed the deck in the chat stage + o
 pnpm close                # stop watching + clear the stage panel
 ```
 
-For phone access: `pnpm start:remote` first (adds a cloudflared tunnel + tmux Claude session). Then `pnpm open <deck-name>` works the same — the chat's stage panel shows the deck on the phone over the tunnel. `pnpm stop:remote` tears it all down.
+For phone access: `pnpm start:remote` first (adds a Tailscale Funnel + tmux Claude session). Then `pnpm open <deck-name>` works the same — the chat's stage panel shows the deck on the phone over the funnel. `pnpm stop:remote` tears it all down.
+
+`start:remote` requires Tailscale installed and signed in (`brew install tailscale && sudo tailscale up`) with Funnel enabled for your tailnet. One-time setup: see [docs/tailscale-funnel-setup.md](docs/tailscale-funnel-setup.md). The URL is a fixed `https://<machine>.tail-XXXXX.ts.net` — bookmark once on your phone.
 
 `pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and writes `/reveal/index.html` into `/tmp/sd-test/preview-url.txt` (the chat client polls that file every 2s). Locally it also `open`s `http://127.0.0.1:8765/` in your browser.
 
@@ -86,7 +88,7 @@ pnpm close                stop watching + clear preview
 pnpm snap <url>            one-shot screenshot (see "Snapshot tool" below)
 pnpm start:local          boot the Bun server (auto-called by open)
 pnpm stop:local           stop the Bun server
-pnpm start:remote         server + cloudflared tunnel + tmux Claude (phone access)
+pnpm start:remote         server + tailscale funnel + tmux Claude (phone access)
 pnpm stop:remote          tear down all of remote
 ```
 
@@ -191,7 +193,7 @@ pnpm snap /animation/foo.html --pause 7
 pnpm snap /animation/foo.html --from 10 --to 14
 ```
 
-Relative URLs (starting with `/`) resolve against `http://127.0.0.1:8765`. Pass a full URL (incl. the cloudflare tunnel one) to override. The path itself determines mode: `/reveal/` → deck mode, `/animation/` → animation mode.
+Relative URLs (starting with `/`) resolve against `http://127.0.0.1:8765`. Pass a full URL (incl. the Tailscale Funnel one) to override. The path itself determines mode: `/reveal/` → deck mode, `/animation/` → animation mode.
 
 stdout = absolute PNG path. stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean; exit 1 = errors (PNG still produced).
 
@@ -199,22 +201,26 @@ Implementations: `packages/cli/src/snap.ts` (dispatcher), `snap-deck.ts`, `snap-
 
 ## Remote chat workflow (when running in tmux from pnpm start:remote)
 
-If `$TMUX` is set you're inside the `claude-dev` session that `pnpm start:remote` boots. The user is on their phone hitting the same Bun server (:8765) you can reach locally — `pnpm start:remote` just adds a cloudflared tunnel pointing at it. Local URL and tunneled URL serve identical paths.
+If `$TMUX` is set you're inside the `claude-dev` session that `pnpm start:remote` boots. The user is on their phone hitting the same Bun server (:8765) you can reach locally — `pnpm start:remote` just adds a Tailscale Funnel pointing at it. Local URL and funneled URL serve identical paths.
 
 How to show the user something:
 
 - **Live deck or animation** — same commands as locally:
+
   ```bash
   pnpm open <deck-name>
   pnpm open <animation-name>
   pnpm close
   ```
+
   Spawns watchers + pushes the URL into the chat's stage panel. Watcher rebuilds refresh the iframe automatically.
 
 - **Static snapshot** — `pnpm snap <url>` writes a PNG to `/tmp/sd-test/snapshots/` and prints its path. Reference it as a markdown image in your chat reply:
+
   ```
   ![slide 6](/snapshots/<filename>.png)
   ```
+
   The chat client renders markdown; image appears inline. Relative URLs resolve the same locally and through the tunnel.
 
 - **Status reports** are normal chat messages.

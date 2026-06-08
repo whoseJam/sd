@@ -1,0 +1,25 @@
+<section>
+    <section>
+        <h1>坐标动态规划模型</h1>
+    </section>
+    <section>
+        <h2>坐标动态规划模型</h2>
+        <p>这类动态规划用于描述<b style="color: purple;">一个客体</b>在<b style="color: red;">一个空间</b>内的移动，我们可能需要给移动的轨迹打一个分，或者统计合法轨迹的方案数</p>
+        <div class="fragment quote">
+            <h3>并非一个客体</h3>
+            <span>有时候会有多个客体，两个客体常见，三个及以上很少见</span>
+        </div>
+        <div class="fragment quote">
+            <h3>并非常规空间</h3>
+            <span>一条数轴可以是空间，一个二维平面可以是空间<span class="fragment">，甚至，两个空间的组合也是空间</span></span>
+        </div>
+    </section>
+    <section>
+        <h2>坐标动态规划模型</h2>
+        <p>通常把客体的坐标塞进动态规划的状态里</p>
+        <ul>
+            <li class="fragment">如果客体在一条数轴上移动，设 $f(i,\dots)$ 表示客体走到 $i$ 时的<b>得分最大值 / 得分最小值 / 方案数</b></li>
+            <li class="fragment">如果客体在一个平面上移动，设 $f(x,y,\dots)$ 表示客体走到 $(x,y)$ 时的<b>得分最大值 / 得分最小值 / 方案数</b></li>
+        </ul>
+    </section>
+</section>

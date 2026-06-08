@@ -146,10 +146,7 @@ export const claudeCodeAdapter: AgentAdapter = {
             continue;
           }
           const media = String(source.media_type ?? "image/png");
-          const ext = (media.split("/")[1] ?? "png").replace(
-            /[^a-z0-9]/gi,
-            "",
-          );
+          const ext = (media.split("/")[1] ?? "png").replace(/[^a-z0-9]/gi, "");
           const filename = `jsonl-${baseId.slice(0, 8)}-${imageIndex++}-${ts}.${ext}`;
           try {
             writeFileSync(
