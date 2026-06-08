@@ -9,6 +9,7 @@ import {
 import { connectSSE } from "./sse.js";
 import {
   adoptServerId,
+  clearLoading,
   clearMessages,
   clearOptimistic,
   initMessages,
@@ -18,11 +19,14 @@ import {
   registerOptimistic,
   renderMsg,
   scrollToBottom,
+  showLoading,
 } from "./messages.js";
 import { initSessions, refresh as refreshSessions } from "./sessions.js";
 import { initPreview, apply as applyPreview } from "./preview.js";
 import {
   initStatus,
+  noteNetFailure,
+  noteNetSuccess,
   poll as pollStatus,
   setThinking,
 } from "./status.js";
@@ -54,25 +58,41 @@ initSessions({
   menu: $("#session-menu"),
   new: $("#session-new"),
   list: $("#session-list"),
+  onSwitching: handleSessionSwitching,
   onSwitched: handleSessionSwitched,
 });
 
-function handleSessionSwitched() {
+function handleSessionSwitching(title) {
   clearMessages();
-  // Watcher is still replaying the new JSONL — retry a few times.
+  showLoading(`loading ${title}`);
+}
+
+function handleSessionSwitched(title) {
+  // Server has accepted the switch; watcher is replaying the new JSONL.
+  // Loading row is already on screen from handleSessionSwitching — it
+  // gets cleared automatically when the first real message renders.
+  void title;
   let attempt = 0;
   const tick = async () => {
     await catchUpMessages();
     refreshSessions();
     scrollToBottom();
     if (++attempt < 20) setTimeout(tick, 500);
+    else clearLoading();
   };
   tick();
 }
 
 async function catchUpMessages() {
   const wasAtBottom = isNearBottom();
-  const newMessages = await fetchMessages(latestTs());
+  let newMessages;
+  try {
+    newMessages = await fetchMessages(latestTs());
+    noteNetSuccess();
+  } catch {
+    noteNetFailure();
+    return;
+  }
   let sawAgentContent = false;
   for (const message of newMessages) {
     renderMsg(message);

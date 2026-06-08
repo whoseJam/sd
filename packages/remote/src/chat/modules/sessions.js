@@ -85,16 +85,20 @@ async function onSwitch(path) {
     return;
   }
   closeMenu();
+  const target = sessions.find((session) => session.path === path);
+  const title = target?.title || "session";
+  refs.onSwitching?.(title);
   const ok = await switchSession(path);
-  if (ok) refs.onSwitched?.();
+  if (ok) refs.onSwitched?.(title);
 }
 
 async function onNew() {
   closeMenu();
   refs.title.textContent = "starting new session…";
+  refs.onSwitching?.("new session");
   const result = await newSession();
   if (result.ok) {
-    refs.onSwitched?.();
+    refs.onSwitched?.("new session");
   } else {
     refs.title.textContent = "failed: " + (result.error ?? "unknown");
     setTimeout(refresh, 2000);

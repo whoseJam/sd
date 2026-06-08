@@ -12,6 +12,7 @@ const seen = new Set();
 const pendingOptimistic = new Map();
 let lastTs = 0;
 let list = null;
+let loadingNode = null;
 
 export function initMessages(element) {
   list = element;
@@ -21,7 +22,26 @@ export function clearMessages() {
   seen.clear();
   pendingOptimistic.clear();
   lastTs = 0;
+  loadingNode = null;
   if (list) list.innerHTML = "";
+}
+
+export function showLoading(text) {
+  if (!list) return;
+  clearLoading();
+  loadingNode = el("div", { class: "msg-loading" });
+  loadingNode.innerHTML =
+    '<span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="text"></span>';
+  loadingNode.querySelector(".text").textContent = text;
+  list.appendChild(loadingNode);
+  scrollToBottom();
+}
+
+export function clearLoading() {
+  if (loadingNode) {
+    loadingNode.remove();
+    loadingNode = null;
+  }
 }
 
 export function registerOptimistic(optimisticId, text) {
@@ -77,6 +97,7 @@ export function renderMsg(message) {
     adoptServerId(optimisticId, message.id);
     return;
   }
+  clearLoading();
   seen.add(message.id);
   if (message.ts > lastTs) lastTs = message.ts;
 

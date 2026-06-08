@@ -157,3 +157,12 @@ header .links a:hover { color: var(--fg-0); }
 .status-pill.down .dot { background: var(--warn); }
 .status-pill.down:hover { background: var(--bg-1); }
 .status-pill.down:active { filter: brightness(1.2); }
+.status-pill.warn { color: var(--fg-0); }
+.status-pill.warn .dot {
+  background: var(--warn, #d97706);
+  animation: pulse-warn 1.2s ease-in-out infinite;
+}
+@keyframes pulse-warn {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
