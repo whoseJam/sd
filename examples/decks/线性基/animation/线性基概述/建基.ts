@@ -142,7 +142,7 @@ const inputLabels: sd.Math[] = INPUTS.map(
       targetNode: svg,
       text: `\\vec{a}_${i + 1} = ${val}`,
       cx: INPUT_X,
-      cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
+      by: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
       fontSize: 14,
       fill: FAINT,
       opacity: 0,
@@ -203,7 +203,12 @@ function hidePointer(delay = 0) {
 // Badges: small marker placed to the right of each input label showing
 // where the input ended up (→ b_j) or that it was redundant (×).
 const BADGE_X = INPUT_X + 40;
-const BADGE_TEXTS = ["\\to b_3", "\\to b_2", "\\to b_1", "\\times"];
+const BADGE_TEXTS = [
+  "\\to \\vec{b}_3",
+  "\\to \\vec{b}_2",
+  "\\to \\vec{b}_1",
+  "\\times",
+];
 const BADGE_FILLS = [PLACED_STROKE, PLACED_STROKE, PLACED_STROKE, FAINT];
 const inputBadges: sd.Math[] = INPUTS.map(
   (_, i) =>
@@ -211,19 +216,12 @@ const inputBadges: sd.Math[] = INPUTS.map(
       targetNode: svg,
       text: BADGE_TEXTS[i],
       cx: BADGE_X,
-      cy: INPUT_Y_BASE - i * INPUT_Y_STEP - 1,
+      by: inputLabels[i].getBaselineY(),
       fontSize: 14,
       fill: BADGE_FILLS[i],
       opacity: 0,
     }),
 );
-// Re-align each badge's center to its label's actual rendered center.
-// sd.Math's content has different vertical extents (label = \vec{a}_i = N
-// vs badge = \to \vec{b}_i / \times), so cy-from-constructor leaves their
-// body lines slightly off even when the boxes look "centered".
-inputBadges.forEach((badge, i) => {
-  badge.setCenterY(inputLabels[i].getLocalCenterY());
-});
 
 function showBadge(idx: number, delay = 0) {
   inputBadges[idx]
