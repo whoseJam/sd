@@ -9,6 +9,4 @@ import "./styles/messages.css";
 import "./styles/markdown.css";
 import { App } from "./App";
 
-const root = document.getElementById("root");
-if (!root) throw new Error("#root missing in index.html");
-render(() => <App />, root);
+render(() => <App />, document.body);
