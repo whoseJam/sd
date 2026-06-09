@@ -61,8 +61,6 @@ if (existsSync(REMOTE_MARKER)) {
   console.log(`showing ${name}  →  ${SERVER}${url}`);
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────
-
 async function ensureServer(): Promise<void> {
   if (await portInUse(PORT)) return;
   console.log("  server not running — booting pnpm start:local...");
