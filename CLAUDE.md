@@ -68,15 +68,15 @@ Decks under `examples/decks/<name>/` are split: `reveal/` holds `ppt.html` + sli
 **One command:**
 
 ```bash
-pnpm open <deck-name>     # spawn watchers, embed the deck in the chat stage + open local browser
-pnpm close                # stop watching + clear the stage panel
+pnpm open <deck-name>     # spawn watchers + open the deck in your browser
+pnpm close                # stop watching
 ```
 
-For phone access: `pnpm start:remote` first (adds a Tailscale Funnel + tmux Claude session). Then `pnpm open <deck-name>` works the same — the chat's stage panel shows the deck on the phone over the funnel. `pnpm stop:remote` tears it all down.
+For phone access: `pnpm start:remote` first (adds a Tailscale Funnel + tmux Claude session). Then `pnpm open <deck-name>` pushes the deck URL to the phone's chat stage panel (which polls the preview marker). `pnpm stop:remote` tears it all down. The chat surface is **remote-only** — locally `pnpm open` opens the deck URL directly and you never touch chat.
 
 `start:remote` requires Tailscale installed and signed in (`brew install tailscale && sudo tailscale up`) with Funnel enabled for your tailnet. One-time setup: see [docs/tailscale-funnel-setup.md](docs/tailscale-funnel-setup.md). The URL is a fixed `https://<machine>.tail-XXXXX.ts.net` — bookmark once on your phone.
 
-`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and writes `/reveal/index.html` into `/tmp/sd-test/preview-url.txt` (the chat client polls that file every 2s). Locally it also `open`s `http://127.0.0.1:8765/` in your browser.
+`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and writes `/reveal/index.html` into `/tmp/sd-test/preview-url.txt`. Mode is detected by presence of `/tmp/sd-test/url.txt` (written by `start:remote`, deleted by `stop:remote`): in local mode `pnpm open` opens the deck URL in your browser; in remote mode it skips the open and lets the phone's chat poll the marker.
 
 The Bun server injects a 1-line reload poller into every HTML it serves, so watcher rebuilds refresh the iframe automatically — no DevTools "Disable cache" toggle needed.
 

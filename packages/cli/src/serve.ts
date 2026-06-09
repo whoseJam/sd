@@ -9,6 +9,7 @@ import { spawn, spawnSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
+  openSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -56,14 +57,12 @@ async function start(mode: Mode): Promise<void> {
 
   await ensureServer();
   if (mode === "local") {
-    console.log(`\n  open: http://127.0.0.1:${PORT}/\n`);
-    openBrowser(`http://127.0.0.1:${PORT}/`);
+    console.log(`\n  server on :${PORT} — run \`pnpm open <name>\` to view\n`);
     return;
   }
 
   const url = await ensureTunnel();
   pinTmuxStatusBar(url);
-  openBrowser(url);
   console.log(`\n  chat: ${url}\n`);
   if (process.env.NO_ATTACH === "1") return;
   const result = spawnSync("tmux", ["attach", "-t", SESSION], {
@@ -135,19 +134,19 @@ async function ensureServer(): Promise<void> {
     return;
   }
   console.log("  starting chat server...");
+  // stdio takes an OS handle, not a Node stream — listeners would pin the
+  // event loop and the parent would never exit after child.unref().
+  writeFileSync(SERVER_LOG, "");
+  const logHandle = openSync(SERVER_LOG, "a");
   const child = spawn(
     "bun",
     [join(REPO, "packages", "remote", "src", "server.ts")],
     {
       cwd: REPO,
       detached: true,
-      stdio: ["ignore", "pipe", "pipe"],
+      stdio: ["ignore", logHandle, logHandle],
     },
   );
-  await Bun.write(Bun.file(SERVER_LOG), "");
-  const log = Bun.file(SERVER_LOG).writer();
-  child.stdout.on("data", (chunk) => log.write(chunk));
-  child.stderr.on("data", (chunk) => log.write(chunk));
   child.unref();
   for (let attempt = 0; attempt < 20; attempt++) {
     await sleep(500);
@@ -220,20 +219,6 @@ function pinTmuxStatusBar(url: string): void {
   tmux(["set-option", "-t", SESSION, "status-left-length", "200"]);
   tmux(["set-option", "-t", SESSION, "status-left", ` chat: ${url} `]);
   tmux(["set-option", "-t", SESSION, "status-right", ""]);
-}
-
-function openBrowser(url: string): void {
-  if (process.env.OPEN_BROWSER === "0") return;
-  if (process.platform === "darwin") {
-    spawn("open", [url], { stdio: "ignore", detached: true }).unref();
-  } else if (process.platform === "linux") {
-    spawn("xdg-open", [url], { stdio: "ignore", detached: true }).unref();
-  } else if (process.platform === "win32") {
-    spawn("cmd", ["/c", "start", url], {
-      stdio: "ignore",
-      detached: true,
-    }).unref();
-  }
 }
 
 function tmux(args: string[]): { status: number | null; stdout: string } {
