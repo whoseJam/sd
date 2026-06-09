@@ -84,11 +84,9 @@ function getConfiguration(file: string, targetFolder: string) {
         import.meta.dirname,
         "../../element/src/template.html",
       ),
-      inject: "body",
-      inlineSource: ".(js)$",
+      inject: false,
       minify: false,
       filename: `${file}.html`,
-      scriptLoading: "blocking",
       templateParameters: { base, fonts: parseConfigFonts().join(",") },
     }),
   ];

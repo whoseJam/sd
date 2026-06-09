@@ -22,6 +22,23 @@ const TMUX_SESSION = process.env.TMUX_SESSION ?? "claude-dev";
 const PORT = Number(process.env.PORT ?? 8765);
 const REPO = process.env.REPO ?? process.cwd();
 const SNAPSHOTS_DIR = join(REVEAL_ROOT, "snapshots");
+const DIST_DIR = join(REPO, "dist");
+
+const distHashCache = new Map<string, { mtimeMs: number; hash: string }>();
+function getDistHash(name: "sd.js" | "reveal.js"): string {
+  const filePath = join(DIST_DIR, name);
+  let mtimeMs: number;
+  try {
+    mtimeMs = statSync(filePath).mtimeMs;
+  } catch {
+    return "0";
+  }
+  const cached = distHashCache.get(name);
+  if (cached && cached.mtimeMs === mtimeMs) return cached.hash;
+  const hash = Bun.hash(readFileSync(filePath)).toString(36);
+  distHashCache.set(name, { mtimeMs, hash });
+  return hash;
+}
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 mkdirSync(SNAPSHOTS_DIR, { recursive: true });
@@ -209,15 +226,21 @@ setInterval(() => {
 // cloudflared). Debounced so a webpack rebuild burst counts as one reload.
 let reloadEpoch = 0;
 let reloadTimer: ReturnType<typeof setTimeout> | null = null;
+function bumpReload(): void {
+  if (reloadTimer) clearTimeout(reloadTimer);
+  reloadTimer = setTimeout(() => {
+    reloadEpoch++;
+  }, 200);
+}
 try {
-  watch(REVEAL_ROOT, { recursive: true }, () => {
-    if (reloadTimer) clearTimeout(reloadTimer);
-    reloadTimer = setTimeout(() => {
-      reloadEpoch++;
-    }, 200);
-  });
+  watch(REVEAL_ROOT, { recursive: true }, bumpReload);
 } catch {
-  // fs.watch recursive not supported on this platform; silent.
+  // fs.watch recursive not supported on this platform
+}
+try {
+  watch(DIST_DIR, bumpReload);
+} catch {
+  // dist not yet created at boot
 }
 
 const RELOAD_SCRIPT = `<script>(function(){let l=null;setInterval(function(){fetch('/api/reload-token').then(function(r){return r.json()}).then(function(j){if(l!==null&&j.epoch!==l)location.reload();l=j.epoch})},1000);})();</script>`;
@@ -313,7 +336,10 @@ Bun.serve({
 
     if (path === "/" || path === "/chat" || path === "/chat.html") {
       return new Response(readFileSync(CHAT_HTML_PATH), {
-        headers: { "Content-Type": "text/html; charset=utf-8" },
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-store",
+        },
       });
     }
 
@@ -326,7 +352,10 @@ Bun.serve({
         statSync(filePath).isFile()
       ) {
         return new Response(Bun.file(filePath), {
-          headers: { "Content-Type": contentType(filePath) },
+          headers: {
+            "Content-Type": contentType(filePath),
+            "Cache-Control": "no-store",
+          },
         });
       }
       return new Response("not found", { status: 404 });
@@ -442,7 +471,22 @@ Bun.serve({
       });
     }
 
-    // ── Static fallback under REVEAL_ROOT ─────────────────────────────────
+    const basename = path.split("/").pop() ?? "";
+    if (basename === "sd.js" || basename === "reveal.js") {
+      const filePath = join(DIST_DIR, basename);
+      if (existsSync(filePath)) {
+        const versioned = url.searchParams.has("v");
+        return new Response(Bun.file(filePath), {
+          headers: {
+            "Content-Type": "application/javascript; charset=utf-8",
+            "Cache-Control": versioned
+              ? "public, max-age=31536000, immutable"
+              : "no-store",
+          },
+        });
+      }
+    }
+
     let resolvedPath = path;
     if (resolvedPath.endsWith("/")) resolvedPath += "index.html";
     const filePath = join(REVEAL_ROOT, resolvedPath);
@@ -451,10 +495,11 @@ Bun.serve({
     }
     if (existsSync(filePath) && statSync(filePath).isFile()) {
       const mime = contentType(filePath);
-      // HTML — full docs get the reload poller injected, fragments stay
-      // clean. Either way no-store: the watcher rewrites these on every edit.
       if (mime.startsWith("text/html")) {
         let html = readFileSync(filePath, "utf-8");
+        html = html
+          .replaceAll("{{sdHash}}", getDistHash("sd.js"))
+          .replaceAll("{{revealHash}}", getDistHash("reveal.js"));
         if (html.includes("</body>")) {
           html = html.replace("</body>", RELOAD_SCRIPT + "</body>");
         }
@@ -462,13 +507,14 @@ Bun.serve({
           headers: { "Content-Type": mime, "Cache-Control": "no-store" },
         });
       }
-      // JS / CSS / fonts / images: cached so 27 sd-animation iframes don't
-      // each pay the full download cost through the tunnel. Reload-token
-      // forces a full page reload on watcher rewrites, bounding staleness.
+      const immutable =
+        path.includes("/vendor/") || url.searchParams.has("v");
       return new Response(Bun.file(filePath), {
         headers: {
           "Content-Type": mime,
-          "Cache-Control": "public, max-age=300",
+          "Cache-Control": immutable
+            ? "public, max-age=31536000, immutable"
+            : "public, max-age=300",
         },
       });
     }

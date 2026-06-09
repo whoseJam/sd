@@ -44,6 +44,8 @@ initPreview({
   pill: $("#preview-pill"),
   pillLabel: $("#preview-pill-label"),
   minimize: $("#preview-minimize"),
+  overlay: $("#preview-overlay"),
+  overlayRows: $("#preview-overlay-rows"),
 });
 
 initSessions({

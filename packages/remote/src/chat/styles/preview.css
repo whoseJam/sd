@@ -1,3 +1,70 @@
+.preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 9, 11, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-fast);
+}
+.preview-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.preview-overlay .rows {
+  width: min(68%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.preview-overlay .progress-row {
+  display: grid;
+  gap: 6px;
+}
+.preview-overlay .progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--fg-1);
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+}
+.preview-overlay .resource-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-overlay .progress-value {
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+.preview-overlay .progress-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.preview-overlay .progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent, #4a8cff);
+  transition: width 120ms linear;
+}
+.preview-overlay .progress-row.done .progress-fill {
+  background: #7fd18b;
+}
+.preview-overlay .progress-row.error .progress-head {
+  color: #ffb4b4;
+}
+
 /* Preview toolbar — label + minimize. Sits over the iframe. */
 #preview .label {
   position: absolute;
@@ -19,13 +86,16 @@
   white-space: nowrap;
   pointer-events: none;
 }
+#preview.show > .label {
+  display: none;
+}
 #preview .toolbar {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
   display: flex;
   gap: var(--space-1);
-  z-index: 10;
+  z-index: 30;
 }
 #preview .toolbar button {
   width: 32px;

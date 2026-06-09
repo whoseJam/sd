@@ -156,9 +156,14 @@ class ThemeManager {
   }
 }
 
-window.addEventListener("load", () => {
+function boot() {
   const themeManager = new ThemeManager();
   themeManager.loadTheme("beige");
-});
+}
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
 
 includeHTML({ rootId: "slide-host" }).then(window.MyRevealCallback!);
