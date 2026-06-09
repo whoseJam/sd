@@ -198,8 +198,9 @@ function summarizeToolInput(
     case "ToolSearch":
       return truncate(field("query"), 40);
     case "Bash":
+      return truncate(field("description") || field("command"));
     case "BashOutput":
-      return "";
+      return truncate(field("bash_id"), 30);
     default:
       return "";
   }

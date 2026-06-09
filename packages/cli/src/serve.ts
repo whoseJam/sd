@@ -27,6 +27,16 @@ const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const PORT = Number(process.env.PORT ?? 8765);
 const SERVER_LOG = join(REVEAL_ROOT, "server.log");
 const URL_FILE = join(REVEAL_ROOT, "url.txt");
+const VITE_LOG = join(REVEAL_ROOT, "vite-chat.log");
+const VITE_PID_FILE = join(REVEAL_ROOT, "vite-chat-pid.txt");
+const CHAT_DIST_INDEX = join(
+  REPO,
+  "packages",
+  "remote",
+  "dist",
+  "chat",
+  "index.html",
+);
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
@@ -55,6 +65,7 @@ async function start(mode: Mode): Promise<void> {
     if (!which(command)) die(`missing: ${command} (brew install ${command})`);
   }
 
+  await ensureChatBuild();
   await ensureServer();
   if (mode === "local") {
     console.log(`\n  server on :${PORT} — run \`pnpm open <name>\` to view\n`);
@@ -73,6 +84,7 @@ async function start(mode: Mode): Promise<void> {
 
 async function stop(mode: Mode): Promise<void> {
   killViewWatchers();
+  killViteWatcher();
   if (mode === "remote") {
     if (spawnSync("tmux", ["has-session", "-t", SESSION]).status === 0) {
       spawnSync("tmux", ["kill-session", "-t", SESSION]);
@@ -126,6 +138,65 @@ function killViewWatchers(): void {
   }
   if (killed) console.log(`✓ killed ${killed} view watchers`);
   rmSync(file);
+}
+
+async function ensureChatBuild(): Promise<void> {
+  // First boot: produce dist/chat synchronously so the server has something
+  // to serve before vite's watch loop wakes up.
+  if (!existsSync(CHAT_DIST_INDEX)) {
+    console.log("  building chat (first run)...");
+    const result = spawnSync("pnpm", ["--filter", "@sd/remote", "build:chat"], {
+      cwd: REPO,
+      encoding: "utf-8",
+    });
+    if (result.status !== 0) {
+      die(
+        `✗ chat build failed:\n${result.stderr || result.stdout || "(no output)"}`,
+      );
+    }
+    console.log("✓ chat built");
+  }
+  // Skip if a watcher is already alive (subsequent start without prior stop).
+  if (existsSync(VITE_PID_FILE)) {
+    const pid = Number(readFileSync(VITE_PID_FILE, "utf-8"));
+    if (Number.isFinite(pid) && processAlive(pid)) {
+      console.log(`✓ chat watcher (pid ${pid})`);
+      return;
+    }
+  }
+  writeFileSync(VITE_LOG, "");
+  const logHandle = openSync(VITE_LOG, "a");
+  const child = spawn("pnpm", ["--filter", "@sd/remote", "watch:chat"], {
+    cwd: REPO,
+    detached: true,
+    stdio: ["ignore", logHandle, logHandle],
+  });
+  child.unref();
+  if (child.pid) writeFileSync(VITE_PID_FILE, String(child.pid));
+  console.log(`✓ chat watcher (pid ${child.pid ?? "?"})`);
+}
+
+function killViteWatcher(): void {
+  if (!existsSync(VITE_PID_FILE)) return;
+  const pid = Number(readFileSync(VITE_PID_FILE, "utf-8"));
+  if (Number.isFinite(pid)) {
+    try {
+      process.kill(pid);
+      console.log(`✓ chat watcher killed (pid ${pid})`);
+    } catch {
+      // already dead
+    }
+  }
+  rmSync(VITE_PID_FILE);
+}
+
+function processAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function ensureServer(): Promise<void> {

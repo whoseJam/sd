@@ -102,8 +102,7 @@ export class Math extends BaseText {
 
   getBaselineY(): number {
     return (
-      this.attributes.y +
-      this.attributes.depthFraction * this.attributes.height
+      this.attributes.y + this.attributes.depthFraction * this.attributes.height
     );
   }
 
