@@ -1,12 +1,14 @@
 #!/usr/bin/env bun
 // Backs `pnpm open <name>` and `pnpm close`.
-//   open:  ensure server, kill prior watchers, spawn watchers for the
-//          target deck/animation, write the preview-url marker, open the
-//          local browser.
-//   close: kill watchers, clear the preview-url marker.
 
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { createConnection } from "node:net";
 import { join, resolve } from "node:path";
 
@@ -16,6 +18,8 @@ const PORT = Number(process.env.PORT ?? 8765);
 const PIDS_FILE = join(REVEAL_ROOT, "view-pids.json");
 const LOG_DIR = join(REVEAL_ROOT, "view-logs");
 const PREVIEW_FILE = join(REVEAL_ROOT, "preview-url.txt");
+// url.txt exists iff `start:remote` is active (it writes the funnel URL there).
+const REMOTE_MARKER = join(REVEAL_ROOT, "url.txt");
 const SERVER = `http://127.0.0.1:${PORT}`;
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
@@ -50,20 +54,24 @@ writeFileSync(PIDS_FILE, JSON.stringify(pids));
 const url = isDeck ? "/reveal/index.html" : `/animation/${name}.html`;
 const label = isDeck ? `deck ${name}` : `animation ${name}`;
 writePreview(url, label);
-openBrowser(`${SERVER}/`);
-console.log(`showing ${name}  →  ${url}`);
+if (existsSync(REMOTE_MARKER)) {
+  console.log(`showing ${name}  →  ${url}  (phone via funnel)`);
+} else {
+  openBrowser(`${SERVER}${url}`);
+  console.log(`showing ${name}  →  ${SERVER}${url}`);
+}
 
 // ── helpers ──────────────────────────────────────────────────────────────
 
 async function ensureServer(): Promise<void> {
   if (await portInUse(PORT)) return;
-  console.log("  chat server not running — booting pnpm start:local...");
+  console.log("  server not running — booting pnpm start:local...");
   spawnSync("pnpm", ["start:local"], { cwd: REPO, stdio: "inherit" });
   for (let attempt = 0; attempt < 20; attempt++) {
     if (await portInUse(PORT)) return;
     await sleep(500);
   }
-  die("✗ chat server failed to start");
+  die("✗ server failed to start");
 }
 
 async function killExisting(): Promise<void> {
@@ -128,14 +136,13 @@ function startAnimationWatchers(animationName: string): number[] {
 function spawnWatcher(tag: string, command: string[]): number {
   const logPath = join(LOG_DIR, `${tag}.log`);
   writeFileSync(logPath, "");
+  // stdio → fd: Node streams would keep this process alive even after unref.
+  const logFd = openSync(logPath, "a");
   const child = spawn("pnpm", ["exec", ...command], {
     cwd: REPO,
     detached: true,
-    stdio: ["ignore", "pipe", "pipe"],
+    stdio: ["ignore", logFd, logFd],
   });
-  const writer = Bun.file(logPath).writer();
-  child.stdout.on("data", (chunk) => writer.write(chunk));
-  child.stderr.on("data", (chunk) => writer.write(chunk));
   child.unref();
   console.log(`  ${tag}: pid ${child.pid}  log ${logPath}`);
   return child.pid!;
