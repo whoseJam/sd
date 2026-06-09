@@ -10,5 +10,5 @@ const usable = src && !src.startsWith("blob:") ? src : "";
 export const revealBase = explicitBase
   ? explicitBase
   : usable
-  ? new URL(usable, location.href).href.replace(/\/[^/]+\.js(\?.*)?$/, "")
-  : ".";
+    ? new URL(usable, location.href).href.replace(/\/[^/]+\.js(\?.*)?$/, "")
+    : ".";

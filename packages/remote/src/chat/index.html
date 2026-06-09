@@ -4,71 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <title>sd remote</title>
-  <link rel="stylesheet" href="/chat/styles/tokens.css">
-  <link rel="stylesheet" href="/chat/styles/base.css">
-  <link rel="stylesheet" href="/chat/styles/layout.css">
-  <link rel="stylesheet" href="/chat/styles/header.css">
-  <link rel="stylesheet" href="/chat/styles/preview.css">
-  <link rel="stylesheet" href="/chat/styles/messages.css">
-  <link rel="stylesheet" href="/chat/styles/markdown.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked@13/marked.min.js"></script>
 </head>
 <body>
-
-<div id="preview">
-  <div class="label" id="preview-label"></div>
-  <div class="toolbar">
-    <button id="preview-minimize" type="button" aria-label="minimize">▾</button>
-  </div>
-  <iframe id="preview-iframe" src="about:blank"></iframe>
-  <div class="preview-overlay" id="preview-overlay">
-    <div class="rows" id="preview-overlay-rows"></div>
-  </div>
-</div>
-
-<div id="app">
-
-  <div class="preview-pill" id="preview-pill" role="button" tabindex="0">
-    <span class="icon">▤</span>
-    <span class="label" id="preview-pill-label">preview</span>
-    <span class="hint">tap to show ↗</span>
-  </div>
-
-  <header>
-    <button class="session-picker" id="session-picker" type="button" aria-expanded="false" aria-haspopup="menu">
-      <span class="brand">sd</span>
-      <span class="sep">/</span>
-      <span class="session-title" id="session-title">…</span>
-      <span class="caret">▾</span>
-    </button>
-    <button class="status-pill" id="status" type="button">
-      <span class="dot"></span>
-      <span id="status-text">checking…</span>
-    </button>
-    <div class="session-menu" id="session-menu" role="menu" hidden>
-      <button class="session-item new" id="session-new" type="button">
-        <span class="session-title">＋ Start new session</span>
-        <span class="session-meta">tmux restart Claude</span>
-      </button>
-      <div class="session-divider"></div>
-      <div class="session-list" id="session-list"></div>
-    </div>
-  </header>
-
-  <main id="messages"></main>
-
-  <div class="typing" id="typing">
-    Claude is typing
-    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-  </div>
-
-  <footer>
-    <textarea id="input" placeholder="Message" rows="1"></textarea>
-    <button id="send" type="button">Send</button>
-  </footer>
-
-</div>
-
-<script type="module" src="/chat/modules/app.js"></script>
+  <div id="root"></div>
+  <script type="module" src="./main.tsx"></script>
 </body>
 </html>

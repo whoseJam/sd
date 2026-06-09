@@ -23,6 +23,9 @@ const PORT = Number(process.env.PORT ?? 8765);
 const REPO = process.env.REPO ?? process.cwd();
 const SNAPSHOTS_DIR = join(REVEAL_ROOT, "snapshots");
 const DIST_DIR = join(REPO, "dist");
+// Vite builds chat into packages/remote/dist/chat (see vite.config.ts).
+const CHAT_DIST_DIR = new URL("../dist/chat/", import.meta.url).pathname;
+const CHAT_HTML_PATH = join(CHAT_DIST_DIR, "index.html");
 
 const distHashCache = new Map<string, { mtimeMs: number; hash: string }>();
 function getDistHash(name: "sd.js" | "reveal.js"): string {
@@ -242,6 +245,11 @@ try {
 } catch {
   // dist not yet created at boot
 }
+try {
+  watch(CHAT_DIST_DIR, { recursive: true }, bumpReload);
+} catch {
+  // chat dist not yet created at boot — vite build:chat populates it
+}
 
 const RELOAD_SCRIPT = `<script>(function(){let l=null;setInterval(function(){fetch('/api/reload-token').then(function(r){return r.json()}).then(function(j){if(l!==null&&j.epoch!==l)location.reload();l=j.epoch})},1000);})();</script>`;
 
@@ -296,9 +304,6 @@ function sleep(ms: number): Promise<void> {
 }
 
 // ── Static asset paths ───────────────────────────────────────────────────
-const CHAT_DIR = new URL("./chat/", import.meta.url).pathname;
-const CHAT_HTML_PATH = join(CHAT_DIR, "index.html");
-
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
@@ -335,7 +340,17 @@ Bun.serve({
     const path = decodePath(url.pathname);
 
     if (path === "/" || path === "/chat" || path === "/chat.html") {
-      return new Response(readFileSync(CHAT_HTML_PATH), {
+      if (!existsSync(CHAT_HTML_PATH)) {
+        return new Response(
+          "chat not built — run `pnpm --filter @sd/remote build:chat`",
+          { status: 503, headers: { "Content-Type": "text/plain" } },
+        );
+      }
+      let html = readFileSync(CHAT_HTML_PATH, "utf-8");
+      if (html.includes("</body>")) {
+        html = html.replace("</body>", RELOAD_SCRIPT + "</body>");
+      }
+      return new Response(html, {
         headers: {
           "Content-Type": "text/html; charset=utf-8",
           "Cache-Control": "no-store",
@@ -345,9 +360,9 @@ Bun.serve({
 
     if (path.startsWith("/chat/")) {
       const relative = path.slice("/chat/".length);
-      const filePath = join(CHAT_DIR, relative);
+      const filePath = join(CHAT_DIST_DIR, relative);
       if (
-        filePath.startsWith(CHAT_DIR) &&
+        filePath.startsWith(CHAT_DIST_DIR) &&
         existsSync(filePath) &&
         statSync(filePath).isFile()
       ) {
@@ -507,8 +522,7 @@ Bun.serve({
           headers: { "Content-Type": mime, "Cache-Control": "no-store" },
         });
       }
-      const immutable =
-        path.includes("/vendor/") || url.searchParams.has("v");
+      const immutable = path.includes("/vendor/") || url.searchParams.has("v");
       return new Response(Bun.file(filePath), {
         headers: {
           "Content-Type": mime,

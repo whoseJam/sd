@@ -5,6 +5,16 @@
   "description": "Phone ↔ desktop Claude Code remote chat: Bun HTTP/SSE server, mobile chat UI, JSONL transcript watcher, file-based preview state",
   "type": "module",
   "scripts": {
-    "server": "bun src/server.ts"
+    "server": "bun src/server.ts",
+    "build:chat": "vite build",
+    "watch:chat": "vite build --watch"
+  },
+  "dependencies": {
+    "marked": "^13.0.3",
+    "solid-js": "^1.9.3"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10",
+    "vite-plugin-solid": "^2.11.0"
   }
 }
