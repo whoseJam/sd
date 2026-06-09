@@ -134,18 +134,17 @@ async function ensureServer(): Promise<void> {
     return;
   }
   console.log("  starting chat server...");
-  // Redirect stdio straight to the log fd so we don't hold Node streams open
-  // — otherwise child.unref() can't release the event loop and the parent
-  // hangs forever after the server is up.
+  // stdio takes an OS handle, not a Node stream — listeners would pin the
+  // event loop and the parent would never exit after child.unref().
   writeFileSync(SERVER_LOG, "");
-  const logFd = openSync(SERVER_LOG, "a");
+  const logHandle = openSync(SERVER_LOG, "a");
   const child = spawn(
     "bun",
     [join(REPO, "packages", "remote", "src", "server.ts")],
     {
       cwd: REPO,
       detached: true,
-      stdio: ["ignore", logFd, logFd],
+      stdio: ["ignore", logHandle, logHandle],
     },
   );
   child.unref();

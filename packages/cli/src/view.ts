@@ -136,12 +136,12 @@ function startAnimationWatchers(animationName: string): number[] {
 function spawnWatcher(tag: string, command: string[]): number {
   const logPath = join(LOG_DIR, `${tag}.log`);
   writeFileSync(logPath, "");
-  // stdio → fd: Node streams would keep this process alive even after unref.
-  const logFd = openSync(logPath, "a");
+  // OS handle, not Node stream — listeners would pin this process alive after unref.
+  const logHandle = openSync(logPath, "a");
   const child = spawn("pnpm", ["exec", ...command], {
     cwd: REPO,
     detached: true,
-    stdio: ["ignore", logFd, logFd],
+    stdio: ["ignore", logHandle, logHandle],
   });
   child.unref();
   console.log(`  ${tag}: pid ${child.pid}  log ${logPath}`);
