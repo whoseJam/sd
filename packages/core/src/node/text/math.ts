@@ -26,6 +26,9 @@ export type MathAttributes = BaseTextAttributes & {
   text: Array<string>;
   html: RenderNode | undefined;
   subtextStyles: Array<PathStyle>;
+  // Animates alongside height so getBaselineY stays consistent through
+  // a setText morph.
+  depthFraction: number;
 };
 
 export class Math extends BaseText {
@@ -37,6 +40,7 @@ export class Math extends BaseText {
     y?: number;
     cx?: number;
     cy?: number;
+    by?: number;
     centerX?: number;
     centerY?: number;
     fontSize?: number;
@@ -69,6 +73,7 @@ export class Math extends BaseText {
       html: undefined,
       fontSize: args?.fontSize ?? 20,
       subtextStyles: [],
+      depthFraction: 0,
     };
 
     this.renderer = this.createSVGNode("g");
@@ -82,6 +87,7 @@ export class Math extends BaseText {
       this.attributes.html = html;
       this.attributes.width = box.width;
       this.attributes.height = box.height;
+      this.attributes.depthFraction = readDepthFraction(html);
       this.refreshY(html);
     }
 
@@ -89,8 +95,30 @@ export class Math extends BaseText {
     if (args?.cy !== undefined) this.setCy(args.cy);
     if (args?.centerX !== undefined) this.setCenterX(args.centerX);
     if (args?.centerY !== undefined) this.setCenterY(args.centerY);
+    if (args?.by !== undefined) this.setBaselineY(args.by);
 
     args?.targetNode?.appendChild(this);
+  }
+
+  getBaselineY(): number {
+    return (
+      this.attributes.y +
+      this.attributes.depthFraction * this.attributes.height
+    );
+  }
+
+  setBaselineY(y: number): this {
+    return this.setY(
+      y - this.attributes.depthFraction * this.attributes.height,
+    );
+  }
+
+  renderAttribute(renderer: RenderNode, key: string, value: any) {
+    if (key === "depthFraction") {
+      this.attributes.depthFraction = value;
+      return;
+    }
+    super.renderAttribute(renderer, key, value);
   }
 
   // Math overrides x / y / fill / stroke to write to the inner math
@@ -200,6 +228,13 @@ export class Math extends BaseText {
     );
     MathManager.applyStyles(html, styles);
     this.triggerSizeChange(box.width, box.height);
+    this.triggerAttributeChanged(
+      this.renderer,
+      "depthFraction",
+      readDepthFraction(html),
+      this.attributes.depthFraction,
+      Interp.numberInterp,
+    );
     this.refreshY(html);
     this.triggerAttributeChanged(
       undefined,
@@ -306,6 +341,16 @@ function convertLocation(
     };
   }
   return location;
+}
+
+function readDepthFraction(html: RenderNode): number {
+  const viewBox = (html.element() as SVGSVGElement).getAttribute("viewBox");
+  if (!viewBox) return 0;
+  const parts = viewBox.split(/\s+/);
+  const yMin = +parts[1];
+  const h = +parts[3];
+  if (!h) return 0;
+  return (yMin + h) / h;
 }
 
 function parseToHTML(
