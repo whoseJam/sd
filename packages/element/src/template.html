@@ -9,6 +9,63 @@
     <script type="text/javascript" id="MathJax-script" src="<%= base %>/vendor/MathJax3/Tex-SVG.js"></script>
 </head>
 <body style="margin: 0px; padding: 0px; text-align: center; background: #ffffff00; overflow: hidden;">
-    <script type="text/javascript" src="<%= base %>/sd.js" data-fonts="<%= fonts %>"></script>
+<script>
+(async function () {
+  const ASSET_BASE = "<%= base %>";
+  const SD_URL = "<%= base %>/sd.js?v={{sdHash}}";
+  const NEXT = <%= JSON.stringify(htmlWebpackPlugin.files.js) %>;
+  const top = window.top || window;
+  const insideDeck = (() => {
+    try { return !!(window.parent && window.parent !== window && window.parent.sdPreload); }
+    catch { return false; }
+  })();
+  const post = insideDeck
+    ? () => {}
+    : (m) => { try { top.postMessage(Object.assign({ source: "sd-loader" }, m), "*"); } catch {} };
+  async function fetchBlob(url, name) {
+    post({ type: "start", name });
+    const res = await fetch(url);
+    const total = Number(res.headers.get("content-length")) || 0;
+    const reader = res.body.getReader();
+    const chunks = [];
+    let loaded = 0;
+    while (true) {
+      const r = await reader.read();
+      if (r.done) break;
+      chunks.push(r.value);
+      loaded += r.value.length;
+      post({ type: "progress", name, loaded, total });
+    }
+    post({ type: "done", name, total: loaded });
+    return new Blob(chunks, { type: "application/javascript" });
+  }
+  function inject(blob, attrs) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(blob);
+      const s = document.createElement("script");
+      s.src = url;
+      if (attrs) for (const k in attrs) s.setAttribute(k, attrs[k]);
+      s.onload = () => { URL.revokeObjectURL(url); resolve(); };
+      s.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
+      document.body.appendChild(s);
+    });
+  }
+  async function getSdBlob() {
+    try {
+      const preloaded = window.parent && window.parent !== window && window.parent.sdPreload && window.parent.sdPreload.sd;
+      if (preloaded) return preloaded;
+    } catch {}
+    return fetchBlob(SD_URL, "sd.js");
+  }
+  try {
+    await inject(await getSdBlob(), { "data-base": ASSET_BASE, "data-fonts": "<%= fonts %>" });
+    for (const u of NEXT) await inject(await fetchBlob(u, u.split("/").pop()), null);
+    post({ type: "ready" });
+  } catch (e) {
+    post({ type: "error", message: String(e && e.message || e) });
+    throw e;
+  }
+})();
+</script>
 </body>
 </html>

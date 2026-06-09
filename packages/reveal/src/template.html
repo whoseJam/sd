@@ -2,10 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Fixed 960 viewport so mobile browsers don't squeeze the layout when
-         this page is loaded directly OR inside a CSS-scaled iframe.
-         Reveal's intrinsic width is 960; we let it design at 960 and the
-         outer page (chat stage iframe) handles user-facing scale. -->
     <meta name="viewport" content="width=960, initial-scale=1.0">
     <script src="<%= base %>/vendor/font-awesome.js"></script>
     <link rel="stylesheet" href="<%= base %>/vendor/font-awesome.css">
@@ -18,6 +14,56 @@
             <div include-html="./ppt.html"></div>
         </div>
     </div>
-    <script type="text/javascript" src="<%= base %>/reveal.js"></script>
+<script>
+(async function () {
+  const ASSET_BASE = "<%= base %>";
+  const REVEAL_URL = "<%= base %>/reveal.js?v={{revealHash}}";
+  const SD_URL = "<%= base %>/sd.js?v={{sdHash}}";
+  const NEXT = <%= JSON.stringify(htmlWebpackPlugin.files.js) %>;
+  const top = window.top || window;
+  const post = (m) => { try { top.postMessage(Object.assign({ source: "sd-loader" }, m), "*"); } catch {} };
+  async function fetchBlob(url, name) {
+    post({ type: "start", name });
+    const res = await fetch(url);
+    const total = Number(res.headers.get("content-length")) || 0;
+    const reader = res.body.getReader();
+    const chunks = [];
+    let loaded = 0;
+    while (true) {
+      const r = await reader.read();
+      if (r.done) break;
+      chunks.push(r.value);
+      loaded += r.value.length;
+      post({ type: "progress", name, loaded, total });
+    }
+    post({ type: "done", name, total: loaded });
+    return new Blob(chunks, { type: "application/javascript" });
+  }
+  function inject(blob, attrs) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(blob);
+      const s = document.createElement("script");
+      s.src = url;
+      if (attrs) for (const k in attrs) s.setAttribute(k, attrs[k]);
+      s.onload = () => { URL.revokeObjectURL(url); resolve(); };
+      s.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
+      document.body.appendChild(s);
+    });
+  }
+  try {
+    const [revealBlob, sdBlob] = await Promise.all([
+      fetchBlob(REVEAL_URL, "reveal.js"),
+      fetchBlob(SD_URL, "sd.js"),
+    ]);
+    window.sdPreload = { sd: sdBlob };
+    await inject(revealBlob, { "data-base": ASSET_BASE });
+    for (const u of NEXT) await inject(await fetchBlob(u, u.split("/").pop()));
+    post({ type: "ready" });
+  } catch (e) {
+    post({ type: "error", message: String(e && e.message || e) });
+    throw e;
+  }
+})();
+</script>
 </body>
 </html>

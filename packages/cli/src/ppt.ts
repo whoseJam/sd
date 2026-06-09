@@ -289,10 +289,8 @@ function getConfiguration() {
     new HtmlWebpackPlugin({
       template: host.template,
       filename,
-      inject: "body",
-      inlineSource: ".(js)$",
+      inject: false,
       minify: false,
-      scriptLoading: "blocking",
       templateParameters: { base },
     }),
     new w.DefinePlugin({
