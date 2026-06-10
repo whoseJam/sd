@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>匹配</h1>
+        <p>AtCoder <a href="https://atcoder.jp/contests/dp/tasks/dp_o" target="_blank" data-preview-link>dp_o</a></p>
+    </section>
+    <section>
+        <h2>匹配</h2>
+        <p>给定一个二分图，两侧各 $n$ 个点，求二分图的完备匹配数</p>
+        <sd-animation src="../../animation/匹配/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 260px;"></sd-animation>
+        <p class="fragment">依次为上方的点分配与之匹配的下方点，那么下方的点就是<b>有标号的资源</b></p>
+    </section>
+    <section>
+        <h2>匹配</h2>
+        <sd-animation src="../../animation/匹配/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 320px;"></sd-animation>
+        <p class="fragment">设 $f(i,S)$ 表示已经为上方前 $i$ 个点做完了匹配，下方用掉的点集是 $S$，方案数</p>
+        <p class="fragment">$$f(i,S)\stackrel{+}{\to} f(i+1,\,S\,|\,2^{j-1}),\quad a_{i+1,\,j}=1$$</p>
+    </section>
+</section>

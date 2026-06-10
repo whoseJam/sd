@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { arrowedArc } from "../_/arrow";
+import { arrowedArc } from "../common/arrow";
 
 const svg = sd.svg();
 const C = sd.color();

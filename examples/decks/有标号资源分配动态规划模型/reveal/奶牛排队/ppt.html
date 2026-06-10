@@ -1,0 +1,22 @@
+<section>
+    <section>
+        <h1>奶牛排队</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2915" target="_blank" data-preview-link>P2915</a></p>
+    </section>
+    <section>
+        <h2>奶牛排队</h2>
+        <p>有 $n$ 头奶牛，第 $i$ 头奶牛的编号为 $s_i$，需要把它们排成一排，使相邻两头奶牛编号之差的绝对值超过 $K$，即
+            $$\forall i \in [1, n-1],\ |s_i - s_{i+1}| \gt K$$
+        </p>
+        <sd-animation src="../../animation/奶牛排队/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 280px;"></sd-animation>
+        <p class="fragment">奶牛是<b>有标号的资源</b>，要把这些资源排到一个序列上</p>
+    </section>
+    <section>
+        <h2>奶牛排队</h2>
+        <sd-animation src="../../animation/奶牛排队/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 320px;"></sd-animation>
+        <p class="fragment">设 $f(i,S)$ 表示已经排过集合 $S$ 中的奶牛，且队列末尾是位置 $i$ 的奶牛，排队方案数</p>
+        <p class="fragment">$$f(i,S)\stackrel{+}{\to} f(j,S\,|\,2^{j-1}),\quad j\notin S\ \text{且}\ |s_i - s_j| \gt K$$</p>
+    </section>
+</section>
