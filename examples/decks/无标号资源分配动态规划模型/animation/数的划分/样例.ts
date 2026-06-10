@@ -25,7 +25,7 @@ const title = new sd.Text({
   text: "n = 7,  k = 3",
   cx: 0,
   cy: 110,
-  fontSize: 22,
+  fontSize: 18,
   fill: NEUTRAL,
   opacity: 0,
 });

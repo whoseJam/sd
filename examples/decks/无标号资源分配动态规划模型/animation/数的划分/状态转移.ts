@@ -105,7 +105,7 @@ const formula = new sd.Text({
   text: "f(n, k)  =  f(n - 1, k - 1)  +  f(n - k, k)",
   cx: 0,
   cy: -120,
-  fontSize: 22,
+  fontSize: 18,
   fill: NEUTRAL,
   opacity: 0,
 });

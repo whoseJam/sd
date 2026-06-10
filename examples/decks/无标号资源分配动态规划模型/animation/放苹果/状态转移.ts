@@ -108,7 +108,7 @@ const formula = new sd.Text({
   text: "f(n, m)  =  f(n, m - 1)  +  f(n - m, m)",
   cx: 0,
   cy: -130,
-  fontSize: 22,
+  fontSize: 18,
   fill: NEUTRAL,
   opacity: 0,
 });

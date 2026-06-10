@@ -27,18 +27,18 @@ const GRID_LEFT = -((N - 1) * STEP) / 2 + 80;
 const title = new sd.Text({
   targetNode: svg,
   text: "8 = ",
-  cx: GRID_LEFT - 130,
+  cx: GRID_LEFT - 110,
   cy: 0,
-  fontSize: 26,
+  fontSize: 18,
   fill: NEUTRAL,
   opacity: 0,
 });
 const equation = new sd.Text({
   targetNode: svg,
   text: PARTITIONS[0].join(" + "),
-  cx: GRID_LEFT - 60,
+  cx: GRID_LEFT - 55,
   cy: 0,
-  fontSize: 24,
+  fontSize: 18,
   fill: FILL,
   opacity: 0,
 });
