@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>吃奶酪</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1433" target="_blank" data-preview-link>P1433</a></p>
+    </section>
+    <section>
+        <h2>吃奶酪</h2>
+        <p>把散落在空间中的奶酪分配到一个序列上，定义序列的权值为吃完序列上的奶酪的路径长度，最小化序列权值</p>
+        <sd-animation src="../../animation/吃奶酪/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 320px;"></sd-animation>
+        <p class="fragment">奶酪是一种<b>有标号的资源</b>，要把这种资源排成一个序列</p>
+    </section>
+    <section>
+        <h2>吃奶酪</h2>
+        <sd-animation src="../../animation/吃奶酪/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 340px;"></sd-animation>
+        <p class="fragment">设 $f(i,S)$ 表示已经吃掉了集合 $S$ 中的奶酪，且最后一个被吃掉的是第 $i$ 块，要走的最短距离</p>
+        <p class="fragment">$$f(i,S)+\text{dist}(i\to j)\stackrel{\min}{\to} f(j,S\,|\,2^{j-1})$$</p>
+    </section>
+</section>
