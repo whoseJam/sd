@@ -1,0 +1,57 @@
+<section>
+    <section>
+        <h1>炮兵阵地</h1>
+    </section>
+    <section>
+        <h2>炮兵阵地</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2704" target="_blank" data-preview-link>P2704</a></p>
+        <p>在 $N\times M$ 的网格上部署炮兵，网格有<b style="color: green;">平原</b>和<b style="color: grey;">山地</b>两种地形，炮兵只能部署在平原，并能攻击沿横向左右各两格、纵向上下各两格的位置</p>
+        <sd-animation src="../../animation/炮兵阵地/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">求最多能部署多少个炮兵，保证互不攻击。$M\le 10$</p>
+    </section>
+    <section>
+        <h2>炮兵阵地</h2>
+        <p>比较显然的网格构造动态规划模型<span class="fragment">吗？</span></p>
+        <p class="fragment">设 $f_{i,S}$ 表示构造到第 $i$ 行、该行状态为 $S$ 时最多能放多少个炮兵</p>
+        <sd-animation src="../../animation/炮兵阵地/相邻转移.js" class="fragment"
+            style="margin: 0 auto; width: 1000px; height: 220px;"></sd-animation>
+        <p class="fragment">只知道第 $i$ 行的炮兵放置情况，不足以推导第 $i+1$ 行的合法放置（炮兵最多能向下攻击两行）<span class="fragment">，<b>还需要第 $i-1$ 行的信息</b></span></p>
+    </section>
+    <section>
+        <h2>炮兵阵地</h2>
+        <p>设 $f_{i,S,T}$ 表示构造到第 $i$ 行、该行状态为 $S$、第 $i-1$ 行状态为 $T$ 时最多能放多少个炮兵</p>
+        <sd-animation src="../../animation/炮兵阵地/状态转移.js" class="fragment"
+            style="margin: 0 auto; width: 1000px; height: 260px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f_{i,S,T}+\mathrm{cnt}(P)\stackrel{\max}{\rightarrow} f_{i+1,P,S},\ T 与 S 与 P 能连成合法的三行
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 2; i < n; i++)
+                    for (int T: valid)
+                        for (int S: valid)
+                            for (int P: valid)
+                                f[i + 1][P][S] = max(f[i + 1][P][S], f[i][S][T] + count(P));
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>三进制</h2>
+        <p>换个思路，把网格上的格子分成三类</p>
+        <ul>
+            <li>炮兵所在的格子<span class="fragment">，状态 $2$</span></li>
+            <li>位于炮兵正下方<b>恰好</b>一格的格子<span class="fragment">，状态 $1$</span></li>
+            <li>位于炮兵正下方<b>超过</b>一格的格子<span class="fragment">，状态 $0$</span></li>
+        </ul>
+        <sd-animation src="../../animation/炮兵阵地/三进制状态转移.js" class="fragment"
+            style="margin: 0 auto; width: 1000px; height: 240px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f_{i,S}+[T 中 2 的数量]\stackrel{\max}{\rightarrow} f_{i+1,T},\ T 与 S 能连成合法的两行
+            $$
+        </p>
+    </section>
+</section>

@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>玉米田</h1>
+    </section>
+    <section>
+        <h2>玉米田</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1879" target="_blank" data-preview-link>P1879</a></p>
+        <sd-animation src="../../animation/玉米田/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 260px;"></sd-animation>
+        <p>$m\times n$ 玉米田，$1$ 代表土地肥沃可种玉米、$0$ 代表土地贫瘠不能种，相邻的格子不能同时种玉米</p>
+        <p class="fragment">求<b>种玉米</b>的方案总数。$m,n\le 12$</p>
+    </section>
+    <section>
+        <h2>玉米田</h2>
+        <p>把每一行的种植情况压缩为一个状态，逐行考虑如何种</p>
+        <sd-animation src="../../animation/玉米田/状态定义.js"
+            style="margin: 0 auto; width: 1000px; height: 160px;"></sd-animation>
+        <p class="fragment quote">为展示方便，上图调换了二进制顺序；实际上第 $1$ 列对应最低位，第 $2$ 列对应次低位 ……</p>
+        <p class="fragment">在一行土地上，并非所有<b>种植状态</b>都合法</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int All = (1 << n) - 1;
+                for (int S = 0; S <= All; S++) {
+                    if (S & (S << 1)) continue;
+                    for (int i = 1; i <= m; i++) {
+                        if ((stat[i] & S) == S) valid[i].push_back(S);
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>玉米田</h2>
+        <p>设 $f_{i,S}$ 表示种完前 $i$ 行、第 $i$ 行种植状态为 $S$ 的方案数</p>
+        <p class="fragment">
+            $$
+            f_{i,S}\stackrel{+}{\rightarrow} f_{i+1,T},\ T\cap S=\emptyset
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int S: valid[1]) f[1][S] = 1;
+                for (int i = 1; i < m; i++) {
+                    for (int S: valid[i]) {
+                        if (!f[i][S]) continue;
+                        for (int T: valid[i + 1]) {
+                            if ((S & T) == 0) f[i + 1][T] = (f[i + 1][T] + f[i][S]) % Mod;
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
