@@ -7,6 +7,7 @@ import {
   fadeIn,
   fadeOpacity,
   NEUTRAL,
+  NEUTRAL_FILL,
   setFill,
 } from "../common/style";
 import { fadeInVector, makeVector, V_CELL_W } from "../common/vector";
@@ -35,20 +36,11 @@ sd.main(async () => {
   fadeInVector(right, 120);
   await sd.pause();
 
-  let prevArrows: sd.Path[] = [];
-  let prevLabels: sd.Math[] = [];
-  let prevTarget: number | null = null;
+  const allArrows: sd.Path[] = [];
 
   for (let k = 0; k < P; k++) {
-    if (prevTarget !== null) {
-      setFill(right.cells[prevTarget].bg, "#fdecd9", 0);
-      setFill(right.cells[prevTarget].index, NEUTRAL, 0);
-    }
-    for (const a of prevArrows) fadeOpacity(a, 0.18);
-    for (const l of prevLabels) fadeOpacity(l, 0.0);
-
-    setFill(right.cells[k].bg, ACCENT_FILL, 60);
-    setFill(right.cells[k].index, ACCENT_TEXT, 100);
+    setFill(right.cells[k].bg, ACCENT_FILL, 0);
+    setFill(right.cells[k].index, ACCENT_TEXT, 40);
 
     const arrows: sd.Path[] = [];
     const labels: sd.Math[] = [];
@@ -66,33 +58,30 @@ sd.main(async () => {
         fill: "none",
         opacity: 0,
       });
-      const t = 0.5 + r * 0.04;
-      const midX = x1 + (x2 - x1) * t;
-      const midY = y1 + (y2 - y1) * t;
+      const t = 0.18 + r * 0.045;
+      const labelX = x1 + (x2 - x1) * t;
+      const labelY = y1 + (y2 - y1) * t - 8;
       const label = new sd.Math({
         targetNode: svg,
         text: `S_${r}`,
-        cx: midX,
-        cy: midY - 8,
+        cx: labelX,
+        cy: labelY,
         fontSize: 13,
         fill: ACCENT,
         opacity: 0,
       });
-      fadeIn(path, r * 30);
-      fadeIn(label, r * 30 + 60);
+      fadeIn(path, r * 25);
+      fadeIn(label, r * 25 + 40);
       arrows.push(path);
       labels.push(label);
     }
+    await sd.pause();
 
-    prevArrows = [...prevArrows, ...arrows];
-    prevLabels = labels;
-    prevTarget = k;
+    setFill(right.cells[k].bg, NEUTRAL_FILL, 0);
+    setFill(right.cells[k].index, NEUTRAL, 40);
+    for (const a of arrows) fadeOpacity(a, 0.16);
+    for (const l of labels) fadeOpacity(l, 0);
+    allArrows.push(...arrows);
     await sd.pause();
   }
-
-  for (const a of prevArrows) fadeOpacity(a, 0.18);
-  for (const l of prevLabels) fadeOpacity(l, 0);
-  setFill(right.cells[prevTarget!].bg, "#fdecd9", 0);
-  setFill(right.cells[prevTarget!].index, NEUTRAL, 0);
-  await sd.pause();
 });

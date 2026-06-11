@@ -1,8 +1,16 @@
 import * as sd from "@/sd";
 
-import { CELL_H, makeBrace, makePointer, makeStrip } from "../common/strip";
+import {
+  braceD,
+  CELL_H,
+  CELL_W,
+  makeBrace,
+  makePointer,
+  makeStrip,
+} from "../common/strip";
 import {
   ACCENT,
+  ACCENT_FILL,
   ACCENT_TEXT,
   fadeIn,
   fadeOpacity,
@@ -13,80 +21,74 @@ const svg = sd.svg();
 const E = sd.easing();
 
 const N = 9;
-const strip = makeStrip(svg, { n: N + 1, cy: 10, emptyCells: true });
+const CY = 10;
+const strip = makeStrip(svg, { n: N + 1, cy: CY, emptyCells: true });
 
 const slot = new sd.Text({
   targetNode: svg,
   text: "?",
   cx: strip.cxOf(N),
-  cy: 10,
+  cy: CY,
   fontSize: 18,
   fill: ACCENT_TEXT,
   opacity: 0,
 });
-for (let i = 0; i < N; i++) {
-  strip.cells[i].content = new sd.Text({
-    targetNode: svg,
-    text: "?",
-    cx: strip.cxOf(i),
-    cy: 10,
-    fontSize: 14,
-    fill: "transparent",
-    opacity: 0,
-  });
-}
 
-const pointer1 = makePointer(svg, strip, {
+const POINTER_Y = CY + CELL_H / 2 + 8;
+const pointerI = makePointer(svg, strip, {
   idx: N - 1,
-  cy: 10 + CELL_H / 2 + 8,
+  cy: POINTER_Y,
   label: "i",
 });
-const pointer2 = makePointer(svg, strip, {
+const pointerIPlus1 = makePointer(svg, strip, {
   idx: N,
-  cy: 10 + CELL_H / 2 + 8,
+  cy: POINTER_Y,
   label: "i+1",
 });
-const brace1 = makeBrace(svg, strip, {
+
+const BRACE_Y = CY - CELL_H / 2;
+const brace = makeBrace(svg, strip, {
   from: 0,
   to: N - 1,
-  cy: 10 - CELL_H / 2,
-  label: "a_1+a_2+\\cdots+a_i\\equiv j",
-  labelFontSize: 15,
-});
-const brace2 = makeBrace(svg, strip, {
-  from: 0,
-  to: N,
-  cy: 10 - CELL_H / 2,
-  label: "a_1+a_2+\\cdots+a_{i+1}\\equiv j'",
-  labelFontSize: 15,
+  cy: BRACE_Y,
+  label: "a_1+a_2+\\cdots+a_i\\equiv j\\ (\\bmod\\ p)",
+  labelFontSize: 14,
 });
 
 const lastBg = strip.cells[N].bg;
 
 sd.main(async () => {
   for (let i = 0; i < N; i++) fadeIn(strip.cells[i].bg, i * 30);
-  fadeIn(brace1.path, 300);
-  fadeIn(brace1.label!, 380);
-  fadeIn(pointer1.arrow, 300);
-  fadeIn(pointer1.label, 380);
+  fadeIn(brace.path, 300);
+  fadeIn(brace.label!, 380);
+  fadeIn(pointerI.arrow, 300);
+  fadeIn(pointerI.label, 380);
   await sd.pause();
-
-  fadeOpacity(brace1.path, 0);
-  fadeOpacity(brace1.label!, 0);
-  fadeOpacity(pointer1.arrow, 0);
-  fadeOpacity(pointer1.label, 0);
 
   setStroke(lastBg, ACCENT, 0);
   lastBg
-    .startAnimate({ duration: 280 })
-    .setFill(ACCENT)
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setFill(ACCENT_FILL)
     .setOpacity(1)
     .endAnimate();
   fadeIn(slot, 60);
-  fadeIn(brace2.path, 120);
-  fadeIn(brace2.label!, 200);
-  fadeIn(pointer2.arrow, 120);
-  fadeIn(pointer2.label, 200);
+
+  const newLeft = strip.cxOf(0) - CELL_W / 2;
+  const newRight = strip.cxOf(N) + CELL_W / 2;
+  const newCenter = (newLeft + newRight) / 2;
+  brace.path
+    .startAnimate({ duration: 380, easing: E.easeInOut })
+    .setD(braceD(newLeft, newRight, BRACE_Y))
+    .endAnimate();
+  brace
+    .label!.startAnimate({ delay: 80, duration: 320, easing: E.easeInOut })
+    .setCx(newCenter)
+    .endAnimate();
+
+  fadeOpacity(pointerI.arrow, 0);
+  fadeOpacity(pointerI.label, 0);
+  fadeIn(pointerIPlus1.arrow, 80);
+  fadeIn(pointerIPlus1.label, 160);
   await sd.pause();
 
   for (let v = 1; v <= 9; v++) {

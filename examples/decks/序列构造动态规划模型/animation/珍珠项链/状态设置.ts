@@ -1,6 +1,13 @@
 import * as sd from "@/sd";
 
-import { CELL_H, makeBrace, makePointer, makeStrip } from "../common/strip";
+import {
+  braceD,
+  CELL_H,
+  CELL_W,
+  makeBrace,
+  makePointer,
+  makeStrip,
+} from "../common/strip";
 import {
   ACCENT,
   fadeIn,
@@ -21,14 +28,12 @@ const PALETTE = [
   "#9b59b6",
   "#16a085",
   "#c0392b",
-  "#2980b9",
-  "#d35400",
-  "#7f8c8d",
 ];
-const PEARL_SEQ = [0, 1, 2, 1, 0, 2, 1, 0]; // 8 pearls using 3 unique colors
+const PEARL_SEQ = [0, 1, 2, 1, 0, 2, 1, 0];
 
 const N = PEARL_SEQ.length;
-const strip = makeStrip(svg, { n: N + 1, cy: 10, emptyCells: true });
+const CY = 14;
+const strip = makeStrip(svg, { n: N + 1, cy: CY, emptyCells: true });
 
 const pearls: sd.Circle[] = [];
 for (let i = 0; i < N; i++) {
@@ -36,7 +41,7 @@ for (let i = 0; i < N; i++) {
     new sd.Circle({
       targetNode: svg,
       cx: strip.cxOf(i),
-      cy: 10,
+      cy: CY,
       r: 11,
       fill: PALETTE[PEARL_SEQ[i]],
       stroke: NEUTRAL_STROKE,
@@ -49,7 +54,7 @@ for (let i = 0; i < N; i++) {
 const newPearl = new sd.Circle({
   targetNode: svg,
   cx: strip.cxOf(N),
-  cy: 10,
+  cy: CY,
   r: 11,
   fill: NEUTRAL_FILL,
   stroke: NEUTRAL_STROKE,
@@ -57,55 +62,96 @@ const newPearl = new sd.Circle({
   opacity: 0,
 });
 
-const pointer1 = makePointer(svg, strip, {
+const POINTER_Y = CY + CELL_H / 2 + 8;
+const pointerI = makePointer(svg, strip, {
   idx: N - 1,
-  cy: 10 + CELL_H / 2 + 8,
+  cy: POINTER_Y,
   label: "i",
 });
-const pointer2 = makePointer(svg, strip, {
+const pointerIPlus1 = makePointer(svg, strip, {
   idx: N,
-  cy: 10 + CELL_H / 2 + 8,
+  cy: POINTER_Y,
   label: "i+1",
 });
-const brace1 = makeBrace(svg, strip, {
+
+const BRACE_Y = CY - CELL_H / 2;
+const brace = makeBrace(svg, strip, {
   from: 0,
   to: N - 1,
-  cy: 10 - CELL_H / 2,
+  cy: BRACE_Y,
   label: "\\text{used } j \\text{ kinds}",
-  labelFontSize: 14,
+  labelFontSize: 13,
 });
 
 const lastBg = strip.cells[N].bg;
+
+const branchLabelJ = new sd.Math({
+  targetNode: svg,
+  text: "j",
+  cx: strip.cxOf(N),
+  cy: POINTER_Y + 22,
+  fontSize: 16,
+  fill: ACCENT,
+  opacity: 0,
+});
+const branchLabelComplement = new sd.Math({
+  targetNode: svg,
+  text: "K-j",
+  cx: strip.cxOf(N),
+  cy: POINTER_Y + 22,
+  fontSize: 16,
+  fill: ACCENT,
+  opacity: 0,
+});
 
 sd.main(async () => {
   for (let i = 0; i < N; i++) {
     fadeIn(strip.cells[i].bg, i * 30);
     fadeIn(pearls[i], i * 30 + 60);
   }
-  fadeIn(brace1.path, N * 30 + 80);
-  fadeIn(brace1.label!, N * 30 + 160);
-  fadeIn(pointer1.arrow, N * 30 + 80);
-  fadeIn(pointer1.label, N * 30 + 160);
+  fadeIn(brace.path, N * 30 + 80);
+  fadeIn(brace.label!, N * 30 + 160);
+  fadeIn(pointerI.arrow, N * 30 + 80);
+  fadeIn(pointerI.label, N * 30 + 160);
   await sd.pause();
 
-  fadeOpacity(pointer1.arrow, 0);
-  fadeOpacity(pointer1.label, 0);
   setStroke(lastBg, ACCENT, 0);
-  lastBg.startAnimate({ duration: 280 }).setOpacity(1).endAnimate();
+  lastBg
+    .startAnimate({ duration: 280, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   fadeIn(newPearl, 60);
-  fadeIn(pointer2.arrow, 120);
-  fadeIn(pointer2.label, 200);
+
+  const newLeft = strip.cxOf(0) - CELL_W / 2;
+  const newRight = strip.cxOf(N) + CELL_W / 2;
+  const newCenter = (newLeft + newRight) / 2;
+  brace.path
+    .startAnimate({ duration: 380, easing: E.easeInOut })
+    .setD(braceD(newLeft, newRight, BRACE_Y))
+    .endAnimate();
+  brace
+    .label!.startAnimate({ delay: 80, duration: 320, easing: E.easeInOut })
+    .setCx(newCenter)
+    .endAnimate();
+
+  fadeOpacity(pointerI.arrow, 0);
+  fadeOpacity(pointerI.label, 0);
+  fadeIn(pointerIPlus1.arrow, 80);
+  fadeIn(pointerIPlus1.label, 160);
   await sd.pause();
 
   newPearl
     .startAnimate({ duration: 280, easing: E.easeOut })
     .setFill(PALETTE[0])
     .endAnimate();
+  fadeIn(branchLabelJ, 80);
   await sd.pause();
 
+  fadeOpacity(branchLabelJ, 0);
   newPearl
     .startAnimate({ duration: 280, easing: E.easeOut })
     .setFill(PALETTE[3])
     .endAnimate();
+  fadeIn(branchLabelComplement, 120);
   await sd.pause();
 });

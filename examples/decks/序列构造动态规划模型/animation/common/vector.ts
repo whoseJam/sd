@@ -28,11 +28,11 @@ export interface VectorOptions {
   indexStart?: number;
 }
 
-export function makeVector(svg: sd.SDNode, opts: VectorOptions): VectorView {
-  const n = opts.n;
-  const cx = opts.cx;
-  const cy = opts.cy ?? 0;
-  const indexStart = opts.indexStart ?? 0;
+export function makeVector(svg: sd.SDNode, options: VectorOptions): VectorView {
+  const n = options.n;
+  const cx = options.cx;
+  const cy = options.cy ?? 0;
+  const indexStart = options.indexStart ?? 0;
 
   const cyOf = (i: number) => cy + ((n - 1) / 2 - i) * V_STEP;
 
@@ -40,7 +40,9 @@ export function makeVector(svg: sd.SDNode, opts: VectorOptions): VectorView {
   for (let i = 0; i < n; i++) {
     const cellCy = cyOf(i);
     const indexCx =
-      opts.indexSide === "l" ? cx - V_CELL_W / 2 - 14 : cx + V_CELL_W / 2 + 14;
+      options.indexSide === "l"
+        ? cx - V_CELL_W / 2 - 14
+        : cx + V_CELL_W / 2 + 14;
     cells.push({
       bg: new sd.Rect({
         targetNode: svg,
@@ -68,7 +70,7 @@ export function makeVector(svg: sd.SDNode, opts: VectorOptions): VectorView {
   const topY = cyOf(0) + V_CELL_H / 2 + 16;
   const label = new sd.Math({
     targetNode: svg,
-    text: opts.labelTeX,
+    text: options.labelTeX,
     cx,
     cy: topY,
     fontSize: 16,
