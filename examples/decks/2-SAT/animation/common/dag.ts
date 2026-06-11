@@ -16,6 +16,7 @@ export interface DagOpts {
   edges: Array<[number, number]>;
   radius?: number;
   fontSize?: number;
+  mathLabel?: boolean;
 }
 
 export class Dag {
@@ -24,7 +25,7 @@ export class Dag {
   readonly nodes: Map<number, DagNodeSpec> = new Map();
   readonly edges: ReadonlyArray<readonly [number, number]>;
   readonly circles: Map<number, sd.Circle> = new Map();
-  readonly labels: Map<number, sd.Text> = new Map();
+  readonly labels: Map<number, sd.Text | sd.Math> = new Map();
   readonly arrows: Map<string, sd.Path> = new Map();
   readonly arrowHeads: Map<string, sd.Path> = new Map();
   readonly tags: Map<number, sd.Text> = new Map();
@@ -36,6 +37,7 @@ export class Dag {
     for (const n of opts.nodes) this.nodes.set(n.id, n);
 
     const fontSize = opts.fontSize ?? 13;
+    const useMath = opts.mathLabel ?? false;
 
     for (const [u, v] of opts.edges) this.makeArrow(u, v);
 
@@ -53,18 +55,27 @@ export class Dag {
           opacity: 0,
         }),
       );
-      this.labels.set(
-        n.id,
-        new sd.Text({
-          targetNode: this.group,
-          text: n.label ?? String(n.id),
-          cx: n.cx,
-          cy: n.cy,
-          fontSize,
-          fill: C.darkButtonGrey,
-          opacity: 0,
-        }),
-      );
+      const text = n.label ?? String(n.id);
+      const label = useMath
+        ? new sd.Math({
+            targetNode: this.group,
+            text,
+            cx: n.cx,
+            cy: n.cy,
+            fontSize,
+            fill: C.darkButtonGrey,
+            opacity: 0,
+          })
+        : new sd.Text({
+            targetNode: this.group,
+            text,
+            cx: n.cx,
+            cy: n.cy,
+            fontSize,
+            fill: C.darkButtonGrey,
+            opacity: 0,
+          });
+      this.labels.set(n.id, label);
     }
   }
 
@@ -149,18 +160,22 @@ export class Dag {
     id: number,
     fill: sd.SDColor,
     stroke: sd.SDColor,
-    opts?: { delay?: number; duration?: number },
+    opts?: { delay?: number; duration?: number; labelFill?: sd.SDColor },
   ) {
+    const d = opts?.delay ?? 0;
+    const dur = opts?.duration ?? 240;
     this.circles
       .get(id)!
-      .startAnimate({
-        delay: opts?.delay ?? 0,
-        duration: opts?.duration ?? 240,
-        easing: E.easeOut,
-      })
+      .startAnimate({ delay: d, duration: dur, easing: E.easeOut })
       .setFill(fill)
       .setStroke(stroke)
       .setStrokeWidth(2.2)
+      .endAnimate();
+    const labelFill = opts?.labelFill ?? (C.white as sd.SDColor);
+    this.labels
+      .get(id)!
+      .startAnimate({ delay: d, duration: dur, easing: E.easeOut })
+      .setFill(labelFill)
       .endAnimate();
   }
 
