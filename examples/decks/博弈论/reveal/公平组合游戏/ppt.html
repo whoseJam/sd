@@ -1,14 +1,21 @@
 <section>
     <section>
-        <h1>公平组合游戏 (ICG)</h1>
+        <h1>公平组合游戏</h1>
     </section>
     <section>
-        <h2>定义</h2>
+        <h2>公平组合游戏</h2>
+        <p>在公平组合游戏中，每个游戏状态要么是先手必胜态（简称必胜态），要么是先手必败态（简称必败态）</p>
         <ul>
-            <li>两玩家轮流决策，完整信息</li>
-            <li>当前状态决定可行决策（与玩家无关）</li>
-            <li>同一状态不可重复抵达，有限步必有非平局结束</li>
+            <li class="fragment" data-fragment-index="0">一个终止状态是必胜态还是必败态是确定的</li>
+            <li class="fragment" data-fragment-index="1">如果一个状态的某个后继状态是必败态，则该状态是必胜态</li>
+            <li class="fragment" data-fragment-index="3">如果一个状态的全部后继状态都是必胜态，则该状态是必败态</li>
         </ul>
-        <p class="fragment">每个状态要么<b>必胜</b>要么<b>必败</b>。</p>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <sd-animation src="../../animation/公平组合游戏/win.js" class="fragment" data-fragment-index="2"
+                style="margin: 0 auto; width: 400px; height: 200px;"></sd-animation>
+            <sd-animation src="../../animation/公平组合游戏/lose.js" class="fragment" data-fragment-index="4"
+                style="margin: 0 auto; width: 400px; height: 200px;"></sd-animation>
+        </div>
+        <p class="fragment" data-fragment-index="5">由如上三条规则，自然能推导出任意状态的胜负性</p>
     </section>
 </section>
