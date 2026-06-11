@@ -48,4 +48,33 @@ describe("PathEngine.toCubics", () => {
     expect(b[0][0]).toBe("M");
     expect(a.length).toBe(b.length);
   });
+
+  // Empty path (text-engine glyph that resolved to "") used to crash
+  // degenerateAt because it deref'd the missing first sub-path.
+  it("handles an empty source path", () => {
+    const [a, b] = PathEngine.toCubics("", "M 5 5 L 10 5");
+    expect(a.length).toBe(b.length);
+    expect(a[0][0]).toBe("M");
+    expect(b[0][0]).toBe("M");
+  });
+
+  it("handles an empty target path", () => {
+    const [a, b] = PathEngine.toCubics("M 5 5 L 10 5", "");
+    expect(a.length).toBe(b.length);
+    expect(a[0][0]).toBe("M");
+    expect(b[0][0]).toBe("M");
+  });
+
+  it("handles both paths being empty", () => {
+    const [a, b] = PathEngine.toCubics("", "");
+    expect(a.length).toBe(b.length);
+  });
+
+  it("handles empty source against multi-subpath target", () => {
+    const [a, b] = PathEngine.toCubics(
+      "",
+      "M 0 0 L 10 0 L 10 10 M 3 3 L 6 3 L 6 6",
+    );
+    expect(a.length).toBe(b.length);
+  });
 });

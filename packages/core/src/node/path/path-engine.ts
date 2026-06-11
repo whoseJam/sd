@@ -503,10 +503,12 @@ export class PathEngine {
   ): [PathOpers, PathOpers] {
     const aSubs = this.splitSubpaths(this.toCubic(path1));
     const bSubs = this.splitSubpaths(this.toCubic(path2));
+    // Fully-empty side has no own M to anchor at; fall back to the
+    // counterpart's sub-path at the matching index.
     while (aSubs.length < bSubs.length)
-      aSubs.push(PathEngine.degenerateAt(aSubs[0]));
+      aSubs.push(PathEngine.degenerateAt(aSubs[0] ?? bSubs[aSubs.length]));
     while (bSubs.length < aSubs.length)
-      bSubs.push(PathEngine.degenerateAt(bSubs[0]));
+      bSubs.push(PathEngine.degenerateAt(bSubs[0] ?? aSubs[bSubs.length]));
     for (let i = 0; i < aSubs.length; i++) {
       while (
         aSubs[i].length < bSubs[i].length &&
