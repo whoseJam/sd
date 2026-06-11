@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { Dag } from "../lib/dag";
+import { Dag } from "../common/dag";
 
 const svg = sd.svg();
 const C = sd.color();
