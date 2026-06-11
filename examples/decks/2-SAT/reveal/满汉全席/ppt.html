@@ -1,0 +1,78 @@
+<section>
+    <section>
+        <h1>满汉全席</h1>
+    </section>
+    <section>
+        <h2>满汉全席</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4171" target="_blank" data-preview-link>P4171</a></p>
+    </section>
+    <section>
+        <h2>满汉全席</h2>
+        <p>有 $n$ 种材料，每种材料有<b>汉式</b>和<b>满式</b>两种做法</p>
+        <p class="fragment">有 $m$ 个评委，每位评委有两个<b>菜品要求</b>，你需要满足其至少一个要求，才能通过该评委的评判</p>
+        <table class="fragment quote">
+            <tr>
+                <td>评委一</td>
+                <td>评委二</td>
+                <td>评委三</td>
+                <td>评委四</td>
+            </tr>
+            <tr>
+                <td>满式羊肉</td>
+                <td>满式猪肉</td>
+                <td>满式羊肉</td>
+                <td>满式羊肉</td>
+            </tr>
+            <tr>
+                <td>汉式猪肉</td>
+                <td>满式羊肉</td>
+                <td>汉式猪肉</td>
+                <td>满式羊肉</td>
+            </tr>
+        </table>
+        <p class="fragment">你获得了这 $n$ 种材料每种各一份，你需要判断你能否<b>通过所有评委</b>的评判</p>
+    </section>
+    <section>
+        <h2>满汉全席</h2>
+        <p>显然每种材料的做法有两种：$\{满式,汉式\}$</p>
+        <p class="fragment">我们对每种材料，在图中建立 $M(x)$ 和 $H(x)$ 分别与<b>满式做法</b>和<b>汉式做法</b>对应</p>
+        <p class="fragment">如果一个评委想要吃材料 $a$ 的<b>满式</b>做法，和材料 $b$ 的<b>汉式</b>做法，那么......</p>
+        <ul>
+            <li class="fragment">$H(a)\rightarrow H(b)$</li>
+            <li class="fragment">$M(b)\rightarrow M(a)$</li>
+        </ul>
+        <p class="fragment">其余情况也是类似的，但事实上我们没有必要在代码中讨论四种情况</p>
+    </section>
+    <section>
+        <h2>满汉全席</h2>
+        <codeblock>
+            <script type="text/template">
+                int Man(int x) { // 某个材料 x 对应的满式点
+                    return x;
+                }
+                int Han(int x) { // 某个材料 x 对应的汉式点
+                    return x + n;
+                }
+                int Obey(int x, char c) { // 某个材料 x 对应的 c 式点，c = 'm' 或 'h'
+                    if (c == 'm') return Man(x);
+                    return Han(x);
+                }
+                int Disobey(int x, char c) { // 某个材料 x 对应的 !c 式点，c = 'm' 或 'h'
+                    if (c == 'm') return Han(x);
+                    return Man(x);
+                }
+            </script>
+        </codeblock>
+        <codeblock class="fragment">
+            <script type="text/template">
+                n = read(); m = read();
+                for (int i = 1, x, y; i <= m; i++) {
+                    char tx, ty;
+                    cin >> tx >> x >> ty >> y;
+                    Link(Disobey(x, tx), Obey(y, ty));
+                    Link(Disobey(y, ty), Obey(x, tx));
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>

@@ -3,7 +3,6 @@ import * as sd from "@/sd";
 import { Dag } from "../lib/dag";
 
 const svg = sd.svg();
-const C = sd.color();
 
 const nodes = [
   { id: 1, cx: -200, cy: 0, label: "V_1" },
@@ -18,7 +17,14 @@ const edges: Array<[number, number]> = [
   [3, 4],
   [4, 5],
 ];
-const dag = new Dag({ targetNode: svg, nodes, edges, radius: 22 });
+const dag = new Dag({
+  targetNode: svg,
+  nodes,
+  edges,
+  radius: 22,
+  mathLabel: true,
+  fontSize: 15,
+});
 
 sd.main(async () => {
   dag.fadeIn({ delay: 0 });
