@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>Sue的小球</h1>
+    </section>
+    <section>
+        <h2>Sue的小球</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2466" target="_blank" data-preview-link>P2466</a></p>
+        <p>天空中有 $n$ 个彩蛋，第 $i$ 个彩蛋初始坐标为 $(x_i,y_i)$，匀速下落，速度为 $v_i$</p>
+        <sd-animation src="../../animation/Sue的小球/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <p>主角<b style="color: purple;">必须获得所有彩蛋</b>，主角初始坐标为 $(x_0,0)$，每个单位时间可以向左/右移动一个单位距离</p>
+        <p class="fragment">来到某个彩蛋的位置时，<b style="color: #b4610e;">无论彩蛋目前飘在空中还是已经沉入海面，都瞬间获得</b>。一个彩蛋的得分为<b>获取时刻 $y$ 坐标的千分之一</b>，最大化得分</p>
+    </section>
+    <section>
+        <h2>Sue的小球</h2>
+        <p>设 $f(l,r,0/1)$ 表示主角吃掉 $[l,r]$ 区间的彩蛋，目前站在区间左端点 / 右端点上，得分最大是多少</p>
+        <sd-animation src="../../animation/Sue的小球/状态转移1.js"
+            style="margin: 0 auto; width: 1000px; height: 240px;"></sd-animation>
+        <p class="fragment math-fragment">
+            $$
+            f(l,r,0)+\,?\,\xrightarrow{\max}f(l-1,r,0)
+            $$
+        </p>
+        <p class="fragment">下一个彩蛋带来的收益依赖<b>它被吃掉时还剩多少高度</b>，而我们并不知道收集前 $[l,r]$ 用了多长时间</p>
+        <p class="fragment">类似甲虫，通过<b style="color: #b4610e;">最大化收益转化为最小化损失</b>：所有彩蛋若都从初始高度被吃，总得分固定，损失就是<b>下落已损失的高度 $\times v$</b></p>
+    </section>
+    <section>
+        <h2>Sue的小球</h2>
+        <p>设 $f(l,r,0/1)$ 表示主角吃掉 $[l,r]$ 区间的彩蛋，目前站在区间左端点 / 右端点上，最少损失多少得分</p>
+        <sd-animation src="../../animation/Sue的小球/状态转移2.js"
+            style="margin: 0 auto; width: 1000px; height: 260px;"></sd-animation>
+        <p class="fragment">将彩蛋按 $x$ 从左到右排列，$\{S\}$ 是下落速度的前缀和</p>
+        <p class="fragment math-fragment" style="font-size: 20px;">
+            $$
+            \begin{cases}
+            f(l,r,0)+(S_n-(S_r-S_{l-1}))(d_{l}-d_{l-1})/1000\xrightarrow{\min}f(l-1,r,0)\\
+            f(l,r,0)+(S_n-(S_r-S_{l-1}))(d_{r+1}-d_{l})/1000\xrightarrow{\min}f(l,r+1,1)\\
+            f(l,r,1)+(S_n-(S_r-S_{l-1}))(d_{r}-d_{l-1})/1000\xrightarrow{\min}f(l-1,r,0)\\
+            f(l,r,1)+(S_n-(S_r-S_{l-1}))(d_{r+1}-d_{r})/1000\xrightarrow{\min}f(l,r+1,1)
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>
