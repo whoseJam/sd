@@ -179,6 +179,7 @@ Default style for animations written in `examples/decks/<deck>/animation/*.ts`. 
 - **`await sd.pause()` is a semantic beat, not a timer.** Each pause corresponds to one algorithmic step; the viewer advances with N. End every animation with a trailing `await sd.pause()` so snapshot tools capture the final state and the last beat is pause-able.
 - **Visual elements carry algorithmic meaning.** The end state should let a viewer read the answer (Σ area, coverage `n/W`, invariants) without further animation. Don't rely on motion alone — load each element with semantic payload.
 - **Background scaffolding is low-presence:** opacity 0.30–0.40, `strokeWidth` 0.6–0.8, `strokeDashArray: [2, 3]`. Fade these in first.
+- **Size before center.** `setText` / `setFontSize` / `setWidth` commit the new size to `attributes` synchronously, and `setCx` reads that size to compute the x-offset. Always size first, then center — `text.setText("world").setCx(p[0]).setCy(p[1])`. Reversed order makes the final center drift by `(newW − oldW) / 2`.
 
 ## Snapshot tool
 
