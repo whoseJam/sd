@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>互不侵犯</h1>
+    </section>
+    <section>
+        <h2>互不侵犯</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1896" target="_blank" data-preview-link>P1896</a></p>
+        <sd-animation src="../../animation/互不侵犯/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <p>在 $N\times N$ 的网格上放置恰好 $K$ 个国王，使之无法互相攻击，求方案数</p>
+        <p class="fragment">$N\le 9$，提示：网格构造 dp + 普通资源分配 dp</p>
+    </section>
+    <section>
+        <h2>互不侵犯</h2>
+        <p>设 $f_{i,S,k}$ 表示构造到第 $i$ 行、该行状态为 $S$、前 $i$ 行共放置 $k$ 个国王的方案数</p>
+        <p class="fragment">先筛出一行内合法的状态（同一行两个国王不能相邻）</p>
+        <sd-animation src="../../animation/互不侵犯/筛选状态.js" class="fragment"
+            style="margin: 0 auto; width: 1000px; height: 140px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int All = (1 << n) - 1;
+                for (int S = 0; S <= All; S++) {
+                    if (S & (S >> 1)) continue;
+                    valid.push_back(S);
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>互不侵犯</h2>
+        <p>再考虑两行之间的转移</p>
+        <sd-animation src="../../animation/互不侵犯/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 240px;"></sd-animation>
+        <p class="fragment">
+            $$
+            f_{i,S,k}\stackrel{+}{\rightarrow} f_{i+1,T,k+\mathrm{cnt}(T)},\ T 与 S 能作为相邻两行
+            $$
+        </p>
+        <p class="fragment quote">$\mathrm{cnt}(S)$ 表示二进制数 $S$ 中 $1$ 的个数</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                for (int i = 1; i < n; i++)
+                    for (int S: valid)
+                        for (int k = 0; k <= K; k++)
+                            for (int T: valid) {
+                                if (T & S) continue;
+                                if (T & (S << 1)) continue;
+                                if (T & (S >> 1)) continue;
+                                f[i + 1][T][k + count(T)] += f[i][S][k];
+                            }
+            </script>
+        </codeblock>
+    </section>
+</section>
