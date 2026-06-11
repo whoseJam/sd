@@ -1,0 +1,21 @@
+<section>
+    <section>
+        <h1>序列构造动态规划模型</h1>
+    </section>
+    <section>
+        <h2>序列构造动态规划模型</h2>
+        <p>我们希望构造满足某些<b>要求</b>的序列<span class="fragment">，并统计这样的序列的<b>得分最大值</b> / <b>得分最小值</b> / <b>方案数</b></span></p>
+        <div class="fragment quote">
+            <p>序列的元素之和必须等于 $k$；相邻两项之和必须是偶数；前缀和必须是 $p$ 的倍数 ……</p>
+        </div>
+        <p class="fragment">一般我们<b>逐项构造</b>这个序列，并设 $f_{i,?}$ 表示构造到第 $i$ 位的<b>得分最大值</b> / <b>得分最小值</b> / <b>方案数</b></p>
+        <sd-animation src="../../animation/序列构造动态规划模型概述/状态设置.js"
+            style="margin: 0 auto; width: 1000px; height: 180px;"></sd-animation>
+        <p class="fragment quote">$?$ 是辅助信息，用来判断当前序列是否仍满足要求</p>
+        <p class="fragment">
+            $$
+            f_{i,?}\stackrel{\text{更新}}{\rightarrow} f_{i+1,?}
+            $$
+        </p>
+    </section>
+</section>

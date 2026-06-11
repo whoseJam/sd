@@ -1,0 +1,35 @@
+<section>
+    <section>
+        <h1>无标号资源分配动态规划模型</h1>
+    </section>
+    <section>
+        <h2>无标号资源分配动态规划模型</h2>
+        <p>这一类动态规划要求我们对一类<b>无标号的资源</b>做分配</p>
+        <p class="fragment">资源彼此<b>不可区分</b><span class="fragment">，只关心"分了多少"，不关心"是哪些"</span></p>
+        <sd-animation src="../../animation/无标号资源分配动态规划模型概述/划分演示.js"
+            style="margin: 0 auto; width: 1000px; height: 280px;"></sd-animation>
+        <p class="fragment quote">同一种划分的不同排列<b>等价</b>，只算一种</p>
+    </section>
+    <section>
+        <h2>与有标号资源的区别</h2>
+        <sd-animation src="../../animation/无标号资源分配动态规划模型概述/有标号vs无标号.js"
+            style="margin: 0 auto; width: 1000px; height: 260px;"></sd-animation>
+        <p class="fragment">有标号资源用二进制状态描述每个资源的去向</p>
+        <p class="fragment">无标号资源只关心计数<span class="fragment">，状态就是<b>剩多少 / 用了几份</b></span></p>
+    </section>
+    <section>
+        <h2>状态设计</h2>
+        <p>通常设两维状态 $f(n,k)$</p>
+        <ul>
+            <li class="fragment">$n$ — 还要分配的<b>资源总量</b></li>
+            <li class="fragment">$k$ — 限制条件，比如<b>段数上限</b>或<b>每段最大值</b></li>
+        </ul>
+        <div class="fragment quote">
+            <p>每一步只需在<b>两种决策</b>之间二选一</p>
+            <ul>
+                <li>放/不放下一段</li>
+                <li>从总量里扣掉一段大小</li>
+            </ul>
+        </div>
+    </section>
+</section>

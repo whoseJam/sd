@@ -1,0 +1,42 @@
+<section>
+    <section>
+        <h1>放苹果</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2386" target="_blank" data-preview-link>P2386</a></p>
+    </section>
+    <section>
+        <h2>放苹果</h2>
+        <p>把 $n$ 个相同的苹果放到 $m$ 个相同的盘子里，盘子<b>可以为空</b>，求方案数</p>
+        <sd-animation src="../../animation/放苹果/样例.js"
+            style="margin: 0 auto; width: 1000px; height: 320px;"></sd-animation>
+        <p class="fragment quote">$n=5,m=3$ 时共 $5$ 种方案</p>
+    </section>
+    <section>
+        <h2>状态转移</h2>
+        <p>设 $f(n,m)$ 表示把 $n$ 个苹果放到 $m$ 个盘子里的方案数</p>
+        <sd-animation src="../../animation/放苹果/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 360px;"></sd-animation>
+        <p class="fragment">按是否有空盘分类</p>
+        <ul>
+            <li class="fragment">至少一个空盘：删掉它，剩下 $f(n,m-1)$</li>
+            <li class="fragment">每盘都非空：每盘先放 $1$ 个，剩下 $f(n-m,m)$</li>
+        </ul>
+        <p class="fragment">$$f(n,m)=f(n,m-1)+f(n-m,m)$$</p>
+    </section>
+    <section>
+        <h2>边界与实现</h2>
+        <ul>
+            <li class="fragment">$f(0,m)=1$ — 苹果分完，所有盘子都空</li>
+            <li class="fragment">$f(n,1)=1$ — 只有一个盘子，全堆进去</li>
+            <li class="fragment">$f(n,m)=f(n,n)$ 当 $m&gt;n$ — 多余盘子必为空</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int solve(int n, int m) {
+                    if (n == 0 || m == 1) return 1;
+                    if (m > n) return solve(n, n);
+                    return solve(n, m - 1) + solve(n - m, m);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
