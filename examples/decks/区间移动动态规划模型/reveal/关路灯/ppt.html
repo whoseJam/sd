@@ -1,0 +1,31 @@
+<section>
+    <section>
+        <h1>关路灯</h1>
+    </section>
+    <section>
+        <h2>关路灯</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1220" target="_blank" data-preview-link>P1220</a></p>
+        <p>一条直线上有 $n$ 盏路灯，每个路灯的功率不同，关灯人从 $c$ 号路灯出发，需要把所有路灯都关掉</p>
+        <sd-animation src="../../animation/关路灯/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 220px;"></sd-animation>
+        <p class="fragment">安排关灯顺序，使得从开始关灯时刻算起，所有灯耗电量最少</p>
+        <p class="fragment">容易发现，任意时刻被关掉的灯一定是一个<b>连续的区间</b>，关灯人一定位于这个区间的左端点或右端点</p>
+    </section>
+    <section>
+        <h2>关路灯</h2>
+        <p>设 $f(l,r,0/1)$ 表示已经关掉 $[l,r]$ 区间的路灯，关灯人位于区间左端点 / 右端点上时的最少耗电量</p>
+        <sd-animation src="../../animation/关路灯/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 260px;"></sd-animation>
+        <p class="fragment">将路灯按从左到右排列，$\{S\}$ 是<b style="color: purple;">功率前缀和</b>，$\{d\}$ 是<b>坐标</b></p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{cases}
+            f(l,r,0)+(S_n-(S_r-S_{l-1}))(d_l-d_{l-1})\xrightarrow{\min} f(l-1,r,0) \\
+            f(l,r,0)+(S_n-(S_r-S_{l-1}))(d_{r+1}-d_{l})\xrightarrow{\min} f(l,r+1,1) \\
+            f(l,r,1)+(S_n-(S_r-S_{l-1}))(d_r-d_{l-1})\xrightarrow{\min} f(l-1,r,0) \\
+            f(l,r,1)+(S_n-(S_r-S_{l-1}))(d_{r+1}-d_r)\xrightarrow{\min} f(l,r+1,1)
+            \end{cases}
+            $$
+        </p>
+    </section>
+</section>

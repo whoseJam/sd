@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>甲虫</h1>
+    </section>
+    <section>
+        <h2>甲虫</h2>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4870" target="_blank" data-preview-link>P4870</a></p>
+        <p>有一只甲虫站在 $x$ 轴上，有 $n$ 滴露珠，<b style="color: #b4610e;">每滴露珠都有 $m$ 个单位的水分</b></p>
+        <p>每过一个时间单位，<b style="color: purple;">每滴露珠流失一个单位的水分</b>。甲虫每个时间单位能移动一个单位的距离，求甲虫最多能喝多少水</p>
+        <sd-animation src="../../animation/甲虫/样例解释.js"
+            style="margin: 0 auto; width: 1000px; height: 200px;"></sd-animation>
+    </section>
+    <section>
+        <h2>甲虫</h2>
+        <p>类似上一题，设 $f(l,r,0/1)$ 表示甲虫喝完 $[l,r]$ 区间内的水滴，目前站在区间左端点 / 右端点上，最多能喝多少单位的水</p>
+        <sd-animation src="../../animation/甲虫/状态转移1.js"
+            style="margin: 0 auto; width: 1000px; height: 220px;"></sd-animation>
+        <p class="fragment math-fragment">
+            $$
+            f(l,r,0)+\,?\,\xrightarrow{\max}f(l-1,r,0)
+            $$
+        </p>
+        <p class="fragment">我们没法知道下一个水滴还剩多少水</p>
+        <p class="fragment"><b style="color: #b4610e;">预先假定要喝 $k$ 个水滴</b>，把<b>最大化喝多少</b>转化为<b>最小化损失多少</b>：$answer=km-loss$，其中 $loss$ 是因蒸发损失的水量</p>
+        <p class="fragment quote">容斥竟然还能这样用 √</p>
+    </section>
+    <section>
+        <h2>甲虫</h2>
+        <p>设 $f(l,r,0/1)$ 表示甲虫喝完 $[l,r]$ 区间内的 $k$ 滴水，目前站在区间左端点 / 右端点上，最少蒸发多少单位的水</p>
+        <sd-animation src="../../animation/甲虫/状态转移2.js"
+            style="margin: 0 auto; width: 1000px; height: 240px;"></sd-animation>
+        <p class="fragment math-fragment">
+            $$
+            \begin{cases}
+            f(l,r,0)+(k-(r-l+1))(d_{l}-d_{l-1})\xrightarrow{\min}f(l-1,r,0)\\
+            f(l,r,0)+(k-(r-l+1))(d_{r+1}-d_{l})\xrightarrow{\min}f(l,r+1,1)\\
+            f(l,r,1)+(k-(r-l+1))(d_{r}-d_{l-1})\xrightarrow{\min}f(l-1,r,0)\\
+            f(l,r,1)+(k-(r-l+1))(d_{r+1}-d_{r})\xrightarrow{\min}f(l,r+1,1)
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">时间复杂度 $O(n^4)$</p>
+    </section>
+</section>
