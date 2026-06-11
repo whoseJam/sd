@@ -1,0 +1,41 @@
+<section>
+    <section>
+        <h1>数的划分</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1025" target="_blank" data-preview-link>P1025</a></p>
+    </section>
+    <section>
+        <h2>数的划分</h2>
+        <p>把整数 $n$ 划分成 $k$ 个<b>正整数</b>之和，求方案数<span class="fragment">（划分中各数顺序无关）</span></p>
+        <sd-animation src="../../animation/数的划分/样例.js"
+            style="margin: 0 auto; width: 1000px; height: 320px;"></sd-animation>
+        <p class="fragment quote">$n=7, k=3$ 时共 $4$ 种方案</p>
+    </section>
+    <section>
+        <h2>状态转移</h2>
+        <p>设 $f(n,k)$ 表示把 $n$ 划成 $k$ 个正整数的方案数</p>
+        <sd-animation src="../../animation/数的划分/状态转移.js"
+            style="margin: 0 auto; width: 1000px; height: 360px;"></sd-animation>
+        <p class="fragment">按最小段的取值分类</p>
+        <ul>
+            <li class="fragment">最小段 $= 1$：拿掉它，剩下 $f(n-1,k-1)$</li>
+            <li class="fragment">最小段 $\geq 2$：每段都 $-1$，剩下 $f(n-k,k)$</li>
+        </ul>
+        <p class="fragment">$$f(n,k)=f(n-1,k-1)+f(n-k,k)$$</p>
+    </section>
+    <section>
+        <h2>边界与实现</h2>
+        <ul>
+            <li class="fragment">$f(n,1)=1$ — 只能划成一段</li>
+            <li class="fragment">$f(n,k)=0$ 若 $n&lt;k$ — 段数比总量还多</li>
+        </ul>
+        <codeblock class="fragment">
+            <script type="text/template">
+                int solve(int n, int k) {
+                    if (k == 1 || n == k) return 1;
+                    if (n < k) return 0;
+                    return solve(n - 1, k - 1) + solve(n - k, k);
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
