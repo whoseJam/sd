@@ -1,0 +1,67 @@
+<section>
+    <section>
+        <h1>序列计数</h1>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>构造长度为 $n$ 的序列，每一项 $a_i\in[1,m]$，要求序列之和是 $p$ 的倍数，问方案数</p>
+        <p>$n\le 10^9$，$m\le 10^9$，$p\le 100$</p>
+        <sd-animation src="../../animation/序列计数/状态设置.js"
+            style="margin: 0 auto; width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">设 $f_{i,j}$ 表示构造到第 $i$ 位，前 $i$ 项之和对 $p$ 取模为 $j$，的方案数</p>
+        <p class="fragment">
+            $$
+            f_{i,j}\underset{1\le k\le m}{\stackrel{+}{\rightarrow}} f_{i+1,(j+k)\bmod p}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>
+            $$
+            f_{i,j}\underset{1\le k\le m}{\stackrel{+}{\rightarrow}} f_{i+1,(j+k)\bmod p}
+            $$
+        </p>
+        <p style="text-align: center; font-size: 20px; margin-bottom: -20px;">以 $p=5$ 为例</p>
+        <sd-animation src="../../animation/序列计数/同步转移.js" class="fragment"
+            style="margin: 0 auto; width: 1000px; height: 200px;"></sd-animation>
+        <p class="fragment">同余的 $k$ 可以一起转移。设 $S_r$ 表示 $[1,m]$ 中模 $p$ 为 $r$ 的数字个数：</p>
+        <p class="fragment">
+            $$
+            S_rf_{i,j}\underset{0\le r\le p-1}{\stackrel{+}{\rightarrow}} f_{i+1,(j+r)\bmod p}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>序列计数</h2>
+        <p>
+            $$
+            S_rf_{i,j}\underset{0\le r\le p-1}{\stackrel{+}{\rightarrow}} f_{i+1,(j+r)\bmod p}
+            $$
+        </p>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 500px;">
+                <p style="text-align: center; font-size: 20px; margin-bottom: 0px;">以 $p=6$ 为例</p>
+                <sd-animation src="../../animation/序列计数/转移分析.js"
+                    style="margin: 0 auto; width: 480px; height: 380px;"></sd-animation>
+            </div>
+            <div style="width: 500px;">
+                <p>直接转移 $O(np^2)$，本题 $n\le 10^9$，$p\le 100$，跑不了</p>
+                <p class="fragment">每次转移的权重相同，写成转移矩阵后用矩阵快速幂加速<span class="fragment">，时间复杂度 $O(p^3\log n)$</span></p>
+                <p class="fragment" style="font-size: 18px;">
+                    $$
+                    \begin{pmatrix}
+                    S_0 & S_{p-1} & \cdots & S_1 \\
+                    S_1 & S_0 & \cdots & S_2 \\
+                    \vdots & \vdots & \ddots & \vdots \\
+                    S_{p-1} & S_{p-2} & \cdots & S_0
+                    \end{pmatrix}
+                    \begin{pmatrix} f_{i,0} \\ f_{i,1} \\ \vdots \\ f_{i,p-1} \end{pmatrix}
+                    =
+                    \begin{pmatrix} f_{i+1,0} \\ f_{i+1,1} \\ \vdots \\ f_{i+1,p-1} \end{pmatrix}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+</section>

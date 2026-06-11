@@ -1,0 +1,78 @@
+<section>
+    <section>
+        <h1>珍珠项链</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2768" target="_blank" data-preview-link>P2768</a></p>
+    </section>
+    <section>
+        <h2>珍珠项链</h2>
+        <p>用 $K$ 种珍珠构造一串项链，要求每种珍珠都至少出现过一次。问长度 $\le N$ 的项链总数</p>
+        <p>$N\le 10^9$，$K\le 30$</p>
+        <sd-animation src="../../animation/珍珠项链/状态设置.js"
+            style="margin: 0 auto; width: 1000px; height: 180px;"></sd-animation>
+        <p class="fragment">设 $f_{i,j}$ 表示构造长度为 $i$ 的项链，目前用过 $j$ 种珍珠的方案数</p>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            jf_{i,j}\stackrel{+}{\rightarrow} f_{i+1,j} \\
+            (K-j)f_{i,j}\stackrel{+}{\rightarrow} f_{i+1,j+1}
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">最终答案是 $\sum_{1\le i\le N}f_{i,K}$</p>
+    </section>
+    <section>
+        <h2>珍珠项链</h2>
+        <p>
+            $$
+            \begin{cases}
+            jf_{i,j}\stackrel{+}{\rightarrow} f_{i+1,j} \\
+            (K-j)f_{i,j}\stackrel{+}{\rightarrow} f_{i+1,j+1}
+            \end{cases}
+            $$
+        </p>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 500px;">
+                <p style="text-align: center; font-size: 20px; margin-bottom: 0px;">以 $K=5$ 为例</p>
+                <sd-animation src="../../animation/珍珠项链/转移分析.js"
+                    style="margin: 0 auto; width: 480px; height: 380px;"></sd-animation>
+            </div>
+            <div style="width: 500px;">
+                <p>直接转移 $O(NK)$，本题 $N\le 10^9$，跑不了</p>
+                <p class="fragment">写成转移矩阵后用矩阵快速幂加速<span class="fragment">，单次转移 $O(K^3)$，总复杂度 $O(K^3\log N)$</span></p>
+                <p class="fragment" style="font-size: 18px;">
+                    $$
+                    \begin{pmatrix}
+                    0 & 0 & \cdots & 0 & 0 \\
+                    K & 1 & \cdots & 0 & 0 \\
+                    0 & K-1 & \cdots & 0 & 0 \\
+                    \vdots & \vdots & \ddots & \vdots & \vdots \\
+                    0 & 0 & \cdots & 1 & K
+                    \end{pmatrix}
+                    \begin{pmatrix} f_{i-1,0} \\ f_{i-1,1} \\ \vdots \\ f_{i-1,K} \end{pmatrix}
+                    =
+                    \begin{pmatrix} f_{i,0} \\ f_{i,1} \\ \vdots \\ f_{i,K} \end{pmatrix}
+                    $$
+                </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>珍珠项链</h2>
+        <p>但题目要求的是 $S_N=f_{1,K}+f_{2,K}+\cdots+f_{N,K}$，把 $S_i$ 拼到状态向量末尾即可一并递推：</p>
+        <p style="font-size: 18px;">
+            $$
+            \begin{pmatrix}
+            0 & 0 & \cdots & 0 & 0 & 0 \\
+            K & 1 & \cdots & 0 & 0 & 0 \\
+            0 & K-1 & \cdots & 0 & 0 & 0 \\
+            \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+            0 & 0 & \cdots & 1 & K & 0 \\
+            0 & 0 & \cdots & 0 & 1 & 1
+            \end{pmatrix}
+            \begin{pmatrix} f_{i-1,0} \\ f_{i-1,1} \\ \vdots \\ f_{i-1,K} \\ S_{i-1} \end{pmatrix}
+            =
+            \begin{pmatrix} f_{i,0} \\ f_{i,1} \\ \vdots \\ f_{i,K} \\ S_i \end{pmatrix}
+            $$
+        </p>
+    </section>
+</section>
