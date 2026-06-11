@@ -8,8 +8,25 @@
 import type { Page } from "playwright";
 
 import { promises as fs } from "node:fs";
-import path from "node:path";
 import sharp from "sharp";
+
+export const TARGET_PIXELS_DEFAULT = 1000;
+export const MAX_SCALE_DEFAULT = 4;
+
+// Pick an integer DPR so the captured region's larger CSS axis maps to
+// ~target physical pixels. Smaller region → higher DPR (more sampling),
+// capped so tiny regions don't blow up to absurd output sizes.
+export function pickDeviceScaleFactor(opts: {
+  regionCssMax: number;
+  target?: number;
+  maxScale?: number;
+}): number {
+  const target = opts.target ?? TARGET_PIXELS_DEFAULT;
+  const max = opts.maxScale ?? MAX_SCALE_DEFAULT;
+  if (!Number.isFinite(opts.regionCssMax) || opts.regionCssMax <= 0) return 1;
+  const raw = Math.ceil(target / opts.regionCssMax);
+  return Math.max(1, Math.min(max, raw));
+}
 
 export function labelSvg(width: number, height: number, label: string): Buffer {
   return Buffer.from(

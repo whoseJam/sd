@@ -17,7 +17,14 @@ import path from "node:path";
 import { chromium } from "playwright";
 import sharp from "sharp";
 
-import { attachIssueCollector, openInViewer, stitchGrid } from "./snap-grid";
+import {
+  attachIssueCollector,
+  MAX_SCALE_DEFAULT,
+  openInViewer,
+  pickDeviceScaleFactor,
+  stitchGrid,
+  TARGET_PIXELS_DEFAULT,
+} from "./snap-grid";
 
 interface Args {
   url: string;
@@ -27,6 +34,9 @@ interface Args {
   outputExplicit: boolean;
   timeoutMs: number;
   open: boolean;
+  targetPixels: number;
+  scaleOverride?: number;
+  maxScale: number;
 }
 
 const VIEWPORT = { width: 1200, height: 690 };
@@ -44,6 +54,9 @@ Flags:
   --pause N           Shorthand for --from N --to N (single frame)
   -o, --output PATH   Output PNG path (default /tmp/sd-animation-snapshot-<name>-<range>.png)
   --timeout MS        Per-step timeout, ms (default ${STEP_TIMEOUT_DEFAULT})
+  --target PIXELS     Target physical pixels on the larger axis (default ${TARGET_PIXELS_DEFAULT}); drives auto DPR
+  --scale N           Force DPR (bypass auto)
+  --max-scale N       Cap auto DPR (default ${MAX_SCALE_DEFAULT})
   --no-open           Don't auto-open the PNG (macOS Preview otherwise refreshes in place)
   -h, --help          Show this help
 `);
@@ -71,6 +84,9 @@ function parseArgs(argv: string[]): Args {
   let output: string | undefined;
   let timeoutMs = STEP_TIMEOUT_DEFAULT;
   let open = true;
+  let targetPixels = TARGET_PIXELS_DEFAULT;
+  let scaleOverride: number | undefined;
+  let maxScale = MAX_SCALE_DEFAULT;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -80,6 +96,9 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--pause") single = Number(argv[++i]);
     else if (arg === "-o" || arg === "--output") output = argv[++i];
     else if (arg === "--timeout") timeoutMs = Number(argv[++i]);
+    else if (arg === "--target") targetPixels = Number(argv[++i]);
+    else if (arg === "--scale") scaleOverride = Number(argv[++i]);
+    else if (arg === "--max-scale") maxScale = Number(argv[++i]);
     else if (arg === "--no-open") open = false;
     else if (arg === "-h" || arg === "--help") {
       printHelp();
@@ -116,7 +135,18 @@ function parseArgs(argv: string[]): Args {
     output = `/tmp/sd-animation-snapshot-${stem}-${range}.png`;
   }
 
-  return { url, from, to, output, outputExplicit, timeoutMs, open };
+  return {
+    url,
+    from,
+    to,
+    output,
+    outputExplicit,
+    timeoutMs,
+    open,
+    targetPixels,
+    scaleOverride,
+    maxScale,
+  };
 }
 
 interface Bbox {
@@ -300,16 +330,18 @@ async function cropShots(
   shots: Buffer[],
   clip: Bbox,
   viewport: { width: number; height: number },
+  dpr: number,
 ): Promise<Buffer[]> {
-  const left = Math.max(0, Math.floor(clip.x - CLIP_PADDING));
-  const top = Math.max(0, Math.floor(clip.y - CLIP_PADDING));
+  // clip is CSS-pixel coords; sharp.extract needs physical pixels.
+  const left = Math.max(0, Math.floor((clip.x - CLIP_PADDING) * dpr));
+  const top = Math.max(0, Math.floor((clip.y - CLIP_PADDING) * dpr));
   const right = Math.min(
-    viewport.width,
-    Math.ceil(clip.x + clip.width + CLIP_PADDING),
+    viewport.width * dpr,
+    Math.ceil((clip.x + clip.width + CLIP_PADDING) * dpr),
   );
   const bottom = Math.min(
-    viewport.height,
-    Math.ceil(clip.y + clip.height + CLIP_PADDING),
+    viewport.height * dpr,
+    Math.ceil((clip.y + clip.height + CLIP_PADDING) * dpr),
   );
   const width = right - left;
   const height = bottom - top;
@@ -343,33 +375,56 @@ const FORCE_FLUSH_MODE = `
   })();
 `;
 
+interface FlushResult {
+  collector: ReturnType<typeof attachIssueCollector>;
+  regionCssMax: number | null;
+}
+
 async function runFlushPass(
   browser: Awaited<ReturnType<typeof chromium.launch>>,
   url: string,
   timeoutMs: number,
-): Promise<ReturnType<typeof attachIssueCollector>> {
+): Promise<FlushResult> {
   const ctx = await browser.newContext({ viewport: VIEWPORT });
   const page = await ctx.newPage();
   const collector = attachIssueCollector(page);
   await page.addInitScript(FORCE_FLUSH_MODE);
+  let regionCssMax: number | null = null;
   try {
     await page.goto(url, { waitUntil: "load" });
-    await page.waitForFunction(
-      () =>
-        (
-          globalThis as unknown as {
-            sd?: { Window?: { MAIN_FINISHED?: boolean } };
-          }
-        ).sd?.Window?.MAIN_FINISHED === true,
-      undefined,
-      { timeout: timeoutMs },
-    );
+    try {
+      await page.waitForFunction(
+        () =>
+          (
+            globalThis as unknown as {
+              sd?: { Window?: { MAIN_FINISHED?: boolean } };
+            }
+          ).sd?.Window?.MAIN_FINISHED === true,
+        undefined,
+        { timeout: timeoutMs },
+      );
+    } catch {
+      // Flush mode doesn't always reach MAIN_FINISHED (action conflicts /
+      // infinite waits); the collector already captured any real error.
+      // We still want to measure whatever SVG state has rendered.
+    }
+    // Final-state SVG content bbox approximates the union — elements fade
+    // in and stay through MAIN_FINISHED. An underestimate just rounds DPR
+    // up, so it's the safe direction.
+    const bbox = await measureSvgBBox(page);
+    if (bbox) {
+      const clip = await pageClipFromSvgBox(page, bbox);
+      if (clip) {
+        const w = clip.width + 2 * CLIP_PADDING;
+        const h = clip.height + 2 * CLIP_PADDING;
+        regionCssMax = Math.max(w, h);
+      }
+    }
   } catch {
-    // Timeout means main() never reached LAST_MAIN_STAGE — usually because an
-    // action conflict threw partway. The pageerror is already in the collector.
+    // page.goto failed; can't measure. DPR falls back to 1.
   }
   await ctx.close();
-  return collector;
+  return { collector, regionCssMax };
 }
 
 async function main(): Promise<void> {
@@ -379,21 +434,34 @@ async function main(): Promise<void> {
   let captureError: unknown;
 
   try {
-    const flushCollector = await runFlushPass(
+    const flush = await runFlushPass(
       browser,
       args.url,
       Math.min(args.timeoutMs, 15000),
     );
-    if (flushCollector.hasErrors()) {
+    if (flush.collector.hasErrors()) {
       process.stderr.write(
         "flush pass would throw when sd-element measures the iframe:\n",
       );
-      process.stderr.write(flushCollector.format());
+      process.stderr.write(flush.collector.format());
       await browser.close();
       process.exit(1);
     }
 
-    const page = await browser.newPage({ viewport: VIEWPORT });
+    const dpr =
+      args.scaleOverride ??
+      (flush.regionCssMax !== null
+        ? pickDeviceScaleFactor({
+            regionCssMax: flush.regionCssMax,
+            target: args.targetPixels,
+            maxScale: args.maxScale,
+          })
+        : 1);
+
+    const page = await browser.newPage({
+      viewport: VIEWPORT,
+      deviceScaleFactor: dpr,
+    });
     collector = attachIssueCollector(page);
 
     await page.goto(args.url, { waitUntil: "load" });
@@ -435,7 +503,9 @@ async function main(): Promise<void> {
       outputPath = `/tmp/sd-animation-snapshot-${stem}-${range}.png`;
     }
 
-    const finalShots = clip ? await cropShots(shots, clip, VIEWPORT) : shots;
+    const finalShots = clip
+      ? await cropShots(shots, clip, VIEWPORT, dpr)
+      : shots;
 
     await stitchGrid({
       shots: finalShots,

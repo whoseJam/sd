@@ -14,7 +14,14 @@
 import path from "node:path";
 import { chromium } from "playwright";
 
-import { attachIssueCollector, openInViewer, stitchGrid } from "./snap-grid";
+import {
+  attachIssueCollector,
+  MAX_SCALE_DEFAULT,
+  openInViewer,
+  pickDeviceScaleFactor,
+  stitchGrid,
+  TARGET_PIXELS_DEFAULT,
+} from "./snap-grid";
 
 type Framework = "reveal" | "webslides" | "impress";
 
@@ -26,6 +33,9 @@ interface Args {
   idleMs?: number;
   timeoutMs: number;
   open: boolean;
+  targetPixels: number;
+  scaleOverride?: number;
+  maxScale: number;
 }
 
 const VIEWPORT = { width: 1200, height: 690 };
@@ -50,6 +60,9 @@ Flags:
   --idle MS           Wait per slide after navigation before screenshot (default per framework: reveal/webslides 300, impress 1100)
   -o, --output PATH   Output PNG path (default /tmp/sd-ppt-snapshot-<name>-<range>.png)
   --timeout MS        Framework-ready timeout, ms (default ${READY_TIMEOUT_DEFAULT})
+  --target PIXELS     Target physical pixels on the larger axis (default ${TARGET_PIXELS_DEFAULT}); drives auto DPR
+  --scale N           Force DPR (bypass auto)
+  --max-scale N       Cap auto DPR (default ${MAX_SCALE_DEFAULT})
   --no-open           Don't auto-open the PNG (macOS Preview otherwise refreshes in place)
   -h, --help          Show this help
 `);
@@ -65,6 +78,9 @@ function parseArgs(argv: string[]): Args {
   let idleMs: number | undefined;
   let timeoutMs = READY_TIMEOUT_DEFAULT;
   let open = true;
+  let targetPixels = TARGET_PIXELS_DEFAULT;
+  let scaleOverride: number | undefined;
+  let maxScale = MAX_SCALE_DEFAULT;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -75,6 +91,9 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--idle") idleMs = Number(argv[++i]);
     else if (arg === "-o" || arg === "--output") output = argv[++i];
     else if (arg === "--timeout") timeoutMs = Number(argv[++i]);
+    else if (arg === "--target") targetPixels = Number(argv[++i]);
+    else if (arg === "--scale") scaleOverride = Number(argv[++i]);
+    else if (arg === "--max-scale") maxScale = Number(argv[++i]);
     else if (arg === "--no-open") open = false;
     else if (arg === "-h" || arg === "--help") {
       printHelp();
@@ -102,7 +121,18 @@ function parseArgs(argv: string[]): Args {
     throw new Error("--to must be an integer >= --from");
   }
 
-  return { url, from, to, output, idleMs, timeoutMs, open };
+  return {
+    url,
+    from,
+    to,
+    output,
+    idleMs,
+    timeoutMs,
+    open,
+    targetPixels,
+    scaleOverride,
+    maxScale,
+  };
 }
 
 type Page = Awaited<ReturnType<typeof chromium.prototype.newPage>>;
@@ -227,7 +257,18 @@ async function main(): Promise<void> {
   let collector: ReturnType<typeof attachIssueCollector> | undefined;
 
   try {
-    const page = await browser.newPage({ viewport: VIEWPORT });
+    const dpr =
+      args.scaleOverride ??
+      pickDeviceScaleFactor({
+        regionCssMax: Math.max(VIEWPORT.width, VIEWPORT.height),
+        target: args.targetPixels,
+        maxScale: args.maxScale,
+      });
+
+    const page = await browser.newPage({
+      viewport: VIEWPORT,
+      deviceScaleFactor: dpr,
+    });
     collector = attachIssueCollector(page);
 
     await page.goto(args.url, { waitUntil: "load" });
