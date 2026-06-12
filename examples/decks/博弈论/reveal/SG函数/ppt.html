@@ -1,15 +1,76 @@
 <section>
     <section>
-        <h1>SG 函数</h1>
+        <h1>SG函数</h1>
+        <p>一个函数，吞进去一个游戏局面，吐出来一个数字，这个数字有助于我们判断游戏的胜负性</p>
     </section>
     <section>
-        <h2>定义</h2>
-        <p>状态 $s$ 的后继集合 $S$，$\text{SG}(s) = \text{mex}\{\text{SG}(t) : t \in S\}$（mex = 集合外最小自然数）。</p>
-        <p class="fragment">$\text{SG}(s) = 0 \Leftrightarrow s$ 必败。</p>
+        <h2>SG函数</h2>
+        <p>这个函数的参数是游戏的状态，返回值是一个非负整数</p>
+        <ul>
+            <li class="fragment">当返回值为 $0$ 的时候，先手必败</li>
+            <li class="fragment">否则，先手必胜</li>
+        </ul>
     </section>
     <section>
-        <h2>Sprague-Grundy 定理</h2>
-        <p>多个独立 ICG 游戏并行 → $\text{SG}(\text{游戏}) = \bigoplus \text{SG}(\text{子游戏})$。</p>
-        <p class="fragment">Nim 是该定理的具体案例。</p>
+        <h2>mex运算</h2>
+        <p>mex运算是一种针对集合的运算，表示求出这个集合中最小的没有出现过的非负整数</p>
+        <div class="fragment quote">
+            <h3>例如</h3>
+            <ul>
+                <li class="fragment">$mex(\{0,2,3\})=1$</li>
+                <li class="fragment">$mex(\{1,2\})=0$</li>
+                <li class="fragment">$mex(\{\})=0$</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+        <h2>SG函数</h2>
+        <p>设当前游戏状态为 $x$，后继状态有 $a_1,a_2...a_n$，那么：
+            $$
+            SG(x)=mex(\{SG(a_1),SG(a_2)...SG(a_n)\})
+            $$
+        </p>
+        <p class="fragment quote">$SG(x)$ 为 $0$ 表示 $x$ 为必败态，否则 $x$ 为必胜态</p>
+        <ul>
+            <li class="fragment">如果一个状态的所有后继状态都是必胜态，那么该状态就是必败态<span class="fragment">——如果所有后继状态的 $SG$ 值都不为 $0$，那么该状态的 $SG$ 值会是 $0$</span></li>
+            <li class="fragment">如果一个状态的某个后继状态是必败态，那么该状态就是必胜态<span class="fragment">——如果存在某个后继状态的 $SG$ 值为 $0$，那么该状态的 $SG$ 值一定不为 $0$</span></li>
+        </ul>
+        <p class="fragment">那为什么不直接用bool数组来表示一个状态是必胜还是必败的，而要用 $SG$ 函数呢？<b style="color: purple;">$SG$ 函数能给我们带来什么别的好处吗？</b></p>
+    </section>
+    <section>
+        <h2>游戏分裂</h2>
+        <p>有的时候游戏会产生分裂</p>
+        <div class="fragment quote">
+            <h3>例子</h3>
+            <p>比如我们在用一根绳子博弈，某一种操作可以把绳子切断，变成两根绳子，随后在这两根绳子上分别博弈</p>
+            <span class="fragment">在这种情况下，单纯用必胜必败态去描述一个游戏状态的话，游戏状态就会变得很庞大</span>
+        </div>
+        <p class="fragment">
+            如果一个游戏状态 $x$ 分裂为了 $n$ 个子游戏状态 $a_1,a_2...a_n$，那么：
+            $$
+            SG(x)=SG(a_1)\otimes SG(a_2)\otimes ...\otimes SG(a_n)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>总结</h2>
+        <p>
+            设当前游戏状态为 $x$，后继状态有 $a_1,a_2...a_n$，那么：
+            $$
+            SG(x)=mex(\{SG(a_1),SG(a_2)...SG(a_n)\})
+            $$
+        </p>
+        <p>
+            如果一个游戏状态 $x$ 分裂为了 $n$ 个子游戏状态 $a_1,a_2...a_n$，那么：
+            $$
+            SG(x)=SG(a_1)\otimes SG(a_2)\otimes ...\otimes SG(a_n)
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>理解</h2>
+        <p>我们可以把一个游戏的 $SG$ 值，看作一堆石子的石子数量</p>
+        <p class="fragment">如果一个游戏状态 $x$ 的 $SG(x)=k$，那么就意味着其后续一定能转移到 $SG=0,1,2,3...k-1$ 的这些游戏状态上去</p>
+        <p class="fragment">所以如果一个游戏状态分裂为了多个子游戏，那我可以把每个子游戏看作一堆石子，其本质上就是在玩一个NIM游戏</p>
     </section>
 </section>
