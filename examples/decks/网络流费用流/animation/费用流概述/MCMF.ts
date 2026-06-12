@@ -4,7 +4,6 @@ import { FlowGraph } from "../common/flow-graph";
 
 const svg = sd.svg();
 const C = sd.color();
-const E = sd.easing();
 
 interface EdgeInfo {
   cap: number;
@@ -47,29 +46,11 @@ for (const key of Object.keys(edgeInfo)) {
   graph.setCap(u, v, edgeLabel(key), C.darkButtonGrey);
 }
 
-const totals = new sd.Text({
-  targetNode: svg,
-  text: "|f| = 0   cost = 0",
-  cx: 0,
-  cy: -140,
-  fontSize: 14,
-  fill: C.darkButtonGrey,
-  opacity: 0,
-});
-
 function augment(path: string[], add: number) {
   for (let i = 0; i + 1 < path.length; i++) {
     const key = `${path[i]}-${path[i + 1]}`;
     edgeInfo[key].flow += add;
   }
-}
-
-function pathCost(path: string[]): number {
-  let c = 0;
-  for (let i = 0; i + 1 < path.length; i++) {
-    c += edgeInfo[`${path[i]}-${path[i + 1]}`].cost;
-  }
-  return c;
 }
 
 function highlightPath(path: string[], color: sd.SDColor) {
@@ -84,22 +65,8 @@ function fadePath(path: string[], opacity: number) {
   }
 }
 
-function refreshLabels(color: sd.SDColor) {
-  for (const key of Object.keys(edgeInfo)) {
-    const [u, v] = key.split("-");
-    graph.setCap(u, v, edgeLabel(key), color);
-  }
-}
-
-let totalFlow = 0;
-let totalCost = 0;
-
 sd.main(async () => {
   graph.fadeIn({ delay: 0 });
-  totals
-    .startAnimate({ delay: 320, duration: 280, easing: E.easeOut })
-    .setOpacity(1)
-    .endAnimate();
   await sd.pause();
 
   const augPaths: string[][] = [
@@ -108,33 +75,16 @@ sd.main(async () => {
     ["s", "b", "t"],
   ];
 
-  for (let i = 0; i < augPaths.length; i++) {
-    const path = augPaths[i];
-    const cost = pathCost(path);
+  for (const path of augPaths) {
     highlightPath(path, C.darkOrange);
     await sd.pause();
 
     augment(path, 1);
-    totalFlow += 1;
-    totalCost += cost;
-    refreshLabels(C.darkButtonGrey);
     for (let j = 0; j + 1 < path.length; j++) {
       const key = `${path[j]}-${path[j + 1]}`;
       graph.setCap(path[j], path[j + 1], edgeLabel(key), C.steelBlue);
     }
-    totals
-      .startAnimate({ duration: 280, easing: E.easeOut })
-      .setText(`|f| = ${totalFlow}   cost = ${totalCost}`)
-      .setFill(C.steelBlue)
-      .endAnimate();
     fadePath(path, 0.35);
     await sd.pause();
   }
-
-  totals
-    .startAnimate({ duration: 320, easing: E.easeOut })
-    .setText(`|f| = ${totalFlow}   min cost = ${totalCost}`)
-    .setFill(C.darkGreen)
-    .endAnimate();
-  await sd.pause();
 });
