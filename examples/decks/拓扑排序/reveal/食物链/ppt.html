@@ -1,18 +1,18 @@
 <section>
     <section>
         <h1>食物链</h1>
-        <p>luogu P3183 — DAG 上 DP</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P3183" target="_blank" data-preview-link>P3183</a></p>
     </section>
     <section>
         <h2>题意</h2>
-        <p>统计食物网（DAG）中"食物链"的数量 — 起点入度 $0$、终点出度 $0$、非孤立点。</p>
+        <p>统计食物网（DAG）中"食物链"的数量：起点入度 $0$、终点出度 $0$、非孤立点。</p>
         <sd-animation src="../../animation/食物链/样例解释.js" class="fragment"
             style="margin: 0 auto; width: 460px; height: 240px;"></sd-animation>
     </section>
     <section>
         <h2>DP</h2>
         <p>$f(u)$ = 以 $u$ 为末尾的食物链数；初始化 $f(\text{ind}=0) = 1$。</p>
-        <p class="fragment">$f(u) \xrightarrow{+} f(v)$ — 沿拓扑序累加，答案是 $\sum_{\text{oud}(u) = 0} f(u)$。</p>
+        <p class="fragment">$f(u) \xrightarrow{+} f(v)$，沿拓扑序累加，答案是 $\sum_{\text{oud}(u) = 0} f(u)$。</p>
         <sd-animation src="../../animation/食物链/食物链.js" class="fragment"
             style="margin: 0 auto; width: 460px; height: 240px;"></sd-animation>
     </section>
