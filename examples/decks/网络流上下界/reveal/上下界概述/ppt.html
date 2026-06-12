@@ -1,0 +1,44 @@
+<section>
+    <section>
+        <h1>上下界网络流</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P5192" target="_blank" data-preview-link>P5192</a></p>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>每条边 $(u, v)$ 除上界 $c$ 还有下界 $b$。可行流要求每条边 $b \le f \le c$，且每点流量守恒。</p>
+        <p class="fragment">常见四类问题：无源汇可行流、有源汇可行流、有源汇最大流、有源汇最小流。</p>
+    </section>
+    <section>
+        <h2>建图：拆下界</h2>
+        <p>下界 $b$ 是强制流量。把每条 $(u, v, b, c)$ 拆成两部分：</p>
+        <ul>
+            <li class="fragment">$u \to v$ 容量 $c - b$：浮动部分</li>
+            <li class="fragment">$S' \to v$ 容量 $b$：补上 $v$ 必须收到的下界</li>
+            <li class="fragment">$u \to T'$ 容量 $b$：抵消 $u$ 必须送走的下界</li>
+        </ul>
+        <sd-animation src="../../animation/上下界概述/建图.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>无源汇可行流</h2>
+        <p>对每点 $u$ 统计虚拟源点的净入流 $\Delta_u = \sum_{\text{in}} b - \sum_{\text{out}} b$。</p>
+        <ul>
+            <li class="fragment">$\Delta_u > 0$：$S' \to u$ 容量 $\Delta_u$</li>
+            <li class="fragment">$\Delta_u < 0$：$u \to T'$ 容量 $-\Delta_u$</li>
+        </ul>
+        <p class="fragment">跑 $S' \to T'$ 最大流。若所有 $S'$ 出边都饱和，原图存在可行流。</p>
+    </section>
+    <section>
+        <h2>有源汇可行流</h2>
+        <p>加一条 $t \to s$ 容量 $+\infty$、下界 $0$ 的边：把汇点的流量绕回源点，构成环流 $\Rightarrow$ 退化为无源汇情形。</p>
+        <p class="fragment">最终可行流的值 = 那条新边上跑过的流量。</p>
+    </section>
+    <section>
+        <h2>有源汇最大流 / 最小流</h2>
+        <p>先按上一节求出一个可行流 $F_1$。再在<b>原图的残量网络</b>（移除 $S', T'$）上：</p>
+        <ul>
+            <li class="fragment"><b>最大流</b>：跑 $s \to t$ 最大流 $F_2$，答案 $F_1 + F_2$</li>
+            <li class="fragment"><b>最小流</b>：跑 $t \to s$ 最大流 $F_2$，答案 $F_1 - F_2$</li>
+        </ul>
+    </section>
+</section>
