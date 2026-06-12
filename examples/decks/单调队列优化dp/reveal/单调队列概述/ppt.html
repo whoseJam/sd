@@ -1,13 +1,14 @@
 <section>
     <section>
         <h1>单调队列</h1>
-        <p>一个可以从两端弹出的单调栈</p>
+        <p>双端队列上的单调维护</p>
     </section>
     <section>
         <h2>滑动窗口最大值</h2>
-        <p>双端队列：前端弹出窗口外的过期元素，后端弹出比当前小的元素。</p>
+        <p>给定数组 $A$ 和窗口长度 $K$，求每个长度为 $K$ 的窗口内的最大值。</p>
+        <p>维护双端队列 $Q$ 存索引，每次 $i$ 进入：队首过期（$Q_{\text{front}} \le i - K$）出队，队尾比 $A_i$ 小的全部出队，$i$ 入队尾。</p>
         <sd-animation src="../../animation/单调队列概述/单调队列.js" class="fragment"
-            style="margin: 0 auto; width: 560px; height: 240px;"></sd-animation>
-        <p class="fragment">队列内始终保持<b>单调递减</b>，队头就是当前窗口的最大值。</p>
+            style="margin: 0 auto; width: 560px; height: 220px;"></sd-animation>
+        <p class="fragment">队列内值始终<b>单调递减</b>，队首即当前窗口最大值。</p>
     </section>
 </section>
