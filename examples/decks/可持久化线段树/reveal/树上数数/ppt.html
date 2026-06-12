@@ -1,0 +1,20 @@
+<section>
+    <section>
+        <h1>树上数数</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2633" target="_blank" data-preview-link>P2633</a></p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>树上每个点有权值。多次查询路径 $u \to v$ 上的第 $k$ 大。</p>
+    </section>
+    <section>
+        <h2>做法</h2>
+        <p>沿"根 $\to$ 当前点"插入权值线段树:$S_u = S_{fa(u)} + \{\text{insert}(a_u)\}$。</p>
+        <p class="fragment">路径 $u \to v$ 上的权值线段树:
+            $$ S_{u \to v} = S_u + S_v - S_{\text{lca}(u, v)} - S_{fa(\text{lca}(u, v))} $$
+        </p>
+        <sd-animation src="../../animation/树上数数/树上数数.js" class="fragment"
+            style="margin: 0 auto; width: 960px; height: 380px;"></sd-animation>
+        <p class="fragment">四棵主席树拼出来后,在差树上二分。</p>
+    </section>
+</section>

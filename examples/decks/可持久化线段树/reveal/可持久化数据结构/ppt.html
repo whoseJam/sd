@@ -3,9 +3,43 @@
         <h1>可持久化数据结构</h1>
     </section>
     <section>
-        <h2>什么是"可持久化"</h2>
-        <p>每次修改后既保留新版本，也<b>不丢失旧版本</b>。任意版本都可以被读取。</p>
-        <p class="fragment">朴素做法：每次完整复制 — 空间 $O(\text{ds} \cdot \text{ops})$。</p>
-        <p class="fragment">优化：只复制被修改路径上的节点，复用未修改部分。</p>
+        <h2>数据结构 = 元素 + 操作</h2>
+        <p>把数据结构看成一组元素,加上定义在这组元素上的操作。</p>
+        <ul>
+            <li class="fragment"><b>数组</b>: $n$ 个元素;支持单点加、单点赋值等修改</li>
+            <li class="fragment"><b>求和线段树</b>: 约 $2n$ 个元素;支持单点修改(改 $\log n$ 个),区间查询(改 $0$ 个,只读)</li>
+        </ul>
+    </section>
+    <section>
+        <h2>两种视角</h2>
+        <p>$$ S = \{\,\text{elements} \mid \text{operations}\,\} $$</p>
+        <p class="fragment"><b>元素视角</b>: 把 $S$ 的每个元素都记下来 $\Rightarrow$ $S$ 确定。</p>
+        <p class="fragment"><b>操作视角</b>: 已知 $S_0$ 和操作序列 $M_1, M_2, \dots, M_k$,重播即可复原任意 $S_i$。
+            $$ S_0 \xrightarrow{M_1} S_1 \xrightarrow{M_2} S_2 \xrightarrow{M_3} \cdots \xrightarrow{M_k} S_k $$
+        </p>
+    </section>
+    <section>
+        <h2>操作视角</h2>
+        <sd-animation src="../../animation/可持久化数据结构/元素视角和操作视角.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 360px;"></sd-animation>
+    </section>
+    <section>
+        <h2>书写约定</h2>
+        <p>数据结构 $a$ 经操作 $m$ 变为 $b$,记 $b = a + m$。</p>
+        <p class="fragment">栈 $S_0$ 经 $\text{push}(3), \text{push}(2), \text{top}(), \text{pop}()$:
+            $$ S_4 = S_0 + \{\text{push}(3)\} + \{\text{push}(2)\} + \{\text{top}()\} + \{\text{pop}()\} $$
+        </p>
+    </section>
+    <section>
+        <h2>加法的性质</h2>
+        <p><b>恒等操作</b>: 只读操作不改元素,扮演 $0$ 的角色。如 $S + \{\text{top}()\} = S$。</p>
+        <p class="fragment"><b>加法不交换</b>。</p>
+        <p class="fragment">反例 (栈): $S + \{\text{push}(2)\} + \{\text{push}(3)\} \ne S + \{\text{push}(3)\} + \{\text{push}(2)\}$。</p>
+        <p class="fragment">正例 (数组区间加): $S + \{\text{add}(1,3,+5)\} + \{\text{add}(2,5,-1)\} = S + \{\text{add}(2,5,-1)\} + \{\text{add}(1,3,+5)\}$。</p>
+    </section>
+    <section>
+        <h2>可持久化</h2>
+        <p>在<b>可接受的时空复杂度</b>下保存所有中间状态 $S_0, S_1, \dots, S_k$,允许在任意时刻读取任意历史版本。</p>
+        <p class="fragment">关键思想: 操作视角 + 只存<b>增量</b>。全量复制每个版本会爆。</p>
     </section>
 </section>

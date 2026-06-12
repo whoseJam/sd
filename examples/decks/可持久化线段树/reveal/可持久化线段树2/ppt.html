@@ -1,19 +1,35 @@
 <section>
     <section>
         <h1>可持久化线段树 2</h1>
-        <p>luogu P3834 — 静态区间第 K 小</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P3834" target="_blank" data-preview-link>P3834</a> — 静态区间第 K 小</p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>长度为 $n$ 的序列,多次查询区间 $[l, r]$ 的第 $k$ 小。</p>
+        <p class="fragment">如果能把 $[l, r]$ 内的元素全部插入一棵<b>权值线段树</b> $S$,就能在 $S$ 上二分到第 $k$ 小:
+            $$ S = \{\text{insert}(a_L)\} + \{\text{insert}(a_{L+1})\} + \cdots + \{\text{insert}(a_R)\} $$
+        </p>
     </section>
     <section>
         <h2>做法</h2>
-        <p>每个前缀 $i$ 建主席树。查 $[l, r]$ 的第 $k$ 小 — 在 root[r] - root[l-1] 上"权值线段树"二分。</p>
+        <p>按"前缀"建可持久化权值线段树:$\text{root}[i] = \text{root}[i-1] + \{\text{insert}(a_i)\}$。</p>
+        <p class="fragment">$\text{root}[r] - \text{root}[l-1]$ 就是 $[l, r]$ 这段的权值分布。在差树上二分即可。</p>
+        <sd-animation src="../../animation/可持久化线段树2/可持久化线段树2.js" class="fragment"
+            style="margin: 0 auto; width: 960px; height: 320px;"></sd-animation>
+    </section>
+    <section>
+        <h2>kth</h2>
         <codeblock>
             <script type="text/template">
-                int kth(int x, int y, int l, int r, int k) {
+                int nodeSize(int xl, int xr) { return t[xr].siz - t[xl].siz; }
+
+                // xl = root[l-1], xr = root[r];  binary-search on the difference tree
+                int query(int xl, int xr, int l, int r, int k) {
                     if (l == r) return l;
-                    int leftSum = t[t[y].lc].sum - t[t[x].lc].sum;
                     int mid = (l + r) >> 1;
-                    if (leftSum >= k) return kth(t[x].lc, t[y].lc, l, mid, k);
-                    return kth(t[x].rc, t[y].rc, mid + 1, r, k - leftSum);
+                    int leftSiz = nodeSize(t[xl].lc, t[xr].lc);
+                    if (k <= leftSiz) return query(t[xl].lc, t[xr].lc, l, mid, k);
+                    else              return query(t[xl].rc, t[xr].rc, mid + 1, r, k - leftSiz);
                 }
             </script>
         </codeblock>
