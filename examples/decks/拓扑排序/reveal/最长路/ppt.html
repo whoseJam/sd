@@ -1,20 +1,20 @@
 <section>
     <section>
         <h1>最长路</h1>
-        <p>luogu P1807 — DAG 最长路</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1807" target="_blank" data-preview-link>P1807</a></p>
     </section>
     <section>
         <h2>题意</h2>
         <p>DAG 中求 $1 \to n$ 的最长路。</p>
-        <p class="fragment">$\text{dis}(u) + w_{u, v} \xrightarrow{\max} \text{dis}(v)$ — 沿拓扑序松弛。</p>
+        <p class="fragment">$\text{dis}(u) + w_{u, v} \xrightarrow{\max} \text{dis}(v)$，沿拓扑序松弛。</p>
         <sd-animation src="../../animation/最长路/最长路.js" class="fragment"
             style="margin: 0 auto; width: 540px; height: 240px;"></sd-animation>
     </section>
     <section>
         <h2>细节</h2>
         <ul>
-            <li>可能有多个入度 $0$ 的点 — 初始 $\text{dis}(i) = -\infty$，$\text{dis}(1) = 0$</li>
-            <li>起点入度不一定为 $0$ — Kahn 队列从所有入度 $0$ 点开始仍然没问题</li>
+            <li>可能有多个入度 $0$ 的点：初始 $\text{dis}(i) = -\infty$，$\text{dis}(1) = 0$</li>
+            <li>起点入度不一定为 $0$：Kahn 队列从所有入度 $0$ 点开始仍然没问题</li>
         </ul>
         <codeblock>
             <script type="text/template">

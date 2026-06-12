@@ -31,31 +31,48 @@ const dag = new Dag({
   radius: 22,
 });
 
-// f(u) = sum of f(v) over predecessors v; initialize sources to 1.
-const f: Record<number, number> = {};
 const indegree: Record<number, number> = {};
-for (const n of nodes) indegree[n.id] = 0;
-for (const [_u, v] of edges) indegree[v]++;
+const outdegree: Record<number, number> = {};
+for (const n of nodes) {
+  indegree[n.id] = 0;
+  outdegree[n.id] = 0;
+}
+for (const [u, v] of edges) {
+  indegree[v]++;
+  outdegree[u]++;
+}
+
+const f: Record<number, number> = {};
+for (const n of nodes) f[n.id] = indegree[n.id] === 0 ? 1 : 0;
+
 const order = [1, 2, 3, 4, 5, 6];
-for (const u of order) {
-  if (indegree[u] === 0) f[u] = 1;
-  else f[u] = 0;
-}
-for (const u of order) {
-  for (const [a, b] of edges) {
-    if (a === u) f[b] = (f[b] ?? 0) + (f[u] ?? 0);
-  }
-}
 
 sd.main(async () => {
   dag.fadeIn({ delay: 0 });
   for (const id of order) {
-    dag.setTag(
-      id,
-      `f=${f[id]}`,
-      indegree[id] === 0 ? C.steelBlue : C.darkOrange,
-      { delay: 300 + id * 80 },
-    );
+    if (indegree[id] === 0) {
+      dag.setTag(id, `f=1`, C.steelBlue, { delay: 320 + id * 60 });
+    }
+  }
+  await sd.pause();
+
+  for (const u of order) {
+    dag.paint(u, "#fff3e0", C.darkOrange);
+    for (const [a, b] of edges) {
+      if (a !== u) continue;
+      dag.paintEdge(u, b, C.darkOrange);
+      f[b] += f[u];
+      dag.setTag(b, `f=${f[b]}`, C.darkOrange);
+    }
+    await sd.pause();
+    dag.fadeNode(u, 0.45);
+    for (const [a, b] of edges) {
+      if (a === u) dag.fadeEdge(u, b, 0.35);
+    }
+  }
+
+  for (const id of order) {
+    if (outdegree[id] === 0) dag.paint(id, "#e8f5e9", C.darkGreen);
   }
   await sd.pause();
 });

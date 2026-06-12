@@ -28,7 +28,7 @@ const weights: Record<string, number> = {
   "2-4": 4,
   "3-4": 1,
   "4-5": 2,
-  "2-5": 9,
+  "2-5": 4,
 };
 
 const dag = new Dag({
@@ -38,7 +38,6 @@ const dag = new Dag({
   radius: 20,
 });
 
-// Add edge weight labels.
 for (const [u, v] of edges) {
   const a = nodes.find((n) => n.id === u)!;
   const b = nodes.find((n) => n.id === v)!;
@@ -48,30 +47,53 @@ for (const [u, v] of edges) {
     targetNode: svg,
     text: String(weights[`${u}-${v}`]),
     cx: mx,
-    cy: my,
+    cy: my + 10,
     fontSize: 12,
     fill: C.darkButtonGrey,
   });
 }
 
-// Longest path 1 → ...
-const dist: Record<number, number> = { 1: 0 };
+const NEG_INF = "−∞";
+const dis: Record<number, number | null> = {};
+for (const n of nodes) dis[n.id] = null;
+dis[1] = 0;
+
 const order = [1, 2, 3, 4, 5];
-for (const u of order) {
-  for (const [a, b] of edges) {
-    if (a === u && dist[u] !== undefined) {
-      const cand = dist[u] + weights[`${u}-${b}`];
-      if (dist[b] === undefined || cand > dist[b]) dist[b] = cand;
-    }
-  }
-}
 
 sd.main(async () => {
   dag.fadeIn({ delay: 0 });
-  for (const u of order) {
-    dag.setTag(u, `dis=${dist[u] ?? "?"}`, C.darkGreen, {
-      delay: 300 + u * 120,
-    });
+  for (const id of order) {
+    dag.setTag(
+      id,
+      `dis=${dis[id] === null ? NEG_INF : String(dis[id])}`,
+      id === 1 ? C.steelBlue : C.darkButtonGrey,
+      { delay: 320 + id * 60 },
+    );
   }
   await sd.pause();
+
+  for (const u of order) {
+    if (dis[u] === null) {
+      dag.paint(u, "#f5f5f5", C.darkButtonGrey);
+      await sd.pause();
+      dag.fadeNode(u, 0.45);
+      continue;
+    }
+    dag.paint(u, "#fff3e0", C.darkOrange);
+    for (const [a, b] of edges) {
+      if (a !== u) continue;
+      const cand = dis[u]! + weights[`${u}-${b}`];
+      const changed = dis[b] === null || cand > dis[b]!;
+      dag.paintEdge(u, b, changed ? C.darkOrange : C.darkButtonGrey);
+      if (changed) {
+        dis[b] = cand;
+        dag.setTag(b, `dis=${dis[b]}`, C.darkOrange);
+      }
+    }
+    await sd.pause();
+    dag.fadeNode(u, 0.45);
+    for (const [a, b] of edges) {
+      if (a === u) dag.fadeEdge(u, b, 0.35);
+    }
+  }
 });
