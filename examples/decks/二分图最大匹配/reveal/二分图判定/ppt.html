@@ -1,0 +1,17 @@
+<section>
+    <section>
+        <h1>二分图判定</h1>
+        <p>染色法</p>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>无向图 $G$ 是<b>二分图</b> $\Leftrightarrow$ 节点能用两种颜色染色使任意边的两端不同色 $\Leftrightarrow$ 不含<b>奇环</b>。</p>
+    </section>
+    <section>
+        <h2>染色法</h2>
+        <p>从任一节点出发 BFS / DFS，按层交替染色。若遇到一条边两端同色，出现奇环，不是二分图。</p>
+        <sd-animation src="../../animation/二分图判定/染色.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 300px;"></sd-animation>
+        <p class="fragment">无冲突时，染好的两色集合 $A$、$B$ 就是二分图的两边。</p>
+    </section>
+</section>
