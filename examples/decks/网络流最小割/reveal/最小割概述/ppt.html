@@ -1,0 +1,26 @@
+<section>
+    <section>
+        <h1>最小割</h1>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>把顶点划成 $S, T$ 两侧（$s \in S$，$t \in T$）。<b>割</b>是所有从 $S$ 指向 $T$ 的边的容量之和。</p>
+        <p class="fragment">最小化这个总和即<b>最小割</b>。</p>
+    </section>
+    <section>
+        <h2>最大流 = 最小割</h2>
+        <p>任意一个 $S, T$ 划分的割容量都 $\ge$ 最大流（每流必跨越这条分界，至少占 $1$ 单位容量）。</p>
+        <p class="fragment">饱和后存在一组分界使得不等号取等，即 $\min\text{Cut} = \max\text{Flow}$。直接跑 Dinic 就能求最小割值。</p>
+        <sd-animation src="../../animation/最小割概述/割.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>建模套路</h2>
+        <p>"最小代价让两组元素分开"、"保留代价最大的子集"，常常能转最小割。</p>
+        <ul class="fragment">
+            <li>$S$ 侧 = 选 A 阵营的元素，$T$ 侧 = 选 B 阵营的元素</li>
+            <li>违背约束的边赋容量 = 代价；最小割 = 最小总违背代价</li>
+        </ul>
+        <p class="fragment">闭合子图最大权也是同套路（解雇 / 最大获利 / 文理分科）。</p>
+    </section>
+</section>
