@@ -1,0 +1,61 @@
+<section>
+    <section>
+        <h1>费用流</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P3381" target="_blank" data-preview-link>P3381</a></p>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>每条边附带容量 $c$ 和单位费用 $w$；一条流通过这条边产生 $w$ 的代价。</p>
+        <p class="fragment">求满足<b>最大流</b>的前提下，总费用最小（最大）的方案：<b>最小费用最大流</b>（MCMF）/<b>最大费用最大流</b>。</p>
+    </section>
+    <section>
+        <h2>MCMF</h2>
+        <p>核心是把最大流的 BFS/DFS 找增广路换成<b>按费用最短路</b>找增广路（SPFA / Johnson）。</p>
+        <ul>
+            <li class="fragment">建图：$u \to v$ 的正向弧 $(c, w)$ 配反向弧 $(0, -w)$</li>
+            <li class="fragment">每轮 SPFA 找 $s \to t$ 的<b>最短费用路径</b>，沿路推流</li>
+            <li class="fragment">瓶颈耗尽或汇点不可达即停止</li>
+        </ul>
+        <sd-animation src="../../animation/费用流概述/MCMF.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>最大费用最大流</h2>
+        <p>把每条边的费用取相反数，跑 MCMF 求最小费用，再把答案取反即可。</p>
+        <p class="fragment">实现上等价于把 SPFA 改成<b>最长</b>路；建图结构不变。</p>
+    </section>
+    <section>
+        <h2>代码骨架</h2>
+        <codeblock>
+            <script type="text/template">
+                bool spfa() {
+                    fill(dis, dis + n + 1, INF);
+                    dis[s] = 0; q.push(s);
+                    while (q.size()) {
+                        int u = q.front(); q.pop(); inq[u] = 0;
+                        for (int e = h[u]; e; e = nxt[e]) {
+                            int v = to[e];
+                            if (cap[e] && dis[v] > dis[u] + w[e]) {
+                                dis[v] = dis[u] + w[e];
+                                pre[v] = e;
+                                if (!inq[v]) { inq[v] = 1; q.push(v); }
+                            }
+                        }
+                    }
+                    return dis[t] < INF;
+                }
+                while (spfa()) {
+                    int f = INF;
+                    for (int v = t; v != s; v = to[pre[v] ^ 1])
+                        f = min(f, cap[pre[v]]);
+                    for (int v = t; v != s; v = to[pre[v] ^ 1]) {
+                        cap[pre[v]] -= f;
+                        cap[pre[v] ^ 1] += f;
+                    }
+                    flow += f;
+                    cost += f * dis[t];
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
