@@ -1,6 +1,6 @@
 import * as sd from "@/sd";
 
-import { NumRow } from "../lib/num-row";
+import { NumRow } from "../common/num-row";
 
 const svg = sd.svg();
 const C = sd.color();
@@ -16,12 +16,11 @@ const arr = new NumRow({
   values: data,
   size: SIZE,
   x: X0,
-  y: -50,
+  y: 30,
   label: "A",
 });
 
-// Stack row mirrors A row; cells become visible as values are pushed.
-const stackY = 50;
+const STACK_Y = -50;
 const stackCells: sd.Rect[] = [];
 const stackGlyphs: sd.Text[] = [];
 for (let i = 0; i < N; i++) {
@@ -30,7 +29,7 @@ for (let i = 0; i < N; i++) {
     new sd.Rect({
       targetNode: svg,
       x: cellX,
-      y: stackY,
+      y: STACK_Y,
       width: SIZE,
       height: SIZE,
       fill: C.white,
@@ -44,27 +43,32 @@ for (let i = 0; i < N; i++) {
       targetNode: svg,
       text: "",
       cx: cellX + SIZE / 2,
-      cy: stackY + SIZE / 2,
-      fontSize: 16,
+      cy: STACK_Y + SIZE / 2,
+      fontSize: 18,
       fill: C.darkButtonGrey,
       opacity: 0,
     }),
   );
 }
-new sd.Text({
+
+const stackLabel = new sd.Text({
   targetNode: svg,
   text: "stack",
-  cx: X0 - 26,
-  cy: stackY + SIZE / 2,
-  fontSize: 13,
+  cx: X0 - 28,
+  cy: STACK_Y + SIZE / 2,
+  fontSize: 14,
   fill: C.darkButtonGrey,
+  opacity: 0,
 });
 
 sd.main(async () => {
   arr.fadeIn({ delay: 0 });
+  stackLabel
+    .startAnimate({ delay: 320, duration: 260, easing: E.easeOut })
+    .setOpacity(1)
+    .endAnimate();
   await sd.pause();
 
-  // Monotone increasing stack stores indices.
   const stack: number[] = [];
   for (let i = 0; i < N; i++) {
     arr.paintCell(i + 1, "#dbeefd", C.steelBlue, { duration: 180 });
@@ -73,25 +77,25 @@ sd.main(async () => {
       stack.pop();
       const pos = stack.length;
       stackCells[pos]
-        .startAnimate({ duration: 200, easing: E.easeOut })
+        .startAnimate({ delay: popped * 60, duration: 200, easing: E.easeOut })
         .setOpacity(0)
         .endAnimate();
       stackGlyphs[pos]
-        .startAnimate({ duration: 200, easing: E.easeOut })
+        .startAnimate({ delay: popped * 60, duration: 200, easing: E.easeOut })
         .setOpacity(0)
         .endAnimate();
       popped++;
     }
-    const pushDelay = popped > 0 ? 220 : 120;
+    const pushDelay = popped > 0 ? 160 + popped * 60 : 140;
     const pos = stack.length;
     stackCells[pos]
-      .startAnimate({ delay: pushDelay, duration: 200, easing: E.easeOut })
+      .startAnimate({ delay: pushDelay, duration: 220, easing: E.easeOut })
       .setFill("#fdecd9")
       .setStroke(C.darkOrange)
       .setOpacity(1)
       .endAnimate();
     stackGlyphs[pos]
-      .startAnimate({ delay: pushDelay + 40, duration: 200, easing: E.easeOut })
+      .startAnimate({ delay: pushDelay + 60, duration: 220, easing: E.easeOut })
       .setText(String(data[i]))
       .setOpacity(1)
       .endAnimate();
@@ -99,5 +103,4 @@ sd.main(async () => {
     await sd.pause();
     arr.clearCell(i + 1, { duration: 160 });
   }
-  await sd.pause();
 });
