@@ -9,13 +9,7 @@
     </section>
     <section>
         <h2>建模</h2>
-        <p>对每个站 $i$ 求：
-            <ul>
-                <li>$L_i$ = 左边第一个高于 $h_i$ 的位置</li>
-                <li>$R_i$ = 右边第一个高于 $h_i$ 的位置</li>
-            </ul>
-        </p>
-        <p class="fragment">分别用<b>单调递减栈</b>从左往右、从右往左各扫一遍即可。</p>
+        <p>对每个站 $i$ 求 $L_i$（左边第一个高于 $h_i$ 的位置）和 $R_i$（右边第一个高于 $h_i$ 的位置）：分别用<b>单调递减栈</b>从左往右、从右往左各扫一遍。</p>
         <sd-animation src="../../animation/发射站/发射站.js" class="fragment"
             style="margin: 0 auto; width: 560px; height: 320px;"></sd-animation>
         <p class="fragment">每个站对 $L_i$、$R_i$ 各贡献 $+1$ 收到次数。取 $\max$ 即答案。</p>
