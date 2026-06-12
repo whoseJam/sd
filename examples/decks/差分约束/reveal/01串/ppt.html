@@ -1,19 +1,35 @@
 <section>
     <section>
         <h1>01 串</h1>
-        <p>luogu P5751</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P5751" target="_blank" data-preview-link>P5751</a></p>
     </section>
     <section>
-        <h2>建模</h2>
-        <p>令 $X_i$ = 前 $i$ 个字符中 1 的个数。$X_0 = 0$，$0 \le X_i - X_{i-1} \le 1$。</p>
-        <p class="fragment">条件 1（每段长度 $L_0$，0 的个数 $\in [A_0, B_0]$ → 1 的个数 $\in [L_0 - B_0, L_0 - A_0]$）：</p>
-        <p class="fragment">
+        <h2>题意</h2>
+        <p>构造长度 $n$ 的 01 串使 $1$ 的总数最大。两类约束：</p>
+        <ul>
+            <li>每段长度 $L_0$ 的窗口，$0$ 的个数 $\in [A_0, B_0]$</li>
+            <li>每段长度 $L_1$ 的窗口，$1$ 的个数 $\in [A_1, B_1]$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>前缀和差分</h2>
+        <p>令 $X_i$ = 前 $i$ 个字符中 $1$ 的个数，$X_0 = 0$。每个字符 $\in \{0, 1\}$，所以
+            $$0 \le X_i - X_{i-1} \le 1$$
+        </p>
+        <sd-animation src="../../animation/01串/前缀和差分.js" class="fragment"
+            style="margin: 0 auto; width: 540px; height: 320px;"></sd-animation>
+    </section>
+    <section>
+        <h2>条件转不等式</h2>
+        <p>窗口 $[i, i + L_0 - 1]$ 中 $0$ 的个数 $= L_0 - (X_{i + L_0 - 1} - X_{i - 1}) \in [A_0, B_0]$，即
             $$L_0 - B_0 \le X_{i + L_0 - 1} - X_{i - 1} \le L_0 - A_0$$
         </p>
-        <p class="fragment">条件 2（每段长度 $L_1$，1 的个数 $\in [A_1, B_1]$）类似。</p>
+        <p class="fragment">$L_1$ 类约束同理：
+            $$A_1 \le X_{i + L_1 - 1} - X_{i - 1} \le B_1$$
+        </p>
     </section>
     <section>
-        <h2>最大化 $X_n$</h2>
-        <p>1 的总数要最大 — $X_n$ 大 — 跑<b>最短路</b>取上界。</p>
+        <h2>求解</h2>
+        <p>最大化 $X_n$，跑<b>最短路</b>取 $X_n$ 的上界。</p>
     </section>
 </section>
