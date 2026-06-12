@@ -1,0 +1,13 @@
+<section>
+    <section>
+        <h1>对抗搜索</h1>
+        <p>双方博弈下的搜索：一方求 $\max$，一方求 $\min$，交替下层</p>
+    </section>
+    <section>
+        <h2>博弈树与 MinMax</h2>
+        <p>每个节点是一个局面，每条边是一手棋。两层节点交替执行 $\max$ 和 $\min$，叶子是终局得分。</p>
+        <sd-animation src="../../animation/概述/MinMax.js" class="fragment"
+            style="margin: 0 auto; width: 480px; height: 320px;"></sd-animation>
+        <p class="fragment">自底向上回传：每个 MIN 节点取子节点最小值，每个 MAX 节点取子节点最大值。根节点的值即双方都最优下的结果。</p>
+    </section>
+</section>
