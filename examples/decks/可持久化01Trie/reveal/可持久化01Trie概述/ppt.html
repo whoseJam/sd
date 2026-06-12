@@ -1,0 +1,32 @@
+<section>
+    <section>
+        <h1>可持久化 01Trie</h1>
+    </section>
+    <section>
+        <h2>结构</h2>
+        <p>每次单点插入只复制根到叶 $O(\log V)$ 个节点,共享其余子树。每个版本一个 $\text{root}[v]$,空间 $O((n + m) \log V)$。</p>
+        <sd-animation src="../../animation/可持久化01Trie概述/版本链.js" class="fragment"
+            style="margin: 0 auto; width: 960px; height: 380px;"></sd-animation>
+    </section>
+    <section>
+        <h2>insert</h2>
+        <codeblock>
+            <script type="text/template">
+                // prev: root of the previous version
+                int insert(int prev, unsigned v) {
+                    int u = ++tot;
+                    int root = u;
+                    for (int i = BITS - 1; i >= 0; i--) {
+                        int d = (v >> i) & 1;
+                        ch[u][d ^ 1] = ch[prev][d ^ 1];          // borrow the unchanged subtree
+                        ch[u][d] = ++tot;
+                        u = ch[u][d];
+                        prev = ch[prev][d];
+                        cnt[u] = cnt[prev] + 1;                  // path-count for range query
+                    }
+                    return root;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
