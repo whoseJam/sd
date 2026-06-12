@@ -4,9 +4,18 @@
         <p>又叫主席树</p>
     </section>
     <section>
+        <h2>家族</h2>
+        <p>把线段树拿过来持久化,顺手得到一组可持久化结构:</p>
+        <ul>
+            <li class="fragment">可持久化数组</li>
+            <li class="fragment">可持久化并查集</li>
+        </ul>
+        <p class="fragment">应用最广的是<b>可持久化线段树</b>本身。</p>
+    </section>
+    <section>
         <h2>结构</h2>
-        <p>每次单点修改，只复制从根到叶的 $O(\log n)$ 个节点 — 共享其他节点。</p>
-        <p class="fragment">每个版本一个 root[v]。空间 $O((n + m) \log n)$。</p>
+        <p>每次单点修改,只复制从根到叶的 $O(\log n)$ 个节点,共享其他节点。</p>
+        <p class="fragment">每个版本一个 $\text{root}[v]$。空间 $O((n + m) \log n)$。</p>
         <codeblock class="fragment">
             <script type="text/template">
                 int update(int prev, int l, int r, int x, int d) {

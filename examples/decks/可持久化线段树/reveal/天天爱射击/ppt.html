@@ -1,0 +1,24 @@
+<section>
+    <section>
+        <h1>天天爱射击</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P7424" target="_blank" data-preview-link>P7424</a></p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>位置 $x$ 射出的子弹击中所有满足 $L_i \le x \le R_i$ 的木板。木板 $i$ 被击中 $S_i$ 次后裂开。</p>
+        <p class="fragment">按时间顺序给出子弹位置,求每个木板裂开的时刻。</p>
+    </section>
+    <section>
+        <h2>木板视角</h2>
+        <p>对木板 $(L, R, S)$,所有满足 $L \le x_j \le R$ 的子弹 $j$ 都<b>可能</b>击中它。</p>
+        <p class="fragment">第 $S$ 次击中时裂开 $\Rightarrow$ 裂开时刻 $=$ 落在 $[L, R]$ 的子弹按时间序的第 $S$ 个。</p>
+        <p class="fragment">例: 时间 $3, 5, 8, 10$ 的子弹都能击中,$S = 3 \Rightarrow$ 裂开时刻 $= 8$。</p>
+    </section>
+    <section>
+        <h2>转化</h2>
+        <p>把"子弹位置"看作权值轴,按时间顺序插入。木板 $(L, R, S)$ 就是查 $[L, R]$ 上第 $S$ 个插入的子弹的<b>时间</b>。</p>
+        <sd-animation src="../../animation/天天爱射击/天天爱射击.js" class="fragment"
+            style="margin: 0 auto; width: 960px; height: 280px;"></sd-animation>
+        <p class="fragment">主席树二分:$\text{root}[r] - \text{root}[l-1]$ 上找第 $S$ 个,记录其时间戳。</p>
+    </section>
+</section>

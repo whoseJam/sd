@@ -3,8 +3,60 @@
         <h1>数据结构的可减性</h1>
     </section>
     <section>
-        <h2>前缀和思路</h2>
-        <p>把序列 $a_1, \dots, a_n$ 的可持久化线段树按"前缀"插入：root[i] = root[i-1] 上插入 $a_i$。</p>
-        <p class="fragment">那么 root[r] - root[l-1] 表示区间 $[l, r]$ 的值域分布 — 类似前缀和。</p>
+        <h2>能否相减?</h2>
+        <p>定义了 $S' = S + M$,那能不能定义减法 $S' - S = M$?</p>
+    </section>
+    <section>
+        <h2>意义</h2>
+        <p>若能定义减法,任取两个版本 $S_R, S_{L-1}$:
+            $$ T = S_R - S_{L-1} = M_L + M_{L+1} + \cdots + M_R $$
+            $$ S' = S_0 + T $$
+        </p>
+        <p class="fragment">在空数据结构上加 $T$,等价于<b>重播任意一段区间内的操作</b>。</p>
+        <sd-animation src="../../animation/数据结构的可减性/可减性意义.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>操作与数据结构同构</h2>
+        <p>一个操作 $M$ 对 $S$ 的每个元素都产生一份<b>影响</b>。未触及的元素视为变化量 $0$。</p>
+        <p class="fragment">$S$ 内有 $k$ 个元素,则 $M$ 内也有 $k$ 个元素;$S(i)$ 存当前值,$M(i)$ 存变化量。</p>
+        <sd-animation src="../../animation/数据结构的可减性/数组操作.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 240px;"></sd-animation>
+    </section>
+    <section>
+        <h2>广义加法</h2>
+        <p>若 $S' = S + M$,则对所有 $i \in [1, k]$:
+            $$ S'(i) = S(i) \oplus M(i) $$
+        </p>
+        <p class="fragment">$\oplus$ 是广义加法,随操作类型而定:</p>
+        <ul>
+            <li class="fragment">区间加 $\Rightarrow \oplus$ 是 $+$</li>
+            <li class="fragment">区间赋值 $\Rightarrow \oplus$ 是赋值 $a \oplus b = b$</li>
+            <li class="fragment">区间乘矩阵 $\Rightarrow \oplus$ 是矩阵乘法</li>
+        </ul>
+    </section>
+    <section>
+        <h2>可减性</h2>
+        <p>若存在 $\ominus$ 使得 $S'(i) \ominus S(i) = M(i)$ 恒成立,且 $\oplus, \ominus$ 满足交换律:
+            $$ \begin{aligned} A \oplus B &= B \oplus A \\ A \ominus B \ominus C &= A \ominus C \ominus B \end{aligned} $$
+        </p>
+        <p class="fragment">则称这种操作<b>可减</b>。</p>
+    </section>
+    <section>
+        <h2>对比</h2>
+        <sd-animation src="../../animation/数据结构的可减性/可减性对比.js"
+            style="margin: 0 auto; width: 960px; height: 360px;"></sd-animation>
+        <p class="fragment">区间加可减;区间赋值不可减。</p>
+    </section>
+    <section>
+        <h2>推导</h2>
+        <p>取两个版本相减,展开:
+            $$ S_{L-1} = \{\,S_0(i) \oplus M_1(i) \oplus \cdots \oplus M_{L-1}(i) \mid i \in [1, k]\,\} $$
+            $$ S_R = \{\,S_0(i) \oplus M_1(i) \oplus \cdots \oplus M_R(i) \mid i \in [1, k]\,\} $$
+        </p>
+        <p class="fragment">$$
+            S_R - S_{L-1} = \{\,M_L(i) \oplus M_{L+1}(i) \oplus \cdots \oplus M_R(i) \mid i \in [1, k]\,\}
+        $$</p>
+        <p class="fragment">恰好就是 $[L, R]$ 这段操作的累加。</p>
     </section>
 </section>
