@@ -1,13 +1,23 @@
 <section>
     <section>
         <h1>发射站</h1>
-        <p>luogu P1901</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P1901" target="_blank" data-preview-link>P1901</a></p>
     </section>
     <section>
         <h2>题意</h2>
-        <p>每个发射站只能往左右两边各发一个信号，被收到的条件是两侧第一个比它高的站。统计每个站被几次。</p>
+        <p>$n$ 个发射站高度 $h_i$，每个站向左、向右各发一份信号。被收到的条件是<b>两侧第一个比它高的站</b>。求收到信号次数最多的站收到了多少。</p>
+    </section>
+    <section>
+        <h2>建模</h2>
+        <p>对每个站 $i$ 求：
+            <ul>
+                <li>$L_i$ = 左边第一个高于 $h_i$ 的位置</li>
+                <li>$R_i$ = 右边第一个高于 $h_i$ 的位置</li>
+            </ul>
+        </p>
+        <p class="fragment">分别用<b>单调递减栈</b>从左往右、从右往左各扫一遍即可。</p>
         <sd-animation src="../../animation/发射站/发射站.js" class="fragment"
-            style="margin: 0 auto; width: 480px; height: 240px;"></sd-animation>
-        <p class="fragment">两次单调栈扫描，找到每个发射站左右最近比它高的位置。</p>
+            style="margin: 0 auto; width: 560px; height: 320px;"></sd-animation>
+        <p class="fragment">每个站对 $L_i$、$R_i$ 各贡献 $+1$ 收到次数。取 $\max$ 即答案。</p>
     </section>
 </section>

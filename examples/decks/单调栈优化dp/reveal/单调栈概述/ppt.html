@@ -5,17 +5,17 @@
     </section>
     <section>
         <h2>单调递增栈</h2>
-        <p>每个新元素入栈前，把前面比自己大或相等的元素弹掉。</p>
+        <p>每个新元素入栈前，把栈顶<b>大于等于</b>自己的元素弹掉，再入栈。</p>
         <sd-animation src="../../animation/单调栈概述/单调递增栈.js" class="fragment"
-            style="margin: 0 auto; width: 360px; height: 240px;"></sd-animation>
-        <p class="fragment">栈中元素始终单调递增 — 可以快速找到每个元素<b>左边第一个比它小的元素</b>。</p>
+            style="margin: 0 auto; width: 460px; height: 240px;"></sd-animation>
+        <p class="fragment">栈中元素始终<b>单调递增</b>，对每个 $i$，栈顶即左边<b>最近且更小</b>的元素。</p>
     </section>
     <section>
         <h2>单调递减栈</h2>
-        <p>每个新元素入栈前，把前面比自己小或相等的元素弹掉。</p>
+        <p>每个新元素入栈前，把栈顶<b>小于等于</b>自己的元素弹掉，再入栈。</p>
         <sd-animation src="../../animation/单调栈概述/单调递减栈.js" class="fragment"
-            style="margin: 0 auto; width: 360px; height: 240px;"></sd-animation>
-        <p class="fragment">栈中元素始终单调递减 — 可以快速找到每个元素<b>左边第一个比它大的元素</b>。</p>
+            style="margin: 0 auto; width: 460px; height: 240px;"></sd-animation>
+        <p class="fragment">栈中元素始终<b>单调递减</b>，对每个 $i$，栈顶即左边<b>最近且更大</b>的元素。</p>
     </section>
     <section>
         <h2>用途</h2>
@@ -23,6 +23,6 @@
             <li>每个元素左/右<b>最近且更大</b>的元素</li>
             <li>每个元素左/右<b>最近且更小</b>的元素</li>
         </ul>
-        <p class="fragment quote">本节标题是"单调栈优化 dp"，但实际上单调栈直接做 dp 的题目不多。本节名为标题对称起的，单调队列的 dp 优化在另外一节。</p>
+        <p class="fragment quote">本节标题是「单调栈优化 dp」，但单调栈直接做 dp 的题目不多。命名只是与单调队列对称，dp 优化主要在那一节。</p>
     </section>
 </section>
