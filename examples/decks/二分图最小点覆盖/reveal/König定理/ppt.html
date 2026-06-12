@@ -1,0 +1,30 @@
+<section>
+    <section>
+        <h1>König 定理</h1>
+    </section>
+    <section>
+        <h2>最小点覆盖</h2>
+        <p>选最少的点，使<b>每条边至少有一个端点被选</b>。一般图上是 NP-hard。</p>
+    </section>
+    <section>
+        <h2>结论</h2>
+        <p>二分图上：
+            $$\text{最小点覆盖} = \text{最大匹配}$$
+        </p>
+        <sd-animation src="../../animation/König定理/König.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 320px;"></sd-animation>
+        <p class="fragment">跑匈牙利算出最大匹配，等价于求最小点覆盖。</p>
+    </section>
+    <section>
+        <h2>下界</h2>
+        <p>每条匹配边的两端互不相同，要覆盖匹配中的 $|M|$ 条边至少需要 $|M|$ 个点，所以 $|\text{MVC}| \ge |M|$。</p>
+    </section>
+    <section>
+        <h2>上界（构造）</h2>
+        <p>设 $U$ = 未匹配的左侧节点集合。从 $U$ 出发，<b>沿非匹配边走到右、沿匹配边走回左</b>，交替扩展，得到可达点集 $Z$。</p>
+        <p class="fragment">
+            $$\text{MVC} = (L \setminus Z) \cup (R \cap Z)$$
+        </p>
+        <p class="fragment">每条边至少被覆盖一次，且 $|\text{MVC}| = |M|$。</p>
+    </section>
+</section>
