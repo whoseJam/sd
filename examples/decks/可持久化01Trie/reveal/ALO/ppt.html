@@ -4,15 +4,37 @@
     </section>
     <section>
         <h2>题意</h2>
-        <p>子序列 $[l, r]$ 价值 = $\max_{i \in [l, r]} \{\text{次大值} \oplus a_i\}$，求所有子序列最大价值。</p>
+        <p>长度为 $n$ 的序列。子序列 $[l, r]$ 的价值
+            $$ \max_{i \in [l, r]} \{\,\text{次大值} \oplus a_i\,\} $$
+            求所有 $O(n^2)$ 个子序列中,价值最大的。</p>
     </section>
     <section>
         <h2>枚举次大值</h2>
-        <p>对每个 $a_i$ 当作次大值，能让它当次大值的 $[l, r]$ 范围：</p>
+        <p>枚举 $a_i$ 当次大值。设</p>
         <ul>
-            <li>左侧第 1, 2 个比 $a_i$ 大的位置 $l_1, l_2$</li>
-            <li>右侧第 1, 2 个比 $a_i$ 大的位置 $r_1, r_2$</li>
+            <li>左侧第 1、2 个比 $a_i$ 大的位置 $l_1, l_2$</li>
+            <li>右侧第 1、2 个比 $a_i$ 大的位置 $r_1, r_2$</li>
         </ul>
-        <p class="fragment">$l \in [l_2 + 1, l_1]$, $r \in [i, r_1 - 1]$ — 用<b>可持久化 01Trie</b> 在 $[l, r]$ 内找与 $a_i$ 异或最大值。</p>
+        <p class="fragment">让 $a_i$ 当次大值的 $[l, r]$ 有两组(把唯一一个比它大的放在左 / 右):</p>
+        <div>
+            <div class="fragment" style="display: inline-block; width: 45%; vertical-align: top;">
+                $$ \left\{\begin{aligned} l &\in [l_2+1, l_1] \\ r &\in [i, r_1-1] \end{aligned}\right. $$
+            </div>
+            <div class="fragment" style="display: inline-block; width: 45%; vertical-align: top;">
+                $$ \left\{\begin{aligned} l &\in [l_1+1, i] \\ r &\in [r_1, r_2-1] \end{aligned}\right. $$
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>取最外层</h2>
+        <p>次大值相同的两个区间,小的完全被大的覆盖时,小区间最大价值 $\le$ 大区间。</p>
+        <p class="fragment">所以两组只需取最外层的 $[l, r]$:
+            $$ [l_2 + 1,\, r_1 - 1] \quad \text{和} \quad [l_1 + 1,\, r_2 - 1] $$
+        </p>
+    </section>
+    <section>
+        <h2>归约</h2>
+        <p>问题归约为:给定常数 $a_i$ 和区间 $[l, r]$,求 $\max_{j \in [l, r]} a_i \oplus a_j$。</p>
+        <p class="fragment">可持久化 01Trie 上场:按序列下标建 trie 版本链,$\text{root}[r] - \text{root}[l-1]$ 取出 $[l, r]$ 内的值,在差树上贪心。</p>
     </section>
 </section>

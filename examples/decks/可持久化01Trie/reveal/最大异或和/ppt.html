@@ -1,18 +1,33 @@
 <section>
     <section>
         <h1>最大异或和</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P4735" target="_blank" data-preview-link>P4735</a></p>
     </section>
     <section>
         <h2>题意</h2>
         <ol>
-            <li><code>A x</code>：序列末尾追加 $x$</li>
-            <li><code>Q l r x</code>：找 $p \in [l, r]$ 使 $a_p \oplus a_{p+1} \oplus \dots \oplus a_n \oplus x$ 最大</li>
+            <li><code>A x</code>:序列末尾追加 $x$</li>
+            <li><code>Q l r x</code>:找 $p \in [l, r]$ 使 $a_p \oplus a_{p+1} \oplus \dots \oplus a_n \oplus x$ 最大</li>
         </ol>
     </section>
     <section>
         <h2>前缀异或</h2>
-        <p>令 $\text{sum}_i = a_1 \oplus \dots \oplus a_i$，则 $a_p \oplus \dots \oplus a_n = \text{sum}_n \oplus \text{sum}_{p-1}$。</p>
-        <p class="fragment">原式 $= (\text{sum}_n \oplus x) \oplus \text{sum}_{p-1} = C \oplus \text{sum}_{p-1}$。</p>
-        <p class="fragment">即在 $\text{sum}_{l-1}, \dots, \text{sum}_{r-1}$ 中找与 $C$ 异或最大的 — 可持久化 01Trie 上做区间查询。</p>
+        <p>令 $\text{sum}_i = a_1 \oplus \dots \oplus a_i$,则
+            $$ \begin{aligned}
+            a_p \oplus a_{p+1} \oplus \dots \oplus a_n \oplus x &= \text{sum}_n \oplus \text{sum}_{p-1} \oplus x \\
+            &= (\text{sum}_n \oplus x) \oplus \text{sum}_{p-1} \\
+            &= C \oplus \text{sum}_{p-1}
+            \end{aligned} $$
+        </p>
+        <p class="fragment">$l \le p \le r \Rightarrow i = p - 1 \in [l-1, r-1]$。即在 $\text{sum}_{l-1}, \dots, \text{sum}_{r-1}$ 里找与 $C$ 异或最大的 $\text{sum}_i$。</p>
+    </section>
+    <section>
+        <h2>转化</h2>
+        <p>"常数 vs 一堆变量异或最大" $\Rightarrow$ 01Trie 贪心。把候选集做成 01Trie:
+            $$ S = \{\text{insert}(\text{sum}_{l-1})\} + \{\text{insert}(\text{sum}_l)\} + \dots + \{\text{insert}(\text{sum}_{r-1})\} $$
+        </p>
+        <p class="fragment">每个 $\text{sum}_i$ 占一个版本 $\Rightarrow$ 可持久化 01Trie,$\text{root}[r-1] - \text{root}[l-2]$ 给出候选集。</p>
+        <sd-animation src="../../animation/最大异或和/贪心异或.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 360px;"></sd-animation>
     </section>
 </section>

@@ -4,18 +4,18 @@
     </section>
     <section>
         <h2>题意</h2>
-        <p>带点权有根树，支持：</p>
+        <p>带点权有根树,支持:</p>
         <ul>
-            <li><code>1 x z</code>：$x$ 子树内点权与 $z$ 异或的最大值</li>
-            <li><code>2 x y z</code>：$x \to y$ 路径上点权与 $z$ 异或的最大值</li>
+            <li><code>1 x z</code>:$x$ 子树内点权与 $z$ 异或的最大值</li>
+            <li><code>2 x y z</code>:$x \to y$ 路径上点权与 $z$ 异或的最大值</li>
         </ul>
     </section>
     <section>
         <h2>做法</h2>
-        <p>把"集合 $S$ 与常数 $z$ 异或最大"放到 01Trie 上贪心，关键是怎么得到 $S$：</p>
+        <p>两种查询都是"集合 $S$ 与常数 $z$ 异或最大",在 01Trie 上贪心走相反位即可。关键是怎么把 $S$ 提出来:</p>
         <ul>
-            <li class="fragment">子树查询 → DFS 序 + 可持久化 01Trie（区间)</li>
-            <li class="fragment">路径查询 → 树上前缀和 + 可持久化 01Trie</li>
+            <li class="fragment">子树查询 $\Rightarrow$ <b>DFS 序</b>:子树对应 DFS 序的连续区间</li>
+            <li class="fragment">路径查询 $\Rightarrow$ <b>树上前缀和</b>:同<a href="https://www.luogu.com.cn/problem/P2633" target="_blank" data-preview-link>树上数数</a>的四树差</li>
         </ul>
     </section>
 </section>
