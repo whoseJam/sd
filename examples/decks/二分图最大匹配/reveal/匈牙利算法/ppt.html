@@ -1,0 +1,36 @@
+<section>
+    <section>
+        <h1>匈牙利算法</h1>
+    </section>
+    <section>
+        <h2>增广路</h2>
+        <p>一条<b>匹配边、非匹配边交替</b>的路径，起点是未匹配的左侧节点，终点是未匹配的右侧节点。沿路径反转匹配关系 $\Rightarrow$ 匹配数 $+1$。</p>
+        <sd-animation src="../../animation/匈牙利算法/增广路.js" class="fragment"
+            style="margin: 0 auto; width: 360px; height: 300px;"></sd-animation>
+    </section>
+    <section>
+        <h2>算法</h2>
+        <p>对每个左侧节点 $u$ 尝试找增广路：</p>
+        <codeblock>
+            <script type="text/template">
+                bool findPath(int u) {
+                    for (int v : G[u]) {
+                        if (!vis[v]) {
+                            vis[v] = 1;
+                            if (!match[v] || findPath(match[v])) {
+                                match[v] = u;
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+                for (int u = 1; u <= n; u++) {
+                    memset(vis, 0, sizeof vis);
+                    if (findPath(u)) ans++;
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">复杂度 $O(n(n + m))$。</p>
+    </section>
+</section>

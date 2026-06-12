@@ -1,0 +1,23 @@
+<section>
+    <section>
+        <h1>拆点二分图</h1>
+    </section>
+    <section>
+        <h2>最小路径覆盖</h2>
+        <p>给定 DAG，用<b>最少的路径</b>覆盖所有节点，使每个节点恰被一条路径覆盖一次。</p>
+    </section>
+    <section>
+        <h2>拆点构造二分图</h2>
+        <p>每个节点 $u$ 拆成<b>出点</b> $A_u$ 和<b>入点</b> $B_u$。每条 DAG 边 $u \to v$ 在二分图中变成 $A_u \to B_v$。</p>
+        <p class="fragment">$A_u$ 匹配 $\Leftrightarrow$ 路径在 $u$ 处有出边继续走；$B_u$ 匹配 $\Leftrightarrow$ $u$ 是某条路径的中间或末尾。</p>
+    </section>
+    <section>
+        <h2>结论</h2>
+        <p>
+            $$\text{最小路径覆盖} = n - \text{二分图最大匹配}$$
+        </p>
+        <sd-animation src="../../animation/拆点二分图/路径覆盖.js" class="fragment"
+            style="margin: 0 auto; width: 520px; height: 280px;"></sd-animation>
+        <p class="fragment">每条匹配边把两段原本独立的路径接成一条，路径数 $-1$。</p>
+    </section>
+</section>
