@@ -1,0 +1,54 @@
+<section>
+    <section>
+        <h1>最大流</h1>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P3376" target="_blank" data-preview-link>P3376</a></p>
+    </section>
+    <section>
+        <h2>定义</h2>
+        <p>网络流图中，源 $s$ 到汇 $t$ 的合法流 $f$ 满足容量约束和流量守恒，$|f|=\sum_v f(s,v) - \sum_v f(v,s)$。</p>
+        <p class="fragment">最大化 $|f|$ 即<b>最大流</b>。</p>
+    </section>
+    <section>
+        <h2>朴素增广</h2>
+        <p>反复 DFS 找一条<b>残量大于 $0$</b> 的 $s \to t$ 路径（<b>增广路</b>），沿路推满瓶颈流。</p>
+        <p class="fragment">简单图能直接做对，但贪心顺序坏的时候会卡死在次优解。</p>
+        <sd-animation src="../../animation/最大流概述/朴素失败.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>反悔流</h2>
+        <p>建图时每条 $u \to v$ 同时建一条容量为 $0$ 的反向弧 $v \to u$。一次推流 $u \to v$ 等价于</p>
+        <ul>
+            <li class="fragment">正向弧 $u \to v$ 剩余容量 $-f$</li>
+            <li class="fragment">反向弧 $v \to u$ 剩余容量 $+f$（"反悔" 的额度）</li>
+        </ul>
+        <p class="fragment">残量网络上的增广路自然可以走反向弧，等价于撤掉之前一段错误决策。</p>
+        <sd-animation src="../../animation/最大流概述/反悔修正.js" class="fragment"
+            style="margin: 0 auto; width: 460px; height: 280px;"></sd-animation>
+    </section>
+    <section>
+        <h2>Dinic</h2>
+        <p>朴素增广复杂度退化的根因：增广路太短/太乱。Dinic 在残量网络上 BFS 分层，仅沿 $\text{dep}_v = \text{dep}_u + 1$ 的边 DFS 多路增广。</p>
+        <p class="fragment">复杂度 $O(n^2 m)$；二分图匹配特例 $O(m \sqrt{n})$。</p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                bool bfs() { /* 在残量网络上算 dep[] */ }
+                int dfs(int u, int flow) {
+                    if (u == t) return flow;
+                    int used = 0;
+                    for (int& e = cur[u]; e; e = nxt[e]) {
+                        int v = to[e];
+                        if (cap[e] && dep[v] == dep[u] + 1) {
+                            int d = dfs(v, min(flow - used, cap[e]));
+                            cap[e] -= d;
+                            cap[e ^ 1] += d;
+                            used += d;
+                            if (used == flow) return used;
+                        }
+                    }
+                    return used;
+                }
+            </script>
+        </codeblock>
+    </section>
+</section>
