@@ -1,21 +1,25 @@
 <section>
     <section>
         <h1>修剪草坪</h1>
-        <p>luogu P2627</p>
+        <p>luogu <a href="https://www.luogu.com.cn/problem/P2627" target="_blank" data-preview-link>P2627</a></p>
+    </section>
+    <section>
+        <h2>题意</h2>
+        <p>$n$ 头牛，效率 $E_i$。连续工作的牛数不能超过 $K$。求最大效率之和。</p>
     </section>
     <section>
         <h2>状态定义</h2>
         <p>$g(i)$ = 安排完前 $i$ 头，第 $i$ 头不干活的最大效率。</p>
         <p>$f(i)$ = 安排完前 $i$ 头，第 $i$ 头干活的最大效率。</p>
-        <p class="fragment">$g(i) = \max\{f(i-1), g(i-1)\}$</p>
-        <p class="fragment">
-            $f(i) = \max_{i - k \le j < i} \{g(j) + (S(i) - S(j))\} = \max_{i - k \le j < i} \{g(j) - S(j)\} + S(i)$
-        </p>
+        <p class="fragment">$g(i) = \max\{f(i-1),\, g(i-1)\}$</p>
+        <p class="fragment">$f(i) = \max_{i - K \le j < i}\{g(j) + S(i) - S(j)\} = S(i) + \max_{i - K \le j < i}\{g(j) - S(j)\}$</p>
+        <p class="fragment">其中 $S(i) = \sum_{k=1}^{i} E_k$。</p>
     </section>
     <section>
         <h2>单调队列</h2>
-        <p>对 $g(j) - S(j)$ 做窗口长度为 $k$ 的滑动最大值。</p>
+        <p>对 $g(j) - S(j)$ 做窗口长度为 $K$ 的滑动最大值。</p>
         <sd-animation src="../../animation/修剪草坪/修剪草坪.js" class="fragment"
-            style="margin: 0 auto; width: 460px; height: 240px;"></sd-animation>
+            style="margin: 0 auto; width: 540px; height: 280px;"></sd-animation>
+        <p class="fragment">答案 $= \max\{f(n), g(n)\}$。</p>
     </section>
 </section>
