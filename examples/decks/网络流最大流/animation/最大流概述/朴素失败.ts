@@ -4,7 +4,6 @@ import { FlowGraph } from "../common/flow-graph";
 
 const svg = sd.svg();
 const C = sd.color();
-const E = sd.easing();
 
 const graph = new FlowGraph({
   targetNode: svg,
@@ -24,22 +23,8 @@ const graph = new FlowGraph({
   radius: 20,
 });
 
-const flowText = new sd.Text({
-  targetNode: svg,
-  text: "|f| = 0",
-  cx: 0,
-  cy: -130,
-  fontSize: 14,
-  fill: C.darkButtonGrey,
-  opacity: 0,
-});
-
 sd.main(async () => {
   graph.fadeIn({ delay: 0 });
-  flowText
-    .startAnimate({ delay: 320, duration: 280, easing: E.easeOut })
-    .setOpacity(1)
-    .endAnimate();
   await sd.pause();
 
   graph.paintEdge("s", "b", C.darkOrange);
@@ -48,11 +33,6 @@ sd.main(async () => {
   graph.setCap("s", "b", "1/1", C.darkOrange);
   graph.setCap("b", "c", "1/1", C.darkOrange);
   graph.setCap("c", "t", "1/1", C.darkOrange);
-  flowText
-    .startAnimate({ duration: 240, easing: E.easeOut })
-    .setText("|f| = 1")
-    .setFill(C.darkOrange)
-    .endAnimate();
   await sd.pause();
 
   graph.fadeEdge("s", "b", 0.3);
@@ -67,20 +47,5 @@ sd.main(async () => {
   graph.fadeEdge("s", "c", 0.3);
   graph.fadeEdge("c", "t", 0.3);
   graph.paintEdge("s", "b", C.red, { strokeWidth: 2.2 });
-  await sd.pause();
-
-  const stuckText = new sd.Text({
-    targetNode: svg,
-    text: "卡死 · 真实最大流 = 2",
-    cx: 0,
-    cy: 130,
-    fontSize: 13,
-    fill: C.red,
-    opacity: 0,
-  });
-  stuckText
-    .startAnimate({ duration: 320, easing: E.easeOut })
-    .setOpacity(1)
-    .endAnimate();
   await sd.pause();
 });

@@ -24,16 +24,6 @@ const graph = new FlowGraph({
   radius: 20,
 });
 
-const flowText = new sd.Text({
-  targetNode: svg,
-  text: "|f| = 1",
-  cx: 0,
-  cy: -130,
-  fontSize: 14,
-  fill: C.darkOrange,
-  opacity: 0,
-});
-
 function curvedArrow(
   ax: number,
   ay: number,
@@ -85,10 +75,6 @@ function curvedArrow(
 
 sd.main(async () => {
   graph.fadeIn({ delay: 0 });
-  flowText
-    .startAnimate({ delay: 320, duration: 280, easing: E.easeOut })
-    .setOpacity(1)
-    .endAnimate();
   graph.setCap("s", "b", "1/1", C.steelBlue);
   graph.setCap("b", "c", "1/1", C.steelBlue);
   graph.setCap("c", "t", "1/1", C.steelBlue);
@@ -164,10 +150,5 @@ sd.main(async () => {
   graph.paintEdge("b", "t", C.steelBlue, { strokeWidth: 1.8 });
   graph.paintEdge("c", "t", C.steelBlue, { strokeWidth: 1.8 });
   graph.fadeEdge("b", "c", 0.25);
-  flowText
-    .startAnimate({ duration: 280, easing: E.easeOut })
-    .setText("|f| = 2")
-    .setFill(C.darkGreen)
-    .endAnimate();
   await sd.pause();
 });
