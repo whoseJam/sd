@@ -131,10 +131,25 @@ const CLAUDE_BASE_FLAGS = [
   "AskUserQuestion",
 ];
 
+// If the host process is itself a Claude Code instance, its env carries
+// CLAUDECODE/CLAUDE_CODE_* markers. A child claude launched with those set
+// dies at startup with "An unknown error occurred (Unexpected)". `env -u`
+// strips them shell-agnostically (fish has no `unset` builtin) and scopes
+// the clearing to this invocation, leaving the pane shell untouched.
+const CLAUDE_ENV_VARS_TO_STRIP = [
+  "CLAUDECODE",
+  "CLAUDE_CODE_SESSION_ID",
+  "CLAUDE_CODE_ENTRYPOINT",
+  "CLAUDE_CODE_EXECPATH",
+  "CLAUDE_EFFORT",
+  "AI_AGENT",
+];
+
 function tmuxStartClaude(options: { resume?: string } = {}): void {
   const parts = ["claude", ...CLAUDE_BASE_FLAGS];
   if (options.resume) parts.push("--resume", options.resume);
-  tmuxSendKeys(parts.join(" "));
+  const envClear = CLAUDE_ENV_VARS_TO_STRIP.map((v) => `-u ${v}`).join(" ");
+  tmuxSendKeys(`env ${envClear} ${parts.join(" ")}`);
 }
 
 async function tmuxQuitClaude(): Promise<void> {
