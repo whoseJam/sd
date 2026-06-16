@@ -12,6 +12,8 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r --parallel dev",
+    "gen": "pnpm --filter @whosejam/sd-agents build",
+    "check:gen": "pnpm gen && git diff --exit-code packages/sd-agents/dist",
     "format": "oxfmt && oxlint --fix",
     "lint": "oxlint",
     "check:format": "oxfmt --check",
