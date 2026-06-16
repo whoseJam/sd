@@ -1,9 +1,7 @@
 #!/usr/bin/env bun
-// Unified launcher.
-//   pnpm start:local   chat server only
-//   pnpm start:remote  + tailscale funnel + tmux Claude
-//   pnpm stop:local    kill chat server
-//   pnpm stop:remote   kill all of the above
+// Boots / kills the preview server.
+//   pnpm start   → ensure preview server is listening on :PORT
+//   pnpm stop    → kill the preview server + any view watchers
 
 import { spawn, spawnSync } from "node:child_process";
 import {
@@ -18,25 +16,12 @@ import { createConnection } from "node:net";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-type Mode = "local" | "remote";
 type Verb = "start" | "stop";
 
-const SESSION = process.env.SESSION ?? "claude-dev";
 const REPO = process.env.REPO ?? join(homedir(), "Desktop", "sd");
 const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const PORT = Number(process.env.PORT ?? 8765);
 const SERVER_LOG = join(REVEAL_ROOT, "server.log");
-const URL_FILE = join(REVEAL_ROOT, "url.txt");
-const VITE_LOG = join(REVEAL_ROOT, "vite-chat.log");
-const VITE_PID_FILE = join(REVEAL_ROOT, "vite-chat-pid.txt");
-const CHAT_DIST_INDEX = join(
-  REPO,
-  "packages",
-  "remote",
-  "dist",
-  "chat",
-  "index.html",
-);
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
 
@@ -47,59 +32,22 @@ main().catch((error) => {
 
 async function main(): Promise<void> {
   const verb = process.argv[2] as Verb | undefined;
-  const mode = process.argv[3] as Mode | undefined;
-  if (
-    (verb !== "start" && verb !== "stop") ||
-    (mode !== "local" && mode !== "remote")
-  ) {
-    console.error("usage: serve.ts <start|stop> <local|remote>");
+  if (verb !== "start" && verb !== "stop") {
+    console.error("usage: serve.ts <start|stop>");
     process.exit(1);
   }
-  if (verb === "start") await start(mode);
-  else await stop(mode);
+  if (verb === "start") await start();
+  else stop();
 }
 
-async function start(mode: Mode): Promise<void> {
-  const required = mode === "remote" ? ["bun", "tmux", "tailscale"] : ["bun"];
-  for (const command of required) {
-    if (!which(command)) die(`missing: ${command} (brew install ${command})`);
-  }
-
-  await ensureChatBuild();
+async function start(): Promise<void> {
+  if (!which("bun")) die("missing: bun (brew install bun)");
   await ensureServer();
-  if (mode === "local") {
-    console.log(`\n  server on :${PORT} — run \`pnpm open <name>\` to view\n`);
-    return;
-  }
-
-  const url = await ensureTunnel();
-  pinTmuxStatusBar(url);
-  console.log(`\n  chat: ${url}\n`);
-  if (process.env.NO_ATTACH === "1") return;
-  const result = spawnSync("tmux", ["attach", "-t", SESSION], {
-    stdio: "inherit",
-  });
-  if (result.status !== 0) process.exit(result.status ?? 1);
+  console.log(`\n  server on :${PORT} — run \`pnpm open <name>\` to view\n`);
 }
 
-async function stop(mode: Mode): Promise<void> {
+function stop(): void {
   killViewWatchers();
-  killViteWatcher();
-  if (mode === "remote") {
-    if (spawnSync("tmux", ["has-session", "-t", SESSION]).status === 0) {
-      spawnSync("tmux", ["kill-session", "-t", SESSION]);
-      console.log(`✓ tmux session '${SESSION}' killed`);
-    } else {
-      console.log(`  tmux session '${SESSION}' not running`);
-    }
-    const reset = spawnSync("tailscale", ["funnel", "reset"], {
-      encoding: "utf-8",
-    });
-    if (reset.status === 0) console.log("✓ tailscale funnel reset");
-    else console.log("  tailscale funnel reset failed (already off?)");
-    if (existsSync(URL_FILE)) rmSync(URL_FILE);
-  }
-
   const lsof = spawnSync(
     "lsof",
     ["-nP", `-iTCP:${PORT}`, "-sTCP:LISTEN", "-t"],
@@ -111,9 +59,9 @@ async function stop(mode: Mode): Promise<void> {
     .filter((line) => /^\d+$/.test(line));
   if (pids.length) {
     spawnSync("kill", pids);
-    console.log(`✓ chat server on :${PORT} killed`);
+    console.log(`✓ preview server on :${PORT} killed`);
   } else {
-    console.log("  chat server not running");
+    console.log("  preview server not running");
   }
   console.log("done.");
 }
@@ -140,78 +88,19 @@ function killViewWatchers(): void {
   rmSync(file);
 }
 
-async function ensureChatBuild(): Promise<void> {
-  // First boot: produce dist/chat synchronously so the server has something
-  // to serve before vite's watch loop wakes up.
-  if (!existsSync(CHAT_DIST_INDEX)) {
-    console.log("  building chat (first run)...");
-    const result = spawnSync("pnpm", ["--filter", "@sd/remote", "build:chat"], {
-      cwd: REPO,
-      encoding: "utf-8",
-    });
-    if (result.status !== 0) {
-      die(
-        `✗ chat build failed:\n${result.stderr || result.stdout || "(no output)"}`,
-      );
-    }
-    console.log("✓ chat built");
-  }
-  // Skip if a watcher is already alive (subsequent start without prior stop).
-  if (existsSync(VITE_PID_FILE)) {
-    const pid = Number(readFileSync(VITE_PID_FILE, "utf-8"));
-    if (Number.isFinite(pid) && processAlive(pid)) {
-      console.log(`✓ chat watcher (pid ${pid})`);
-      return;
-    }
-  }
-  writeFileSync(VITE_LOG, "");
-  const logHandle = openSync(VITE_LOG, "a");
-  const child = spawn("pnpm", ["--filter", "@sd/remote", "watch:chat"], {
-    cwd: REPO,
-    detached: true,
-    stdio: ["ignore", logHandle, logHandle],
-  });
-  child.unref();
-  if (child.pid) writeFileSync(VITE_PID_FILE, String(child.pid));
-  console.log(`✓ chat watcher (pid ${child.pid ?? "?"})`);
-}
-
-function killViteWatcher(): void {
-  if (!existsSync(VITE_PID_FILE)) return;
-  const pid = Number(readFileSync(VITE_PID_FILE, "utf-8"));
-  if (Number.isFinite(pid)) {
-    try {
-      process.kill(pid);
-      console.log(`✓ chat watcher killed (pid ${pid})`);
-    } catch {
-      // already dead
-    }
-  }
-  rmSync(VITE_PID_FILE);
-}
-
-function processAlive(pid: number): boolean {
-  try {
-    process.kill(pid, 0);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function ensureServer(): Promise<void> {
   if (await portInUse(PORT)) {
-    console.log(`✓ chat server on :${PORT}`);
+    console.log(`✓ preview server on :${PORT}`);
     return;
   }
-  console.log("  starting chat server...");
+  console.log("  starting preview server...");
   // stdio takes an OS handle, not a Node stream — listeners would pin the
   // event loop and the parent would never exit after child.unref().
   writeFileSync(SERVER_LOG, "");
   const logHandle = openSync(SERVER_LOG, "a");
   const child = spawn(
     "bun",
-    [join(REPO, "packages", "remote", "src", "server.ts")],
+    [join(REPO, "packages", "cli", "src", "preview-server.ts")],
     {
       cwd: REPO,
       detached: true,
@@ -222,79 +111,11 @@ async function ensureServer(): Promise<void> {
   for (let attempt = 0; attempt < 20; attempt++) {
     await sleep(500);
     if (await portInUse(PORT)) {
-      console.log(`✓ chat server on :${PORT}`);
+      console.log(`✓ preview server on :${PORT}`);
       return;
     }
   }
-  die(`✗ chat server failed (check ${SERVER_LOG})`);
-}
-
-async function ensureTunnel(): Promise<string> {
-  const status = spawnSync("tailscale", ["status", "--json"], {
-    encoding: "utf-8",
-  });
-  if (status.status !== 0) {
-    die(
-      "✗ tailscale not signed in. Run: sudo tailscale up\n" +
-        "  See docs/tailscale-funnel-setup.md",
-    );
-  }
-  let dnsName = "";
-  try {
-    const data = JSON.parse(status.stdout) as { Self?: { DNSName?: string } };
-    dnsName = (data.Self?.DNSName ?? "").replace(/\.$/, "");
-  } catch {
-    die("✗ couldn't parse `tailscale status --json` output");
-  }
-  if (!dnsName) {
-    die(
-      "✗ tailscale has no DNSName for this machine. Sign in: sudo tailscale up",
-    );
-  }
-  const url = `https://${dnsName}`;
-
-  const existing = spawnSync("tailscale", ["funnel", "status"], {
-    encoding: "utf-8",
-  });
-  if (
-    existing.status === 0 &&
-    new RegExp(`(127\\.0\\.0\\.1|localhost):${PORT}\\b`).test(existing.stdout)
-  ) {
-    writeFileSync(URL_FILE, url);
-    console.log(`✓ tunnel: ${url}  (reused)`);
-    return url;
-  }
-
-  console.log(`  starting tailscale funnel → :${PORT}...`);
-  const result = spawnSync("tailscale", ["funnel", "--bg", String(PORT)], {
-    encoding: "utf-8",
-  });
-  if (result.status !== 0) {
-    die(
-      `✗ tailscale funnel failed (status ${result.status}):\n${result.stderr || result.stdout || "(no output)"}`,
-    );
-  }
-  writeFileSync(URL_FILE, url);
-  console.log(`✓ tunnel: ${url}`);
-  return url;
-}
-
-function pinTmuxStatusBar(url: string): void {
-  tmux([
-    "set-option",
-    "-t",
-    SESSION,
-    "status-style",
-    "bg=#1d4ed8,fg=#ffffff,bold",
-  ]);
-  tmux(["set-option", "-t", SESSION, "status-left-length", "200"]);
-  tmux(["set-option", "-t", SESSION, "status-left", ` chat: ${url} `]);
-  tmux(["set-option", "-t", SESSION, "status-right", ""]);
-}
-
-function tmux(args: string[]): { status: number | null; stdout: string } {
-  const result = spawnSync("tmux", args, { encoding: "utf-8" });
-  return { status: result.status, stdout: result.stdout ?? "" };
+  die(`✗ preview server failed (check ${SERVER_LOG})`);
 }
 
 function which(command: string): boolean {

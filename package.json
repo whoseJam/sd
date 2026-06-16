@@ -24,10 +24,8 @@
     "lint": "oxlint",
     "check:format": "oxfmt --check",
     "check:lint": "oxlint",
-    "start:local": "bun packages/cli/src/serve.ts start local",
-    "start:remote": "bun packages/cli/src/serve.ts start remote",
-    "stop:local": "bun packages/cli/src/serve.ts stop local",
-    "stop:remote": "bun packages/cli/src/serve.ts stop remote",
+    "start": "bun packages/cli/src/serve.ts start",
+    "stop": "bun packages/cli/src/serve.ts stop",
     "open": "bun packages/cli/src/view.ts show",
     "close": "bun packages/cli/src/view.ts hide",
     "snap": "bun packages/cli/src/snap.ts"

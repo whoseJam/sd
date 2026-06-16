@@ -16,7 +16,6 @@ packages/
   impress/       @sd/impress       impress.js host: framework + include-html walker, shipped as IIFE bundle
   element/       @sd/element       <sd-animation> custom element that wraps an iframe (host-side embedding)
   cli/           @sd/cli           Build tasks + CLI entries (sd-animation, sd-animation-group, sd-ppt, sd-config)
-  remote/        @sd/remote        Phone ↔ desktop Claude Code remote chat (Bun HTTP/SSE server, mobile UI)
   assets/        @sd/assets        Vendor JS/CSS/fonts (MathJax2/3, snap.svg, dagre, font-awesome, themes, customcontrols)
 examples/
   animations/  Single-animation demo scripts (former unit/)
@@ -72,24 +71,18 @@ pnpm open <deck-name>     # spawn watchers + open the deck in your browser
 pnpm close                # stop watching
 ```
 
-For phone access: `pnpm start:remote` first (adds a Tailscale Funnel + tmux Claude session). Then `pnpm open <deck-name>` pushes the deck URL to the phone's chat stage panel (which polls the preview marker). `pnpm stop:remote` tears it all down. The chat surface is **remote-only** — locally `pnpm open` opens the deck URL directly and you never touch chat.
+`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, then opens the deck URL in your browser.
 
-`start:remote` requires Tailscale installed and signed in (`brew install tailscale && sudo tailscale up`) with Funnel enabled for your tailnet. One-time setup: see [docs/tailscale-funnel-setup.md](docs/tailscale-funnel-setup.md). The URL is a fixed `https://<machine>.tail-XXXXX.ts.net` — bookmark once on your phone.
-
-`pnpm open` spawns `gulp sd -w` / `gulp ppt -w` / `gulp animation-group -w` for the named deck (or `gulp animation -w` if the name resolves to `examples/animations/<name>.ts`), writes their PIDs so `pnpm close` can clean them up, and writes `/reveal/index.html` into `/tmp/sd-test/preview-url.txt`. Mode is detected by presence of `/tmp/sd-test/url.txt` (written by `start:remote`, deleted by `stop:remote`): in local mode `pnpm open` opens the deck URL in your browser; in remote mode it skips the open and lets the phone's chat poll the marker.
-
-The Bun server injects a 1-line reload poller into every HTML it serves, so watcher rebuilds refresh the iframe automatically — no DevTools "Disable cache" toggle needed.
+The Bun server injects a 1-line reload poller into every HTML it serves, so watcher rebuilds refresh the page automatically — no DevTools "Disable cache" toggle needed.
 
 Full set of commands:
 
 ```bash
 pnpm open <name>          watch + preview a deck/animation
-pnpm close                stop watching + clear preview
+pnpm close                stop watching
 pnpm snap <url>            one-shot screenshot (see "Snapshot tool" below)
-pnpm start:local          boot the Bun server (auto-called by open)
-pnpm stop:local           stop the Bun server
-pnpm start:remote         server + tailscale funnel + tmux Claude (phone access)
-pnpm stop:remote          tear down all of remote
+pnpm start                boot the preview server (auto-called by open)
+pnpm stop                 stop the preview server
 ```
 
 ### Other tasks
@@ -199,32 +192,6 @@ Relative URLs (starting with `/`) resolve against `http://127.0.0.1:8765`. Pass 
 stdout = absolute PNG path. stderr = browser issues (pageerror + console + network) collected during the run. Exit 0 = clean; exit 1 = errors (PNG still produced).
 
 Implementations: `packages/cli/src/snap.ts` (dispatcher), `snap-deck.ts`, `snap-animation.ts`, `snap-grid.ts` (shared label/stitch helpers).
-
-## Remote chat workflow (when running in tmux from pnpm start:remote)
-
-If `$TMUX` is set you're inside the `claude-dev` session that `pnpm start:remote` boots. The user is on their phone hitting the same Bun server (:8765) you can reach locally — `pnpm start:remote` just adds a Tailscale Funnel pointing at it. Local URL and funneled URL serve identical paths.
-
-How to show the user something:
-
-- **Live deck or animation** — same commands as locally:
-
-  ```bash
-  pnpm open <deck-name>
-  pnpm open <animation-name>
-  pnpm close
-  ```
-
-  Spawns watchers + pushes the URL into the chat's stage panel. Watcher rebuilds refresh the iframe automatically.
-
-- **Static snapshot** — `pnpm snap <url>` writes a PNG to `/tmp/sd-test/snapshots/` and prints its path. Reference it as a markdown image in your chat reply:
-
-  ```
-  ![slide 6](/snapshots/<filename>.png)
-  ```
-
-  The chat client renders markdown; image appears inline. Relative URLs resolve the same locally and through the tunnel.
-
-- **Status reports** are normal chat messages.
 
 ## Loader / Plugin Hoisting
 

@@ -17,9 +17,6 @@ const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const PORT = Number(process.env.PORT ?? 8765);
 const PIDS_FILE = join(REVEAL_ROOT, "view-pids.json");
 const LOG_DIR = join(REVEAL_ROOT, "view-logs");
-const PREVIEW_FILE = join(REVEAL_ROOT, "preview-url.txt");
-// url.txt exists iff `start:remote` is active (it writes the funnel URL there).
-const REMOTE_MARKER = join(REVEAL_ROOT, "url.txt");
 const SERVER = `http://127.0.0.1:${PORT}`;
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
@@ -29,7 +26,6 @@ const subcommand = process.argv[2];
 
 if (subcommand === "hide") {
   await killExisting();
-  writePreview("", "");
   console.log("✓ hidden");
   process.exit(0);
 }
@@ -52,19 +48,13 @@ const pids = isDeck ? startDeckWatchers(name) : startAnimationWatchers(name);
 writeFileSync(PIDS_FILE, JSON.stringify(pids));
 
 const url = isDeck ? "/reveal/index.html" : `/animation/${name}.html`;
-const label = isDeck ? `deck ${name}` : `animation ${name}`;
-writePreview(url, label);
-if (existsSync(REMOTE_MARKER)) {
-  console.log(`showing ${name}  →  ${url}  (phone via funnel)`);
-} else {
-  openBrowser(`${SERVER}${url}`);
-  console.log(`showing ${name}  →  ${SERVER}${url}`);
-}
+openBrowser(`${SERVER}${url}`);
+console.log(`showing ${name}  →  ${SERVER}${url}`);
 
 async function ensureServer(): Promise<void> {
   if (await portInUse(PORT)) return;
-  console.log("  server not running — booting pnpm start:local...");
-  spawnSync("pnpm", ["start:local"], { cwd: REPO, stdio: "inherit" });
+  console.log("  server not running — booting pnpm start...");
+  spawnSync("pnpm", ["start"], { cwd: REPO, stdio: "inherit" });
   for (let attempt = 0; attempt < 20; attempt++) {
     if (await portInUse(PORT)) return;
     await sleep(500);
@@ -144,12 +134,6 @@ function spawnWatcher(tag: string, command: string[]): number {
   child.unref();
   console.log(`  ${tag}: pid ${child.pid}  log ${logPath}`);
   return child.pid!;
-}
-
-// Single source of truth for the chat's preview iframe URL. server.ts reads
-// this file as a static asset; no API endpoint involved.
-function writePreview(url: string, label: string): void {
-  writeFileSync(PREVIEW_FILE, url ? `${url}\t${label}` : "");
 }
 
 function openBrowser(url: string): void {
