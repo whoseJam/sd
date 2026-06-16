@@ -1,0 +1,28 @@
+{
+  "name": "@whosejam/sd-agents",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Agent-facing integration for sd: skills + MCP tools. Renders into per-harness plugin layouts under dist/.",
+  "license": "ISC",
+  "type": "module",
+  "files": [
+    "skills",
+    "agents",
+    "mcp-server.ts",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "mcp": "bun mcp-server.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "gray-matter": "^4.0.3"
+  }
+}
