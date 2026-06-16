@@ -7,27 +7,6 @@ import { Root } from "@/interact/root";
 import { SDNode } from "@/node/node";
 import { SDSVGNode } from "@/node/svg-node";
 
-// the animatedKey which will impact the shape (boundingBox) of an element
-const SIZE_RELATED_KEY = new Set([
-  "x",
-  "y",
-  "cx",
-  "cy",
-  "width",
-  "height",
-  "d",
-  "x1",
-  "y1",
-  "x2",
-  "y2",
-  "transform",
-  "opacity",
-  "font-size",
-  "points",
-  "left",
-  "top",
-]);
-
 const entityLabel = (entity: unknown): string => {
   if (entity && typeof entity === "object") {
     const ctor = (entity as { constructor?: { name?: string } }).constructor;
@@ -437,10 +416,8 @@ export class ActionList {
   }
   debug() {
     console.log("---------------Action List debug---------------");
-    let used = 0;
     this.actionsList.forEach((action) => {
       console.log(action.toString(), action);
-      used++;
     });
     console.log(
       "input action count =",

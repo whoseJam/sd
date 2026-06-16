@@ -1,7 +1,6 @@
 import colors from "colors-console";
 import gulp from "gulp";
 import ts from "gulp-typescript";
-import path from "node:path";
 
 import { parseInput } from "./parser.js";
 import { validateJSFile } from "./utils.js";

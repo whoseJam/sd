@@ -1,17 +1,13 @@
 import * as sd from "@/sd";
 
 import {
-  D_BACK_EDGES,
-  D_TREE_EDGES,
   classifyBackEdges,
   colorTreeEdges,
   createDirectedGraph,
-  dedgeKey,
   fadeInDirectedNeutral,
 } from "../lib/graph-d";
 
 const svg = sd.svg();
-const C = sd.color();
 const E = sd.easing();
 
 const SCC_TINT_A = "#fdecd9";

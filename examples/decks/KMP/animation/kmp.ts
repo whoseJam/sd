@@ -35,7 +35,6 @@ export function traceKMP(s: string, t: string, startI = 1): Step[] {
   // Both s and t are 1-padded.
   const len = buildLen(t);
   const ns = s.length - 1;
-  const nt = t.length - 1;
   const steps: Step[] = [];
 
   let j = 0;

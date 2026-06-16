@@ -3,7 +3,6 @@ import * as sd from "@/sd";
 import { createGraph, edgeKey, fadeInClassified } from "../lib/graph";
 
 const svg = sd.svg();
-const C = sd.color();
 const E = sd.easing();
 
 // Pale tint that sits behind the {2,3,4} bcc. Created BEFORE the graph

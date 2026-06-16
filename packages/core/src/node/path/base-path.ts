@@ -1,10 +1,7 @@
 import type { SDSVGNodeAttributes } from "@/node/svg-node";
 
-import { Context } from "@/animate/context";
 import { Interp } from "@/animate/interp";
 import { SDSVGNode } from "@/node/svg-node";
-import { Check } from "@/utility/check";
-import { Color as C, SDAllColor, SDPacketColor } from "@/utility/color";
 
 export type BasePathAttributes = SDSVGNodeAttributes & {
   markerStart: string;

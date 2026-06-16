@@ -2,7 +2,6 @@
 
 import colors from "colors-console";
 import gulp from "gulp";
-import path from "node:path";
 
 import * as animation from "./animation.js";
 import { parseConfig, parseInput } from "./parser.js";

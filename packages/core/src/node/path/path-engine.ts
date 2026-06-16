@@ -1,7 +1,7 @@
 import type { AABB } from "@/math/aabb";
 import type { SDNode } from "@/node/node";
 
-import { Root, svg } from "@/interact/root";
+import { Root } from "@/interact/root";
 import { RenderNode } from "@/renderer/render-node";
 
 export type PathCode =
@@ -698,7 +698,7 @@ export class PathEngine {
       this.pathSVG.setAttribute("d", d);
       const point = this.pathSVG.element().getPointAtLength(length);
       return [point.x, point.y];
-    } catch (err) {
+    } catch {
       return [0, 0];
     }
   }
@@ -708,7 +708,7 @@ export class PathEngine {
       const length = this.pathSVG.element().getTotalLength() * k;
       const point = this.pathSVG.element().getPointAtLength(length);
       return [point.x, point.y];
-    } catch (err) {
+    } catch {
       return [0, 0];
     }
   }
@@ -716,7 +716,7 @@ export class PathEngine {
     try {
       this.pathSVG.setAttribute("d", d);
       return this.pathSVG.element().getTotalLength();
-    } catch (err) {
+    } catch {
       return 0;
     }
   }
@@ -762,7 +762,7 @@ export class PathEngine {
         [ps.x, ps.y],
         [pt.x, pt.y],
       ];
-    } catch (err) {
+    } catch {
       return [
         [0, 0],
         [0, 0],

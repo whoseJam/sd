@@ -3,7 +3,6 @@ import * as sd from "@/sd";
 import { createDirectedGraph, fadeInDirectedClassified } from "../lib/graph-d";
 
 const svg = sd.svg();
-const C = sd.color();
 const E = sd.easing();
 
 const SCC_TINT_A = "#fdecd9";

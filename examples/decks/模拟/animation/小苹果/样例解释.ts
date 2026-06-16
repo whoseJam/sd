@@ -3,7 +3,6 @@ import * as sd from "@/sd";
 import { NumRow } from "../lib/num-row";
 
 const svg = sd.svg();
-const C = sd.color();
 
 const N = 12;
 const SIZE = 36;

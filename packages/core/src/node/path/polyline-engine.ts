@@ -1,4 +1,4 @@
-import { Root, svg } from "@/interact/root";
+import { Root } from "@/interact/root";
 import { RenderNode } from "@/renderer/render-node";
 
 export class PolylineEngine {
@@ -33,7 +33,7 @@ export class PolylineEngine {
       this.polylineSVG.setAttribute("points", points);
       const point = this.polylineSVG.element().getPointAtLength(length);
       return [point.x, point.y];
-    } catch (err) {
+    } catch {
       return [0, 0];
     }
   }
@@ -46,7 +46,7 @@ export class PolylineEngine {
       const length = this.polylineSVG.element().getTotalLength() * k;
       const point = this.polylineSVG.element().getPointAtLength(length);
       return [point.x, point.y];
-    } catch (err) {
+    } catch {
       return [0, 0];
     }
   }
@@ -54,7 +54,7 @@ export class PolylineEngine {
     try {
       this.polylineSVG.setAttribute("points", points);
       return this.polylineSVG.element().getTotalLength();
-    } catch (err) {
+    } catch {
       return 0;
     }
   }

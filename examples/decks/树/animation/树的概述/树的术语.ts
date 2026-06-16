@@ -128,7 +128,7 @@ sd.main(async () => {
     }
     if (lvl > 0) {
       for (let e = 0; e < edgeLines.length; e++) {
-        const [u, v] = EDGES[e];
+        const [, v] = EDGES[e];
         const childLevel = LEVELS.findIndex((arr) =>
           arr.includes(NODES.findIndex((n) => n.id === v)),
         );

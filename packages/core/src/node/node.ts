@@ -646,7 +646,3 @@ export type SDNodeWithText = SDNode & { text: AnyFunction };
 export type SDNodeWithValue = SDNode & { value: AnyFunction };
 export type SDNodeWithValueFromExist = SDNode & { valueFromExist: AnyFunction };
 export type SDNodeWithRadius = SDNode & { r: AnyFunction };
-
-function isPercent(value: any): value is Percent {
-  return typeof value === "string" && value.endsWith("%");
-}

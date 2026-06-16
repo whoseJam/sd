@@ -245,18 +245,23 @@ describe("brand discrimination", () => {
   });
 
   it("a plain (obj, key) => InterpObject function is NOT a creator unless branded", () => {
-    const userFactory = (object: any, key: string) =>
+    const userFactory = (_object: any, _key: string) =>
       new InterpObject(() => {});
     expect(isInterpCreator(userFactory)).toBe(false);
   });
 
   it("lazyInterp() wraps a function so isLazyInterpFunction recognizes it", () => {
-    const branded = lazyInterp((l, r, s, t) => {});
+    const branded = lazyInterp((_left, _right, _source, _target) => {});
     expect(isLazyInterpFunction(branded)).toBe(true);
   });
 
   it("an unbranded 4-arg function is NOT a LazyInterpFunction", () => {
-    const bare = (l: number, r: number, s: any, t: any) => {};
+    const bare = (
+      _left: number,
+      _right: number,
+      _source: any,
+      _target: any,
+    ) => {};
     expect(isLazyInterpFunction(bare)).toBe(false);
   });
 

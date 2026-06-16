@@ -97,7 +97,7 @@ const sum1Label = new sd.Math({
 
 const sum2Label = new sd.Math({
   targetNode: svg,
-  text: `\\text{路径}_2=${0 + 3 + 7 + 1 + 0}`,
+  text: `\\text{路径}_2=${sum2}`,
   cx: TEXT_X,
   cy: -STEP * 0.6,
   fontSize: 18,

@@ -24,7 +24,6 @@ function bitX(bit: number): number {
 }
 
 const WR_Y = 70;
-const WR_DIVIDER_Y = 38; // thin line separating x register from basis
 const SLOT_Y = [10, -25, -60, -95]; // slot 3, 2, 1, 0 (top to bottom)
 function basisCy(slot: number): number {
   return SLOT_Y[3 - slot];

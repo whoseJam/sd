@@ -1,8 +1,5 @@
 import { BooleanOperations, Polygon as PolygonLogic } from "@flatten-js/core";
 
-import { svg } from "@/interact/root";
-import { Path } from "@/node/path/path";
-
 function ddcmp(x) {
   if (Math.abs(x) > 1e-2) return 1;
   return Math.abs(x) < -1e-2 ? -1 : 0;
@@ -197,8 +194,7 @@ function castAnyToPologonLogic(object) {
 function castPolygonLogicToPath(polygon) {
   const str = polygon.svg();
   const regex = /d="([^"]*)"/;
-  const match = str.match(regex);
-  const d = match[1];
+  str.match(regex);
   // const path = new Path(svg()).d(d).fillOpacity(1);
   // path.toPolygon = function () {
   //     return polygon;

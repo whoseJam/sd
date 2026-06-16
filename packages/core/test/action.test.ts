@@ -147,7 +147,7 @@ describe("Action.fromAction (clone)", () => {
 describe("Action.clone instance method", () => {
   it("returns undefined for lazy-interp actions (they cannot be replayed)", () => {
     const entity = { setAttribute: vi.fn(), id: 1 };
-    const lazy = lazyInterp((l, r, source, target) => {});
+    const lazy = lazyInterp((_left, _right, _source, _target) => {});
     const action = new Action(0, 100, 0, 10, lazy, linear, entity as any, "x");
     expect(action.clone()).toBeUndefined();
   });

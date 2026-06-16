@@ -108,7 +108,7 @@ const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t;
 
 export class Interp {
   static emptyInterp = interpCreator<never>(
-    (object, key) => new InterpObject(function (t: number) {}),
+    (_object, _key) => new InterpObject(function (_time: number) {}),
   );
 
   static exLengthInterp = interpCreator<string>((object, key) => {
@@ -169,7 +169,7 @@ export class Interp {
     });
   });
 
-  static childBlankInMiddleInterp = interpCreator<never>((object, key) => {
+  static childBlankInMiddleInterp = interpCreator<never>((object, _key) => {
     return new InterpObject(function (t) {
       if (t === 0 && this.source) object.__removeChild(this.source);
       if (t === 1 && this.target) object.__append(this.target);
