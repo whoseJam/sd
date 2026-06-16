@@ -4,10 +4,10 @@
   "private": true,
   "description": "impress.js host: 3D step-based deck",
   "license": "ISC",
-  "main": "src/host.ts",
+  "main": "src/host.mjs",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./src/host.ts",
+    ".": "./src/host.mjs",
     "./*": "./src/*"
   },
   "files": [

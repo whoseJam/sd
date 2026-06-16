@@ -1,7 +1,11 @@
 export function tsLoaderRule(isDev: boolean) {
   return {
     test: /\.(ts|tsx|js|jsx)$/,
-    exclude: /node_modules/,
+    // Don't blanket-exclude node_modules: @whosejam/sd-* src-ship their
+    // TS sources, which webpack must transpile when consumed externally.
+    // pnpm puts the real files at node_modules/.pnpm/...+sd-core...,
+    // so the exclude has to whitelist that pnpm-flat path too.
+    exclude: /node_modules\/(?!(@whosejam\/|\.pnpm\/[^/]*@whosejam\+))/,
     use: {
       loader: "ts-loader",
       options: {

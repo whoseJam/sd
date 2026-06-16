@@ -46,6 +46,18 @@ importers:
 
   packages/cli:
     dependencies:
+      '@babel/core':
+        specifier: ^7.24.9
+        version: 7.29.7
+      '@babel/preset-env':
+        specifier: ^7.24.8
+        version: 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-typescript':
+        specifier: ^7.27.1
+        version: 7.29.7(@babel/core@7.29.7)
+      '@swc/register':
+        specifier: ^0.1.10
+        version: 0.1.10(@swc/core@1.15.40)
       '@whosejam/sd-assets':
         specifier: workspace:*
         version: link:../assets
@@ -64,31 +76,6 @@ importers:
       '@whosejam/sd-webslides':
         specifier: workspace:*
         version: link:../webslides
-      playwright:
-        specifier: ^1.49.0
-        version: 1.60.0
-      sass-loader:
-        specifier: ^17.0.0
-        version: 17.0.0(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
-      sharp:
-        specifier: ^0.34.0
-        version: 0.34.5
-    devDependencies:
-      '@babel/core':
-        specifier: ^7.24.9
-        version: 7.29.7
-      '@babel/plugin-transform-react-jsx':
-        specifier: ^7.24.7
-        version: 7.29.7(@babel/core@7.29.7)
-      '@babel/preset-env':
-        specifier: ^7.24.8
-        version: 7.29.7(@babel/core@7.29.7)
-      '@babel/preset-react':
-        specifier: ^7.24.7
-        version: 7.29.7(@babel/core@7.29.7)
-      '@babel/preset-typescript':
-        specifier: ^7.27.1
-        version: 7.29.7(@babel/core@7.29.7)
       autoprefixer:
         specifier: ^10.4.19
         version: 10.5.0(postcss@8.5.15)
@@ -101,9 +88,6 @@ importers:
       css-loader:
         specifier: ^7.1.1
         version: 7.1.4(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
-      gulp:
-        specifier: ^5.0.0
-        version: 5.0.1
       gulp-autoprefixer:
         specifier: ^3.1.1
         version: 3.1.1
@@ -113,18 +97,24 @@ importers:
       gulp-sass:
         specifier: ^5.1.0
         version: 5.1.0
-      gulp-strip-comments:
-        specifier: ^2.6.0
-        version: 2.6.0
       gulp-typescript:
         specifier: ^6.0.0-alpha.1
         version: 6.0.0-alpha.1(typescript@5.9.3)
       html-webpack-plugin:
         specifier: ^5.6.0
         version: 5.6.7(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
+      playwright:
+        specifier: ^1.49.0
+        version: 1.60.0
       sass:
         specifier: ^1.100.0
         version: 1.100.0
+      sass-loader:
+        specifier: ^17.0.0
+        version: 17.0.0(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
+      sharp:
+        specifier: ^0.34.0
+        version: 0.34.5
       style-loader:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
@@ -137,15 +127,28 @@ importers:
       ts-loader:
         specifier: ^9.5.1
         version: 9.6.0(loader-utils@2.0.4)(typescript@5.9.3)(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(@swc/core@1.15.40)(postcss@8.5.15)(typescript@5.9.3)
       webpack:
         specifier: ^5.92.1
         version: 5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15)
       webpack-stream:
         specifier: ^7.0.0
         version: 7.0.0(webpack@5.107.2(@swc/core@1.15.40)(esbuild@0.27.7)(postcss@8.5.15))
+    devDependencies:
+      '@babel/plugin-transform-react-jsx':
+        specifier: ^7.24.7
+        version: 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-react':
+        specifier: ^7.24.7
+        version: 7.29.7(@babel/core@7.29.7)
+      gulp:
+        specifier: ^5.0.0
+        version: 5.0.1
+      gulp-strip-comments:
+        specifier: ^2.6.0
+        version: 2.6.0
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(@swc/core@1.15.40)(postcss@8.5.15)(typescript@5.9.3)
 
   packages/core:
     dependencies:
