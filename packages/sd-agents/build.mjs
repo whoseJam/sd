@@ -63,6 +63,7 @@ function writeClaudePlugin(outDir, { skills, agents }) {
         name: "sd-agents",
         version: "0.0.1",
         description: "sd deck authoring conventions, runtime API, and MCP tools.",
+        author: { name: "whosejam" },
         mcpServers: {
           sd: {
             command: "bun",
