@@ -4,20 +4,31 @@
   "private": true,
   "description": "Layout helpers for @whosejam/sd-core (Array / Curve / Graph / Grid / TwoNode). Depends on dagre for graph layouts.",
   "license": "ISC",
-  "main": "src/index.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./src/index.ts",
-    "./*": "./src/*"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "dependencies": {
     "@whosejam/sd-core": "workspace:*",
     "dagre": "^0.8.5"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1"
   }
 }

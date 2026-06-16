@@ -9,7 +9,7 @@ import { cssRule, tsLoaderRule } from "./webpack-base.js";
 export default function sd(targetFolder: string): NodeJS.ReadWriteStream {
   const coreDir = resolvePackageDir("@whosejam/sd-core");
   return gulp
-    .src([path.join(coreDir, "src/sd.ts")])
+    .src([path.join(coreDir, "dist/sd.js")])
     .pipe(webpack(getConfiguration()))
     .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);
@@ -57,8 +57,7 @@ function getConfiguration() {
       buildDependencies: { config: [import.meta.filename] },
     },
     resolve: {
-      alias: { "@": path.join(resolvePackageDir("@whosejam/sd-core"), "src") },
-      extensions: [".tsx", ".ts", ".jsx", ".js"],
+      extensions: [".js", ".ts", ".jsx", ".tsx"],
       symlinks: false,
     },
     externals: { dagre: "dagre" },

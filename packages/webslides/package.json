@@ -4,10 +4,10 @@
   "private": true,
   "description": "WebSlides host: section-based deck with built-in transitions",
   "license": "ISC",
-  "main": "src/host.mjs",
+  "main": "./src/main.ts",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./src/host.mjs",
+    ".": "./src/main.ts",
     "./*": "./src/*"
   },
   "files": [

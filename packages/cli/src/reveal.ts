@@ -7,7 +7,7 @@ import { cssRule, tsLoaderRule } from "./webpack-base.js";
 
 export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src(path.join(resolvePackageDir("@whosejam/sd-reveal"), "src/reveal.ts"))
+    .src(path.join(resolvePackageDir("@whosejam/sd-reveal"), "dist/reveal.js"))
     .pipe(webpack(getConfiguration()))
     .pipe(gulp.dest(targetFolder));
 }

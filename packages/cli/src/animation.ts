@@ -84,7 +84,7 @@ function getConfiguration(file: string, targetFolder: string) {
     new HtmlWebpackPlugin({
       template: path.join(
         resolvePackageDir("@whosejam/sd-element"),
-        "src/template.html",
+        "dist/template.html",
       ),
       inject: false,
       minify: false,
@@ -104,9 +104,6 @@ function getConfiguration(file: string, targetFolder: string) {
     },
     cache: true,
     resolve: {
-      alias: {
-        "@": path.join(resolvePackageDir("@whosejam/sd-core"), "src"),
-      },
       extensions: [".tsx", ".ts", ".jsx", ".js"],
     },
     externals: {

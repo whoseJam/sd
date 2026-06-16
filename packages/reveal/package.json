@@ -4,22 +4,37 @@
   "private": true,
   "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
   "license": "ISC",
-  "main": "src/reveal.ts",
+  "type": "module",
+  "main": "./dist/reveal.js",
+  "types": "./dist/reveal.d.ts",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./src/reveal.ts",
+    ".": {
+      "types": "./dist/reveal.d.ts",
+      "default": "./dist/reveal.js"
+    },
+    "./host.mjs": "./src/host.mjs",
+    "./template.html": "./src/template.html",
     "./*": "./src/*"
   },
   "files": [
+    "dist",
     "src"
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
   },
   "dependencies": {
     "@whosejam/sd-assets": "workspace:*",
     "@whosejam/sd-element": "workspace:*",
     "@whosejam/sd-include-html": "workspace:*",
     "reveal.js": "^5.1.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1"
   }
 }

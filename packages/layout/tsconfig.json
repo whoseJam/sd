@@ -10,7 +10,8 @@
     },
     "outDir": "dist",
     "declarationDir": "dist/types",
-    "noEmit": true
+    "noEmit": true,
+    "incremental": false
   },
   "include": ["src/**/*", "test/**/*"]
 }

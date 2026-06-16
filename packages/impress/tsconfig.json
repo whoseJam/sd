@@ -1,9 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "outDir": "dist",
-    "declarationDir": "dist/types",
     "noEmit": true,
     "incremental": false
   },
