@@ -90,7 +90,6 @@ pnpm stop                 stop the preview server
 ```bash
 gulp animation -i examples/animations/<file>.ts -o <output-dir>     # single animation, emit <file>.html + <file>.js
 gulp animation -i <file> -w                                          # watch mode
-gulp animation -i <file> -l                                          # use local sd.js (at pptOutputPath/sd.js)
 gulp animation-group -i <directory> -o <output-dir> [-w]             # walk a dir, bundle each .js/.ts
 
 gulp sd        -o <output-dir>                                       # library bundles
@@ -150,7 +149,7 @@ PPT bundles work the same way: the framework's `template.html` loads `sd.js` and
 
 For webslides/impress the framework bundle is fully self-contained (framework + include-html walker + init), so the per-deck `main.js` is an empty stub; for reveal the per-deck `main.js` still carries deck-specific code (e.g. `ThemeManager`).
 
-The `-l` flag tells the CLI to copy `dist/sd.js` (or the framework bundle) from the workspace into the output dir; without `-l`, the HTML loads them from `https://whosejam.site/public/`.
+Every gulp task copies `dist/sd.js` (and framework bundles, for ppt) next to the output, and the emitted HTML loads them via a relative `<%= base %>/sd.js` — so builds are self-contained. Pass `-d <domain>` to make `base` an absolute URL instead (remote deploys).
 
 ## SD-PPT Animation Style
 

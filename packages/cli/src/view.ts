@@ -89,7 +89,6 @@ function startDeckWatchers(deckName: string): number[] {
       `examples/decks/${deckName}/reveal`,
       "-o",
       join(REVEAL_ROOT, "reveal"),
-      "-l",
       "-w",
     ]),
     spawnWatcher(`anim-${deckName}`, [
@@ -99,7 +98,6 @@ function startDeckWatchers(deckName: string): number[] {
       `examples/decks/${deckName}/animation`,
       "-o",
       join(REVEAL_ROOT, "animation"),
-      "-l",
       "-w",
     ]),
   ];
@@ -115,7 +113,6 @@ function startAnimationWatchers(animationName: string): number[] {
       `examples/animations/${animationName}.ts`,
       "-o",
       join(REVEAL_ROOT, "animation"),
-      "-l",
       "-w",
     ]),
   ];

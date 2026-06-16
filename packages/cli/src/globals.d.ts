@@ -20,8 +20,6 @@ declare global {
   var s: boolean | undefined;
   // -p <port>
   var p: string | undefined;
-  // -l (use local sd.js / reveal.js)
-  var l: boolean | undefined;
   // -domain <value>
   var domain: string | undefined;
   // -framework <name> (ppt host framework: reveal | impress | webslides)
