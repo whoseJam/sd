@@ -1,6 +1,6 @@
 {
   "name": "@whosejam/sd-assets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "Vendor scripts, CSS, fonts, themes (MathJax, snap.svg, dagre, font-awesome)",
   "license": "ISC",
