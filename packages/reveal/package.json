@@ -1,5 +1,5 @@
 {
-  "name": "@sd/reveal",
+  "name": "@whosejam/sd-reveal",
   "version": "0.0.1",
   "private": true,
   "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
@@ -10,9 +10,9 @@
     "./*": "./src/*"
   },
   "dependencies": {
-    "@sd/assets": "workspace:*",
-    "@sd/element": "workspace:*",
-    "@sd/include-html": "workspace:*",
+    "@whosejam/sd-assets": "workspace:*",
+    "@whosejam/sd-element": "workspace:*",
+    "@whosejam/sd-include-html": "workspace:*",
     "reveal.js": "^5.1.0"
   }
 }

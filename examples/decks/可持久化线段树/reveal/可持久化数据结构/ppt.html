@@ -17,18 +17,14 @@
         <p class="fragment"><b>操作视角</b>: 已知 $S_0$ 和操作序列 $M_1, M_2, \dots, M_k$,重播即可复原任意 $S_i$。
             $$ S_0 \xrightarrow{M_1} S_1 \xrightarrow{M_2} S_2 \xrightarrow{M_3} \cdots \xrightarrow{M_k} S_k $$
         </p>
-    </section>
-    <section>
-        <h2>操作视角</h2>
         <sd-animation src="../../animation/可持久化数据结构/元素视角和操作视角.js" class="fragment"
             style="margin: 0 auto; width: 720px; height: 360px;"></sd-animation>
     </section>
     <section>
         <h2>书写约定</h2>
         <p>数据结构 $a$ 经操作 $m$ 变为 $b$,记 $b = a + m$。</p>
-        <p class="fragment">栈 $S_0$ 经 $\text{push}(3), \text{push}(2), \text{top}(), \text{pop}()$:
-            $$ S_4 = S_0 + \{\text{push}(3)\} + \{\text{push}(2)\} + \{\text{top}()\} + \{\text{pop}()\} $$
-        </p>
+        <sd-animation src="../../animation/可持久化数据结构/书写约定.js" class="fragment"
+            style="margin: 0 auto; width: 720px; height: 320px;"></sd-animation>
     </section>
     <section>
         <h2>加法的性质</h2>

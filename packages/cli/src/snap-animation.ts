@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Drive a built @sd/core animation at a running dev server URL through its
+// Drive a built @whosejam/sd-core animation at a running dev server URL through its
 // pauses, screenshot each, stitch into one labeled grid PNG. The dev loop
 // already runs a server (gulp serve / serve.py); this tool just points
 // chromium at it.

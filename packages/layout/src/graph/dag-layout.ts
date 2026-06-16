@@ -1,6 +1,6 @@
-import type { BoxNode } from "@sd/core";
+import type { BoxNode } from "@whosejam/sd-core";
 
-import { mapTo } from "@sd/core";
+import { mapTo } from "@whosejam/sd-core";
 import { layout as DAGLayoutEngine, graphlib as DAGLib } from "dagre";
 
 type Align = "UL" | "UR" | "DL" | "DR" | "C";

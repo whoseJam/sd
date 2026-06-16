@@ -4,7 +4,7 @@
 // Mounts an iframe pointing at `src` (a page produced by `gulp animation`), then
 // drives the legacy postMessage IPC (SetViewBox / IFRAME_ID / IFRAME_URL /
 // IFRAME_INITED / Flush / SetDescription / OnInited). Iframe gives every
-// animation its own JS realm — no manual ctx threading inside @sd/core.
+// animation its own JS realm — no manual ctx threading inside @whosejam/sd-core.
 //
 // Visibility-driven: the element observes its own intersection with the viewport.
 // First time it becomes visible, the iframe mounts; subsequent enter/leave toggles
@@ -164,7 +164,7 @@ export class SDElement extends HTMLElement {
       return src;
     }
     // Honor the `location` ancestor convention used by include-html-style hosts
-    // (see @sd/reveal's Include.ts): an injected fragment tags itself with
+    // (see @whosejam/sd-reveal's Include.ts): an injected fragment tags itself with
     // `location="<dir>"`, and child src paths are resolved relative to it.
     const base = this.findAncestorLocation();
     return base ? `${base}/${src}` : src;
@@ -295,7 +295,7 @@ if (typeof window !== "undefined" && window.customElements) {
     window.customElements.define("sd-animation", SDElement);
   } else {
     console.warn(
-      "[@sd/element] <sd-animation> already registered; this script load is a no-op.",
+      "[@whosejam/sd-element] <sd-animation> already registered; this script load is a no-op.",
     );
   }
 }

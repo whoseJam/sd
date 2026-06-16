@@ -5,8 +5,8 @@
     "paths": {
       "@/*": ["src/*", "../core/src/*"],
       "@/sd": ["../core/src/sd.ts"],
-      "@sd/core": ["../core/src/sd.ts"],
-      "@sd/core/*": ["../core/src/*"]
+      "@whosejam/sd-core": ["../core/src/sd.ts"],
+      "@whosejam/sd-core/*": ["../core/src/*"]
     },
     "outDir": "dist",
     "declarationDir": "dist/types",

@@ -1,4 +1,4 @@
-import type { Circle, SizedBoxNode } from "@sd/core";
+import type { Circle, SizedBoxNode } from "@whosejam/sd-core";
 
 export function BackgroundLayout(lhs: SizedBoxNode, rhs: SizedBoxNode) {
   rhs

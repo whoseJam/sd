@@ -1,9 +1,9 @@
-import type { SDNode } from "@sd/core";
-import type { Path } from "@sd/core";
+import type { SDNode } from "@whosejam/sd-core";
+import type { Path } from "@whosejam/sd-core";
 
-import { Vector as V } from "@sd/core";
-import { PathPen } from "@sd/core";
-import { trim } from "@sd/core";
+import { Vector as V } from "@whosejam/sd-core";
+import { PathPen } from "@whosejam/sd-core";
+import { trim } from "@whosejam/sd-core";
 
 interface BezierLayoutArgs {
   source: [number, number];

@@ -38,7 +38,7 @@ function getHost(): PptHost {
     );
     process.exit(1);
   }
-  return require(`@sd/${framework}/host.ts`) as PptHost;
+  return require(`@whosejam/sd-${framework}/host.ts`) as PptHost;
 }
 
 interface FileEventListener {

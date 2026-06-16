@@ -1,6 +1,6 @@
-import type { BoxNode, SizedBoxNode } from "@sd/core";
+import type { BoxNode, SizedBoxNode } from "@whosejam/sd-core";
 
-import { Circle } from "@sd/core";
+import { Circle } from "@whosejam/sd-core";
 
 interface CenterContentFitLayoutParam {
   rate?: number;

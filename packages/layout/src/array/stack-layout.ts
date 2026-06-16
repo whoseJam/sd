@@ -1,4 +1,4 @@
-import type { BoxNode } from "@sd/core";
+import type { BoxNode } from "@whosejam/sd-core";
 
 type Align = "x" | "cx" | "mx";
 type Justify = "y" | "cy" | "my";

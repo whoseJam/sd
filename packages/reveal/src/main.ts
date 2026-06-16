@@ -1,4 +1,4 @@
-import { includeHTML } from "@sd/include-html";
+import { includeHTML } from "@whosejam/sd-include-html";
 
 import "./plugin/reset.css";
 import "./plugin/reveal.css";

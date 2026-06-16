@@ -1,12 +1,12 @@
 {
-  "name": "@sd/layout",
+  "name": "@whosejam/sd-layout",
   "version": "0.0.1",
   "private": true,
-  "description": "Layout helpers for @sd/core (Array / Curve / Graph / Grid / TwoNode). Depends on dagre for graph layouts.",
+  "description": "Layout helpers for @whosejam/sd-core (Array / Curve / Graph / Grid / TwoNode). Depends on dagre for graph layouts.",
   "license": "ISC",
   "main": "src/index.ts",
   "dependencies": {
-    "@sd/core": "workspace:*",
+    "@whosejam/sd-core": "workspace:*",
     "dagre": "^0.8.5"
   }
 }

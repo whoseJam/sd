@@ -1,4 +1,4 @@
-import type { BoxNode } from "@sd/core";
+import type { BoxNode } from "@whosejam/sd-core";
 
 /**
  * Layout function for arranging nodes in a grid pattern based on custom positions.

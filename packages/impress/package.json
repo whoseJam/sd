@@ -1,5 +1,5 @@
 {
-  "name": "@sd/impress",
+  "name": "@whosejam/sd-impress",
   "version": "0.0.1",
   "private": true,
   "description": "impress.js host: 3D step-based deck",
@@ -10,8 +10,8 @@
     "./*": "./src/*"
   },
   "dependencies": {
-    "@sd/element": "workspace:*",
-    "@sd/include-html": "workspace:*",
+    "@whosejam/sd-element": "workspace:*",
+    "@whosejam/sd-include-html": "workspace:*",
     "impress.js": "^1.1.0"
   }
 }

@@ -1,8 +1,8 @@
 {
-  "name": "@sd/core",
+  "name": "@whosejam/sd-core",
   "version": "0.0.1",
   "private": true,
-  "description": "SD rendering engine (Animate / Node / Renderer / Math / Utility / Interact). Layout helpers live in @sd/layout.",
+  "description": "SD rendering engine (Animate / Node / Renderer / Math / Utility / Interact). Layout helpers live in @whosejam/sd-layout.",
   "license": "ISC",
   "main": "src/sd.ts",
   "scripts": {

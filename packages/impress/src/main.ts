@@ -1,5 +1,5 @@
-import { includeHTML } from "@sd/include-html";
-import "@sd/element";
+import { includeHTML } from "@whosejam/sd-include-html";
+import "@whosejam/sd-element";
 import "impress.js";
 import "impress.js/css/impress-common.css";
 

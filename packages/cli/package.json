@@ -1,13 +1,13 @@
 {
-  "name": "@sd/cli",
+  "name": "@whosejam/sd-cli",
   "version": "0.0.1",
   "private": true,
   "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-config)",
   "license": "ISC",
   "dependencies": {
-    "@sd/impress": "workspace:*",
-    "@sd/reveal": "workspace:*",
-    "@sd/webslides": "workspace:*",
+    "@whosejam/sd-impress": "workspace:*",
+    "@whosejam/sd-reveal": "workspace:*",
+    "@whosejam/sd-webslides": "workspace:*",
     "playwright": "^1.49.0",
     "sass-loader": "^17.0.0",
     "sharp": "^0.34.0"

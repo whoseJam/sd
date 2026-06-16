@@ -1,4 +1,4 @@
-import { getLocationFromAncestor } from "@sd/include-html";
+import { getLocationFromAncestor } from "@whosejam/sd-include-html";
 
 import type { RevealApi, RevealPlugin, SlideChangedEvent } from "../types";
 

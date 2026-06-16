@@ -1,4 +1,4 @@
-import type { BoxNode } from "@sd/core";
+import type { BoxNode } from "@whosejam/sd-core";
 
 export function BipartiteGraphLayout<TLink>(
   nodes: Array<BoxNode>,

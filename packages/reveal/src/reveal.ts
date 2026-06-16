@@ -1,6 +1,6 @@
-import Highlight from "@sd/assets/HighlightEngine.js";
+import Highlight from "@whosejam/sd-assets/HighlightEngine.js";
 import Reveal from "reveal.js";
-import "@sd/element";
+import "@whosejam/sd-element";
 
 import type { RevealPlugin } from "./types";
 

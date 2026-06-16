@@ -43,13 +43,13 @@ importers:
 
   packages/cli:
     dependencies:
-      '@sd/impress':
+      '@whosejam/sd-impress':
         specifier: workspace:*
         version: link:../impress
-      '@sd/reveal':
+      '@whosejam/sd-reveal':
         specifier: workspace:*
         version: link:../reveal
-      '@sd/webslides':
+      '@whosejam/sd-webslides':
         specifier: workspace:*
         version: link:../webslides
       playwright:
@@ -158,10 +158,10 @@ importers:
 
   packages/impress:
     dependencies:
-      '@sd/element':
+      '@whosejam/sd-element':
         specifier: workspace:*
         version: link:../element
-      '@sd/include-html':
+      '@whosejam/sd-include-html':
         specifier: workspace:*
         version: link:../include-html
       impress.js:
@@ -172,7 +172,7 @@ importers:
 
   packages/layout:
     dependencies:
-      '@sd/core':
+      '@whosejam/sd-core':
         specifier: workspace:*
         version: link:../core
       dagre:
@@ -181,13 +181,13 @@ importers:
 
   packages/reveal:
     dependencies:
-      '@sd/assets':
+      '@whosejam/sd-assets':
         specifier: workspace:*
         version: link:../assets
-      '@sd/element':
+      '@whosejam/sd-element':
         specifier: workspace:*
         version: link:../element
-      '@sd/include-html':
+      '@whosejam/sd-include-html':
         specifier: workspace:*
         version: link:../include-html
       reveal.js:
@@ -196,10 +196,10 @@ importers:
 
   packages/webslides:
     dependencies:
-      '@sd/element':
+      '@whosejam/sd-element':
         specifier: workspace:*
         version: link:../element
-      '@sd/include-html':
+      '@whosejam/sd-include-html':
         specifier: workspace:*
         version: link:../include-html
       webslides:

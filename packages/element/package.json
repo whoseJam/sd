@@ -1,5 +1,5 @@
 {
-  "name": "@sd/element",
+  "name": "@whosejam/sd-element",
   "version": "0.0.1",
   "private": true,
   "description": "<sd-animation> custom element. Host page loads this once; embeds animations via <sd-animation src=...>.",
