@@ -6,6 +6,7 @@
   "license": "ISC",
   "main": "src/reveal.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": "./src/reveal.ts",
     "./*": "./src/*"
   },

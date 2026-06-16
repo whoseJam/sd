@@ -5,12 +5,14 @@ import gulpSassFactory from "gulp-sass";
 import path from "node:path";
 import sassCompiler from "sass";
 
+import { resolvePackageDir } from "./utils";
+
 const sass = gulpSassFactory(sassCompiler);
 
 export default function theme(targetFolder: string): NodeJS.ReadWriteStream {
   const themePath = path.join(
-    import.meta.dirname,
-    "../../reveal/src/css/theme",
+    resolvePackageDir("@whosejam/sd-reveal"),
+    "src/css/theme",
   );
   const sourcePath = path.join(themePath, "source/**/*.scss");
   return gulp

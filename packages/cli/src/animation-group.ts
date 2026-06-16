@@ -48,9 +48,6 @@ export function task(source: string, targetFolder: string): Promise<void> {
 
 export function launch(selfLaunch = true): void | Promise<void> {
   if (!import.meta.main && selfLaunch) return;
-  if (import.meta.main) {
-    global.projectRoot = path.resolve(import.meta.dirname, "..", "..", "..");
-  }
   parseInput();
   const animationOutputPath = global.o || parseConfig("animationOutputPath");
   const source = global.i;
@@ -68,7 +65,7 @@ export function launch(selfLaunch = true): void | Promise<void> {
   }
   if (!global.sd) {
     copyFile("./dist/sd.js", animationOutputPath);
-    copyVendorAssets(global.projectRoot, animationOutputPath);
+    copyVendorAssets(animationOutputPath);
   }
   return task(source, animationOutputPath);
 }

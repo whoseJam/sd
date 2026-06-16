@@ -1,6 +1,16 @@
 import colors from "colors-console";
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
+
+const require = createRequire(import.meta.url);
+
+// Resolves a workspace/npm package's installed directory. Works the same
+// for pnpm symlinks inside the monorepo and real node_modules in a
+// downstream project — no monorepo-layout assumption.
+export function resolvePackageDir(name: string): string {
+  return path.dirname(require.resolve(`${name}/package.json`));
+}
 
 export function copyFile(src: string, dest: string): void {
   const name = path.basename(src);
@@ -19,11 +29,11 @@ export function copyFolder(src: string, dest: string): void {
   }
 }
 
-// Mirror packages/assets/ into `<dest>/vendor/` so local builds load every
+// Mirror @whosejam/sd-assets into `<dest>/vendor/` so local builds load every
 // external dep (dagre, MathJax2/3, themes, font-awesome, customcontrols, fonts)
 // from the same origin as the deck itself — no CDN required.
-export function copyVendorAssets(projectRoot: string, dest: string): void {
-  const src = path.join(projectRoot, "packages", "assets");
+export function copyVendorAssets(dest: string): void {
+  const src = resolvePackageDir("@whosejam/sd-assets");
   if (!fs.existsSync(src)) return;
   const vendorDir = path.join(dest, "vendor");
   const skip = new Set([

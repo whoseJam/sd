@@ -7,7 +7,12 @@ import path from "node:path";
 import webpack from "webpack-stream";
 
 import { parseConfig, parseConfigFonts, parseInput } from "./parser";
-import { copyFile, copyVendorAssets, validateJSFile } from "./utils";
+import {
+  copyFile,
+  copyVendorAssets,
+  resolvePackageDir,
+  validateJSFile,
+} from "./utils";
 import { cssRule, tsLoaderRule } from "./webpack-base";
 
 function truncateAtStackTrace(errorMessage: string): string {
@@ -37,9 +42,6 @@ export function task(
 
 export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   if (!import.meta.main && selfLaunch) return;
-  if (import.meta.main) {
-    global.projectRoot = path.resolve(import.meta.dirname, "..", "..", "..");
-  }
   parseInput();
   const animationOutputPath = global.o || parseConfig("animationOutputPath");
   const sourceFilePath = global.i;
@@ -55,7 +57,7 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   }
   if (!global.sd && !global.s) {
     copyFile("./dist/sd.js", animationOutputPath);
-    copyVendorAssets(global.projectRoot, animationOutputPath);
+    copyVendorAssets(animationOutputPath);
   }
   return task(sourceFilePath, animationOutputPath);
 }
@@ -81,8 +83,8 @@ function getConfiguration(file: string, targetFolder: string) {
   const plugins = [
     new HtmlWebpackPlugin({
       template: path.join(
-        import.meta.dirname,
-        "../../element/src/template.html",
+        resolvePackageDir("@whosejam/sd-element"),
+        "src/template.html",
       ),
       inject: false,
       minify: false,
@@ -103,7 +105,7 @@ function getConfiguration(file: string, targetFolder: string) {
     cache: true,
     resolve: {
       alias: {
-        "@": path.resolve(global.projectRoot, "packages/core/src"),
+        "@": path.join(resolvePackageDir("@whosejam/sd-core"), "src"),
       },
       extensions: [".tsx", ".ts", ".jsx", ".js"],
     },

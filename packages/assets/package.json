@@ -5,6 +5,7 @@
     "description": "Vendor scripts, CSS, fonts, themes (MathJax, snap.svg, dagre, font-awesome)",
     "license": "ISC",
     "exports": {
+    "./package.json": "./package.json",
         "./*": "./*"
     }
 }

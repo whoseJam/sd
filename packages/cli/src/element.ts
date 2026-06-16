@@ -1,12 +1,14 @@
 import gulp from "gulp";
+import path from "node:path";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
+import { resolvePackageDir } from "./utils";
 import { tsLoaderRule } from "./webpack-base";
 
 export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src(["./packages/element/src/element.ts"])
+    .src([path.join(resolvePackageDir("@whosejam/sd-element"), "src/element.ts")])
     .pipe(webpack(getConfiguration()))
     .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);

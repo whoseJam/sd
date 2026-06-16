@@ -3,11 +3,13 @@ import path from "node:path";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
+import { resolvePackageDir } from "./utils";
 import { cssRule, tsLoaderRule } from "./webpack-base";
 
 export default function sd(targetFolder: string): NodeJS.ReadWriteStream {
+  const coreDir = resolvePackageDir("@whosejam/sd-core");
   return gulp
-    .src(["./packages/core/src/sd.ts"])
+    .src([path.join(coreDir, "src/sd.ts")])
     .pipe(webpack(getConfiguration()))
     .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);
@@ -55,7 +57,7 @@ function getConfiguration() {
       buildDependencies: { config: [import.meta.filename] },
     },
     resolve: {
-      alias: { "@": path.resolve(global.projectRoot, "packages/core/src") },
+      alias: { "@": path.join(resolvePackageDir("@whosejam/sd-core"), "src") },
       extensions: [".tsx", ".ts", ".jsx", ".js"],
       symlinks: false,
     },

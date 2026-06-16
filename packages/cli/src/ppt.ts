@@ -110,7 +110,7 @@ export function task(
   // (animation/, sd.js, vendor/) is re-emitted by walk + copy below anyway.
   const cleanRoot = entry === "." ? targetFolder : `${targetFolder}/${entry}`;
   cleanDir(cleanRoot);
-  copyVendorAssets(global.projectRoot, targetFolder);
+  copyVendorAssets(targetFolder);
   if (!global.framework || global.framework === "reveal") {
     theme(path.join(targetFolder, "vendor", "themes"));
   }
@@ -191,9 +191,6 @@ export function task(
 
 export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   if (!import.meta.main && selfLaunch) return;
-  if (import.meta.main) {
-    global.projectRoot = path.resolve(import.meta.dirname, "..", "..", "..");
-  }
   parseInput();
   const pptOutputPath = global.o || parseConfig("pptOutputPath");
   const source = global.i;

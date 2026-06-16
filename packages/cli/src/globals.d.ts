@@ -4,7 +4,6 @@
 export {};
 
 declare global {
-  var projectRoot: string;
   var source: string;
   var targetFolder: string;
 

@@ -6,6 +6,7 @@
   "license": "ISC",
   "main": "src/host.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": "./src/host.ts",
     "./*": "./src/*"
   },

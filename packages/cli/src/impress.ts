@@ -1,11 +1,13 @@
 import gulp from "gulp";
+import path from "node:path";
 import webpack from "webpack-stream";
 
+import { resolvePackageDir } from "./utils";
 import { cssRule, tsLoaderRule } from "./webpack-base";
 
 export default function impress(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src("./packages/impress/src/main.ts")
+    .src(path.join(resolvePackageDir("@whosejam/sd-impress"), "src/main.ts"))
     .pipe(webpack(getConfiguration()))
     .pipe(gulp.dest(targetFolder));
 }

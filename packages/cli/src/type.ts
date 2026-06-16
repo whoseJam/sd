@@ -34,9 +34,6 @@ export function task(source: string): NodeJS.ReadWriteStream {
 
 export function launch(selfLaunch = false): NodeJS.ReadWriteStream | undefined {
   if (!import.meta.main && selfLaunch) return;
-  if (import.meta.main) {
-    global.projectRoot = path.resolve(import.meta.dirname, "..", "..", "..");
-  }
   parseInput();
   const sourceFilePath = global.i;
   if (!sourceFilePath) {

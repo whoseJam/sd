@@ -1,11 +1,13 @@
 import gulp from "gulp";
+import path from "node:path";
 import webpack from "webpack-stream";
 
+import { resolvePackageDir } from "./utils";
 import { cssRule, tsLoaderRule } from "./webpack-base";
 
 export default function reveal(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src("./packages/reveal/src/reveal.ts")
+    .src(path.join(resolvePackageDir("@whosejam/sd-reveal"), "src/reveal.ts"))
     .pipe(webpack(getConfiguration()))
     .pipe(gulp.dest(targetFolder));
 }

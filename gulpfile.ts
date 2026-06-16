@@ -16,8 +16,6 @@ import theme from "./packages/cli/src/theme";
 import * as type from "./packages/cli/src/type";
 import webslides from "./packages/cli/src/webslides";
 
-global.projectRoot = import.meta.dirname.replaceAll("\\", "/");
-
 parser.parseInput();
 
 gulp.task("sd", () => {
