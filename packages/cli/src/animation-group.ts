@@ -4,10 +4,10 @@ import colors from "colors-console";
 import gulp from "gulp";
 import path from "node:path";
 
-import * as animation from "./animation";
-import { parseConfig, parseInput } from "./parser";
-import { toOriginFile, toTargetFolder, walk } from "./path-utils";
-import { copyFile, copyVendorAssets } from "./utils";
+import * as animation from "./animation.js";
+import { parseConfig, parseInput } from "./parser.js";
+import { toOriginFile, toTargetFolder, walk } from "./path-utils.js";
+import { copyFile, copyVendorAssets } from "./utils.js";
 
 const onAddEntry = (filePath: string, dest: string): Promise<void> =>
   new Promise((resolve) => {

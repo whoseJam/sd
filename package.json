@@ -4,18 +4,14 @@
   "private": true,
   "description": "Workspace root — not published. See packages/sd for the public entry.",
   "license": "ISC",
-  "bin": {
-    "sd-animation": "./packages/cli/src/animation.ts",
-    "sd-animation-group": "./packages/cli/src/animation-group.ts",
-    "sd-config": "./packages/cli/src/config.ts",
-    "sd-ppt": "./packages/cli/src/ppt.ts"
-  },
   "browser": {
     "fs": false,
     "path": false,
     "os": false
   },
   "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
     "format": "oxfmt && oxlint --fix",
     "lint": "oxlint",
     "check:format": "oxfmt --check",
@@ -36,6 +32,7 @@
     "gulp": "^5.0.0",
     "oxfmt": "^0.41.0",
     "oxlint": "^1.58.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.5.2"
   },
   "pnpm": {

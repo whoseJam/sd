@@ -2,8 +2,8 @@ import gulp from "gulp";
 import path from "node:path";
 import webpack from "webpack-stream";
 
-import { resolvePackageDir } from "./utils";
-import { cssRule, scssRule, tsLoaderRule } from "./webpack-base";
+import { resolvePackageDir } from "./utils.js";
+import { cssRule, scssRule, tsLoaderRule } from "./webpack-base.js";
 
 export default function webslides(
   targetFolder: string,

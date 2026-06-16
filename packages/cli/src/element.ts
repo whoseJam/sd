@@ -3,8 +3,8 @@ import path from "node:path";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
-import { resolvePackageDir } from "./utils";
-import { tsLoaderRule } from "./webpack-base";
+import { resolvePackageDir } from "./utils.js";
+import { tsLoaderRule } from "./webpack-base.js";
 
 export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp

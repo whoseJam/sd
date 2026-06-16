@@ -24,7 +24,7 @@ import {
   pickDeviceScaleFactor,
   stitchGrid,
   TARGET_PIXELS_DEFAULT,
-} from "./snap-grid";
+} from "./snap-grid.js";
 
 interface Args {
   url: string;

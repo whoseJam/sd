@@ -7,7 +7,8 @@
     "target": "ES2022",
     "types": ["bun"],
     "outDir": "dist",
-    "noEmit": true
+    "noEmit": true,
+    "incremental": false
   },
   "include": ["src/**/*"]
 }

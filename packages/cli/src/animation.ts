@@ -6,14 +6,14 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "node:path";
 import webpack from "webpack-stream";
 
-import { parseConfig, parseConfigFonts, parseInput } from "./parser";
+import { parseConfig, parseConfigFonts, parseInput } from "./parser.js";
 import {
   copyFile,
   copyVendorAssets,
   resolvePackageDir,
   validateJSFile,
-} from "./utils";
-import { cssRule, tsLoaderRule } from "./webpack-base";
+} from "./utils.js";
+import { cssRule, tsLoaderRule } from "./webpack-base.js";
 
 function truncateAtStackTrace(errorMessage: string): string {
   const index = errorMessage.indexOf("    at");

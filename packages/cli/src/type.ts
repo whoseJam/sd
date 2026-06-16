@@ -3,8 +3,8 @@ import gulp from "gulp";
 import ts from "gulp-typescript";
 import path from "node:path";
 
-import { parseInput } from "./parser";
-import { validateJSFile } from "./utils";
+import { parseInput } from "./parser.js";
+import { validateJSFile } from "./utils.js";
 
 function create(): ts.Project {
   return ts.createProject("tsconfig.json");

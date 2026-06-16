@@ -5,7 +5,7 @@ import gulpSassFactory from "gulp-sass";
 import path from "node:path";
 import sassCompiler from "sass";
 
-import { resolvePackageDir } from "./utils";
+import { resolvePackageDir } from "./utils.js";
 
 const sass = gulpSassFactory(sassCompiler);
 

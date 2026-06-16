@@ -4,7 +4,33 @@
   "private": true,
   "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-config)",
   "license": "ISC",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "sd-animation": "./dist/animation.js",
+    "sd-animation-group": "./dist/animation-group.js",
+    "sd-config": "./dist/config.js",
+    "sd-ppt": "./dist/ppt.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "dependencies": {
+    "@whosejam/sd-assets": "workspace:*",
+    "@whosejam/sd-core": "workspace:*",
+    "@whosejam/sd-element": "workspace:*",
     "@whosejam/sd-impress": "workspace:*",
     "@whosejam/sd-reveal": "workspace:*",
     "@whosejam/sd-webslides": "workspace:*",
@@ -34,6 +60,7 @@
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
     "ts-loader": "^9.5.1",
+    "tsup": "^8.5.1",
     "webpack": "^5.92.1",
     "webpack-stream": "^7.0.0"
   }

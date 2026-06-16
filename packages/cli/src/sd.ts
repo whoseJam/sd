@@ -3,8 +3,8 @@ import path from "node:path";
 import TerserPlugin from "terser-webpack-plugin";
 import webpack from "webpack-stream";
 
-import { resolvePackageDir } from "./utils";
-import { cssRule, tsLoaderRule } from "./webpack-base";
+import { resolvePackageDir } from "./utils.js";
+import { cssRule, tsLoaderRule } from "./webpack-base.js";
 
 export default function sd(targetFolder: string): NodeJS.ReadWriteStream {
   const coreDir = resolvePackageDir("@whosejam/sd-core");
