@@ -18,6 +18,19 @@ import { cssRule, scssRule, tsLoaderRule } from "./webpack-base.js";
 
 const require = createRequire(import.meta.url);
 
+// Names at the root of pptOutputPath that cleanDir must preserve. These are
+// shared across all decks/entries: the engine UMD, framework bundles, and
+// the vendor/animation subtrees. Without this set, cleanDir would race the
+// gulp sd output and leave the deck without its sd.js.
+const PROTECTED_SHARED_ENTRIES: ReadonlySet<string> = new Set([
+  "sd.js",
+  "reveal.js",
+  "webslides.js",
+  "impress.js",
+  "vendor",
+  "animation",
+]);
+
 type Framework = "reveal" | "impress" | "webslides";
 const VALID_FRAMEWORKS: Framework[] = ["reveal", "impress", "webslides"];
 
@@ -106,10 +119,12 @@ export function task(
   global.targetFolder = targetFolder;
 
   // With --entry, multiple framework builds share the same -o; only nuke this
-  // entry's own wrapper dir so other entries' outputs survive. Shared content
-  // (animation/, sd.js, vendor/) is re-emitted by walk + copy below anyway.
+  // entry's own wrapper dir so other entries' outputs survive. When cleaning
+  // the root of pptOutputPath, protect shared assets (sd.js, framework
+  // bundle, vendor/, animation/) from being deleted.
   const cleanRoot = entry === "." ? targetFolder : `${targetFolder}/${entry}`;
-  cleanDir(cleanRoot);
+  const isRootClean = cleanRoot === targetFolder;
+  cleanDir(cleanRoot, isRootClean ? PROTECTED_SHARED_ENTRIES : undefined);
   copyVendorAssets(targetFolder);
   if (!global.framework || global.framework === "reveal") {
     theme(path.join(targetFolder, "vendor", "themes"));
@@ -207,22 +222,15 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
     process.exit();
   }
   const host = getHost();
-  if (!global.sd) copyAsset("./dist/sd.js", pptOutputPath);
-  if (host.libraryBundle && !isFrameworkBundleBuilt()) {
-    copyAsset(host.libraryBundle, pptOutputPath);
+  ensureSharedAsset("sd.js", pptOutputPath, "./dist");
+  if (host.libraryBundle) {
+    ensureSharedAsset(
+      path.basename(host.libraryBundle),
+      pptOutputPath,
+      path.dirname(host.libraryBundle),
+    );
   }
   return task(source, pptOutputPath);
-}
-
-function isFrameworkBundleBuilt(): boolean {
-  const framework = (global.framework ?? "reveal") as Framework;
-  return Boolean(
-    {
-      reveal: global.reveal,
-      webslides: global.webslides,
-      impress: global.impress,
-    }[framework],
-  );
 }
 
 function copyAsset(
@@ -253,14 +261,35 @@ function cleanCPPFile(p: string): void {
   cleanFile(`${global.targetFolder}/std/${fileName}`);
 }
 
-function cleanDir(p: string, isRoot = true): void {
-  if (!fs.existsSync(p)) return;
-  for (const entry of fs.readdirSync(p, { withFileTypes: true })) {
-    const full = `${p}/${entry.name}`;
-    if (entry.isDirectory()) cleanDir(full, false);
-    else fs.unlinkSync(full);
+function cleanDir(
+  dirPath: string,
+  protectedNames?: ReadonlySet<string>,
+  isRoot = true,
+): void {
+  if (!fs.existsSync(dirPath)) return;
+  for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+    if (isRoot && protectedNames?.has(entry.name)) continue;
+    const fullPath = `${dirPath}/${entry.name}`;
+    if (entry.isDirectory()) cleanDir(fullPath, undefined, false);
+    else fs.unlinkSync(fullPath);
   }
-  if (!isRoot && fs.readdirSync(p).length === 0) fs.rmdirSync(p);
+  if (!isRoot && fs.readdirSync(dirPath).length === 0) fs.rmdirSync(dirPath);
+}
+
+// Place a shared asset (sd.js, reveal.js, ...) at destDir. If it is already
+// there, no-op. If only a fallback source has it, copy. Synchronous so the
+// caller can sequence it cleanly against cleanDir.
+function ensureSharedAsset(
+  fileName: string,
+  destDir: string,
+  fallbackSrcDir: string,
+): void {
+  const dest = path.join(destDir, fileName);
+  if (fs.existsSync(dest)) return;
+  const src = path.join(fallbackSrcDir, fileName);
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(destDir, { recursive: true });
+  fs.copyFileSync(src, dest);
 }
 
 function getConfiguration() {
