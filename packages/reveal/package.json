@@ -3,7 +3,19 @@
   "version": "0.0.1",
   "private": false,
   "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/reveal",
+  "bugs": "https://github.com/whoseJam/sd/issues",
   "license": "ISC",
+  "author": "whoseJam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/reveal"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "type": "module",
   "main": "./dist/reveal.js",
   "types": "./dist/reveal.d.ts",
@@ -17,10 +29,6 @@
     "./template.html": "./src/template.html",
     "./*": "./src/*"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -37,13 +45,5 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/whoseJam/sd.git",
-    "directory": "packages/reveal"
-  },
-  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/reveal",
-  "bugs": "https://github.com/whoseJam/sd/issues",
-  "author": "whoseJam"
+  }
 }

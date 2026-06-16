@@ -11,7 +11,12 @@ import webpack from "webpack-stream";
 
 import * as animation from "./animation.js";
 import { parseConfig, parseInput } from "./parser.js";
-import { toOriginFile, toTargetFile, toTargetFolder, walk } from "./path-utils.js";
+import {
+  toOriginFile,
+  toTargetFile,
+  toTargetFolder,
+  walk,
+} from "./path-utils.js";
 import theme from "./theme.js";
 import { copyVendorAssets } from "./utils.js";
 import { cssRule, scssRule, tsLoaderRule } from "./webpack-base.js";

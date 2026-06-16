@@ -3,16 +3,14 @@
   "version": "0.0.1",
   "private": false,
   "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-config, sd-init)",
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/cli",
+  "bugs": "https://github.com/whoseJam/sd/issues",
   "license": "ISC",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
+  "author": "whoseJam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/cli"
   },
   "bin": {
     "sd-animation": "./dist/animation.js",
@@ -25,6 +23,16 @@
     "dist",
     "templates"
   ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -64,9 +72,6 @@
     "webpack": "^5.92.1",
     "webpack-stream": "^7.0.0"
   },
-  "peerDependencies": {
-    "gulp": "^5.0.0"
-  },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.24.7",
     "@babel/preset-react": "^7.24.7",
@@ -74,12 +79,7 @@
     "gulp-strip-comments": "^2.6.0",
     "tsup": "^8.5.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/whoseJam/sd.git",
-    "directory": "packages/cli"
-  },
-  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/cli",
-  "bugs": "https://github.com/whoseJam/sd/issues",
-  "author": "whoseJam"
+  "peerDependencies": {
+    "gulp": "^5.0.0"
+  }
 }

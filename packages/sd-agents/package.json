@@ -3,14 +3,22 @@
   "version": "0.0.1",
   "private": false,
   "description": "Agent-facing integration for sd: skills + MCP tools. Renders into per-harness plugin layouts under dist/.",
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/sd-agents",
+  "bugs": "https://github.com/whoseJam/sd/issues",
   "license": "ISC",
-  "type": "module",
+  "author": "whoseJam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/sd-agents"
+  },
   "files": [
     "skills",
     "agents",
     "mcp-server.ts",
     "dist"
   ],
+  "type": "module",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -25,13 +33,5 @@
   },
   "devDependencies": {
     "gray-matter": "^4.0.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/whoseJam/sd.git",
-    "directory": "packages/sd-agents"
-  },
-  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/sd-agents",
-  "bugs": "https://github.com/whoseJam/sd/issues",
-  "author": "whoseJam"
+  }
 }

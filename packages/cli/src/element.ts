@@ -8,7 +8,9 @@ import { tsLoaderRule } from "./webpack-base.js";
 
 export default function element(targetFolder: string): NodeJS.ReadWriteStream {
   return gulp
-    .src([path.join(resolvePackageDir("@whosejam/sd-element"), "dist/element.js")])
+    .src([
+      path.join(resolvePackageDir("@whosejam/sd-element"), "dist/element.js"),
+    ])
     .pipe(webpack(getConfiguration()))
     .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);

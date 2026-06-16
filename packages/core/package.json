@@ -3,7 +3,18 @@
   "version": "0.0.1",
   "private": false,
   "description": "SD rendering engine (Animate / Node / Renderer / Math / Utility / Interact). Layout helpers live in @whosejam/sd-layout.",
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/core",
+  "bugs": "https://github.com/whoseJam/sd/issues",
   "license": "ISC",
+  "author": "whoseJam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/core"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/sd.js",
   "types": "./dist/sd.d.ts",
@@ -14,9 +25,6 @@
       "default": "./dist/sd.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -37,13 +45,5 @@
     "happy-dom": "^20.9.0",
     "tsup": "^8.5.1",
     "vitest": "^4.1.7"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/whoseJam/sd.git",
-    "directory": "packages/core"
-  },
-  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/core",
-  "bugs": "https://github.com/whoseJam/sd/issues",
-  "author": "whoseJam"
+  }
 }

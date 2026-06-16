@@ -24,11 +24,11 @@ await sd.pause();                // semantic beat between steps
 const palette = sd.color();
 const easings = sd.easing();
 
-palette.steelBlue            // SDColor: named palette entries
-palette.muted                // semantic groups
-easings.easeOut              // named curves
-easings.easeInOut
-easings.linear
+palette.steelBlue; // SDColor: named palette entries
+palette.muted; // semantic groups
+easings.easeOut; // named curves
+easings.easeInOut;
+easings.linear;
 ```
 
 Never reach for hex literals or string easing names. The factories exist so a deck stays visually coherent.

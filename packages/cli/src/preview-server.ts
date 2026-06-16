@@ -137,4 +137,6 @@ Bun.serve({
   },
 });
 
-console.log(`preview server on http://127.0.0.1:${PORT}  (root: ${REVEAL_ROOT})`);
+console.log(
+  `preview server on http://127.0.0.1:${PORT}  (root: ${REVEAL_ROOT})`,
+);

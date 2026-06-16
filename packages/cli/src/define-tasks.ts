@@ -6,8 +6,8 @@ import { exec } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
-import * as animation from "./animation.js";
 import * as animationGroup from "./animation-group.js";
+import * as animation from "./animation.js";
 import element from "./element.js";
 import impress from "./impress.js";
 import * as parser from "./parser.js";

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file is the agent-facing handbook for maintaining the sd codebase itself (packages, build, release). It is intentionally not a guide for *writing* slide decks with sd — that role is owned by the `@whosejam/sd-agents` plugin under `packages/sd-agents/` and the SKILL.md files it ships. If you're trying to figure out the deck animation conventions or the `pnpm open` workflow, install that plugin and let the skill load on demand.
+This file is the agent-facing handbook for maintaining the sd codebase itself (packages, build, release). It is intentionally not a guide for _writing_ slide decks with sd — that role is owned by the `@whosejam/sd-agents` plugin under `packages/sd-agents/` and the SKILL.md files it ships. If you're trying to figure out the deck animation conventions or the `pnpm open` workflow, install that plugin and let the skill load on demand.
 
 ## Repository Layout
 

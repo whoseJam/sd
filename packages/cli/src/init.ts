@@ -2,6 +2,7 @@
 // `sd-init [dir]` scaffolds a fresh sd project at <dir>; defaults to cwd.
 // Plain Node so it runs via npx before the user installs Bun.
 
+import { spawnSync } from "node:child_process";
 import {
   cpSync,
   existsSync,
@@ -11,7 +12,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
@@ -37,7 +38,9 @@ function main(): void {
   console.log(`✓ scaffolded sd project at ${target}`);
   console.log();
   console.log("Next steps:");
-  console.log(`  cd ${process.argv[1] ? relativeTo(process.cwd(), target) : target}`);
+  console.log(
+    `  cd ${process.argv[1] ? relativeTo(process.cwd(), target) : target}`,
+  );
   if (skipInstall) console.log("  pnpm install");
   else runInstall(target);
   console.log("  pnpm open hello       # requires Bun: https://bun.sh");
@@ -93,19 +96,17 @@ function nameFromDir(target: string): string {
 function runInstall(target: string): void {
   console.log();
   console.log("Running pnpm install...");
-  const { spawnSync } = require("node:child_process") as typeof import("node:child_process");
   const result = spawnSync("pnpm", ["install"], {
     cwd: target,
     stdio: "inherit",
   });
   if (result.status !== 0) {
-    console.log("⚠ pnpm install failed — run it manually.");
+    console.log("⚠ pnpm install failed; run it manually.");
   }
 }
 
 function relativeTo(from: string, to: string): string {
-  const r = require("node:path").relative(from, to);
-  return r || to;
+  return relative(from, to) || to;
 }
 
 function die(message: string): never {

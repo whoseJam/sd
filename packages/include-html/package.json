@@ -3,7 +3,18 @@
   "version": "0.0.1",
   "private": false,
   "description": "DOM walker that resolves <... include-html=\"./xxx.html\"> attributes by fetching and inlining the referenced HTML",
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/include-html",
+  "bugs": "https://github.com/whoseJam/sd/issues",
   "license": "ISC",
+  "author": "whoseJam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/include-html"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,9 +25,6 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -27,13 +35,5 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/whoseJam/sd.git",
-    "directory": "packages/include-html"
-  },
-  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/include-html",
-  "bugs": "https://github.com/whoseJam/sd/issues",
-  "author": "whoseJam"
+  }
 }

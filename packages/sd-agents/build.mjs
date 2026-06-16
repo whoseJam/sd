@@ -3,10 +3,17 @@
 // MCP tools are not rendered per harness: each plugin layout simply
 // registers the same mcp-server.ts.
 
-import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import matter from "gray-matter";
+import {
+  cpSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import matter from "gray-matter";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const skills = loadDir(join(here, "skills"));
@@ -51,7 +58,10 @@ function writeClaudePlugin(outDir, { skills, agents }) {
       name: `sd-${agent.slug}`,
       description: agent.frontmatter.trigger,
     });
-    writeFileSync(join(agentsDir, `sd-${agent.slug}.md`), frontmatter + agent.body);
+    writeFileSync(
+      join(agentsDir, `sd-${agent.slug}.md`),
+      frontmatter + agent.body,
+    );
   }
 
   const pluginDir = join(outDir, ".claude-plugin");
@@ -62,7 +72,8 @@ function writeClaudePlugin(outDir, { skills, agents }) {
       {
         name: "sd-agents",
         version: "0.0.1",
-        description: "sd deck authoring conventions, runtime API, and MCP tools.",
+        description:
+          "sd deck authoring conventions, runtime API, and MCP tools.",
         author: { name: "whosejam" },
         mcpServers: {
           sd: {
@@ -101,8 +112,14 @@ function formatYaml(data) {
   let result = "---\n";
   for (const [key, value] of Object.entries(data)) {
     if (value === undefined) continue;
-    if (typeof value === "string" && (value.includes("\n") || value.length > 80)) {
-      result += `${key}: |\n${value.split("\n").map((line) => "  " + line).join("\n")}\n`;
+    if (
+      typeof value === "string" &&
+      (value.includes("\n") || value.length > 80)
+    ) {
+      result += `${key}: |\n${value
+        .split("\n")
+        .map((line) => "  " + line)
+        .join("\n")}\n`;
     } else {
       result += `${key}: ${JSON.stringify(value)}\n`;
     }

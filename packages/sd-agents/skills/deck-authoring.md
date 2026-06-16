@@ -23,7 +23,7 @@ For invoking the dev loop (start watchers, take screenshots), use the `sd_open` 
 
 ## Coordinates: math y-up
 
-`sd.svg()` uses math coordinates, not SVG defaults. Higher `y` is higher on the screen. `Rect`'s `y` is the *bottom* edge (mathematicians read shapes from the bottom up). When porting an effect from raw SVG code, flip the y-axis logic.
+`sd.svg()` uses math coordinates, not SVG defaults. Higher `y` is higher on the screen. `Rect`'s `y` is the _bottom_ edge (mathematicians read shapes from the bottom up). When porting an effect from raw SVG code, flip the y-axis logic.
 
 ## Animation script defaults
 
@@ -60,15 +60,15 @@ The end state should let a viewer read the answer (Σ area, coverage `n/W`, inva
 
 ### Loops attach at node CENTER
 
-When drawing a self-loop or a loop attached to a node, the loop's *bottom* should land on the node's center (`loop.cy = node.y + LOOP_R`), not externally tangent to the node's top edge. Loops are read as "this node points to itself"; anchoring at the center lets the eye follow the arrow without crossing the node boundary.
+When drawing a self-loop or a loop attached to a node, the loop's _bottom_ should land on the node's center (`loop.cy = node.y + LOOP_R`), not externally tangent to the node's top edge. Loops are read as "this node points to itself"; anchoring at the center lets the eye follow the arrow without crossing the node boundary.
 
 ### Size before center
 
 `setText` / `setFontSize` / `setWidth` commit the new size to `attributes` synchronously, and `setCx` reads that size to compute the x-offset. Always size first, then center:
 
 ```ts
-text.setText("world").setCx(p[0]).setCy(p[1]);     // correct
-text.setCx(p[0]).setCy(p[1]).setText("world");     // bug: center drifts by (newW − oldW) / 2
+text.setText("world").setCx(p[0]).setCy(p[1]); // correct
+text.setCx(p[0]).setCy(p[1]).setText("world"); // bug: center drifts by (newW − oldW) / 2
 ```
 
 ## Label discipline
