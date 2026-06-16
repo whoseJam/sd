@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@whosejam/sd-core": ["../core/src/sd.ts"],
+      "@whosejam/sd-core/*": ["../core/src/*"],
+      "@whosejam/sd-layout": ["../layout/src/index.ts"],
+      "@whosejam/sd-layout/*": ["../layout/src/*"]
+    },
+    "outDir": "dist",
+    "declarationDir": "dist/types",
+    "noEmit": true
+  },
+  "include": ["src/**/*"]
+}

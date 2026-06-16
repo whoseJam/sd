@@ -143,7 +143,7 @@ gulp theme   -o <output-dir>     # compile Reveal/css/theme/source/*.scss
 Animation bundles do NOT inline `@whosejam/sd-core`. Instead:
 
 - `packages/element/src/template.html` loads `sd.js` first (as global `sd`), then the per-animation bundle.
-- The per-animation webpack config marks `@/sd` and `slidew` as externals mapping to global `sd`.
+- The per-animation webpack config marks `@/sd` and `@whosejam/sd` as externals mapping to global `sd`.
 - This keeps each animation script tiny (~5-20 KB) and the shared engine cacheable.
 
 PPT bundles work the same way: the framework's `template.html` loads `sd.js` and the framework bundle (`reveal.js` / `webslides.js` / `impress.js`) as globals; each slide's animation is a separate small bundle.

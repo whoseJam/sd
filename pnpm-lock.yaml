@@ -194,6 +194,15 @@ importers:
         specifier: ^5.1.0
         version: 5.2.1
 
+  packages/sd:
+    dependencies:
+      '@whosejam/sd-core':
+        specifier: workspace:*
+        version: link:../core
+      '@whosejam/sd-layout':
+        specifier: workspace:*
+        version: link:../layout
+
   packages/webslides:
     dependencies:
       '@whosejam/sd-element':

@@ -109,7 +109,7 @@ function getConfiguration(file: string, targetFolder: string) {
     },
     externals: {
       "@/sd": "sd",
-      slidew: "sd",
+      "@whosejam/sd": "sd",
     },
   };
 }

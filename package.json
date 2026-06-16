@@ -1,13 +1,9 @@
 {
-  "name": "slidew",
-  "version": "1.0.14",
-  "description": "",
+  "name": "sd-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Workspace root — not published. See packages/sd for the public entry.",
   "license": "ISC",
-  "author": "",
-  "repository": {
-    "type": "",
-    "url": ""
-  },
   "bin": {
     "sd-animation": "./packages/cli/src/animation.ts",
     "sd-animation-group": "./packages/cli/src/animation-group.ts",
