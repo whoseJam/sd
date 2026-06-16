@@ -1,7 +1,7 @@
 {
   "name": "@whosejam/sd-reveal",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "description": "Reveal.js integration layer (plugins, MathJax, custom slide CSS)",
   "license": "ISC",
   "type": "module",
@@ -22,7 +22,8 @@
     "src"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsup",
@@ -36,5 +37,13 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/reveal"
+  },
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/reveal",
+  "bugs": "https://github.com/whoseJam/sd/issues",
+  "author": "whoseJam"
 }

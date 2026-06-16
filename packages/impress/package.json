@@ -1,7 +1,7 @@
 {
   "name": "@whosejam/sd-impress",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "description": "impress.js host: 3D step-based deck",
   "license": "ISC",
   "main": "./src/main.ts",
@@ -14,11 +14,20 @@
     "src"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "@whosejam/sd-element": "workspace:*",
     "@whosejam/sd-include-html": "workspace:*",
     "impress.js": "^1.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/impress"
+  },
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/impress",
+  "bugs": "https://github.com/whoseJam/sd/issues",
+  "author": "whoseJam"
 }

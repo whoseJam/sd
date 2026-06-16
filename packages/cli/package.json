@@ -1,7 +1,7 @@
 {
   "name": "@whosejam/sd-cli",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-config, sd-init)",
   "license": "ISC",
   "type": "module",
@@ -26,7 +26,8 @@
     "templates"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsup",
@@ -72,5 +73,13 @@
     "gulp": "^5.0.0",
     "gulp-strip-comments": "^2.6.0",
     "tsup": "^8.5.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/cli",
+  "bugs": "https://github.com/whoseJam/sd/issues",
+  "author": "whoseJam"
 }

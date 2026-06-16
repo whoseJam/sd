@@ -1,7 +1,7 @@
 {
   "name": "@whosejam/sd-webslides",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "description": "WebSlides host: section-based deck with built-in transitions",
   "license": "ISC",
   "main": "./src/main.ts",
@@ -14,11 +14,20 @@
     "src"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "@whosejam/sd-element": "workspace:*",
     "@whosejam/sd-include-html": "workspace:*",
     "webslides": "^1.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/webslides"
+  },
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/webslides",
+  "bugs": "https://github.com/whoseJam/sd/issues",
+  "author": "whoseJam"
 }

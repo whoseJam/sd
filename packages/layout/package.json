@@ -1,7 +1,7 @@
 {
   "name": "@whosejam/sd-layout",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "description": "Layout helpers for @whosejam/sd-core (Array / Curve / Graph / Grid / TwoNode). Depends on dagre for graph layouts.",
   "license": "ISC",
   "type": "module",
@@ -18,7 +18,8 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsup",
@@ -30,5 +31,13 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/layout"
+  },
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/layout",
+  "bugs": "https://github.com/whoseJam/sd/issues",
+  "author": "whoseJam"
 }

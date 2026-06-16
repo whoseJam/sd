@@ -1,7 +1,7 @@
 {
   "name": "@whosejam/sd-element",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "description": "<sd-animation> custom element. Host page loads this once; embeds animations via <sd-animation src=...>.",
   "license": "ISC",
   "type": "module",
@@ -19,7 +19,8 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsup",
@@ -27,5 +28,13 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoseJam/sd.git",
+    "directory": "packages/element"
+  },
+  "homepage": "https://github.com/whoseJam/sd/tree/master/packages/element",
+  "bugs": "https://github.com/whoseJam/sd/issues",
+  "author": "whoseJam"
 }
