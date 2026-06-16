@@ -10,6 +10,12 @@
     ".": "./src/reveal.ts",
     "./*": "./src/*"
   },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@whosejam/sd-assets": "workspace:*",
     "@whosejam/sd-element": "workspace:*",

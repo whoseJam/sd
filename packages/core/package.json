@@ -5,6 +5,17 @@
   "description": "SD rendering engine (Animate / Node / Renderer / Math / Utility / Interact). Layout helpers live in @whosejam/sd-layout.",
   "license": "ISC",
   "main": "src/sd.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./src/sd.ts",
+    "./*": "./src/*"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest"

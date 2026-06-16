@@ -10,6 +10,12 @@
     ".": "./src/host.ts",
     "./*": "./src/*"
   },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@whosejam/sd-element": "workspace:*",
     "@whosejam/sd-include-html": "workspace:*",

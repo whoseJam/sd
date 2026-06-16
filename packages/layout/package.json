@@ -5,6 +5,17 @@
   "description": "Layout helpers for @whosejam/sd-core (Array / Curve / Graph / Grid / TwoNode). Depends on dagre for graph layouts.",
   "license": "ISC",
   "main": "src/index.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@whosejam/sd-core": "workspace:*",
     "dagre": "^0.8.5"

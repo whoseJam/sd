@@ -1,11 +1,22 @@
 {
-    "name": "@whosejam/sd-assets",
-    "version": "0.0.1",
-    "private": true,
-    "description": "Vendor scripts, CSS, fonts, themes (MathJax, snap.svg, dagre, font-awesome)",
-    "license": "ISC",
-    "exports": {
+  "name": "@whosejam/sd-assets",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Vendor scripts, CSS, fonts, themes (MathJax, snap.svg, dagre, font-awesome)",
+  "license": "ISC",
+  "exports": {
     "./package.json": "./package.json",
-        "./*": "./*"
-    }
+    "./*": "./*"
+  },
+  "files": [
+    "*.js",
+    "*.css",
+    "*.d.ts",
+    "MathJax2",
+    "MathJax3",
+    "fonts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -9,6 +9,12 @@
     "./package.json": "./package.json",
     ".": "./src/index.ts"
   },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@whosejam/sd-core": "workspace:*",
     "@whosejam/sd-layout": "workspace:*"
