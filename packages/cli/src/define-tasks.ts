@@ -1,4 +1,4 @@
-// defineTasks(gulp) — registers every gulp task used by a sd-monorepo or
+// defineTasks(gulp) registers every gulp task used by a sd-monorepo or
 // downstream consumer. Lives in the cli package so the workspace gulpfile
 // and the scaffolded-project gulpfile share one source of truth.
 

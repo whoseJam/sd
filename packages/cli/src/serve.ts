@@ -94,7 +94,7 @@ async function ensureServer(): Promise<void> {
     return;
   }
   console.log("  starting preview server...");
-  // stdio takes an OS handle, not a Node stream — listeners would pin the
+  // stdio takes an OS handle, not a Node stream. Listeners would pin the
   // event loop and the parent would never exit after child.unref().
   writeFileSync(SERVER_LOG, "");
   const logHandle = openSync(SERVER_LOG, "a");

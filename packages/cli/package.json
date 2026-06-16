@@ -18,10 +18,12 @@
     "sd-animation": "./dist/animation.js",
     "sd-animation-group": "./dist/animation-group.js",
     "sd-config": "./dist/config.js",
+    "sd-init": "./dist/init.js",
     "sd-ppt": "./dist/ppt.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "scripts": {
     "build": "tsup",
