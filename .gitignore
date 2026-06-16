@@ -8,6 +8,7 @@
 /.claude/settings.local.json
 node_modules
 dist
+!packages/sd-agents/dist
 myconfig.json
 tsconfig.tsbuildinfo
 packages/assets/themes/
