@@ -195,10 +195,11 @@ export abstract class SDNode {
    * Removes this component from the scene.
    * @returns The current component instance for method chaining.
    */
-  remove() {
+  remove(): this {
     this.getRootRenderNode().remove();
     this.parent?.untrackChild(this);
     this.parent = undefined;
+    return this;
   }
 
   // No-op on the base class; Group overrides to splice from its nodes[]
