@@ -8,7 +8,7 @@ import { z } from "zod";
 
 const server = new McpServer({ name: "sd", version: "0.0.1" });
 
-function runPnpm(args: string[]): string {
+function run(args: string[]): string {
   const result = spawnSync("pnpm", args, { encoding: "utf-8" });
   return (result.stdout ?? "") + (result.stderr ?? "");
 }
@@ -24,7 +24,7 @@ server.tool(
       ),
   },
   async ({ target }) => ({
-    content: [{ type: "text", text: runPnpm(["open", target]) }],
+    content: [{ type: "text", text: run(["open", target]) }],
   }),
 );
 
@@ -33,7 +33,7 @@ server.tool(
   "Stop deck or animation watchers started by sd_open.",
   {},
   async () => ({
-    content: [{ type: "text", text: runPnpm(["close"]) }],
+    content: [{ type: "text", text: run(["close"]) }],
   }),
 );
 
@@ -77,7 +77,7 @@ server.tool(
     if (pause !== undefined) args.push("--pause", String(pause));
     if (from !== undefined) args.push("--from", String(from));
     if (to !== undefined) args.push("--to", String(to));
-    return { content: [{ type: "text", text: runPnpm(args) }] };
+    return { content: [{ type: "text", text: run(args) }] };
   },
 );
 
