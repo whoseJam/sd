@@ -151,19 +151,20 @@ export class RenderNode {
       this.__appendChild(element);
       return this;
     }
-    const l = element.delay();
-    const r = element.delay() + element.duration();
-    const source = element.targetLayer;
+    const node: RenderNode = element;
+    const l = node.delay();
+    const r = node.delay() + node.duration();
+    const source = node.targetLayer;
     const target = this;
-    const ref = source ? element.element().nextSibling : null;
+    const ref = source ? node.element().nextSibling : null;
     function structure(t: number) {
-      if (!this.reverse && t === 1) this.target.__appendChild(element);
+      if (!this.reverse && t === 1) this.target.__appendChild(node);
       else if (this.reverse && t === 0) {
-        if (this.target) restorePosition(this.target, element, ref);
-        else (element as RenderNode).__remove();
+        if (this.target) restorePosition(this.target, node, ref);
+        else node.__remove();
       }
     }
-    element.targetLayer = target;
+    node.targetLayer = target;
     pushLifecycle({
       entity: element,
       key: "layer(append)",
