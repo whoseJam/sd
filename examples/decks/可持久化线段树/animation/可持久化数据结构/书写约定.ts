@@ -97,8 +97,7 @@ sd.main(async () => {
     .startAnimate({ duration: 280, easing: E.easeOut })
     .setOpacity(1)
     .endAnimate();
-  eq
-    .startAnimate({ delay: 120, duration: 280, easing: E.easeOut })
+  eq.startAnimate({ delay: 120, duration: 280, easing: E.easeOut })
     .setOpacity(1)
     .endAnimate();
   await sd.pause();
@@ -111,8 +110,7 @@ sd.main(async () => {
     .startAnimate({ delay: 80, duration: 300, easing: E.easeOut })
     .setOpacity(1)
     .endAnimate();
-  eq
-    .startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
+  eq.startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
     .setText(EQ_TEXTS[1], EQ_MAPPINGS[0])
     .endAnimate();
   await sd.pause();
@@ -125,8 +123,7 @@ sd.main(async () => {
     .startAnimate({ delay: 80, duration: 300, easing: E.easeOut })
     .setOpacity(1)
     .endAnimate();
-  eq
-    .startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
+  eq.startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
     .setText(EQ_TEXTS[2], EQ_MAPPINGS[1])
     .endAnimate();
   await sd.pause();
@@ -139,8 +136,7 @@ sd.main(async () => {
     .startAnimate({ delay: 520, duration: 280, easing: E.easeOut })
     .setStroke(C.steelBlue)
     .endAnimate();
-  eq
-    .startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
+  eq.startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
     .setText(EQ_TEXTS[3], EQ_MAPPINGS[2])
     .endAnimate();
   await sd.pause();
@@ -153,8 +149,7 @@ sd.main(async () => {
     .startAnimate({ duration: 320, easing: E.easeOut })
     .setOpacity(0)
     .endAnimate();
-  eq
-    .startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
+  eq.startAnimate({ delay: 120, duration: 360, easing: E.easeOut })
     .setText(EQ_TEXTS[4], EQ_MAPPINGS[3])
     .endAnimate();
   await sd.pause();
