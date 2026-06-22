@@ -9,7 +9,6 @@ const E = sd.easing();
 const CELL_W = 36;
 const CELL_H = 26;
 const GAP = 3;
-const LEVEL_DY = 80;
 
 const LEVELS: number[][][] = [
   [[0, 1, 2, 3, 4, 5, 6, 7]],
