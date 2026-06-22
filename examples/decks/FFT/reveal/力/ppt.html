@@ -1,0 +1,76 @@
+<section>
+    <section>
+        <h1>力</h1>
+    </section>
+    <problem data-problemset="luogu" data-problemid="P3338"></problem>
+    <section>
+        <h2>力</h2>
+        <p>
+            $$
+            \begin{cases}
+            F_j=\sum_{i=1}^{j-1}\frac{q_i\times q_j}{(i-j)^2}-\sum_{i=j+1}^{n} \frac{q_i\times q_j}{(i-j)^2} \\
+            E_i=\frac{F_i}{q_i}
+            \end{cases}
+            $$
+        </p>
+        <p>$q_1,q_2,...,q_n$ 是已知的，我们需要算出 $E_1,E_2,...,E_n$</p>
+        <p class="fragment">容易发现 $F,q\rightarrow E$ 这一步肯定可以 $O(n)$ 做到，瓶颈在于 $q\rightarrow F$ 这一步上</p>
+    </section>
+    <section>
+        <h2>力</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            F_j&=\sum_{i=1}^{j-1}\frac{q_i\times q_j}{(i-j)^2}-\sum_{i=j+1}^{n}\frac{q_i\times q_j}{(i-j)^2} \\
+            &=q_j(\sum_{i=1}^{j-1}\frac{q_i}{(i-j)^2}-\sum_{i=j+1}^{n}\frac{q_i}{(i-j)^2})
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>前半部分</h2>
+        <p>
+            $$
+            \sum_{i=1}^{j-1}\frac{q_i}{(i-j)^2}
+            $$
+        </p>
+        <sd-animation src="../../animation/力/前半部分.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 1000px; height: 150px;"></sd-animation>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            A(x)=\sum_{i=1}^n\frac{1}{i^2}x^i \\
+            B(x)=\sum_{i=1}^nq_ix^i
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            answer_j=A(x)B(x)[x^j]
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>后半部分</h2>
+        <p>
+            $$
+            \sum_{i=j+1}^{n}\frac{q_i}{(i-j)^2}
+            $$
+        </p>
+        <sd-animation src="../../animation/力/后半部分.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 1000px; height: 150px;"></sd-animation>
+        <p class="fragment">
+            $$
+            \begin{cases}
+            A(x)=\sum_{i=1}^n\frac{1}{i^2}x^i \\
+            C(x)=\sum_{i=1}^nq_{n-i+1}x^i
+            \end{cases}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            answer_j=A(x)C(x)[x^j]
+            $$
+        </p>
+    </section>
+</section>

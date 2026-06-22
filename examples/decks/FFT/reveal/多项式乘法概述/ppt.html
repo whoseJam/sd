@@ -1,0 +1,50 @@
+<section>
+    <section>
+        <h1>多项式乘法</h1>
+    </section>
+    <section>
+        <h2>多项式</h2>
+        <p>
+            $$
+            f(x)=\sum_{i=0}^na_ix^i
+            $$
+        </p>
+        <p>为一个多项式的通用形式</p>
+    </section>
+    <section>
+        <h2>多项式的次数</h2>
+        <p>对于一个多项式 $f(x)$，我们称其最高的次数为该多项式的<b>次数</b>，记作 $deg(f)$</p>
+        <ul>
+            <li class="fragment">$f(x)=2x^3+3x$<span class="fragment">，$deg(f)=3$</span></li>
+            <li class="fragment">$g(x)=x^5-10x^4+3x^3+x^2+100$<span class="fragment">，$deg(g)=5$</span></li>
+        </ul>
+    </section>
+    <section>
+        <h2>多项式乘法</h2>
+        <p>给定多项式 $f(x)$ 和 $g(x)$：
+            $$
+            \begin{aligned}
+            f(x)&=a_0+a_1x+...+a_nx^n \\
+            g(x)&=b_0+b_1x+...+b_mx^m
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">希望计算多项式 $Q(x)=f(x)\cdot g(x)$：
+            $$
+            Q(x)=\sum_{i=0}^n\sum_{j=0}^ma_ib_jx^{i+j}=c_0+c_1x+...+c_{n+m}x^{n+m}
+            $$
+        </p>
+        <codeblock class="fragment">
+            <script type="text/template">
+                void Multiply(int* A, int* B, int* C, int n, int m) {
+                    for (int i = 0; i <= n; i++) {
+                        for (int j = 0; j <= m; j++) {
+                            C[i + j] += A[i] * B[j];
+                        }
+                    }
+                }
+            </script>
+        </codeblock>
+        <p class="fragment">这样做时间复杂度是 $O(nm)$ 的<span class="fragment">，但借助 FFT，我们能更快地计算两个多项式的乘法，进而打通一些更强大的计数科技（生成函数）</span></p>
+    </section>
+</section>
