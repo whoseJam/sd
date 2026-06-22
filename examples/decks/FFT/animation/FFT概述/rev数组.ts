@@ -40,7 +40,7 @@ function makeCellGroup(
   cy: number,
   valueLatex: string,
   binText: string,
-  binAbove: boolean,
+  binOutside: "above" | "below",
 ): CellGroup {
   const rect = new sd.Rect({
     targetNode: svg,
@@ -65,7 +65,7 @@ function makeCellGroup(
     targetNode: svg,
     text: binText,
     cx,
-    cy: cy + (binAbove ? BIN_OFFSET : -BIN_OFFSET),
+    cy: cy + (binOutside === "above" ? BIN_OFFSET : -BIN_OFFSET),
     fontSize: 12,
     fill: C.darkButtonGrey,
     opacity: 0,
@@ -80,14 +80,14 @@ const botCells: CellGroup[] = [];
 
 for (let i = 0; i < N; i++) {
   const cx = xStart + i * (CELL_W + GAP);
-  topCells.push(makeCellGroup(cx, TOP_Y, `a_{${i}}`, toBin(i, LOG_N), false));
+  topCells.push(makeCellGroup(cx, TOP_Y, `a_{${i}}`, toBin(i, LOG_N), "above"));
 }
 
 for (let pos = 0; pos < N; pos++) {
   const cx = xStart + pos * (CELL_W + GAP);
   const sourceIdx = bitReverse(pos, LOG_N);
   botCells.push(
-    makeCellGroup(cx, BOT_Y, `a_{${sourceIdx}}`, toBin(pos, LOG_N), true),
+    makeCellGroup(cx, BOT_Y, `a_{${sourceIdx}}`, toBin(pos, LOG_N), "below"),
   );
 }
 
@@ -139,13 +139,37 @@ function makeArrow(
   return { line, head };
 }
 
+// Arrows: cells that map to themselves (rev[i] == i) get the neutral axis
+// color. Cells that swap with a partner share a palette color, so the eye
+// can pair them up at a glance.
+const SWAP_PALETTE: sd.SDColor[] = [C.blue, C.darkOrange, C.green, C.red];
+
+const arrowColors = new Map<number, sd.SDColor>();
+let palettePtr = 0;
+for (let i = 0; i < N; i++) {
+  const j = bitReverse(i, LOG_N);
+  if (i === j) {
+    arrowColors.set(i, AXIS_COLOR);
+  } else if (!arrowColors.has(i)) {
+    const color = SWAP_PALETTE[palettePtr++ % SWAP_PALETTE.length];
+    arrowColors.set(i, color);
+    arrowColors.set(j, color);
+  }
+}
+
 const arrows: ArrowParts[] = [];
 for (let i = 0; i < N; i++) {
   const srcCx = xStart + i * (CELL_W + GAP);
   const dstPos = bitReverse(i, LOG_N);
   const dstCx = xStart + dstPos * (CELL_W + GAP);
   arrows.push(
-    makeArrow(srcCx, TOP_Y - CELL_H / 2, dstCx, BOT_Y + CELL_H / 2, AXIS_COLOR),
+    makeArrow(
+      srcCx,
+      TOP_Y - CELL_H / 2,
+      dstCx,
+      BOT_Y + CELL_H / 2,
+      arrowColors.get(i) ?? AXIS_COLOR,
+    ),
   );
 }
 
