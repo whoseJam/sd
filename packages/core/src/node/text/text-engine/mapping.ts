@@ -40,10 +40,10 @@ function locateUnmatchedSubtext(
       ? textView.text.slice(0, 30).join(" ")
       : String(textView.text).slice(0, 60);
     throw new Error(
-      `Subtext not found: ${JSON.stringify(pattern)} (in: "${preview}${textView.text.length > 30 ? "..." : ""}")`,
+      `Subtext Not Found: ${JSON.stringify(pattern)} (in: "${preview}${textView.text.length > 30 ? "..." : ""}")`,
     );
   }
-  throw new Error(`Subtext not found: ${JSON.stringify(pattern)}`);
+  throw new Error(`Subtext Not Found: ${JSON.stringify(pattern)}`);
 }
 
 export function matchSubtext(
@@ -62,7 +62,7 @@ export function matchSubtext(
       remaining--;
     }
   }
-  throw new Error(`Subtext not found: ${JSON.stringify(pattern)}`);
+  throw new Error(`Subtext Not Found: ${JSON.stringify(pattern)}`);
 }
 
 export function mapSubtextsBetweenViews(

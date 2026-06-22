@@ -5,6 +5,7 @@ import type { BaseTextAttributes, TextMapping } from "@/node/text/base-text";
 import type { SDColor } from "@/utility/color";
 
 import { Interp } from "@/animate/interp";
+import { fontWhitelist } from "@/interact/config";
 import { Filter } from "@/node/filter/filter";
 import { SDSVGNode } from "@/node/svg-node";
 import { BaseText } from "@/node/text/base-text";
@@ -229,6 +230,10 @@ export class Text extends BaseText {
   }
 
   setFontFamily(family: string): this {
+    if (!fontWhitelist.includes(family))
+      throw new Error(
+        `Font Family Not Supported: "${family}". Allowed: ${fontWhitelist.map((f) => `"${f}"`).join(", ")}.`,
+      );
     const box = FontManager.boundingBox(
       this.attributes.text,
       family,

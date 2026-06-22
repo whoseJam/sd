@@ -208,7 +208,9 @@ describe("Text", () => {
   describe("fontFamily", () => {
     it("rejects unsupported families", () => {
       const t = new Text({ text: "abc", targetNode: new Group() });
-      expect(() => t.setFontFamily("Comic Sans")).toThrow(/not supported/);
+      expect(() => t.setFontFamily("Comic Sans")).toThrow(
+        /Font Family Not Supported/,
+      );
     });
 
     it("accepts Arial and fires fontFamily listener", () => {
