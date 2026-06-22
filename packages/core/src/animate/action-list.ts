@@ -18,7 +18,7 @@ const entityLabel = (entity: unknown): string => {
 const visible = (element: SDNode): boolean => {
   if (!(element instanceof SDNode)) return false;
   if (element.getOpacity() === 0) return false;
-  if (element.parent) return visible(element.parent);
+  if (element.getParent()) return visible(element.getParent());
   return true;
 };
 

@@ -33,7 +33,7 @@ export function buildAnimation(
     from: mappings.map((mapping) => mapping[0]),
     to: mappings.map((mapping) => mapping[1]),
     interp: postProcess,
-    timing: text.timingFunction,
+    timing: text.getTimingFunction(),
   });
   return targetView.styles;
 }

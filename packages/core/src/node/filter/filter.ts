@@ -49,7 +49,7 @@ export class Filter extends BaseFilter {
   append(child: SDNode | RenderNode) {
     if (child instanceof SDNode) {
       this.getRootRenderNode().append(child.getRootRenderNode());
-      child.parent = this;
+      child.setParent(this);
     } else this.getRootRenderNode().append(child);
     return this;
   }
@@ -57,13 +57,13 @@ export class Filter extends BaseFilter {
   appendChild(child: SDNode | RenderNode) {
     if (child instanceof SDNode) {
       this.getRootRenderNode().appendChild(child.getRootRenderNode());
-      child.parent = this;
+      child.setParent(this);
     } else this.getRootRenderNode().appendChild(child);
     return this;
   }
 
   insertBefore(child: SDNode | RenderNode, referenced: SDNode | RenderNode) {
-    if (child instanceof SDNode) child.parent = this;
+    if (child instanceof SDNode) child.setParent(this);
     const childNode =
       child instanceof SDNode ? child.getRootRenderNode() : child;
     const referencedNode =

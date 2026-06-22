@@ -52,22 +52,18 @@ export type SDNodeAttributes = {
 
 export abstract class SDNode {
   nodeId: number;
-  // Engine state: typed first-class fields, not part of the dynamic _ bag.
-  // Public for now because sibling SDNode subclasses (Group, Filter) and
-  // free functions (ActionList.visible, text engines) read/write these
-  // across instances; tightening visibility is Phase 3 work.
-  parent: Group | Filter | undefined = undefined;
-  renderer: RenderNode | undefined = undefined;
-  foreign?: RenderNode;
+  protected parent: Group | Filter | undefined = undefined;
+  protected renderer: RenderNode | undefined = undefined;
+  protected foreign?: RenderNode;
   frame: number = -1;
   // delayMs / durationMs collide with the delay() / duration() methods if
   // named the same; the methods stay because they're the public API.
-  delayMs: number = 0;
-  durationMs: number = 0;
-  subAnimates: Array<Context> = [];
-  timingFunction: ((t: number) => number) | undefined = undefined;
-  ready: boolean = false;
-  attributes: SDNodeAttributes = {
+  protected delayMs: number = 0;
+  protected durationMs: number = 0;
+  protected subAnimates: Array<Context> = [];
+  protected timingFunction: ((t: number) => number) | undefined = undefined;
+  protected ready: boolean = false;
+  protected attributes: SDNodeAttributes = {
     opacity: 1,
     scale: [1, 1],
     rotate: 0,
@@ -84,6 +80,23 @@ export abstract class SDNode {
   getRootRenderNode(): RenderNode {
     if (this.foreign) return this.foreign;
     return this.renderer;
+  }
+
+  getParent(): Group | Filter | undefined {
+    return this.parent;
+  }
+
+  /** Called by Group and Filter when adopting or releasing this node. */
+  setParent(parent: Group | Filter | undefined): void {
+    this.parent = parent;
+  }
+
+  getAttributes(): SDNodeAttributes {
+    return this.attributes;
+  }
+
+  getTimingFunction(): ((t: number) => number) | undefined {
+    return this.timingFunction;
   }
 
   startSubAnimate() {

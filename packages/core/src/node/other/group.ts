@@ -61,9 +61,9 @@ export class Group extends SDSVGNode {
   // moved child; adoptChild handles both unhooking and re-tracking in one
   // shot so every append-style entry point gets the same behavior.
   protected adoptChild(child: SDNode): void {
-    const old = child.parent;
+    const old = child.getParent();
     if (old instanceof Group && old !== this) old.untrackChild(child);
-    child.parent = this;
+    child.setParent(this);
     if (this.nodes.indexOf(child) === -1) this.nodes.push(child);
   }
 
@@ -79,7 +79,7 @@ export class Group extends SDSVGNode {
     const corners: Array<[number, number]> = [];
     for (const child of this.nodes) {
       const childLocal = child.getLocalBox();
-      const t = composeTransform(childLocal, child.attributes);
+      const t = composeTransform(childLocal, child.getAttributes());
       for (const c of aabbCorners(childLocal))
         corners.push(transformPoint(c, t));
     }

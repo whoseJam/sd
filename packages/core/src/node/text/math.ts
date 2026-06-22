@@ -209,6 +209,10 @@ export class Math extends BaseText {
     return this.attributes.string;
   }
 
+  getHtml(): RenderNode | undefined {
+    return this.attributes.html;
+  }
+
   setText(value: string | number, mapping?: TextMapping): this {
     const latex = String(value);
     if (this.attributes.string === latex) return this;
