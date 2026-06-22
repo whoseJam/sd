@@ -8,68 +8,76 @@ import { z } from "zod";
 
 const server = new McpServer({ name: "sd", version: "0.0.1" });
 
-function runPnpm(args: string[]): string {
+function run(args: string[]): string {
   const result = spawnSync("pnpm", args, { encoding: "utf-8" });
   return (result.stdout ?? "") + (result.stderr ?? "");
 }
 
-server.tool(
+server.registerTool(
   "sd_open",
-  "Start watchers and open a deck (or standalone animation) in the browser. The watchers stay alive until sd_close is called.",
   {
-    target: z
-      .string()
-      .describe(
-        "deck name under examples/decks/, or animation file name under examples/animations/ (without .ts extension)",
-      ),
+    description:
+      "Start watchers and open a deck (or standalone animation) in the browser. The watchers stay alive until sd_close is called.",
+    inputSchema: {
+      target: z
+        .string()
+        .describe(
+          "deck name under examples/decks/, or animation file name under examples/animations/ (without .ts extension)",
+        ),
+    },
   },
   async ({ target }) => ({
-    content: [{ type: "text", text: runPnpm(["open", target]) }],
+    content: [{ type: "text", text: run(["open", target]) }],
   }),
 );
 
-server.tool(
+server.registerTool(
   "sd_close",
-  "Stop deck or animation watchers started by sd_open.",
-  {},
+  {
+    description: "Stop deck or animation watchers started by sd_open.",
+    inputSchema: {},
+  },
   async () => ({
-    content: [{ type: "text", text: runPnpm(["close"]) }],
+    content: [{ type: "text", text: run(["close"]) }],
   }),
 );
 
-server.tool(
+server.registerTool(
   "sd_snap",
-  "Take a one-shot screenshot of a deck (grid of slides) or animation (grid of pauses) and return the saved PNG path.",
   {
-    url: z
-      .string()
-      .describe(
-        "served URL; relative paths starting with / resolve against the local preview server. /reveal/index.html for the active deck, /animation/<name>.html for a standalone animation",
-      ),
-    slide: z
-      .number()
-      .int()
-      .positive()
-      .optional()
-      .describe("single slide index (deck mode only)"),
-    pause: z
-      .number()
-      .int()
-      .positive()
-      .optional()
-      .describe("single pause index (animation mode only)"),
-    from: z
-      .number()
-      .int()
-      .positive()
-      .optional()
-      .describe("range start (inclusive)"),
-    to: z
-      .number()
-      .int()
-      .positive()
-      .optional()
-      .describe("range end (inclusive)"),
+    description:
+      "Take a one-shot screenshot of a deck (grid of slides) or animation (grid of pauses) and return the saved PNG path.",
+    inputSchema: {
+      url: z
+        .string()
+        .describe(
+          "served URL; relative paths starting with / resolve against the local preview server. /reveal/index.html for the active deck, /animation/<name>.html for a standalone animation",
+        ),
+      slide: z
+        .number()
+        .int()
+        .positive()
+        .optional()
+        .describe("single slide index (deck mode only)"),
+      pause: z
+        .number()
+        .int()
+        .positive()
+        .optional()
+        .describe("single pause index (animation mode only)"),
+      from: z
+        .number()
+        .int()
+        .positive()
+        .optional()
+        .describe("range start (inclusive)"),
+      to: z
+        .number()
+        .int()
+        .positive()
+        .optional()
+        .describe("range end (inclusive)"),
+    },
   },
   async ({ url, slide, pause, from, to }) => {
     const args = ["snap", url];
@@ -77,7 +85,7 @@ server.tool(
     if (pause !== undefined) args.push("--pause", String(pause));
     if (from !== undefined) args.push("--from", String(from));
     if (to !== undefined) args.push("--to", String(to));
-    return { content: [{ type: "text", text: runPnpm(args) }] };
+    return { content: [{ type: "text", text: run(args) }] };
   },
 );
 

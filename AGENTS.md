@@ -127,7 +127,7 @@ gulp ppt             -i <deck-reveal-dir> -o <output-dir>
 
 ### `@whosejam/sd-agents`
 
-- Source for the agent plugin. Skills live as plain markdown under `skills/`, the MCP server is `mcp-server.ts`, and `build.mjs` emits per-harness layouts to `dist/<harness>/`. The `dist/` is committed (whitelist in `.gitignore`) so users can install without a build.
+- Source for the agent plugin. Skills live as plain markdown under `skills/`, the MCP server is `mcp-server.ts`, and `build.ts` (run via `bun`) emits per-harness layouts to `dist/<harness>/`. The `dist/` is committed (whitelist in `.gitignore`) so users can install without a build.
 
 ## Build Flow
 

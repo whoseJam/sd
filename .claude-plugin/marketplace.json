@@ -1,0 +1,17 @@
+{
+  "name": "sd",
+  "owner": {
+    "name": "whoseJam",
+    "url": "https://github.com/whoseJam"
+  },
+  "metadata": {
+    "description": "sd deck authoring plugin: skills, runtime API, and MCP tools."
+  },
+  "plugins": [
+    {
+      "name": "sd-agents",
+      "source": "./packages/sd-agents/dist/claude",
+      "description": "sd deck authoring conventions, runtime API, and MCP tools."
+    }
+  ]
+}

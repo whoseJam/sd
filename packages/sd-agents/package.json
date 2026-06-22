@@ -24,7 +24,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "node build.mjs",
+    "build": "bun build.ts",
     "mcp": "bun mcp-server.ts"
   },
   "dependencies": {

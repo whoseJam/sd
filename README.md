@@ -1,3 +1,14 @@
+# 在 Claude Code 里用 sd
+
+本仓库带一个 Claude Code plugin（`sd-agents`），里面是 sd 的 deck 写作约定、运行时 API 速查、以及 `pnpm open / close / snap` 对应的 MCP 工具。在 Claude Code CLI 里跑：
+
+```
+claude plugin marketplace add whoseJam/sd
+claude plugin install sd-agents@sd
+```
+
+装好之后重启 Claude Code（或 `/reload-plugins`），Claude 在你写 sd deck 或调用 `sd.X` 时会自动加载对应 skill。本地开发 plugin 本身的同学把 marketplace add 的参数换成本地路径即可：`claude plugin marketplace add /path/to/sd`。
+
 # 环境搭建
 
 到项目根目录下，使用 `npm install` 安装必要的依赖。
