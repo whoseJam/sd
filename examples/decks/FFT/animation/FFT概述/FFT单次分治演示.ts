@@ -86,7 +86,13 @@ interface ArrowParts {
   head: sd.Path;
 }
 
-function makeArrow(x1: number, y1: number, x2: number, y2: number): ArrowParts {
+function makeArrow(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  color: sd.SDColor,
+): ArrowParts {
   const headLen = 6;
   const headW = 4;
   const dx = x2 - x1;
@@ -108,28 +114,38 @@ function makeArrow(x1: number, y1: number, x2: number, y2: number): ArrowParts {
     y1,
     x2: tipX,
     y2: tipY,
-    stroke: AXIS_COLOR,
+    stroke: color,
     strokeWidth: 1,
     opacity: 0,
   });
   const head = new sd.Path({
     targetNode: svg,
     d: `M ${tipX} ${tipY} L ${ax} ${ay} L ${bx} ${by} Z`,
-    fill: AXIS_COLOR,
-    stroke: AXIS_COLOR,
+    fill: color,
+    stroke: color,
     strokeWidth: 1,
     opacity: 0,
   });
   return { line, head };
 }
 
+// Each top y_i receives one contribution from the even half (f0, blue) and
+// one from the odd half (f1, orange). Coloring by source lets the eye trace
+// the "two-into-one" structure of the merge step.
+const F0_COLOR = C.blue;
+const F1_COLOR = C.darkOrange;
+
 const arrows: ArrowParts[] = [];
 for (let i = 0; i < N; i++) {
   const dstCx = topXStart + i * (CELL_W + GAP);
   const src0 = f0XStart + (i % (N / 2)) * (CELL_W + GAP);
   const src1 = f1XStart + (i % (N / 2)) * (CELL_W + GAP);
-  arrows.push(makeArrow(src0, BOT_Y + CELL_H / 2, dstCx, TOP_Y - CELL_H / 2));
-  arrows.push(makeArrow(src1, BOT_Y + CELL_H / 2, dstCx, TOP_Y - CELL_H / 2));
+  arrows.push(
+    makeArrow(src0, BOT_Y + CELL_H / 2, dstCx, TOP_Y - CELL_H / 2, F0_COLOR),
+  );
+  arrows.push(
+    makeArrow(src1, BOT_Y + CELL_H / 2, dstCx, TOP_Y - CELL_H / 2, F1_COLOR),
+  );
 }
 
 function fadeIn(
