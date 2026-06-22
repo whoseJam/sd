@@ -52,7 +52,7 @@ export type SDNodeAttributes = {
 
 export abstract class SDNode {
   nodeId: number;
-  // Engine state — typed first-class fields, not part of the dynamic _ bag.
+  // Engine state: typed first-class fields, not part of the dynamic _ bag.
   // Public for now because sibling SDNode subclasses (Group, Filter) and
   // free functions (ActionList.visible, text engines) read/write these
   // across instances; tightening visibility is Phase 3 work.
@@ -126,24 +126,25 @@ export abstract class SDNode {
     return this;
   }
 
-  // Parametric animation: one logical action whose value at each frame is
-  // computed by `fn(t)` with t ∈ [0, 1] (already eased). Unlike startAnimate's
-  // [from, to] interp, the curve can be any shape — circle, bezier, lissajous —
-  // without being split into N short actions.
-  // bounds is the world-space bbox the entity sweeps mid-tween; only required
-  // when fn(0.5) lies outside the bbox implied by endpoints (fn(0) and fn(1)
-  // are already covered via the same setter-mirror mechanism startAnimate uses).
-  tween(opts: {
+  /**
+   * Parametric animation: fn(t) is called each frame with t in [0, 1].
+   * Unlike startAnimate's [from, to] interpolation, the curve can follow any
+   * shape (circle, bezier, lissajous) without being split into N short actions.
+   * @param options.bounds World-space bbox the entity sweeps mid-tween; only
+   * needed when fn(0.5) falls outside the bbox implied by fn(0) and fn(1).
+   * @returns The current component instance for method chaining.
+   */
+  tween(options: {
     delay?: number;
     duration: number;
     easing?: SDEasingFunction;
     bounds?: TweenBounds;
     fn: TweenFn;
   }): this {
-    const delay = opts.delay ?? 0;
-    const duration = opts.duration;
-    const timing = T.toEasingFunction(opts.easing);
-    const finalValues = opts.fn(1);
+    const delay = options.delay ?? 0;
+    const duration = options.duration;
+    const timing = T.toEasingFunction(options.easing);
+    const finalValues = options.fn(1);
     const attrs = Object.keys(finalValues);
     Object.assign(this.attributes, finalValues);
     Animate.pushParametric(
@@ -153,9 +154,9 @@ export abstract class SDNode {
         this,
         this.getRootRenderNode(),
         attrs,
-        opts.fn,
+        options.fn,
         timing,
-        opts.bounds,
+        options.bounds,
       ),
     );
     return this;
@@ -321,9 +322,10 @@ export abstract class SDNode {
     return q;
   }
 
-  // Narrow-phase hit test. Broad-phase reject on world AABB, then defer
-  // to the per-shape local test (default = local AABB; Ellipse / Polygon
-  // / Path override).
+  /**
+   * Broad-phase reject on world AABB, then per-shape local test.
+   * Default is local AABB containment; Ellipse, Polygon, and Path override.
+   */
   containsPoint(p: [number, number]): boolean {
     if (!aabbContainsPoint(this.getWorldAABB(), p)) return false;
     return this.containsLocalPoint(this.worldToLocal(p));
@@ -620,22 +622,6 @@ export abstract class SDNode {
     this.listeners[key]?.forEach((listener) => listener(vn, vo));
     return this;
   }
-
-  // static __asNode(target: SDNode | RenderNode, object: any, id?: string): SDNode {
-  //     if (object === null || object === undefined) {
-  //         const { Text } = require("@/node/text/text");
-  //         if (id !== undefined) return new Text(target, id).opacity(0);
-  //         return null;
-  //     }
-  //     if (typeof object === "function") return object(target).opacity(0);
-  //     if (typeof object === "number" || typeof object === "string") {
-  //         const { Text } = require("@/node/text/text");
-  //         const { Math } = require("@/node/text/math");
-  //         if (String(object).startsWith("$")) return new Math(target, id).opacity(0);
-  //         return new Text(target, object).opacity(0);
-  //     }
-  //     return object;
-  // }
 }
 
 type AnyFunction = (...args: any[]) => any;
