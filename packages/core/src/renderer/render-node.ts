@@ -8,6 +8,24 @@ import { HTML, HTML_INNERHTML_SET } from "@/renderer/html";
 import { SVG } from "@/renderer/svg";
 import { Dom } from "@/utility/dom";
 
+/**
+ * Restore element to its original sibling slot within parent. ref is the
+ * nextSibling captured just before the operation that displaced element. If
+ * ref has since moved out of parent, fall back to appendChild so the element
+ * at least lands back in the right parent.
+ */
+function restorePosition(
+  parent: RenderNode,
+  element: RenderNode,
+  ref: Node | null,
+) {
+  if (ref !== null && ref.parentNode === parent.element()) {
+    parent.__insertBefore(element, ref as Element);
+  } else {
+    parent.__appendChild(element);
+  }
+}
+
 function parseText(text: string) {
   let ans = "";
   text = String(text);
@@ -137,10 +155,11 @@ export class RenderNode {
     const r = element.delay() + element.duration();
     const source = element.targetLayer;
     const target = this;
+    const ref = source ? element.element().nextSibling : null;
     function structure(t: number) {
       if (!this.reverse && t === 1) this.target.__appendChild(element);
       else if (this.reverse && t === 0) {
-        if (this.target) this.target.__appendChild(element);
+        if (this.target) restorePosition(this.target, element, ref);
         else (element as RenderNode).__remove();
       }
     }
@@ -167,10 +186,11 @@ export class RenderNode {
     const r = element.delay() + element.duration();
     const source = element.targetLayer;
     const target = this;
+    const ref = source ? element.element().nextSibling : null;
     function structure(t: number) {
       if (!this.reverse && t === 1) this.target.__appendChild(element);
       else if (this.reverse && t === 0) {
-        if (this.target) this.target.__appendChild(element);
+        if (this.target) restorePosition(this.target, element, ref);
         else element.__remove();
       }
     }
@@ -197,11 +217,12 @@ export class RenderNode {
     const r = element.delay() + element.duration();
     const source = element.targetLayer;
     const target = this;
+    const ref = source ? element.element().nextSibling : null;
     function structure(t: number) {
       if (!this.reverse && t === 1)
         this.target.__insertBefore(element, referenced);
       else if (this.reverse && t === 0) {
-        if (this.target) this.target.__appendChild(element);
+        if (this.target) restorePosition(this.target, element, ref);
         else element.__remove();
       }
     }
@@ -228,11 +249,12 @@ export class RenderNode {
     const l = this.delay();
     const r = this.delay() + this.duration();
     const source = this.targetLayer;
+    const ref = this.element().nextSibling;
     const target = undefined;
     const element = this;
     function structure(t: number) {
       if (!this.reverse && t === 1) element.__remove();
-      else if (this.reverse && t === 0) this.target.__appendChild(element);
+      else if (this.reverse && t === 0) restorePosition(source, element, ref);
     }
     pushLifecycle({
       entity: element,
@@ -247,20 +269,56 @@ export class RenderNode {
     return this;
   }
 
-  // Sibling-only (does not escape parent layer). TODO: pushLifecycle so
-  // reverse playback restores order.
   raise() {
     if (!this.targetLayer) return this;
-    this.targetLayer.__appendChild(this);
+    const ref = this.element().nextSibling;
+    const element = this;
+    const layer = this.targetLayer;
+    const l = this.delay();
+    const r = this.delay() + this.duration();
+    function structure(t: number) {
+      if (!this.reverse && t === 1) layer.__appendChild(element);
+      else if (this.reverse && t === 0) restorePosition(layer, element, ref);
+    }
+    pushLifecycle({
+      entity: this,
+      key: "layer(raise)",
+      l,
+      r,
+      from: layer,
+      to: layer,
+      callback: structure,
+      timing: T.linear,
+    });
     return this;
   }
 
   lower() {
     if (!this.targetLayer) return this;
-    const parent = this.targetLayer.element();
-    const self = this.element();
-    if (parent.firstChild === self) return this;
-    parent.insertBefore(self, parent.firstChild);
+    const ref = this.element().nextSibling;
+    const element = this;
+    const layer = this.targetLayer;
+    const l = this.delay();
+    const r = this.delay() + this.duration();
+    function structure(t: number) {
+      if (!this.reverse && t === 1) {
+        const parent = layer.element();
+        if (parent.firstChild !== element.element())
+          parent.insertBefore(element.element(), parent.firstChild);
+      } else if (this.reverse && t === 0) {
+        restorePosition(layer, element, ref);
+      }
+    }
+    pushLifecycle({
+      entity: this,
+      key: "layer(lower)",
+      l,
+      r,
+      from: layer,
+      to: layer,
+      callback: structure,
+      timing: T.linear,
+    });
     return this;
   }
 

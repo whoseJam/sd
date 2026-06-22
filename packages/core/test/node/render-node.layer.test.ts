@@ -17,7 +17,6 @@ const indexOf = (group: Group, child: Rect): number =>
 
 // Timeline helpers
 const flush = () => Animate.forceToFinish();
-const nextBeat = () => Animate.startNewFrame();
 const rollback = () => {
   Animate.rollbackFrame();
   flush();
@@ -77,7 +76,6 @@ describe("raise", () => {
 
     a.raise();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -93,7 +91,6 @@ describe("raise", () => {
 
     c.raise();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -115,7 +112,6 @@ describe("raise", () => {
     expect(indexOf(g, a)).toBe(1);
     expect(indexOf(g, b)).toBe(2);
 
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -149,7 +145,6 @@ describe("lower", () => {
 
     c.lower();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -165,7 +160,6 @@ describe("lower", () => {
 
     a.lower();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -199,7 +193,6 @@ describe("remove", () => {
 
     b.startAnimate({ duration: 100 }).remove().endAnimate();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -215,7 +208,6 @@ describe("remove", () => {
 
     a.startAnimate({ duration: 100 }).remove().endAnimate();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -231,7 +223,6 @@ describe("remove", () => {
 
     c.startAnimate({ duration: 100 }).remove().endAnimate();
     flush();
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
@@ -254,7 +245,6 @@ describe("raise and lower combined", () => {
     c.lower();
     flush();
 
-    nextBeat();
     rollback();
 
     expect(indexOf(g, a)).toBe(0);
