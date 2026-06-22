@@ -21,15 +21,17 @@ await sd.pause();                // semantic beat between steps
 ## Palette and easings
 
 ```ts
-const palette = sd.color();
-const easings = sd.easing();
+const C = sd.color();
+const E = sd.easing();
 
-palette.steelBlue; // SDColor: named palette entries
-palette.muted; // semantic groups
-easings.easeOut; // named curves
-easings.easeInOut;
-easings.linear;
+C.steelBlue; // SDColor: named palette entries
+C.muted; // semantic groups
+E.easeOut; // named curves
+E.easeInOut;
+E.linear;
 ```
+
+By deck convention `sd.color()` is bound to `C` and `sd.easing()` to `E`.
 
 Never reach for hex literals or string easing names. The factories exist so a deck stays visually coherent.
 
@@ -49,7 +51,7 @@ Example:
 ```ts
 const rectangle = new sd.Rect({ targetNode: svg, x: 0, y: 0, w: 100, h: 50 })
   .setStrokeWidth(2)
-  .setFill(palette.steelBlue);
+  .setFill(C.steelBlue);
 ```
 
 `Rect`'s `y` is the bottom edge (math y-up).
@@ -115,9 +117,11 @@ sd.rand                      // seeded random
 ## Layout factory
 
 ```ts
-const Layout = sd.layout();
-const grid = new Layout.GridLayout(...);
+const L = sd.layout();
+const grid = new L.GridLayout(...);
 ```
+
+By deck convention `sd.layout()` is bound to `L`.
 
 The `layout()` factory returns a bag of layout classes. Pick one by intent:
 

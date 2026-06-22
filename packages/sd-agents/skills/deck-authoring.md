@@ -32,11 +32,11 @@ At the top of every file:
 ```ts
 import * as sd from "@whosejam/sd";
 
-const palette = sd.color();
-const easings = sd.easing();
+const C = sd.color();
+const E = sd.easing();
 ```
 
-Use `palette.steelBlue` / `easings.easeOut`, never `"#4682b4"` / `"easeOut"` literals. Hex only when the palette has no match.
+Use `C.steelBlue` / `E.easeOut`, never `"#4682b4"` / `"easeOut"` literals. Hex only when the palette has no match.
 
 ### Staggered fade-in entrance
 
