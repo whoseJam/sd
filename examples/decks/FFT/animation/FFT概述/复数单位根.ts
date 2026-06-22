@@ -17,8 +17,8 @@ const ROOT_COLORS: sd.SDColor[] = [
   "#16a085",
 ];
 
-arrow(svg, -RADIUS - 30, 0, RADIUS + 30, 0, AXIS_COLOR);
-arrow(svg, 0, -RADIUS - 30, 0, RADIUS + 30, AXIS_COLOR);
+arrow(svg, -RADIUS - 24, 0, RADIUS + 24, 0, AXIS_COLOR);
+arrow(svg, 0, -RADIUS - 24, 0, RADIUS + 24, AXIS_COLOR);
 
 new sd.Circle({
   targetNode: svg,
@@ -39,9 +39,13 @@ for (let k = 0; k < N; k++) {
   const color = ROOT_COLORS[k];
   arrow(svg, 0, 0, x, y, color, 1.6);
 
-  const labelDist = RADIUS + 38;
+  const labelDist = RADIUS + 22;
+  // Labels colinear with an axis (k=0 on +x, k=N/2 on -x for even N) collide
+  // with the axis arrowhead, so push those down slightly off the axis line.
+  const onXAxis = Math.abs(Math.sin(theta)) < 1e-6;
+  const offsetY = onXAxis ? -14 : 0;
   const labelX = labelDist * Math.cos(theta);
-  const labelY = labelDist * Math.sin(theta);
+  const labelY = labelDist * Math.sin(theta) + offsetY;
   new sd.Math({
     targetNode: svg,
     text: `w_${N}^{${k}}`,
