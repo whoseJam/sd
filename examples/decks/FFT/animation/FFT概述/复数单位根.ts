@@ -17,25 +17,8 @@ const ROOT_COLORS: sd.SDColor[] = [
   "#16a085",
 ];
 
-arrow(svg, -RADIUS - 24, 0, RADIUS + 24, 0, AXIS_COLOR);
-arrow(svg, 0, -RADIUS - 24, 0, RADIUS + 24, AXIS_COLOR);
-
-new sd.Text({
-  targetNode: svg,
-  text: "实",
-  cx: RADIUS + 40,
-  cy: 0,
-  fontSize: 13,
-  fill: AXIS_COLOR,
-});
-new sd.Text({
-  targetNode: svg,
-  text: "虚",
-  cx: 0,
-  cy: RADIUS + 40,
-  fontSize: 13,
-  fill: AXIS_COLOR,
-});
+arrow(svg, -RADIUS - 30, 0, RADIUS + 30, 0, AXIS_COLOR);
+arrow(svg, 0, -RADIUS - 30, 0, RADIUS + 30, AXIS_COLOR);
 
 new sd.Circle({
   targetNode: svg,
@@ -56,7 +39,7 @@ for (let k = 0; k < N; k++) {
   const color = ROOT_COLORS[k];
   arrow(svg, 0, 0, x, y, color, 1.6);
 
-  const labelDist = RADIUS + 22;
+  const labelDist = RADIUS + 38;
   const labelX = labelDist * Math.cos(theta);
   const labelY = labelDist * Math.sin(theta);
   new sd.Math({

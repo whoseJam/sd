@@ -19,7 +19,7 @@ arrow(svg, 0, -Y_HALF, 0, Y_HALF, AXIS_COLOR);
 
 new sd.Text({
   targetNode: svg,
-  text: "实轴",
+  text: "Re",
   cx: X_HALF + 22,
   cy: 0,
   fontSize: 14,
@@ -27,9 +27,9 @@ new sd.Text({
 });
 new sd.Text({
   targetNode: svg,
-  text: "虚轴",
+  text: "Im",
   cx: 0,
-  cy: Y_HALF + 14,
+  cy: Y_HALF + 16,
   fontSize: 14,
   fill: AXIS_COLOR,
 });
