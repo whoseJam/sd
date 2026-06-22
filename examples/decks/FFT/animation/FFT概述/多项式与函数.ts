@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrow, AXIS_COLOR, plot } from "../common/coord";
+
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
@@ -10,81 +12,41 @@ const X_LO = -4.2;
 const X_HI = 4.2;
 const Y_LIMIT = 3.2;
 
-const HEAD_LEN = 8;
-const HEAD_WIDTH = 6;
-const AXIS = C.darkButtonGrey;
-
 const LABEL_X = X_HI * UNIT_X + 120;
 
-function arrow(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  color: sd.SDColor,
-  strokeWidth: number,
-) {
-  new sd.Line({
-    targetNode: svg,
-    x1,
-    y1,
-    x2,
-    y2,
-    stroke: color,
-    strokeWidth,
-  });
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const dist = Math.hypot(dx, dy);
-  const ux = dx / dist;
-  const uy = dy / dist;
-  const px = -uy;
-  const py = ux;
-  const ax = x2 - ux * HEAD_LEN + px * (HEAD_WIDTH / 2);
-  const ay = y2 - uy * HEAD_LEN + py * (HEAD_WIDTH / 2);
-  const bx = x2 - ux * HEAD_LEN - px * (HEAD_WIDTH / 2);
-  const by = y2 - uy * HEAD_LEN - py * (HEAD_WIDTH / 2);
-  new sd.Path({
-    targetNode: svg,
-    d: `M ${x2} ${y2} L ${ax} ${ay} L ${bx} ${by} Z`,
-    fill: color,
-    stroke: color,
-    strokeWidth: 1,
-  });
-}
+arrow(svg, X_LO * UNIT_X - 6, 0, X_HI * UNIT_X + 6, 0, AXIS_COLOR);
+arrow(svg, 0, -Y_LIMIT * UNIT_Y - 6, 0, Y_LIMIT * UNIT_Y + 6, AXIS_COLOR);
 
-arrow(X_LO * UNIT_X - 6, 0, X_HI * UNIT_X + 6, 0, AXIS, 1.2);
-arrow(0, -Y_LIMIT * UNIT_Y - 6, 0, Y_LIMIT * UNIT_Y + 6, AXIS, 1.2);
-
-function plot(fn: (x: number) => number, color: sd.SDColor): sd.Path {
-  const STEPS = 240;
-  let d = "";
-  let pen = false;
-  for (let i = 0; i <= STEPS; i++) {
-    const x = X_LO + ((X_HI - X_LO) * i) / STEPS;
-    const y = fn(x);
-    if (!Number.isFinite(y) || Math.abs(y) > Y_LIMIT) {
-      pen = false;
-      continue;
-    }
-    const px = x * UNIT_X;
-    const py = y * UNIT_Y;
-    d += (pen ? "L " : "M ") + px + " " + py + " ";
-    pen = true;
-  }
-  return new sd.Path({
-    targetNode: svg,
-    d,
-    fill: "none",
-    stroke: color,
-    strokeWidth: 1.8,
-    opacity: 0,
-  });
-}
-
-const plotA = plot((x) => x * x + 3 * x + 2, C.blue);
-const plotB = plot((x) => -0.5 * x * x + 1, C.darkOrange);
-const plotC = plot((x) => -x - 3, C.green);
+const plotA = plot(
+  svg,
+  (x) => x * x + 3 * x + 2,
+  X_LO,
+  X_HI,
+  UNIT_X,
+  UNIT_Y,
+  Y_LIMIT,
+  C.blue,
+);
+const plotB = plot(
+  svg,
+  (x) => -0.5 * x * x + 1,
+  X_LO,
+  X_HI,
+  UNIT_X,
+  UNIT_Y,
+  Y_LIMIT,
+  C.darkOrange,
+);
+const plotC = plot(
+  svg,
+  (x) => -x - 3,
+  X_LO,
+  X_HI,
+  UNIT_X,
+  UNIT_Y,
+  Y_LIMIT,
+  C.green,
+);
 
 const labelA = new sd.Math({
   targetNode: svg,

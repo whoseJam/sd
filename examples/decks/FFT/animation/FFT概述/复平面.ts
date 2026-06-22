@@ -1,5 +1,7 @@
 import * as sd from "@/sd";
 
+import { arrow, AXIS_COLOR } from "../common/coord";
+
 const svg = sd.svg();
 const C = sd.color();
 
@@ -8,45 +10,12 @@ const A = 3;
 const B = 2;
 const X_HALF = 4 * UNIT;
 const Y_HALF = 2.4 * UNIT;
-const HEAD_LEN = 8;
-const HEAD_WIDTH = 6;
 
-const AXIS = C.darkButtonGrey;
 const HINT = C.grey;
 const VEC = C.blue;
 
-function arrow(
-  targetNode: sd.Group,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  color: sd.SDColor,
-  strokeWidth: number,
-) {
-  new sd.Line({ targetNode, x1, y1, x2, y2, stroke: color, strokeWidth });
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const dist = Math.hypot(dx, dy);
-  const ux = dx / dist;
-  const uy = dy / dist;
-  const px = -uy;
-  const py = ux;
-  const ax = x2 - ux * HEAD_LEN + px * (HEAD_WIDTH / 2);
-  const ay = y2 - uy * HEAD_LEN + py * (HEAD_WIDTH / 2);
-  const bx = x2 - ux * HEAD_LEN - px * (HEAD_WIDTH / 2);
-  const by = y2 - uy * HEAD_LEN - py * (HEAD_WIDTH / 2);
-  new sd.Path({
-    targetNode,
-    d: `M ${x2} ${y2} L ${ax} ${ay} L ${bx} ${by} Z`,
-    fill: color,
-    stroke: color,
-    strokeWidth: 1,
-  });
-}
-
-arrow(svg, -X_HALF, 0, X_HALF, 0, AXIS, 1.2);
-arrow(svg, 0, -Y_HALF, 0, Y_HALF, AXIS, 1.2);
+arrow(svg, -X_HALF, 0, X_HALF, 0, AXIS_COLOR);
+arrow(svg, 0, -Y_HALF, 0, Y_HALF, AXIS_COLOR);
 
 new sd.Text({
   targetNode: svg,
@@ -54,7 +23,7 @@ new sd.Text({
   cx: X_HALF + 22,
   cy: 0,
   fontSize: 14,
-  fill: AXIS,
+  fill: AXIS_COLOR,
 });
 new sd.Text({
   targetNode: svg,
@@ -62,7 +31,7 @@ new sd.Text({
   cx: 0,
   cy: Y_HALF + 14,
   fontSize: 14,
-  fill: AXIS,
+  fill: AXIS_COLOR,
 });
 
 const TIP_X = A * UNIT;
