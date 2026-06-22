@@ -113,6 +113,24 @@ for (let i = 0; i < SAMPLES.length; i++) {
   );
 }
 
+// Dashed pairing lines from each sample point on the curve to its
+// corresponding entry in the point-value array. Same color as the dot so
+// the eye traces "this point on the curve = this slot in the array".
+const pairLines: sd.Line[] = SAMPLES.map((s, i) => {
+  const dstCx = ARR_X0 + i * (CELL_W + GAP);
+  return new sd.Line({
+    targetNode: svg,
+    x1: s.x * UNIT_X,
+    y1: A_FN(s.x) * UNIT_Y,
+    x2: dstCx,
+    y2: VAL_CY,
+    stroke: s.color,
+    strokeWidth: 0.8,
+    strokeDashArray: [3, 3],
+    opacity: 0,
+  });
+});
+
 function fadeIn(
   node: sd.SDNode,
   opts: { delay?: number; duration?: number } = {},
@@ -143,7 +161,8 @@ sd.main(async () => {
   await sd.pause();
   for (let i = 0; i < valueCircles.length; i++) {
     fadeIn(valueCells[i], { delay: i * 70, duration: 260 });
-    fadeIn(valueCircles[i], { delay: i * 70 + 120, duration: 260 });
+    fadeIn(pairLines[i], { delay: i * 70 + 80, duration: 260 });
+    fadeIn(valueCircles[i], { delay: i * 70 + 180, duration: 260 });
   }
   await sd.pause();
 });
