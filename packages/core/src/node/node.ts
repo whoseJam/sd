@@ -50,6 +50,13 @@ export type SDNodeAttributes = {
   transformOrigin: TransformOrigin;
 };
 
+// Structural read of a subclass's widened attributes shape. Used in place of
+// `this["attributes"]`, which TS rejects (TS4105) because `attributes` is
+// protected and direct indexed access through a type parameter is disallowed.
+// `infer` extracts the shape at the type-system level without triggering the
+// visibility check.
+type AttrsOf<T> = T extends { attributes: infer A } ? A : SDNodeAttributes;
+
 export abstract class SDNode {
   nodeId: number;
   protected parent: Group | Filter | undefined = undefined;
@@ -609,16 +616,14 @@ export abstract class SDNode {
     return this;
   }
 
-  protected triggerAttributeChanged<
-    K extends keyof this["attributes"] & string,
-  >(
+  protected triggerAttributeChanged<K extends keyof AttrsOf<this> & string>(
     object: RenderNode | undefined,
     key: K,
-    vn: this["attributes"][K],
-    vo: this["attributes"][K],
-    interp?: InterpKind<this["attributes"][K]>,
+    vn: AttrsOf<this>[K],
+    vo: AttrsOf<this>[K],
+    interp?: InterpKind<AttrsOf<this>[K]>,
   ): this {
-    (this.attributes as this["attributes"])[key] = vn;
+    (this.attributes as AttrsOf<this>)[key] = vn;
     if (interp && Window.SHOULD_INTERP) {
       Animate.push(
         new Action(
