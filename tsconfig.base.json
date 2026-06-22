@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2022",
-    "module": "es6",
-    "moduleResolution": "Node",
+    "module": "esnext",
+    "moduleResolution": "Bundler",
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "esModuleInterop": true,
     "skipLibCheck": true,

@@ -4,7 +4,7 @@
     "checkJs": true,
     "noEmit": true,
     "target": "es6",
-    "module": "es6",
+    "module": "esnext",
     "lib": ["es6", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
@@ -15,7 +15,7 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "strictFunctionTypes": false,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
