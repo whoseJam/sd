@@ -1,46 +1,268 @@
 <section>
     <section>
-        <h1>FFT</h1>
-        <p>Fast Fourier Transform</p>
-    </section>
-    <section>
-        <h2>问题</h2>
-        <p>两个多项式 $A(x), B(x)$ 度数 $n$，求 $A \cdot B$ — 朴素 $O(n^2)$。</p>
-    </section>
-    <section>
-        <h2>点值表示</h2>
-        <p>$n + 1$ 个点值唯一确定一个 $n$ 次多项式。点值表示下乘法是 $O(n)$（逐点相乘）。</p>
-        <p class="fragment">系数表示 → 点值表示 = <b>求值</b> $O(n^2)$<br>点值表示 → 系数表示 = <b>插值</b> $O(n^2)$。</p>
+        <h1>FFT 在多项式乘法中的应用</h1>
     </section>
     <section>
         <h2>FFT</h2>
-        <p>选 $n$ 个特殊点：单位根 $\omega_n^k = e^{2\pi i k / n}$。</p>
-        <p class="fragment">利用对称性 $\omega_n^{k + n/2} = -\omega_n^k$ 把求值分治：</p>
-        <p class="fragment">$A(x) = A_e(x^2) + x A_o(x^2)$。$O(n \log n)$。</p>
+        <p>多项式的本质是......</p>
+        <sd-animation src="../../animation/FFT概述/多项式与函数.js"
+            style="display: block; margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li class="fragment">两点确定一条直线<span class="fragment">（一个一次多项式）</span></li>
+            <li class="fragment">三点确定一个二次多项式</li>
+            <li class="fragment">四点确定一个三次多项式</li>
+            <li class="fragment">......</li>
+            <li class="fragment">$n+1$ 个点确定一个 $n$ 次多项式</li>
+        </ul>
     </section>
     <section>
-        <h2>实现</h2>
-        <p>位逆序蝴蝶变换，迭代 FFT $O(n \log n)$。</p>
+        <h2>系数表示与点值表示</h2>
+        <p>所以一个 $n$ 次多项式，除了可以用每一项前面的系数（共 $n+1$ 个系数）来表示之外，还可以用平面上的 $n+1$ 个点确定下来</p>
+        <sd-animation src="../../animation/FFT概述/系数表示与点值表示.js"
+            style="display: block; margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li class="fragment">如果我们记录多项式每一项前面的系数，以此来确定一个多项式，称这种多项式的表示为<b>多项式的系数表示</b></li>
+            <li class="fragment">如果我们记录多项式对应的函数上的 $n+1$ 个点的坐标，以此来确定一个多项式，称这种多项式的表示为<b>多项式的点值表示</b></li>
+        </ul>
+    </section>
+    <section>
+        <h2>多项式乘法</h2>
+        <p>如果在系数表示下，做两个 $n$ 次多项式的乘法，那时间复杂度显然是 $O(n^2)$</p>
+        <p class="fragment">但如果两个多项式都按照点值表示好了，并且每个取值点的坐标是一一对应的......</p>
+        <sd-animation src="../../animation/FFT概述/点值表示多项式乘法.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <codeblock class="fragment">
+            <script type="text/template">
+                // A 取了 2n+1 个点值
+                // B 取了 2n+1 个点值
+                void Multiply(int* A, int* B, int* C, int* n) {
+                    for (int i = 0; i <= n * 2; i++) {
+                        C[i] = A[i] * B[i];
+                    }
+                }
+            </script>
+        </codeblock>
+    </section>
+    <section>
+        <h2>FFT</h2>
+        <p>多项式 $A(x)$ 和 $B(x)$ 做乘法：</p>
+        <ul style="width: 100%;">
+            <li class="fragment">$A(x)系数表示 \stackrel{FFT}{\rightarrow} A(x)的点值表示$</li>
+            <li class="fragment">$B(x)系数表示 \stackrel{FFT}{\rightarrow} B(x)的点值表示$</li>
+            <li class="fragment">
+                <codeblock>
+                    <script type="text/template">
+                        for (int i = 0; i <= n * 2; i++)
+                            C[i] = A[i] * B[i]; // 点值乘法
+                    </script>
+                </codeblock>
+            </li>
+            <li class="fragment">$C(x)的点值表示 \stackrel{IFFT}{\rightarrow} C(x)的系数表示$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>从系数表示到点值表示</h2>
+        <p>如何取点？</p>
+        <p class="fragment quote">取 $\{0,1,2,3,...,2n\}$ 这些点上的点值？</p>
+        <p class="fragment quote">取 $\{-2n,-2n+1,-2n+2,...,-1,0\}$ 这些点上的点值？</p>
+        <p class="fragment">根据点值表示的定义，当然可以，但不够快</p>
+    </section>
+    <section>
+        <h2>从系数表示到点值表示</h2>
+        <p>我们将<b>复数单位根</b>带入到多项式里面取点值</p>
+    </section>
+    <section>
+        <h2>复数</h2>
+        <p>复数域 $C$ 是实数域 $R$ 的超集，相较于实数域，它引入了虚数这个东西</p>
+        <div class="fragment quote">
+            <h3>虚数 $i$</h3>
+            <p>众所周知负数是不能开根的，但在复数域上我们允许负数开根，记 $i=\sqrt{-1}$</p>
+            <div class="fragment" style="display: flex;">
+                <div style="width: 1000px;">
+                    <ol>
+                        <li>$\sqrt{-17}=?$</li>
+                        <li>$i^2=?$</li>
+                        <li>$i^3=?$</li>
+                        <li>$(1+i)(2+i)=?$</li>
+                    </ol>
+                </div>
+                <div style="width: 1000px;">
+                    <ol>
+                        <li class="fragment">$\sqrt{17}i$</li>
+                        <li class="fragment">$-1$</li>
+                        <li class="fragment">$-i$</li>
+                        <li class="fragment">$2+3i$</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>复平面</h2>
+        <p>一个复数的通用形式为 $a+bi$</p>
+        <ul>
+            <li class="fragment">$a$ 为复数的实数部分，简称实部</li>
+            <li class="fragment">$b$ 为复数的虚数部分，简称虚部</li>
+        </ul>
+        <sd-animation src="../../animation/FFT概述/复平面.js" class="fragment"
+            style="display: block; margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <ul>
+            <li class="fragment"><b>模长</b>：复数在复平面上的长度，即 $\sqrt{a^2+b^2}$</li>
+            <li class="fragment"><b>辐角</b>：复数与 $x$ 轴形成的夹角 $\theta$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>复数相乘</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            (a_1+b_1i)\cdot (a_2+b_2i) &= (a_1a_2+a_1b_2i+b_1a_2i-b_1b_2) \\
+            &=(a_1a_2-b_1b_2)+(a_1b_2+b_1a_2)i
+            \end{aligned}
+            $$
+        </p>
+        <p class="fragment">两个复数相乘的几何意义是：<b>模长相乘，辐角相加</b></p>
+    </section>
+    <section>
+        <h2>复数单位根</h2>
+        <sd-animation src="../../animation/FFT概述/复数单位根.js"
+            viewbox-delta="-20 0 20 0"
+            style="display: block; margin: 0 auto; width: 1000px; height: 300px;"></sd-animation>
+        <p class="fragment">记复数的 $n$ 次单位根为 $w_n$</p>
+        <p class="fragment">
+            $$
+            w_n=\cos(\frac{2\pi}{n})+\sin(\frac{2\pi}{n})i
+            $$
+        </p>
+        <ul>
+            <li class="fragment">$w_n^k=w_{2n}^{2k}$</li>
+            <li class="fragment">$w_n^{k+\frac n 2}=-w_n^k$</li>
+        </ul>
+    </section>
+    <section>
+        <h2>FFT</h2>
+        <p>对于一个 $n-1$ 次多项式，FFT 把复数单位根及其若干次方带入多项式进行插值</p>
+        <p class="quote">为了后续讨论方便，这里我们认为 $n$ 是一个偶数。即使你正在处理一个 $n$ 为奇数的多项式，你总能通过补一个系数为 $0$ 的高位，让它变成一个 $n$ 为偶数的多项式</p>
+        <p>
+            $$
+            (w_n^0,w_n^1,w_n^2,...,w_n^{n-1})\stackrel{f}{\rightarrow} \big(f(w_n^0),f(w_n^1),f(w_n^2),...,f(w_n^{n-1})\big)
+            $$
+        </p>
+        <div class="fragment quote">
+            <h3>例子</h3>
+            <p>比如 $f(x)=2x^3+3x^2-x+1$，我们就取 $\{1,i,-1,-i\}$ 这四个数字带入，得到四个点值</p>
+            <p class="fragment math-fragment">
+                $$
+                \begin{aligned}
+                f(1)&=2+3-1+1=5 \\
+                f(i)&=-2i-3-i+1=-2-3i \\
+                f(-1)&=-2+3+1+1=3 \\
+                f(-i)&=2i-3+i+1=-2+3i \\
+                \end{aligned}
+                $$
+            </p>
+        </div>
+    </section>
+    <section>
+        <h2>FFT</h2>
+        <p class="math-fragment">
+            $$
+            \begin{aligned}
+            f(x)&=a_0+a_1x+a_2x^2+...+a_{n-1}x^{n-1} \\
+            &=(a_0+a_2x^2+a_4x^4+...+a_{n-2}x^{n-2})+(a_1x+a_3x^3+a_5x^5+...+a_{n-1}x^{n-1}) \\
+            &=(a_0+a_2x^2+a_4x^4+...+a_{n-2}x^{n-2})+x(a_1+a_3x^2+a_5x^4+...+a_{n-1}x^{n-2})
+            \end{aligned}
+            $$
+        </p>
+        <ul>
+            <li class="fragment">令 $f_1(x)=a_0+a_2x+a_4x^2+...+a_{n-2}x^{\frac{n-2}{2}}$</li>
+            <li class="fragment">令 $f_2(x)=a_1+a_3x+a_5x^2+...+a_{n-1}x^{\frac{n-2}{2}}$</li>
+        </ul>
+        <p class="fragment">
+            $$
+            f(x)=f_1(x^2)+xf_2(x^2)
+            $$
+        </p>
+        <p class="fragment">把单位复根 $\{w_n^0,w_n^1,...,w_n^{n-1}\}$ 依次带入<span class="fragment">，假设正在带入 $w_n^k$：</span></p>
+        <p class="fragment math-fragment">
+            $$
+            \begin{aligned}
+            f(w_n^k)&=f_1(w_n^{2k})+w_n^kf_2(w_n^{2k}) \\
+            &=f_1(w_{n/2}^k)+w_n^kf_2(w_{n/2}^k)
+            \end{aligned}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>FFT</h2>
+        <p style="font-size: 20px;">
+            $$
+            \begin{cases}
+            f(x)=a_0+a_1x+a_2x^2+...+a_{n-1}x^{n-1} \\
+            f_1(x)=a_0+a_2x+a_4x^2+...+a_{n-2}x^{\frac{n-2}{2}} \\
+            f_2(x)=a_1+a_3x+a_5x^2+...+a_{n-1}x^{\frac{n-2}{2}} \\
+            f(w_n^k)=f_1(w_{n/2}^k)+w_n^kf_2(w_{n/2}^k)
+            \end{cases}
+            $$
+        </p>
+        <sd-animation src="../../animation/FFT概述/FFT单次分治演示.js"
+            style="display: block; margin: 0 auto; width: 1000px; height: 200px; margin-top: 20px;"></sd-animation>
+        <div class="quote fragment">
+            本来我们要把 $\{w_n^0,w_n^1,...,w_n^{n-1}\}$ 带入到一个含有 $n$ 项的多项式中，现在我们只需要把 $\{w_{n/2}^0,w_{n/2}^1,...,w_{n/2}^{n/2-1}\}$ 带入到两个含有 $\frac n 2$ 项的多项式中即可
+            <div style="text-align: center;">
+                <span class="fragment">$T(n)=O(n)+2T(\frac n 2) \Rightarrow T(n)=O(n\log n)$</span>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>分治演示</h2>
+        <sd-animation src="../../animation/FFT概述/FFT分治演示.js"
+            style="display: block; margin: 0 auto; width: 1000px; height: 500px;"></sd-animation>
+    </section>
+    <section>
+        <h2>蝶形变换</h2>
+        <sd-animation src="../../animation/FFT概述/FFT蝶形变换.js"
+            style="display: block; margin: 0 auto; width: 1000px; height: 175px;"></sd-animation>
         <codeblock>
             <script type="text/template">
-                void fft(C* a, int n, int inv) {
-                    for (int i = 0, j = 0; i < n; i++) {
-                        if (i < j) swap(a[i], a[j]);
-                        for (int k = n >> 1; (j ^= k) < k; k >>= 1);
-                    }
-                    for (int len = 2; len <= n; len <<= 1) {
-                        C wn = exp(C(0, 2 * PI * inv / len));
-                        for (int i = 0; i < n; i += len) {
-                            C w(1, 0);
-                            for (int k = 0; k < len / 2; k++) {
-                                C u = a[i + k], v = a[i + k + len / 2] * w;
-                                a[i + k] = u + v;
-                                a[i + k + len / 2] = u - v;
-                                w *= wn;
+                void FFT(Complex a[], int len) {
+                    // 把每个 a[i] 换到自己该在的位置上
+                    for (int i = 1; i < len; i = i * 2) { // 合并长度为 i 的多项式 -> 长度为 2i 的多项式
+                        Complex w = 2i 次单位根;
+                        // [j, j + i) 与 [j + i, j + 2i) 做合并
+                        for (int j = 0; j < n; j += (i * 2))
+                            for (int k = 0; k < i; k++) {
+                                Complex a = y[j + k];
+                                Complex b = y[i + j + k] * (w 的 k 次方);
+                                y[j + k] = a + b;
+                                y[i + j + k] = a - b;
                             }
-                        }
                     }
-                    if (inv == -1) for (int i = 0; i < n; i++) a[i] /= n;
+                }
+            </script>
+        </codeblock>
+        <p style="font-size: 20px;" class="fragment">
+            $$
+            \begin{cases}
+            f(w_n^k)=f_1(w_{n/2}^{k})+w_n^kf_2(w_{n/2}^k) & 0\le k\lt \frac n 2 \\
+            f(w_n^k)=f_1(w_{n/2}^{k})-w_n^{k-n/2}f_2(w_{n/2}^k) & \frac n 2\le k\lt n
+            \end{cases}
+            $$
+        </p>
+    </section>
+    <section>
+        <h2>预处理</h2>
+        <p>为了实现把每个数字提前放到自己该去的地方，我们预处理出<b>每个数字经过蝶形变换后去了哪里</b></p>
+        <sd-animation src="../../animation/FFT概述/rev数组.js"
+            style="display: block; margin: 0 auto; width: 1000px; height: 350px;"></sd-animation>
+        <codeblock>
+            <script type="text/template">
+                int Make(int n) { // 把一个含有 n 项的多项式补齐，并预处理 rev 数组
+                    int l = ceil(log2(n));
+                    int len = (1 << l);
+                    for (int i = 0; i < len; i++)
+                        rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (l - 1));
+                    return len;
                 }
             </script>
         </codeblock>

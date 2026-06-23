@@ -1,15 +1,93 @@
 <section>
     <section>
         <h1>NTT</h1>
-        <p>Number Theoretic Transform</p>
+        <p>快速数论变换</p>
     </section>
     <section>
-        <h2>动机</h2>
-        <p>FFT 用浮点数会有精度问题。NTT 在模 $p$ 意义下做同样的事。</p>
+        <h2>NTT</h2>
+        <p>在我们推导 FFT 的时候，用到了复数单位根，帮助我们对多项式的奇偶项做分治<span class="fragment">，而奇偶项分治能成立的关键我们选择<b>把复数单位根这个东西带入到多项式</b>取点值</span></p>
+        <p class="fragment">设 $n$ 次单位根为 $w_n$，则它满足：</p>
+        <ul>
+            <li class="fragment">$w_{n}^{n}=1$</li>
+            <li class="fragment">$w_{n}^{k}=w_{2n}^{2k}$</li>
+            <li class="fragment">$w_{n}^{k+\frac n 2}=-w_{n}^k$</li>
+        </ul>
+        <p class="fragment">在这个世界上，我们除了能找到<b>复数单位根</b>，还能找到<b>原根单位根</b></p>
+        <p class="fragment">将 $n$ 次原根单位根的 $0,1,2,...,n-1$ 次方带入到多项式中取点值的过程，就叫做<b>快速数论变换 / NTT</b></p>
     </section>
     <section>
         <h2>原根</h2>
-        <p>取 $p = c \cdot 2^k + 1$ 形式的质数（如 998244353），找原根 $g$。$g^{(p-1) / n}$ 充当 $\omega_n$。</p>
-        <p class="fragment">乘法和加法都在模 $p$ 下进行 — 没有精度问题。</p>
+        <p>对于一个数字 $P$，如果 $g$ 是 $P$ 的原根，则有：
+            $$
+            g^1,g^2,g^3,...,g^{\varphi(P)}
+            $$
+            在模 $P$ 意义下互不相同
+        </p>
+        <p class="fragment quote">在 NTT 中我们通常只考虑 $P$ 为质数的情况，所以就变成了：
+            $$
+            g^1,g^2,g^3,...,g^{P-1}
+            $$
+            在模 $P$ 意义下互不相同
+        </p>
+    </section>
+    <section>
+        <h2>原根单位根</h2>
+        <p>假设我想要构造一个在模 $P$ 意义下的 $n$ 次单位根，假设 $n \mid P-1$......</p>
+        <p>
+            $$
+            g^1,g^2,g^3,...,g^{P-1}
+            $$
+        </p>
+        <p class="fragment">
+            $$
+            w_n=g^{\frac{P-1}{n}}
+            $$
+        </p>
+        <ul>
+            <li class="fragment">$w_n^n=g^{\frac{P-1}{n}n}=g^{P-1}=1$</li>
+            <li class="fragment">$w_{n}^k=g^{\frac{P-1}{n}k}=g^{\frac{P-1}{2n}2k}=w_{2n}^{2k}$</li>
+            <li class="fragment">$w_{n}^{k+\frac n 2}=g^{\frac{P-1}{n}(k+\frac n 2)}=g^{\frac{P-1}{n}k}g^{\frac{P-1}{2}}=-w_{n}^k$</li>
+        </ul>
+        <p class="fragment">计划通，我们构造的原根单位根完全适配单位根接口</p>
+    </section>
+    <section>
+        <codeblock>
+            <script type="text/template">
+                void FFT(Complex a[], int len, int flg) {
+                    // 一些前置操作...
+                    for (int i = 1; i < len; i <<= 1) {
+                        Complex w = {cos(flg*(2*PI)/(2*i)), sin(flg*(2*PI)/(2*i))};
+                        // 预处理 w 的 1,2,3,...,i-1 次方
+                        for (int j = 0; j < n; j += (i << 1))
+                            for (int k = 0; k < i; k++) {
+                                Complex x = a[j + k];
+                                Complex y = a[i + j + k] * (w 的 k 次方);
+                                a[j + k] = x + y;
+                                a[i + j + k] = x - y;
+                            }
+                    }
+                    if (flg == -1) for (int i = 0; i < len; i++) a[i] /= len;
+                }
+            </script>
+        </codeblock>
+        <codeblock>
+            <script type="text/template">
+                void NTT(int a[], int len, int flg) {
+                    // 一些前置操作...
+                    for (int i = 1; i < len; i <<= 1) {
+                        int w = Fpow(flg == 1 ? g : Inv(g), (P - 1) / (2 * i));
+                        // 预处理 w 的 1,2,3,...,i-1 次方
+                        for (int j = 0; j < n; j += (i << 1))
+                            for (int k = 0; k < i; k++) {
+                                int x = a[j + k];
+                                int y = a[i + j + k] * (w 的 k 次方);
+                                a[j + k] = x + y;
+                                a[i + j + k] = x - y;
+                            }
+                    }
+                    if (flg == -1) for (int i = 0; i < len; i++) a[i] = a[i] * Inv(len) % P;
+                }
+            </script>
+        </codeblock>
     </section>
 </section>
