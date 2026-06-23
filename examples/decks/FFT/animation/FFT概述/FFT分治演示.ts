@@ -3,7 +3,6 @@ import * as sd from "@/sd";
 import { AXIS_COLOR } from "../common/coord";
 
 const svg = sd.svg();
-const C = sd.color();
 const E = sd.easing();
 
 const CELL_W = 36;
@@ -29,8 +28,9 @@ const LEVEL_CY = [150, 70, -10, -90];
 
 interface Cell {
   rect: sd.Rect;
-  initialText: sd.Math;
-  finalText: sd.Math;
+  text: sd.Math;
+  origIdx: number;
+  level: number;
 }
 
 function makeCell(
@@ -50,7 +50,7 @@ function makeCell(
     strokeWidth: 1.1,
     opacity: 0,
   });
-  const initialText = new sd.Math({
+  const text = new sd.Math({
     targetNode: svg,
     text: `a_{${origIdx}}`,
     cx,
@@ -58,16 +58,7 @@ function makeCell(
     fontSize: 12,
     opacity: 0,
   });
-  const finalText = new sd.Math({
-    targetNode: svg,
-    text: `y^{(${level})}_{${origIdx}}`,
-    cx,
-    cy,
-    fontSize: 11,
-    fill: C.darkOrange,
-    opacity: 0,
-  });
-  return { rect, initialText, finalText };
+  return { rect, text, origIdx, level };
 }
 
 function blockWidth(count: number): number {
@@ -151,20 +142,6 @@ function fadeIn(
     .endAnimate();
 }
 
-function fadeOut(
-  node: sd.SDNode,
-  opts: { delay?: number; duration?: number } = {},
-) {
-  node
-    .startAnimate({
-      delay: opts.delay ?? 0,
-      duration: opts.duration ?? 200,
-      easing: E.easeOut,
-    })
-    .setOpacity(0)
-    .endAnimate();
-}
-
 function showLevel(level: number) {
   if (level > 0) {
     const lines = connectors[level - 1];
@@ -175,17 +152,22 @@ function showLevel(level: number) {
   const cells = cellsByLevel[level];
   for (let i = 0; i < cells.length; i++) {
     fadeIn(cells[i].rect, { delay: i * 30 });
-    fadeIn(cells[i].initialText, { delay: i * 30 + 60 });
+    fadeIn(cells[i].text, { delay: i * 30 + 60 });
   }
 }
 
+// Morph every cell's a_{i} text into its y^{(level)}_{i} form via setText
+// on the same Math node — no second node to fade in over a faded-out
+// first node.
 function relabelAll() {
   for (let level = 0; level < cellsByLevel.length; level++) {
     const cells = cellsByLevel[level];
     for (let i = 0; i < cells.length; i++) {
       const d = level * 80 + i * 25;
-      fadeOut(cells[i].initialText, { delay: d });
-      fadeIn(cells[i].finalText, { delay: d + 150 });
+      cells[i].text
+        .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
+        .setText(`y^{(${cells[i].level})}_{${cells[i].origIdx}}`)
+        .endAnimate();
     }
   }
 }
