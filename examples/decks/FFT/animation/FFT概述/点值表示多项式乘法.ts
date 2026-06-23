@@ -17,10 +17,13 @@ const B_FN = (x: number) => 0.5 * x + 4;
 const P_FN = (x: number) => A_FN(x) * B_FN(x);
 
 const SAMPLES_X = [-2, 0, 2];
-const SAMPLE_COLOR = C.darkOrange;
-const A_COLOR = C.blue;
-const B_COLOR = C.green;
-const P_COLOR = C.red;
+// Three layers of saturation, weakest to strongest: A/B are background
+// context, samples are connectors, the product is the conclusion. Only
+// the product gets the warm accent.
+const A_COLOR = C.darkButtonGrey;
+const B_COLOR = C.steelBlue;
+const SAMPLE_COLOR = C.darkButtonGrey;
+const P_COLOR = C.darkOrange;
 
 arrow(svg, X_LO * UNIT_X - 6, 0, X_HI * UNIT_X + 6, 0, AXIS_COLOR);
 arrow(svg, 0, -Y_LIMIT * UNIT_Y - 4, 0, Y_LIMIT * UNIT_Y + 4, AXIS_COLOR);
