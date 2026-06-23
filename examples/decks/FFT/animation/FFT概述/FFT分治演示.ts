@@ -29,6 +29,8 @@ const LEVEL_CY = [150, 70, -10, -90];
 interface Cell {
   rect: sd.Rect;
   text: sd.Math;
+  cx: number;
+  cy: number;
   origIdx: number;
   level: number;
 }
@@ -58,7 +60,7 @@ function makeCell(
     fontSize: 12,
     opacity: 0,
   });
-  return { rect, text, origIdx, level };
+  return { rect, text, cx, cy, origIdx, level };
 }
 
 function blockWidth(count: number): number {
@@ -157,16 +159,20 @@ function showLevel(level: number) {
 }
 
 // Morph every cell's a_{i} text into its y^{(level)}_{i} form via setText
-// on the same Math node — no second node to fade in over a faded-out
-// first node.
+// on the same Math node. Re-set cx/cy in the same animate block because
+// setText anchors at x/y not cx/cy — wider tokens (y^{(2)}_4 vs a_0)
+// would otherwise drift off-center.
 function relabelAll() {
   for (let level = 0; level < cellsByLevel.length; level++) {
     const cells = cellsByLevel[level];
     for (let i = 0; i < cells.length; i++) {
       const d = level * 80 + i * 25;
-      cells[i].text
+      const cell = cells[i];
+      cell.text
         .startAnimate({ delay: d, duration: 320, easing: E.easeOut })
-        .setText(`y^{(${cells[i].level})}_{${cells[i].origIdx}}`)
+        .setText(`y^{(${cell.level})}_{${cell.origIdx}}`)
+        .setCx(cell.cx)
+        .setCy(cell.cy)
         .endAnimate();
     }
   }

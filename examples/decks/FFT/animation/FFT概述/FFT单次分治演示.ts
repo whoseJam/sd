@@ -16,6 +16,8 @@ const BOT_Y = -40;
 interface Cell {
   rect: sd.Rect;
   text: sd.Math;
+  cx: number;
+  cy: number;
 }
 
 function makeCell(cx: number, cy: number, latex: string): Cell {
@@ -38,7 +40,7 @@ function makeCell(cx: number, cy: number, latex: string): Cell {
     fontSize: 14,
     opacity: 0,
   });
-  return { rect, text };
+  return { rect, text, cx, cy };
 }
 
 const topXStart = -((N - 1) * (CELL_W + GAP)) / 2;
@@ -154,11 +156,14 @@ function fadeCells(cells: Cell[], stagger = 50) {
 // Glyph-morph rename: swap the Math node's content via setText inside
 // startAnimate/endAnimate. The old token shrinks out and the new one
 // grows in at the same anchor — no second node faded in over a faded-out
-// first node.
+// first node. setText anchors at x/y (top-left), not cx/cy, so re-center
+// in the same animate block; otherwise wider tokens drift off-center.
 function rename(cell: Cell, newLatex: string, delay = 0) {
   cell.text
     .startAnimate({ delay, duration: 320, easing: E.easeOut })
     .setText(newLatex)
+    .setCx(cell.cx)
+    .setCy(cell.cy)
     .endAnimate();
 }
 
