@@ -87,20 +87,55 @@ function placeBlock(
   );
 }
 
-const cellsByLevel: Cell[][] = LEVELS.map((blocks, level) => {
+const cellsByLevel: Cell[][] = [];
+const blockCentersByLevel: number[][] = [];
+
+for (let level = 0; level < LEVELS.length; level++) {
+  const blocks = LEVELS[level];
   const totalCount = blocks.reduce((s, b) => s + b.length, 0);
   const totalWidth = blockWidth(totalCount) + (blocks.length - 1) * 18;
   const startX = -totalWidth / 2;
-  const result: Cell[] = [];
+  const cells: Cell[] = [];
+  const centers: number[] = [];
   let x = startX;
   for (const block of blocks) {
     const w = blockWidth(block.length);
     const center = x + w / 2;
-    result.push(...placeBlock(center, LEVEL_CY[level], block, level));
+    centers.push(center);
+    cells.push(...placeBlock(center, LEVEL_CY[level], block, level));
     x += w + 18;
   }
-  return result;
-});
+  cellsByLevel.push(cells);
+  blockCentersByLevel.push(centers);
+}
+
+// Thin grey connectors from each parent block center to its two children.
+// Pre-creating them as faint lines (revealed alongside each child level)
+// makes the divide-and-conquer split visible without adding visual noise.
+const connectors: sd.Line[][] = [];
+for (let level = 1; level < LEVELS.length; level++) {
+  const parentCenters = blockCentersByLevel[level - 1];
+  const childCenters = blockCentersByLevel[level];
+  const parentCy = LEVEL_CY[level - 1] - CELL_H / 2;
+  const childCy = LEVEL_CY[level] + CELL_H / 2;
+  const lines: sd.Line[] = [];
+  for (let c = 0; c < childCenters.length; c++) {
+    const parentIdx = Math.floor(c / 2);
+    lines.push(
+      new sd.Line({
+        targetNode: svg,
+        x1: parentCenters[parentIdx],
+        y1: parentCy,
+        x2: childCenters[c],
+        y2: childCy,
+        stroke: AXIS_COLOR,
+        strokeWidth: 0.7,
+        opacity: 0,
+      }),
+    );
+  }
+  connectors.push(lines);
+}
 
 function fadeIn(
   node: sd.SDNode,
@@ -131,6 +166,12 @@ function fadeOut(
 }
 
 function showLevel(level: number) {
+  if (level > 0) {
+    const lines = connectors[level - 1];
+    for (let i = 0; i < lines.length; i++) {
+      fadeIn(lines[i], { delay: i * 20, duration: 200 });
+    }
+  }
   const cells = cellsByLevel[level];
   for (let i = 0; i < cells.length; i++) {
     fadeIn(cells[i].rect, { delay: i * 30 });

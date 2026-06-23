@@ -79,6 +79,27 @@ const dotsA = sampleDots(A_FN, SAMPLE_COLOR);
 const dotsB = sampleDots(B_FN, SAMPLE_COLOR);
 const dotsP = sampleDots(P_FN, P_COLOR);
 
+// Faint vertical guides through each sample x value, so the "same x is
+// sampled on A, B, and A·B" relationship reads visually. They fade in
+// when the first set of samples lands and stay visible through the
+// product reveal.
+const guideTopY = (Y_LIMIT - 1) * UNIT_Y;
+const guideBotY = -(Y_LIMIT - 1) * UNIT_Y;
+const guides: sd.Line[] = SAMPLES_X.map(
+  (x) =>
+    new sd.Line({
+      targetNode: svg,
+      x1: x * UNIT_X,
+      y1: guideBotY,
+      x2: x * UNIT_X,
+      y2: guideTopY,
+      stroke: AXIS_COLOR,
+      strokeWidth: 0.7,
+      strokeDashArray: [3, 3],
+      opacity: 0,
+    }),
+);
+
 function fadeIn(
   node: sd.SDNode,
   opts: { delay?: number; duration?: number } = {},
@@ -107,6 +128,7 @@ sd.main(async () => {
   fadeIn(curveB);
   fadeIn(labelB, { delay: 80 });
   await sd.pause();
+  fadeInGroup(guides, 40, 240);
   fadeInGroup(dotsA);
   await sd.pause();
   fadeInGroup(dotsB);

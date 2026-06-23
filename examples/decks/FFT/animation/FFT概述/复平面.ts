@@ -68,9 +68,9 @@ arrow(svg, 0, 0, TIP_X, TIP_Y, VEC, 1.8);
 new sd.Math({
   targetNode: svg,
   text: "a+bi",
-  cx: TIP_X + 24,
-  cy: TIP_Y + 8,
-  fontSize: 18,
+  cx: TIP_X + 16,
+  cy: TIP_Y + 6,
+  fontSize: 16,
   fill: VEC,
 });
 

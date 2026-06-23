@@ -55,6 +55,24 @@ function makeCell(cx: number, cy: number, latex: string): Cell {
   return { rect, text };
 }
 
+const TOP_LABEL_CY = rowCy(0) + CELL_H / 2 + 18;
+
+const colLabels: sd.Text[] = [];
+for (let c = 0; c <= LOG_N; c++) {
+  const text = c === 0 ? "input" : c === LOG_N ? "output" : `stage ${c}`;
+  colLabels.push(
+    new sd.Text({
+      targetNode: svg,
+      text,
+      cx: colCx(c),
+      cy: TOP_LABEL_CY,
+      fontSize: 11,
+      fill: AXIS_COLOR,
+      opacity: 0,
+    }),
+  );
+}
+
 const cols: Cell[][] = [];
 for (let c = 0; c <= LOG_N; c++) {
   const cells: Cell[] = [];
@@ -118,7 +136,9 @@ function fadeIn(
     .endAnimate();
 }
 
-function fadeInCol(col: Cell[], stagger = 40) {
+function fadeInCol(c: number, stagger = 40) {
+  const col = cols[c];
+  fadeIn(colLabels[c], { delay: 0, duration: 220 });
   for (let r = 0; r < col.length; r++) {
     fadeIn(col[r].rect, { delay: r * stagger });
     fadeIn(col[r].text, { delay: r * stagger + 60 });
@@ -133,12 +153,12 @@ function fadeInLines(lines: sd.Line[], stagger = 30) {
 
 sd.main(async () => {
   await sd.pause();
-  fadeInCol(cols[0]);
+  fadeInCol(0);
   await sd.pause();
   fadeInLines(stageLines[0]);
-  fadeInCol(cols[1]);
+  fadeInCol(1);
   await sd.pause();
   fadeInLines(stageLines[1]);
-  fadeInCol(cols[2]);
+  fadeInCol(2);
   await sd.pause();
 });

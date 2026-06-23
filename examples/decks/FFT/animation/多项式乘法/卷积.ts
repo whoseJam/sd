@@ -114,12 +114,34 @@ for (let i = 0; i < N_C; i++) {
 interface LinkSet {
   i: number;
   lines: sd.Line[];
+  aHighlights: sd.Rect[];
+  bHighlights: sd.Rect[];
 }
 
 const linkSets: LinkSet[] = [];
 
+function pairHighlight(cx: number, cy: number): sd.Rect {
+  // Semi-transparent fill so the cell text shows through when the highlight
+  // covers a cell. (Lowering the rect z-order via .lower() doesn't help
+  // here because sd.Math renders via a foreignObject which sits in its own
+  // stacking context.)
+  return new sd.Rect({
+    targetNode: svg,
+    cx,
+    cy,
+    width: CELL_W,
+    height: CELL_H,
+    fill: HIGHLIGHT_BG,
+    fillOpacity: 0.45,
+    stroke: "none",
+    opacity: 0,
+  });
+}
+
 for (let i = 0; i < N_C; i++) {
   const lines: sd.Line[] = [];
+  const aHighlights: sd.Rect[] = [];
+  const bHighlights: sd.Rect[] = [];
   for (let j = 0; j <= i; j++) {
     const k = i - j;
     if (j >= N_A || k >= N_B) continue;
@@ -127,6 +149,8 @@ for (let i = 0; i < N_C; i++) {
     const aCy = A_CY - CELL_H / 2;
     const bCx = bX0 + k * (CELL_W + GAP);
     const bCy = B_CY + CELL_H / 2;
+    aHighlights.push(pairHighlight(aCx, A_CY));
+    bHighlights.push(pairHighlight(bCx, B_CY));
     lines.push(
       new sd.Line({
         targetNode: svg,
@@ -140,7 +164,7 @@ for (let i = 0; i < N_C; i++) {
       }),
     );
   }
-  linkSets.push({ i, lines });
+  linkSets.push({ i, lines, aHighlights, bHighlights });
 }
 
 function fadeIn(
@@ -173,6 +197,8 @@ function fadeOut(
 
 function show(i: number) {
   fadeIn(highlights[i], { duration: 200 });
+  for (const r of linkSets[i].aHighlights) fadeIn(r, { duration: 200 });
+  for (const r of linkSets[i].bHighlights) fadeIn(r, { duration: 200 });
   for (let k = 0; k < linkSets[i].lines.length; k++) {
     fadeIn(linkSets[i].lines[k], { delay: 60 + k * 40 });
   }
@@ -180,6 +206,8 @@ function show(i: number) {
 
 function hide(i: number) {
   fadeOut(highlights[i]);
+  for (const r of linkSets[i].aHighlights) fadeOut(r);
+  for (const r of linkSets[i].bHighlights) fadeOut(r);
   for (const line of linkSets[i].lines) fadeOut(line);
 }
 
