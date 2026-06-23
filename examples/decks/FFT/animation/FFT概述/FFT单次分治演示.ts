@@ -41,18 +41,6 @@ function makeCell(cx: number, cy: number, latex: string): Cell {
   return { rect, text };
 }
 
-function makeAltText(cx: number, cy: number, latex: string): sd.Math {
-  return new sd.Math({
-    targetNode: svg,
-    text: latex,
-    cx,
-    cy,
-    fontSize: 14,
-    opacity: 0,
-    fill: C.darkOrange,
-  });
-}
-
 const topXStart = -((N - 1) * (CELL_W + GAP)) / 2;
 const halfRowW = ((N / 2 - 1) * (CELL_W + GAP)) / 2;
 const leftCx = -110;
@@ -61,24 +49,18 @@ const f0XStart = leftCx - halfRowW;
 const f1XStart = rightCx - halfRowW;
 
 const topCells: Cell[] = [];
-const topAlt: sd.Math[] = [];
 for (let i = 0; i < N; i++) {
   const cx = topXStart + i * (CELL_W + GAP);
   topCells.push(makeCell(cx, TOP_Y, `a_{${i}}`));
-  topAlt.push(makeAltText(cx, TOP_Y, `y_{${i}}`));
 }
 
 const f0Cells: Cell[] = [];
 const f1Cells: Cell[] = [];
-const f0Alt: sd.Math[] = [];
-const f1Alt: sd.Math[] = [];
 for (let i = 0; i < N / 2; i++) {
   const cx0 = f0XStart + i * (CELL_W + GAP);
   const cx1 = f1XStart + i * (CELL_W + GAP);
   f0Cells.push(makeCell(cx0, BOT_Y, `a_{${2 * i}}`));
   f1Cells.push(makeCell(cx1, BOT_Y, `a_{${2 * i + 1}}`));
-  f0Alt.push(makeAltText(cx0, BOT_Y, `y^{(1)}_{${2 * i}}`));
-  f1Alt.push(makeAltText(cx1, BOT_Y, `y^{(2)}_{${2 * i + 1}}`));
 }
 
 interface ArrowParts {
@@ -162,25 +144,22 @@ function fadeIn(
     .endAnimate();
 }
 
-function fadeOut(
-  node: sd.SDNode,
-  opts: { delay?: number; duration?: number } = {},
-) {
-  node
-    .startAnimate({
-      delay: opts.delay ?? 0,
-      duration: opts.duration ?? 200,
-      easing: E.easeOut,
-    })
-    .setOpacity(0)
-    .endAnimate();
-}
-
 function fadeCells(cells: Cell[], stagger = 50) {
   for (let i = 0; i < cells.length; i++) {
     fadeIn(cells[i].rect, { delay: i * stagger });
     fadeIn(cells[i].text, { delay: i * stagger });
   }
+}
+
+// Glyph-morph rename: swap the Math node's content via setText inside
+// startAnimate/endAnimate. The old token shrinks out and the new one
+// grows in at the same anchor — no second node faded in over a faded-out
+// first node.
+function rename(cell: Cell, newLatex: string, delay = 0) {
+  cell.text
+    .startAnimate({ delay, duration: 320, easing: E.easeOut })
+    .setText(newLatex)
+    .endAnimate();
 }
 
 sd.main(async () => {
@@ -191,10 +170,8 @@ sd.main(async () => {
   fadeCells(f1Cells);
   await sd.pause();
   for (let i = 0; i < N / 2; i++) {
-    fadeOut(f0Cells[i].text, { delay: i * 40 });
-    fadeOut(f1Cells[i].text, { delay: i * 40 });
-    fadeIn(f0Alt[i], { delay: i * 40 + 150 });
-    fadeIn(f1Alt[i], { delay: i * 40 + 150 });
+    rename(f0Cells[i], `y^{(1)}_{${2 * i}}`, i * 50);
+    rename(f1Cells[i], `y^{(2)}_{${2 * i + 1}}`, i * 50);
   }
   await sd.pause();
   for (let i = 0; i < arrows.length; i++) {
@@ -202,8 +179,7 @@ sd.main(async () => {
     fadeIn(arrows[i].head, { delay: i * 20, duration: 200 });
   }
   for (let i = 0; i < N; i++) {
-    fadeOut(topCells[i].text, { delay: 250 + i * 40 });
-    fadeIn(topAlt[i], { delay: 400 + i * 40 });
+    rename(topCells[i], `y_{${i}}`, 250 + i * 40);
   }
   await sd.pause();
 });
