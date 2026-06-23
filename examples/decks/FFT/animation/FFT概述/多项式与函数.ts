@@ -25,7 +25,7 @@ const plotA = plot(
   UNIT_X,
   UNIT_Y,
   Y_LIMIT,
-  C.blue,
+  C.darkButtonGrey,
 );
 const plotB = plot(
   svg,
@@ -35,7 +35,7 @@ const plotB = plot(
   UNIT_X,
   UNIT_Y,
   Y_LIMIT,
-  C.darkOrange,
+  C.steelBlue,
 );
 const plotC = plot(
   svg,
@@ -45,7 +45,7 @@ const plotC = plot(
   UNIT_X,
   UNIT_Y,
   Y_LIMIT,
-  C.green,
+  C.darkOrange,
 );
 
 const labelA = new sd.Math({
@@ -54,7 +54,7 @@ const labelA = new sd.Math({
   cx: LABEL_X,
   cy: 40,
   fontSize: 18,
-  fill: C.blue,
+  fill: C.darkButtonGrey,
   opacity: 0,
 });
 const labelB = new sd.Math({
@@ -63,7 +63,7 @@ const labelB = new sd.Math({
   cx: LABEL_X,
   cy: 0,
   fontSize: 18,
-  fill: C.darkOrange,
+  fill: C.steelBlue,
   opacity: 0,
 });
 const labelC = new sd.Math({
@@ -72,7 +72,7 @@ const labelC = new sd.Math({
   cx: LABEL_X,
   cy: -40,
   fontSize: 18,
-  fill: C.green,
+  fill: C.darkOrange,
   opacity: 0,
 });
 

@@ -15,24 +15,28 @@ const Y_LIMIT = 7;
 const A_FN = (x: number) => x ** 3 + x ** 2 - 2 * x - 3;
 const COEFS = [-3, -2, 1, 1];
 
+// All four samples share one accent color. The pair lines drawn at the
+// final pause carry the "this curve point maps to this array slot"
+// relationship; per-sample distinct colors were doing redundant work.
+const SAMPLE_COLOR = C.darkOrange;
 const SAMPLES = [
-  { x: -2, color: C.darkOrange },
-  { x: -1, color: C.red },
-  { x: 0, color: C.green },
-  { x: 1, color: C.blue },
+  { x: -2, color: SAMPLE_COLOR },
+  { x: -1, color: SAMPLE_COLOR },
+  { x: 0, color: SAMPLE_COLOR },
+  { x: 1, color: SAMPLE_COLOR },
 ];
 
 arrow(svg, X_LO * UNIT_X - 6, 0, X_HI * UNIT_X + 6, 0, AXIS_COLOR);
 arrow(svg, 0, -Y_LIMIT * UNIT_Y - 4, 0, Y_LIMIT * UNIT_Y + 4, AXIS_COLOR);
 
-const curve = plot(svg, A_FN, X_LO, X_HI, UNIT_X, UNIT_Y, Y_LIMIT, C.blue);
+const curve = plot(svg, A_FN, X_LO, X_HI, UNIT_X, UNIT_Y, Y_LIMIT, C.steelBlue);
 const label = new sd.Math({
   targetNode: svg,
   text: "A(x)=x^3+x^2-2x-3",
   cx: X_HI * UNIT_X + 100,
   cy: 70,
   fontSize: 16,
-  fill: C.blue,
+  fill: C.steelBlue,
   opacity: 0,
 });
 
