@@ -25,6 +25,7 @@ const codeNode = new sd.Text({
   cx: 280,
   cy: ROW_CY,
   fontSize: 20,
+  fontFamily: "Consolas",
   fill: C.darkButtonGrey,
 });
 

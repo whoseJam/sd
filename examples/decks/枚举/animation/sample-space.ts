@@ -90,23 +90,36 @@ export function sampleSpace(opts: SampleSpaceOpts): SampleSpaceHandles {
   }
 
   const lastStack = stacks[stacks.length - 1];
+
+  // Compute the focus frame bounds up front and anchor process / answer / arrow
+  // fan to the frame's vertical center. The dashed frame is the visual "sample
+  // space" — anything to its right should line up with its mid-line, regardless
+  // of whether a "..." pushes interior items off-center.
+  const fx = stacks[0].left() - focusPadding;
+  const fyTop = topY + focusPadding + 6;
+  const fyBottom = Math.min(...stacks.map((s) => s.bottomY)) - focusPadding;
+  const fw = lastStack.right() + focusPadding - fx;
+  const fh = fyTop - fyBottom;
+  const frameMidY = (fyTop + fyBottom) / 2;
+
   const processCx = lastStack.right() + processGap + processWidth / 2;
-  const processY = lastStack.midY() - elementHeight * 1.2;
+  const processHeight = elementHeight * 1.5;
+  const processY = frameMidY - processHeight / 2;
   const processBox = new Box({
     targetNode: opts.svg,
     x: processCx - processWidth / 2,
     y: processY,
     width: processWidth,
-    height: opts.process.math ? elementHeight * 2 : elementHeight * 1.5,
+    height: processHeight,
     text: opts.process.text,
     math: opts.process.math,
-    fontSize: opts.process.math ? 16 : 14,
+    fontSize: opts.process.math ? 18 : 14,
   });
 
   let answerBox: Box | undefined;
   if (opts.answer) {
     const answerCx = processBox.right() + answerGap + answerWidth / 2;
-    const answerY = processBox.cy() - elementHeight / 2;
+    const answerY = frameMidY - elementHeight / 2;
     answerBox = new Box({
       targetNode: opts.svg,
       x: answerCx - answerWidth / 2,
@@ -117,13 +130,14 @@ export function sampleSpace(opts: SampleSpaceOpts): SampleSpaceHandles {
     });
   }
 
-  // Arrows from each item of the last stack to the process box's left edge.
-  // Spread the arrival points evenly along the process box's left edge.
+  // Arrows from each item of the last stack fan into the process box's left
+  // edge, arrival points spread evenly by index. Stack is math-y top-down
+  // (boxes[0] at top), so t=0 → top arrival.
   const realItems = lastStack.boxes.filter((b): b is Box => b instanceof Box);
   for (let i = 0; i < realItems.length; i++) {
     const fromBox = realItems[i];
     const t = realItems.length === 1 ? 0.5 : i / (realItems.length - 1);
-    const yArrival = processBox.bottom() + t * processBox.height;
+    const yArrival = processBox.top() - t * processBox.height;
     arrow(opts.svg, {
       from: { x: fromBox.right(), y: fromBox.cy() },
       to: { x: processBox.left(), y: yArrival },
@@ -139,13 +153,6 @@ export function sampleSpace(opts: SampleSpaceOpts): SampleSpaceHandles {
       headSize: 8,
     });
   }
-
-  // Focus frame around all the stacks, including their label headers.
-  const fx = stacks[0].left() - focusPadding;
-  const fyTop = topY + focusPadding + 6;
-  const fyBottom = Math.min(...stacks.map((s) => s.bottomY)) - focusPadding;
-  const fw = lastStack.right() + focusPadding - fx;
-  const fh = fyTop - fyBottom;
   const focus = new FocusFrame({
     targetNode: opts.svg,
     x: fx,
