@@ -65,14 +65,19 @@ sd.main(async () => {
   await sd.pause();
   codeNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
-    .setSubtextFill("isPrime(i)", C.green)
+    .setSubtextFill("i=1", C.darkButtonGrey)
+    .setSubtextFill("i<=n", C.darkButtonGrey)
+    .setSubtextFill("ans += i", C.darkButtonGrey)
+    .setSubtextFill("isPrime(i)", C.darkOrange)
     .endAnimate();
-  await sd.pause();
   sumNode
     .startAnimate({ duration: STEP, easing: E.easeOut })
     .setText("\\sum_{i=1}^n i\\, [i\\text{ is prime}]")
     .setCy(0)
-    .setSubtextFill("[i\\text{ is prime}]", C.green)
+    .setSubtextFill("i=1", C.darkButtonGrey)
+    .setSubtextFill("n", C.darkButtonGrey)
+    .setSubtextFill("i", C.darkButtonGrey, 1)
+    .setSubtextFill("[i\\text{ is prime}]", C.darkOrange)
     .endAnimate();
   await sd.pause();
 });

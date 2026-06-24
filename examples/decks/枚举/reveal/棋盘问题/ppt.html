@@ -27,11 +27,14 @@
     </section>
     <section>
         <h2>棋盘问题</h2>
-        <p>换元 $t = d - 1$：</p>
+        <p>换元 $t = d - 1$，让下标从 $0$ 开始；再把乘积展开成 $1, t, t^2$ 三项：</p>
         <p class="math-fragment">
             $$
-            \text{sqr} = \sum_{t=0}^{K}(n-t)(m-t)
-                  = (K+1)nm - (n+m) S_1(0,K) + S_2(0,K)
+            \begin{aligned}
+            \text{sqr} &= \sum_{t=0}^{K}(n-t)(m-t) \\
+                       &= \sum_{t=0}^{K} \bigl[nm - (n+m)\,t + t^2\bigr] \\
+                       &= (K+1)\,nm - (n+m)\, S_1(0,K) + S_2(0,K)
+            \end{aligned}
             $$
         </p>
         <p>其中 $S_1(l, r) = \sum_{i=l}^r i$，$S_2(l, r) = \sum_{i=l}^r i^2$，$K = \min(n, m) - 1$。</p>

@@ -2,42 +2,42 @@ import * as sd from "@/sd";
 
 import { FocusFrame } from "../focus-frame";
 
-// Row of n colored balls; the focus frame appears on the first beat so
-// the viewer can read "all balls = sample space" without ambiguity.
+// Row of balls. The "red ones" (= darkOrange, our conclusion color) are
+// the target of the count; everything else is neutral so the eye lands
+// on the targets without scanning multiple palettes.
 
 const svg = sd.svg();
 const C = sd.color();
 const E = sd.easing();
 
-// Hand-picked palette so the picture reads as random without us shipping
-// a PRNG seed. Keep a few red balls visible so "count the red" has work.
-const COLORS = [
-  C.green,
-  C.red,
-  C.blue,
-  C.red,
-  C.green,
-  C.blue,
-  C.red,
-  C.green,
-  C.blue,
-  C.red,
+const TARGET = C.darkOrange;
+const OTHER = C.silver;
+
+const IS_TARGET = [
+  false,
+  true,
+  false,
+  true,
+  false,
+  false,
+  true,
+  false,
+  true,
+  false,
 ];
 const RADIUS = 22;
 const GAP = 14;
 const FRAME_PAD = 12;
-// sd-element auto-fits viewBox, so we just place everything in the
-// positive quadrant from (0, 0) — no centering math.
-const TOTAL_W = COLORS.length * (RADIUS * 2) + (COLORS.length - 1) * GAP;
+const TOTAL_W = IS_TARGET.length * (RADIUS * 2) + (IS_TARGET.length - 1) * GAP;
 const ROW_CY = RADIUS + FRAME_PAD;
 
-for (let i = 0; i < COLORS.length; i++) {
+for (let i = 0; i < IS_TARGET.length; i++) {
   new sd.Circle({
     targetNode: svg,
     cx: FRAME_PAD + RADIUS + i * (RADIUS * 2 + GAP),
     cy: ROW_CY,
     r: RADIUS,
-    fill: COLORS[i],
+    fill: IS_TARGET[i] ? TARGET : OTHER,
     stroke: C.darkButtonGrey,
     strokeWidth: 1.2,
   });

@@ -2,9 +2,10 @@ import * as sd from "@/sd";
 
 import { Grid } from "../grid";
 
-// Divisor lattice: cell (i, d) is populated iff d | i. Row scan covers
-// d ∈ [1, i] with the i % d filter; column scan covers i = d, 2d, ...
-// (multiples of d) — same set of (i, d) pairs, much cheaper per cell.
+// Divisor lattice: cell (i, d) is populated iff d | i. Row scan walks
+// i = 1..N and lights up that row's divisors; column scan walks d = 1..N
+// and lights up the multiples i = d, 2d, .... Both passes touch the same
+// cells — only the valid cells are colored so the eye doesn't track noise.
 
 const svg = sd.svg();
 const C = sd.color();
@@ -22,7 +23,6 @@ const grid = new Grid({
 
 const HL = "#dde6ef";
 const HL_STROKE = C.steelBlue;
-const FILTER = "#f4cfcf";
 
 for (let i = 1; i <= N; i++) {
   for (let d = 1; d <= i; d++) {
@@ -104,9 +104,8 @@ sd.main(async () => {
   for (let i = 1; i <= N; i++) {
     if (i > 1) clearRow(i);
     for (let d = 1; d <= i; d++) {
-      const fill = i % d === 0 ? HL : FILTER;
-      const stroke = i % d === 0 ? HL_STROKE : C.darkRed;
-      grid.paintCell(i, d, fill, { stroke, duration: STEP });
+      if (i % d !== 0) continue;
+      grid.paintCell(i, d, HL, { stroke: HL_STROKE, duration: STEP });
     }
     moveTri(pi, 0, grid.cellCy(i, 1) - grid.cellCy(1, 1));
     await sd.pause();
