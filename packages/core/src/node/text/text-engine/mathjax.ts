@@ -31,37 +31,43 @@ export class MathManager {
     return bbox;
   }
 
-  static boundingBoxAndInnerBoundingBox(math: RenderNode) {
-    const parentNode = math.element().parentNode;
-    this.mathSVG.__append(math);
-    const bbox = (this.mathSVG.element() as SVGGElement).getBBox();
-    const ibbox = (math.element().children[1] as SVGGElement).getBBox();
-    if (parentNode) parentNode.appendChild(math.element());
-    else math.__remove();
-    return [bbox, ibbox];
-  }
-
-  static getMathPaths(y: number, math: RenderNode): Array<PathView> {
+  static getMathPaths(math: RenderNode): Array<PathView> {
     if (!math) return [];
     const defs: SVGDefsElement = math.element().children[0] as SVGDefsElement;
     const root: SVGGElement = math.element().children[1] as SVGGElement;
     const paths = [];
+    // Replicates the browser's default `preserveAspectRatio="xMidYMid meet"`
+    // mapping from viewBox coordinates to the math <svg>'s parent user units.
+    // The previous formula back-computed scale from bbox / inner-content bbox
+    // and used the raw svg x / y attributes for translation, which dropped
+    // both the centering padding and the (innerContent.y - viewBox.y) * scale
+    // offset when inner content did not fill the viewBox. That offset is
+    // what produced the ~7.5px y jitter when morph paths swapped in for
+    // <use> elements during setSubtextFill.
     const initialMatrix = () => {
-      const svg = math.element();
-      const [bbox, ibbox] = this.boundingBoxAndInnerBoundingBox(math);
-      const view = svg.getAttribute("viewBox").split(" ");
-      const [vx, vy, vw, vh] = [+view[0], +view[1], +view[2], +view[3]];
+      const svg = math.element() as SVGSVGElement;
+      const viewBox = svg.getAttribute("viewBox").split(/\s+/);
+      const viewBoxX = +viewBox[0];
+      const viewBoxY = +viewBox[1];
+      const viewBoxWidth = +viewBox[2];
+      const viewBoxHeight = +viewBox[3];
       const svgX = +svg.getAttribute("x");
-      const svgY = +svg.getAttribute("y") + (bbox.y - y);
-      const w = bbox.width * (vw / ibbox.width);
-      const h = bbox.height * (vh / ibbox.height);
+      const svgY = +svg.getAttribute("y");
+      const svgWidth = svg.width.baseVal.value;
+      const svgHeight = svg.height.baseVal.value;
+      const scale = Math.min(
+        svgWidth / viewBoxWidth,
+        svgHeight / viewBoxHeight,
+      );
+      const xPadding = (svgWidth - viewBoxWidth * scale) / 2;
+      const yPadding = (svgHeight - viewBoxHeight * scale) / 2;
       return new DOMMatrix([
-        w / vw,
+        scale,
         0,
         0,
-        h / vh,
-        svgX - (w / vw) * vx,
-        svgY - (h / vh) * vy,
+        scale,
+        svgX + xPadding - viewBoxX * scale,
+        svgY + yPadding - viewBoxY * scale,
       ]);
     };
     const extract = (current: SVGElement): string => {

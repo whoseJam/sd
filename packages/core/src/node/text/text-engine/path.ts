@@ -59,6 +59,6 @@ function getMathPaths(text: Math, t: number): Array<PathView> {
   html.setAttribute("y", y);
   const ownHeight = MathManager.boundingBox(y, html).height;
   html.setAttribute("y", -(y + ownHeight));
-  const paths = MathManager.getMathPaths(+html.getAttribute("y"), html);
+  const paths = MathManager.getMathPaths(html);
   return paths;
 }
