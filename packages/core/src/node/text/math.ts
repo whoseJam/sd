@@ -7,7 +7,11 @@ import type {
 } from "@/node/text/base-text";
 import type { SDAllColor, SDColor } from "@/utility/color";
 
-import { Interp } from "@/animate/interp";
+import type { SDRGBAColor } from "@/utility/color";
+
+import { Action } from "@/animate/action";
+import { Animate } from "@/animate/animate";
+import { Interp, InterpObject } from "@/animate/interp";
 import { SDSVGNode } from "@/node/svg-node";
 import { BaseText, processMapping } from "@/node/text/base-text";
 import { buildAnimation } from "@/node/text/text-engine/animation";
@@ -20,6 +24,7 @@ import {
 } from "@/node/text/text-engine/transform";
 import { RenderNode } from "@/renderer/render-node";
 import { Color as C } from "@/utility/color";
+import { Dom } from "@/utility/dom";
 
 export type MathAttributes = BaseTextAttributes & {
   string: string;
@@ -290,15 +295,12 @@ export class Math extends BaseText {
       style.clone(),
     );
     subtextView.iterate((i) => (newStyles[i].fill = color));
-    buildAnimation(
-      this,
-      { text: this.attributes.text },
-      { text: this.attributes.text },
-      transformProcess([]),
-      transformPostProcess(this, this.getRootRenderNode()),
-      "*",
-    );
-    const html = parseToHTML(this, this.attributes.string, newStyles)[0];
+    // Per-glyph fill animation directly on the existing math html. NO html
+    // swap, NO morph layer: the morph layer's path positions don't match the
+    // browser's native <use> rendering (off by a few pixels in y), so swapping
+    // html out for the morph and back in surfaces a visible jitter. Mutating
+    // <use>.fill in place sidesteps that.
+    this.animateGlyphFills(this.attributes.subtextStyles, newStyles);
     this.triggerAttributeChanged(
       undefined,
       "subtextStyles",
@@ -306,15 +308,76 @@ export class Math extends BaseText {
       this.attributes.subtextStyles,
       Interp.emptyInterp,
     );
-    this.triggerAttributeChanged(
-      this.renderer,
-      "html",
-      html,
-      this.attributes.html,
-      Interp.childBlankInMiddleInterp,
-    );
     return this;
   }
+
+  private animateGlyphFills(
+    sourceStyles: Array<PathStyle>,
+    targetStyles: Array<PathStyle>,
+  ): void {
+    const html = this.attributes.html;
+    if (!html) return;
+    const root = html.element().children[1] as SVGGElement | undefined;
+    if (!root) return;
+
+    const glyphs: Array<SVGElement> = [];
+    const walk = (node: SVGGraphicsElement) => {
+      const tag = Dom.tagName(node);
+      if (!tag || tag === "defs" || tag === "path") return;
+      if (tag === "rect" || tag === "use") glyphs.push(node as SVGElement);
+      for (let k = 0; k < node.children.length; k++) {
+        walk(node.children[k] as SVGGraphicsElement);
+      }
+    };
+    walk(root);
+
+    const inheritedFill = C.toRGBA(C.toFill(this.getFill()));
+    const resolve = (style: PathStyle | undefined): SDRGBAColor | undefined => {
+      if (!style) return undefined;
+      if (style.fill === "default") return inheritedFill;
+      return C.toRGBA(style.fill);
+    };
+
+    const changes: Array<{ el: SVGElement; from: SDRGBAColor; to: SDRGBAColor }> = [];
+    const n =
+      glyphs.length < targetStyles.length ? glyphs.length : targetStyles.length;
+    for (let k = 0; k < n; k++) {
+      const from = resolve(sourceStyles[k]);
+      const to = resolve(targetStyles[k]);
+      if (!from || !to) continue;
+      if (
+        from.r === to.r &&
+        from.g === to.g &&
+        from.b === to.b &&
+        from.a === to.a
+      ) {
+        continue;
+      }
+      changes.push({ el: glyphs[k], from, to });
+    }
+    if (changes.length === 0) return;
+
+    const l = this.delay();
+    const r = this.delay() + this.duration();
+    const timing = this.getTimingFunction();
+
+    const interp = new InterpObject(function (this: Action, t: number) {
+      for (const change of changes) {
+        const a = change.from;
+        const b = change.to;
+        const rr = a.r * (1 - t) + b.r * t;
+        const gg = a.g * (1 - t) + b.g * t;
+        const bb = a.b * (1 - t) + b.b * t;
+        const aa = a.a * (1 - t) + b.a * t;
+        change.el.setAttribute("fill", `rgba(${rr}, ${gg}, ${bb}, ${aa})`);
+      }
+    });
+
+    const key = `math-glyph-fills:${++Math.fillActionCounter}`;
+    Animate.push(new Action(l, r, undefined, undefined, interp, timing, this, key));
+  }
+
+  private static fillActionCounter = 0;
 }
 
 function convertMappingToGlyphs(
