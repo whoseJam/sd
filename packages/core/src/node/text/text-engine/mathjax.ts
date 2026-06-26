@@ -38,30 +38,30 @@ export class MathManager {
     const ibbox = (math.element().children[1] as SVGGElement).getBBox();
     if (parentNode) parentNode.appendChild(math.element());
     else math.__remove();
-    return [bbox, ibbox];
+    return [bbox, ibbox] as const;
   }
 
-  static getMathPaths(y: number, math: RenderNode): Array<PathView> {
+  static getMathPaths(math: RenderNode): Array<PathView> {
     if (!math) return [];
     const defs: SVGDefsElement = math.element().children[0] as SVGDefsElement;
     const root: SVGGElement = math.element().children[1] as SVGGElement;
     const paths = [];
+    // Map root local → parent user units. bbox / ibbox give the combined
+    // scale (preserveAspectRatio meet × adjustMath's scale(0.8)) directly,
+    // bypassing the math <svg>'s "ex" width attribute (which would need a
+    // font-size DOM context to resolve). The +(ibbox.y + ibbox.height) × scale
+    // term compensates for MathJax's root scale(1,-1): the rendered top
+    // corresponds to ibbox's bottom in root's local y.
     const initialMatrix = () => {
-      const svg = math.element();
       const [bbox, ibbox] = this.boundingBoxAndInnerBoundingBox(math);
-      const view = svg.getAttribute("viewBox").split(" ");
-      const [vx, vy, vw, vh] = [+view[0], +view[1], +view[2], +view[3]];
-      const svgX = +svg.getAttribute("x");
-      const svgY = +svg.getAttribute("y") + (bbox.y - y);
-      const w = bbox.width * (vw / ibbox.width);
-      const h = bbox.height * (vh / ibbox.height);
+      const scale = bbox.width / ibbox.width;
       return new DOMMatrix([
-        w / vw,
+        scale,
         0,
         0,
-        h / vh,
-        svgX - (w / vw) * vx,
-        svgY - (h / vh) * vy,
+        scale,
+        bbox.x,
+        bbox.y + (ibbox.y + ibbox.height) * scale,
       ]);
     };
     const extract = (current: SVGElement): string => {
@@ -90,6 +90,9 @@ export class MathManager {
       stroke: string,
     ) => {
       for (let i = 0; i < current.transform.baseVal.length; i++) {
+        // Skip root's second-to-last transform: adjustMath appends
+        // scale(0.8) translate(-ibbox.x, 0) there, and the 0.8 is
+        // already baked into initialMatrix via bbox.width / ibbox.width.
         if (current === root && i === current.transform.baseVal.length - 2)
           continue;
         matrix = matrix.multiply(current.transform.baseVal[i].matrix);
