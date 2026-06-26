@@ -18,15 +18,12 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
   const size = A.getAttribute(text, "fontSize", t, text.getFontSize());
   const x = A.getAttribute(text, "x", t, text.getLocalX());
   const localY = A.getAttribute(text, "y", t, text.getLocalY());
-  // BaseText.renderAttribute writes DOM y = -(localY + height); morph
-  // overlays render in raw SVG space, so we must apply the same flip
-  // here or they land at SVG y=-localY instead of co-located with the
-  // <text> element (visible only when the viewBox happens to span both).
-  // text.attributes.height is already the TARGET height at firstTick
-  // time, so measure THIS frame's content/family/size directly — same
-  // pattern getMathPaths uses for the analogous Math case.
-  const box = FontManager.boundingBox(content, family, size);
-  const y = -(localY + box.height);
+  // Mirror BaseText.renderAttribute's flip so morph paths share <text>'s
+  // DOM y. Re-measuring height here would drift when attributes.height
+  // was captured at construction before the font loaded (boundingBox
+  // falls back to default-font getBBox in that window), causing visible
+  // y jitter on setSubtextFill.
+  const y = -(localY + (text.getLocalHeight() || 0));
   const paths = FontManager.getTextPathsFromOpenType(
     content,
     family,
@@ -36,8 +33,7 @@ export function getTextPaths(text: Text, t: number): Array<PathView> {
   );
   return paths.map((path) => {
     const data = path.toPathData(4);
-    if (data === "") return undefined;
-    return new PathView(data);
+    return data === "" ? undefined : new PathView(data);
   });
 }
 
@@ -59,6 +55,6 @@ function getMathPaths(text: Math, t: number): Array<PathView> {
   html.setAttribute("y", y);
   const ownHeight = MathManager.boundingBox(y, html).height;
   html.setAttribute("y", -(y + ownHeight));
-  const paths = MathManager.getMathPaths(+html.getAttribute("y"), html);
+  const paths = MathManager.getMathPaths(html);
   return paths;
 }
