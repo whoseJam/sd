@@ -55,7 +55,7 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
     );
     process.exit();
   }
-  if (!global.sd && !global.s) {
+  if (!global.sd && !global.s && !global.externalAssets) {
     copyFile("./dist/sd.js", animationOutputPath);
     copyVendorAssets(animationOutputPath);
   }

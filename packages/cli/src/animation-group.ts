@@ -62,7 +62,7 @@ export function launch(selfLaunch = true): void | Promise<void> {
     );
     process.exit();
   }
-  if (!global.sd) {
+  if (!global.sd && !global.externalAssets) {
     copyFile("./dist/sd.js", animationOutputPath);
     copyVendorAssets(animationOutputPath);
   }

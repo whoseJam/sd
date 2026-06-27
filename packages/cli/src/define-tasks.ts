@@ -17,6 +17,7 @@ import reveal from "./reveal.js";
 import sd from "./sd.js";
 import theme from "./theme.js";
 import * as type from "./type.js";
+import { copyVendorAssets } from "./utils.js";
 import webslides from "./webslides.js";
 
 type GulpLike = {
@@ -53,6 +54,12 @@ export function defineTasks(gulp: GulpLike): void {
   gulp.task("theme", () => {
     const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
     return theme(pptOutputPath);
+  });
+
+  gulp.task("vendor", () => {
+    const outputPath = global.o || parser.parseConfig("pptOutputPath");
+    copyVendorAssets(outputPath);
+    return theme(path.join(outputPath, "vendor", "themes"));
   });
 
   gulp.task("type", () => type.launch(false));

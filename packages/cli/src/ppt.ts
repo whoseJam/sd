@@ -130,9 +130,11 @@ export function task(
   const cleanRoot = entry === "." ? targetFolder : `${targetFolder}/${entry}`;
   const isRootClean = cleanRoot === targetFolder;
   cleanDir(cleanRoot, isRootClean ? PROTECTED_SHARED_ENTRIES : undefined);
-  copyVendorAssets(targetFolder);
-  if (!global.framework || global.framework === "reveal") {
-    theme(path.join(targetFolder, "vendor", "themes"));
+  if (!global.externalAssets) {
+    copyVendorAssets(targetFolder);
+    if (!global.framework || global.framework === "reveal") {
+      theme(path.join(targetFolder, "vendor", "themes"));
+    }
   }
   walk(source, (p: string) => {
     const suffix = p.split(".").slice(-1)[0];
@@ -227,13 +229,15 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
     process.exit();
   }
   const host = getHost();
-  ensureSharedAsset("sd.js", pptOutputPath, "./dist");
-  if (host.libraryBundle) {
-    ensureSharedAsset(
-      path.basename(host.libraryBundle),
-      pptOutputPath,
-      path.dirname(host.libraryBundle),
-    );
+  if (!global.externalAssets) {
+    ensureSharedAsset("sd.js", pptOutputPath, "./dist");
+    if (host.libraryBundle) {
+      ensureSharedAsset(
+        path.basename(host.libraryBundle),
+        pptOutputPath,
+        path.dirname(host.libraryBundle),
+      );
+    }
   }
   return task(source, pptOutputPath);
 }
