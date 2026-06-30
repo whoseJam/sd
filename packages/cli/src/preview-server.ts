@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
-// Static file server for `pnpm open`. Serves /tmp/sd-test, injects a 1-line
+// Static file server for `pnpm open`. Serves the preview root and injects a
 // reload poller into every HTML so watcher rebuilds refresh the page.
 
 import { existsSync, mkdirSync, readFileSync, statSync, watch } from "node:fs";
 import { extname, join } from "node:path";
 
-const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
 const REPO = process.env.REPO ?? process.cwd();
+const REVEAL_ROOT = process.env.REVEAL_ROOT ?? join(REPO, "dist");
 const PORT = Number(process.env.PORT ?? 8765);
 const DIST_DIR = join(REPO, "dist");
 
@@ -79,12 +79,17 @@ function decodePath(path: string): string {
 
 Bun.serve({
   port: PORT,
+  hostname: "127.0.0.1",
   fetch(request) {
     const url = new URL(request.url);
     const path = decodePath(url.pathname);
 
     if (path === "/api/reload-token") {
       return Response.json({ epoch: reloadEpoch });
+    }
+
+    if (path === "/api/sd-preview-server") {
+      return Response.json({ ok: true, root: REVEAL_ROOT });
     }
 
     const basename = path.split("/").pop() ?? "";

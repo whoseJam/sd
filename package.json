@@ -10,7 +10,7 @@
     "os": false
   },
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "pnpm -r build && gulp sd -o ./dist && gulp reveal -o ./dist",
     "dev": "pnpm -r --parallel dev",
     "gen": "pnpm --filter @whosejam/sd-agents build",
     "check:gen": "pnpm gen && git diff --exit-code packages/sd-agents/dist",

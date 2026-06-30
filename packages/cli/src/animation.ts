@@ -6,7 +6,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "node:path";
 import webpack from "webpack-stream";
 
-import { parseConfig, parseConfigFonts, parseInput } from "./parser.js";
+import { getFonts, parseInput, requireOutputPath } from "./parser.js";
 import {
   copyFile,
   copyVendorAssets,
@@ -43,23 +43,20 @@ export function task(
 export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   if (!import.meta.main && selfLaunch) return;
   parseInput();
-  const animationOutputPath = global.o || parseConfig("animationOutputPath");
   const sourceFilePath = global.i;
   if (!sourceFilePath) {
     console.log(colors("red", "[Error] Please provide the source file path."));
     console.log(
-      colors(
-        "cyan",
-        "Usage: animation -i <source file path> [-o <target path>]",
-      ),
+      colors("cyan", "Usage: animation -i <source file path> -o <target path>"),
     );
-    process.exit();
+    process.exit(1);
   }
+  const outputPath = requireOutputPath("animation");
   if (!global.sd && !global.s && !global.externalAssets) {
-    copyFile("./dist/sd.js", animationOutputPath);
-    copyVendorAssets(animationOutputPath);
+    copyFile("./dist/sd.js", outputPath);
+    copyVendorAssets(outputPath);
   }
-  return task(sourceFilePath, animationOutputPath);
+  return task(sourceFilePath, outputPath);
 }
 
 function getConfiguration(file: string, targetFolder: string) {
@@ -89,7 +86,7 @@ function getConfiguration(file: string, targetFolder: string) {
       inject: false,
       minify: false,
       filename: `${file}.html`,
-      templateParameters: { base, fonts: parseConfigFonts().join(",") },
+      templateParameters: { base, fonts: getFonts().join(",") },
     }),
   ];
   return {

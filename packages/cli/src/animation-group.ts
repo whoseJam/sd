@@ -4,7 +4,7 @@ import colors from "colors-console";
 import gulp from "gulp";
 
 import * as animation from "./animation.js";
-import { parseConfig, parseInput } from "./parser.js";
+import { parseInput, requireOutputPath } from "./parser.js";
 import { toOriginFile, toTargetFolder, walk } from "./path-utils.js";
 import { copyFile, copyVendorAssets } from "./utils.js";
 
@@ -48,7 +48,6 @@ export function task(source: string, targetFolder: string): Promise<void> {
 export function launch(selfLaunch = true): void | Promise<void> {
   if (!import.meta.main && selfLaunch) return;
   parseInput();
-  const animationOutputPath = global.o || parseConfig("animationOutputPath");
   const source = global.i;
   if (!source) {
     console.log(
@@ -57,16 +56,17 @@ export function launch(selfLaunch = true): void | Promise<void> {
     console.log(
       colors(
         "cyan",
-        "Usage: animation-group -i <source folder path> [-o <target folder path>]",
+        "Usage: animation-group -i <source folder path> -o <target folder path>",
       ),
     );
-    process.exit();
+    process.exit(1);
   }
+  const outputPath = requireOutputPath("animation-group");
   if (!global.sd && !global.externalAssets) {
-    copyFile("./dist/sd.js", animationOutputPath);
-    copyVendorAssets(animationOutputPath);
+    copyFile("./dist/sd.js", outputPath);
+    copyVendorAssets(outputPath);
   }
-  return task(source, animationOutputPath);
+  return task(source, outputPath);
 }
 
 if (import.meta.main) launch(true);

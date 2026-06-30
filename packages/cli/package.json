@@ -2,7 +2,7 @@
   "name": "@whosejam/sd-cli",
   "version": "0.0.1",
   "private": false,
-  "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-config, sd-init)",
+  "description": "Build tasks and CLI entry points (sd-animation, sd-animation-group, sd-ppt, sd-init)",
   "homepage": "https://github.com/whoseJam/sd/tree/master/packages/cli",
   "bugs": "https://github.com/whoseJam/sd/issues",
   "license": "ISC",
@@ -15,7 +15,6 @@
   "bin": {
     "sd-animation": "./dist/animation.js",
     "sd-animation-group": "./dist/animation-group.js",
-    "sd-config": "./dist/config.js",
     "sd-init": "./dist/init.js",
     "sd-ppt": "./dist/ppt.js"
   },

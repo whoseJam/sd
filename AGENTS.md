@@ -92,7 +92,7 @@ gulp animation-group -i <directory> -o <output-dir>
 gulp ppt             -i <deck-reveal-dir> -o <output-dir>
 ```
 
-`myconfig.json` at the repo root (gitignored) holds default `animationOutputPath`, `pptOutputPath`, `releaseOutputPath`. Override per invocation with `-o`. Manage via `sd-config <key> <value>`.
+Low-level gulp tasks require `-o <output-dir>`.
 
 ## Architecture Notes
 

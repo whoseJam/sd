@@ -7,9 +7,13 @@ import { resolvePackageDir } from "./utils.js";
 import { cssRule, tsLoaderRule } from "./webpack-base.js";
 
 export default function sd(targetFolder: string): NodeJS.ReadWriteStream {
-  const coreDir = resolvePackageDir("@whosejam/sd-core");
+  // Bundle through @whosejam/sd (re-exports sd-core + sd-layout.layout) so the
+  // UMD `window.sd` global exposes `layout()` alongside the core API. Animations
+  // declare `externals: { "@/sd": "sd", "@whosejam/sd": "sd" }` (see animation.ts)
+  // and resolve `sd.layout()` against this UMD bundle at runtime.
+  const sdDir = resolvePackageDir("@whosejam/sd");
   return gulp
-    .src([path.join(coreDir, "dist/sd.js")])
+    .src([path.join(sdDir, "dist/index.js")])
     .pipe(webpack(getConfiguration()))
     .on("error", function (this: NodeJS.EventEmitter, err: Error) {
       console.error("Webpack compilation error:", err.message);

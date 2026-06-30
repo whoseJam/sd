@@ -6,9 +6,9 @@
 //   kind = "deck" | "anim"
 //   max = upper bound on slides/pauses (we clamp)
 
-import { chromium, type Page } from "playwright";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import { chromium, type Page } from "playwright";
 import sharp from "sharp";
 
 const VIEWPORT = { width: 1200, height: 690 };
@@ -31,23 +31,32 @@ async function readJobs(): Promise<Job[]> {
     if (!line.trim()) continue;
     const [kind, url, output, maxStr] = line.split("\t");
     if (kind !== "deck" && kind !== "anim") continue;
-    jobs.push({ kind: kind as "deck" | "anim", url, output, max: Number(maxStr || "20") });
+    jobs.push({
+      kind: kind as "deck" | "anim",
+      url,
+      output,
+      max: Number(maxStr || "20"),
+    });
   }
   return jobs;
 }
 
 async function waitForRevealReady(page: Page): Promise<number> {
-  return await page.waitForFunction(
-    () => {
-      const w = window as unknown as { Reveal?: { isReady?: () => boolean; getTotalSlides?: () => number } };
-      if (w.Reveal?.isReady?.() && (w.Reveal.getTotalSlides?.() ?? 0) > 0) {
-        return w.Reveal.getTotalSlides();
-      }
-      return false;
-    },
-    null,
-    { timeout: READY_TIMEOUT_MS },
-  ).then((handle) => handle.jsonValue() as Promise<number>);
+  return await page
+    .waitForFunction(
+      () => {
+        const w = window as unknown as {
+          Reveal?: { isReady?: () => boolean; getTotalSlides?: () => number };
+        };
+        if (w.Reveal?.isReady?.() && (w.Reveal.getTotalSlides?.() ?? 0) > 0) {
+          return w.Reveal.getTotalSlides();
+        }
+        return false;
+      },
+      null,
+      { timeout: READY_TIMEOUT_MS },
+    )
+    .then((handle) => handle.jsonValue() as Promise<number>);
 }
 
 async function waitForAnimationReady(page: Page): Promise<number> {
@@ -66,9 +75,12 @@ async function waitForAnimationReady(page: Page): Promise<number> {
 
 async function navigateRevealSlide(page: Page, index: number): Promise<void> {
   // 0-indexed linear: drive via location.hash. reveal honors #/N for horizontal nav.
-  await page.evaluate(([i]) => {
-    location.hash = `#/${i}`;
-  }, [index] as [number]);
+  await page.evaluate(
+    ([i]) => {
+      location.hash = `#/${i}`;
+    },
+    [index] as [number],
+  );
 }
 
 async function snapDeck(page: Page, job: Job): Promise<Buffer[]> {
@@ -108,7 +120,12 @@ async function stitchGrid(shots: Buffer[]): Promise<Buffer> {
     left: (i % cols) * w,
   }));
   return await sharp({
-    create: { width: cols * w, height: rows * h, channels: 4, background: { r: 255, g: 255, b: 255, alpha: 1 } },
+    create: {
+      width: cols * w,
+      height: rows * h,
+      channels: 4,
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    },
   })
     .composite(composites)
     .png()
@@ -119,14 +136,21 @@ async function main(): Promise<void> {
   const jobs = await readJobs();
   process.stderr.write(`batch-snap: ${jobs.length} jobs\n`);
   const browser = await chromium.launch();
-  const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: DPR });
+  const context = await browser.newContext({
+    viewport: VIEWPORT,
+    deviceScaleFactor: DPR,
+  });
   const page = await context.newPage();
-  let ok = 0, fail = 0;
+  let ok = 0,
+    fail = 0;
   const t0 = Date.now();
   for (let i = 0; i < jobs.length; i++) {
     const job = jobs[i];
     try {
-      const shots = job.kind === "deck" ? await snapDeck(page, job) : await snapAnim(page, job);
+      const shots =
+        job.kind === "deck"
+          ? await snapDeck(page, job)
+          : await snapAnim(page, job);
       const png = await stitchGrid(shots);
       mkdirSync(dirname(job.output), { recursive: true });
       writeFileSync(job.output, png);
@@ -134,15 +158,21 @@ async function main(): Promise<void> {
       process.stdout.write(`OK\t${job.kind}\t${job.url}\t${job.output}\n`);
     } catch (e) {
       fail++;
-      process.stdout.write(`FAIL\t${job.kind}\t${job.url}\t${String(e).slice(0, 200)}\n`);
+      process.stdout.write(
+        `FAIL\t${job.kind}\t${job.url}\t${String(e).slice(0, 200)}\n`,
+      );
     }
     if ((i + 1) % 25 === 0) {
       const elapsed = (Date.now() - t0) / 1000;
-      process.stderr.write(`progress: ${i + 1}/${jobs.length} (ok=${ok} fail=${fail}) ${elapsed.toFixed(0)}s\n`);
+      process.stderr.write(
+        `progress: ${i + 1}/${jobs.length} (ok=${ok} fail=${fail}) ${elapsed.toFixed(0)}s\n`,
+      );
     }
   }
   await browser.close();
-  process.stderr.write(`batch-snap done: ok=${ok} fail=${fail} elapsed=${((Date.now() - t0) / 1000).toFixed(0)}s\n`);
+  process.stderr.write(
+    `batch-snap done: ok=${ok} fail=${fail} elapsed=${((Date.now() - t0) / 1000).toFixed(0)}s\n`,
+  );
 }
 
 main().catch((e) => {

@@ -10,7 +10,7 @@ import w from "webpack";
 import webpack from "webpack-stream";
 
 import * as animation from "./animation.js";
-import { parseConfig, parseInput } from "./parser.js";
+import { parseInput, requireOutputPath } from "./parser.js";
 import {
   toOriginFile,
   toTargetFile,
@@ -23,7 +23,7 @@ import { cssRule, scssRule, tsLoaderRule } from "./webpack-base.js";
 
 const require = createRequire(import.meta.url);
 
-// Names at the root of pptOutputPath that cleanDir must preserve. These are
+// Names at the root of targetFolder that cleanDir must preserve. These are
 // shared across all decks/entries: the engine UMD, framework bundles, and
 // the vendor/animation subtrees. Without this set, cleanDir would race the
 // gulp sd output and leave the deck without its sd.js.
@@ -125,7 +125,7 @@ export function task(
 
   // With --entry, multiple framework builds share the same -o; only nuke this
   // entry's own wrapper dir so other entries' outputs survive. When cleaning
-  // the root of pptOutputPath, protect shared assets (sd.js, framework
+  // the root of targetFolder, protect shared assets (sd.js, framework
   // bundle, vendor/, animation/) from being deleted.
   const cleanRoot = entry === "." ? targetFolder : `${targetFolder}/${entry}`;
   const isRootClean = cleanRoot === targetFolder;
@@ -214,7 +214,6 @@ export function task(
 export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
   if (!import.meta.main && selfLaunch) return;
   parseInput();
-  const pptOutputPath = global.o || parseConfig("pptOutputPath");
   const source = global.i;
   if (!source) {
     console.log(
@@ -223,23 +222,24 @@ export function launch(selfLaunch = true): NodeJS.ReadWriteStream | undefined {
     console.log(
       colors(
         "cyan",
-        "Usage: ppt -i <source folder path> [-o <target folder path>]",
+        "Usage: ppt -i <source folder path> -o <target folder path>",
       ),
     );
-    process.exit();
+    process.exit(1);
   }
+  const outputPath = requireOutputPath("ppt");
   const host = getHost();
   if (!global.externalAssets) {
-    ensureSharedAsset("sd.js", pptOutputPath, "./dist");
+    ensureSharedAsset("sd.js", outputPath, "./dist");
     if (host.libraryBundle) {
       ensureSharedAsset(
         path.basename(host.libraryBundle),
-        pptOutputPath,
+        outputPath,
         path.dirname(host.libraryBundle),
       );
     }
   }
-  return task(source, pptOutputPath);
+  return task(source, outputPath);
 }
 
 function copyAsset(

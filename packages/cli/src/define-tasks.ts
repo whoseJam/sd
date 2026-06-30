@@ -29,35 +29,35 @@ export function defineTasks(gulp: GulpLike): void {
 
   gulp.task("sd", () => {
     global.sd = true;
-    const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
-    return sd(pptOutputPath);
+    const outputPath = parser.requireOutputPath("gulp sd");
+    return sd(outputPath);
   });
 
   gulp.task("reveal", () => {
     global.reveal = true;
-    const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
-    return reveal(pptOutputPath);
+    const outputPath = parser.requireOutputPath("gulp reveal");
+    return reveal(outputPath);
   });
 
   gulp.task("webslides", () => {
     global.webslides = true;
-    const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
-    return webslides(pptOutputPath);
+    const outputPath = parser.requireOutputPath("gulp webslides");
+    return webslides(outputPath);
   });
 
   gulp.task("impress", () => {
     global.impress = true;
-    const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
-    return impress(pptOutputPath);
+    const outputPath = parser.requireOutputPath("gulp impress");
+    return impress(outputPath);
   });
 
   gulp.task("theme", () => {
-    const pptOutputPath = global.o || parser.parseConfig("pptOutputPath");
-    return theme(pptOutputPath);
+    const outputPath = parser.requireOutputPath("gulp theme");
+    return theme(outputPath);
   });
 
   gulp.task("vendor", () => {
-    const outputPath = global.o || parser.parseConfig("pptOutputPath");
+    const outputPath = parser.requireOutputPath("gulp vendor");
     copyVendorAssets(outputPath);
     return theme(path.join(outputPath, "vendor", "themes"));
   });
@@ -67,7 +67,7 @@ export function defineTasks(gulp: GulpLike): void {
   gulp.task("animation-group", () => animationGroup.launch(false));
 
   gulp.task("element", () => {
-    const outputPath = global.o || parser.parseConfig("pptOutputPath");
+    const outputPath = parser.requireOutputPath("gulp element");
     return element(outputPath);
   });
 
@@ -75,7 +75,7 @@ export function defineTasks(gulp: GulpLike): void {
 
   gulp.task("serve", (done) => {
     const port = global.p || "8080";
-    const root = global.o ?? parser.parseConfig("pptOutputPath");
+    const root = parser.requireOutputPath("gulp serve");
     exec(`live-server --cors --port=${port} "${root}"`, function (error) {
       if (error) console.log(error);
       done();
@@ -83,7 +83,7 @@ export function defineTasks(gulp: GulpLike): void {
   });
 
   gulp.task("preview", async () => {
-    const pptOutputPath = global.o ?? parser.parseConfig("pptOutputPath");
+    const outputPath = parser.requireOutputPath("gulp preview");
     const source = global.i;
     if (!source) {
       console.log("[Error] -i required for preview");
@@ -91,13 +91,13 @@ export function defineTasks(gulp: GulpLike): void {
     }
 
     global.sd = true;
-    global.targetFolder = pptOutputPath;
+    global.targetFolder = outputPath;
 
-    await streamDone(sd(pptOutputPath));
+    await streamDone(sd(outputPath));
 
     const animSrc = path.join(path.dirname(path.resolve(source)), "animation");
     if (fs.existsSync(animSrc)) {
-      const animOut = path.join(pptOutputPath, "animation");
+      const animOut = path.join(outputPath, "animation");
       const streams: Promise<void>[] = [];
       walk(animSrc, (p) => {
         if (p.endsWith(".ts") || p.endsWith(".js")) {
@@ -110,7 +110,7 @@ export function defineTasks(gulp: GulpLike): void {
     await streamDone(ppt.launch(false) as NodeJS.ReadWriteStream);
 
     const port = global.p || "8080";
-    exec(`live-server --cors --port=${port} "${pptOutputPath}"`);
+    exec(`live-server --cors --port=${port} "${outputPath}"`);
   });
 }
 

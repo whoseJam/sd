@@ -1,163 +1,122 @@
-# 在 Claude Code 里用 sd
+# sd
 
-本仓库带一个 Claude Code plugin（`sd-agents`），里面是 sd 的 deck 写作约定、运行时 API 速查、以及 `pnpm open / close / snap` 对应的 MCP 工具。在 Claude Code CLI 里跑：
+`sd` 是一个用 TypeScript 写算法课件和动画的 monorepo。`packages/` 里是运行时、布局、Reveal 集成、CLI 和 agent 插件；`examples/` 里是示例 deck 和动画。
 
+这份 README 说明怎么维护和运行这个仓库本身。写 deck 的风格约定、动画 API 速查和截图工作流在 `@whosejam/sd-agents` 插件里。
+
+## 环境
+
+需要：
+
+- Node.js 20+
+- pnpm
+- Bun，用于 `pnpm open`、`pnpm start`、`pnpm snap`
+
+首次使用这个仓库：
+
+```bash
+pnpm install
+pnpm build
 ```
+
+## 最常用的预览流程
+
+打开一个 deck：
+
+```bash
+pnpm open hello
+pnpm open 枚举
+```
+
+运行后会自动打开浏览器。之后直接编辑 deck 或 animation 文件，保存后页面会自动刷新。
+
+如果浏览器没有自动打开，手动访问：
+
+```text
+http://127.0.0.1:8765/previews/decks/<name>/reveal/index.html
+```
+
+默认输出都在仓库的 `./dist` 下。watcher 日志在 `dist/view-logs/`，截图默认在 `dist/snapshots/`。
+
+可以同时预览多个 deck。`sd` 和 `reveal` watcher 是共享的；每个 deck 有自己的 `ppt` 和 `animation-group` watcher，输出目录也互不覆盖。
+
+关闭预览：
+
+```bash
+pnpm close hello      # 只关 hello 的 watcher
+pnpm close           # 关掉所有 open 启动的 watcher
+pnpm stop            # 关 watcher，并停止 8765 预览服务器
+```
+
+如果 8765 已经被别的服务占用，`pnpm start` 会报错。可以换端口：
+
+```bash
+PORT=9000 pnpm open hello
+```
+
+PowerShell：
+
+```powershell
+$env:PORT = "9000"; pnpm open hello
+```
+
+## 自定义输出目录
+
+预览输出默认写到当前项目的 `./dist`。如果想放到别处，可以设置 `REVEAL_ROOT`：
+
+```bash
+REVEAL_ROOT=/tmp/sd-preview pnpm open hello
+```
+
+PowerShell：
+
+```powershell
+$env:REVEAL_ROOT = "C:\sd-preview"; pnpm open hello
+```
+
+## 构建 package
+
+首次 clone 或更新 package 源码后，先跑一次 `pnpm build`。它会构建各 package 的 `dist/`，并准备预览所需的共享 `dist/sd.js` 和 `dist/reveal.js`。`pnpm open` 只负责构建当前预览目标。
+
+构建所有 workspace package 的 `dist/`：
+
+```bash
+pnpm build
+```
+
+开发 package 本身时跑 watch：
+
+```bash
+pnpm dev
+```
+
+这类构建会产出 npm package 文件，比如 `packages/core/dist`、`packages/layout/dist`、`packages/reveal/dist`、`packages/cli/dist`，也会更新仓库根目录的 `dist/sd.js` 和 `dist/reveal.js`。
+
+## 低层构建任务
+
+`pnpm open` 内部会调用 CLI 的低层任务来生成 `sd.js`、`reveal.js`、deck wrapper 和 animation bundle。日常开发不需要直接调用这些任务；只有在排查打包问题或验证发布产物时才需要绕过 `pnpm open`。
+
+低层任务不会读取项目配置文件。需要自定义输出位置时，调用方显式传 `-o <output-dir>`。
+
+## 截图
+
+先用 `pnpm open` 或 `pnpm start` 保证页面在预览服务器上，然后：
+
+```bash
+pnpm snap /previews/decks/hello/reveal/index.html
+pnpm snap /previews/decks/hello/reveal/index.html --slide 1
+pnpm snap /previews/decks/hello/animation/circle.html --pause 2
+```
+
+截图默认输出到 `dist/snapshots/`，也可以传 `-o <path>` 指定输出文件。
+
+## Agent 插件
+
+Claude Code：
+
+```bash
 claude plugin marketplace add whoseJam/sd
 claude plugin install sd-agents@sd
 ```
 
-装好之后重启 Claude Code（或 `/reload-plugins`），Claude 在你写 sd deck 或调用 `sd.X` 时会自动加载对应 skill。本地开发 plugin 本身的同学把 marketplace add 的参数换成本地路径即可：`claude plugin marketplace add /path/to/sd`。
-
-# 环境搭建
-
-到项目根目录下，使用 `npm install` 安装必要的依赖。
-
-到项目根目录下，新建 `myconfig.json`，在里面填写基础的配置文件，形如：
-
-```
-{
-    "animationOutputPath": "C:/Users/xxx/Desktop/output/animation",
-    "pptOutputPath": "C:/Users/xxx/Desktop/output"
-}
-```
-
-分别表示**默认动画输出路径**，以及**默认 ppt 输出路径**。
-
-接下来就能愉快地使用这个框架啦。
-
-#### 更好的体验
-
-在 `vscode` 上可以下载这么几个插件：
-
-1. `JavaScript and TypeScript Nightly`：不知道具体作用，总之作者有。
-2. `js snippets`：不知道具体作用，总之作者有。
-3. `Prettier - Code formatter`：给代码格式化的。如果你希望你的所有动画代码保持相同的代码风格，则可以使用此插件。
-4. `HTML Boilerplate`：不知道具体作用，总之作者有。
-5. `HTML CSS Support`：不知道具体作用，总之作者有。
-
----
-
-# 任务
-
-本框架使用 `gulp` 作为任务管理中枢，其内定义了 `animation` 任务用于生成动画，定义了 `ppt` 任务生成课件。
-
-## 动画任务
-
-使用 `animation` 任务来生成动画。相关指令如下：
-
-```
-gulp animation -i <动画文件>
-```
-
-### 配置项
-
-- `-i`：指定输入文件（即动画文件），这是必填项。
-
-```shell
-gulp animation -i ./example/animation/rect.js
-```
-
-- `-o`：指定输出路径，如果没有指定，则使用 `animationOutputPath` 作为默认输出路径。
-
-```shell
-gulp animation -i ./example/animation/rect.js -o ../output
-```
-
-- `-w`：是否监听动画文件变动。默认不开启。开启监听后，此任务会变成长期任务，动画文件一旦改变，则输出会自动改变。这在编写动画文件、做调试的时候很有用。
-
-```shell
-gulp animation -i ./example/animation/rect.js -w
-```
-
-- `-l`：使用本地的动画库。默认不使用，而是会从作者的网站上加载动画库，这样的好处是可以拉取到最新版的动画库，坏处是第一次加载略慢。使用本地的动画库则需要自己把动画库挂到 `localhost:8080` 上，通过 `http://localhost:8080/sd.js` 进行访问。
-
-```shell
-gulp animation -i ./example/animation/rect.js -l
-```
-
-- `-domain`：有时候我们既不希望使用本地的动画库，也不希望使用作者网站上的动画库，而是希望自己指定动画库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
-
-```shell
-gulp animation -i ./example/animation/rect.js -domain http://localhost:8081
-```
-
-## PPT任务
-
-使用 `ppt` 任务来生成课件。相关指令如下：
-
-```shell
-gulp ppt -i <PPT所在目录>
-```
-
-### 配置项
-
-- `-i`：指定PPT所在的路径，只有当该路径下存在 `ppt.html` 文件时此路径才被视为是一个合法的路径，其中 `ppt.html` 被视作PPT的入口文件。这是必填项。
-
-```shell
-gulp ppt -i ./example/ppt/队列
-```
-
-- `-o`：指定输出路径，如果没有指定，则使用 `pptOutputPath` 作为默认输出路径。
-
-```shell
-gulp ppt -i ./example/ppt/队列 -o ../output
-```
-
-- `-w`：是否监听PPT的变动，包括所有HTML文件、动画文件、图片文件等等的变动。默认不开启。开启监听后，此任务会变成长期任务，一旦监听到任何变动，对应输出就会改变。这在编写PPT、做调试的时候很有用。
-
-```shell
-gulp ppt -i ./example/ppt/队列 -w
-```
-
-- `-l`：使用本地的库。默认不使用，而是会从作者的网站上加载库，这样的好处是可以拉取到最新版的库，坏处是第一次加载略慢。使用本地的库则需要自己把库挂到 `localhost:8080` 上，通过 `http://localhost:8080/???.js` 进行访问。
-
-```shell
-gulp ppt -i ./example/ppt/队列 -l
-```
-
-- `-domain`：有时候我们既不希望使用本地的库，也不希望使用作者网站上的库，而是希望自己指定库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
-
-```shell
-gulp ppt -i ./example/ppt/队列 -domain http://localhost:8081
-```
-
-# 动画组任务
-
-使用 `animation-group` 来生成一组动画，下面以动画组指代一组动画。这条命令的意义在于，当编写完大量动画后，可以用一条指令完成动画编译任务，而不需要重复多次使用 `animation` 指令。相关指令如下：
-
-```
-gulp animation-group -i <动画组所在目录>
-```
-
-### 配置项
-
-- `-i`：指定动画组所在目录，这是必填项。
-
-```shell
-gulp animation-group -i ./example/animation
-```
-
-- `-o`：指定输出路径，如果没有指定，则使用 `animationOutputPath` 作为默认输出路径。
-
-```shell
-gulp animation-group -i ./example/animation -o ../output
-```
-
-- `-w`：是否监听动画文件变动。默认不开启。开启监听后，此任务会变成长期任务，动画文件一旦改变，则输出会自动改变。这在编写动画文件、做调试的时候很有用。
-
-```shell
-gulp animation-group -i ./example/animation -w
-```
-
-- `-l`：使用本地的动画库。默认不使用，而是会从作者的网站上加载动画库，这样的好处是可以拉取到最新版的动画库，坏处是第一次加载略慢。使用本地的动画库则需要自己把动画库挂到 `localhost:8080` 上，通过 `http://localhost:8080/sd.js` 进行访问。
-
-```shell
-gulp animation-group -i ./example/animation -l
-```
-
-- `-domain`：有时候我们既不希望使用本地的动画库，也不希望使用作者网站上的动画库，而是希望自己指定动画库的所在域名，那么就可以使用这个参数。此参数会覆盖 `-l` 参数对动画库加载源的设置。
-
-```shell
-gulp animation-group -i ./example/animation -domain http://localhost:8081
-```
+装好后重启 Claude Code 或执行 `/reload-plugins`。插件会在写 sd deck、调用 `sd.X`、预览或截图时加载对应 skill。

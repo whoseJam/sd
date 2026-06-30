@@ -13,14 +13,14 @@ import {
   writeFileSync,
 } from "node:fs";
 import { createConnection } from "node:net";
-import { homedir } from "node:os";
 import { join } from "node:path";
 
 type Verb = "start" | "stop";
 
-const REPO = process.env.REPO ?? join(homedir(), "Desktop", "sd");
-const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
+const REPO = process.env.REPO ?? process.cwd();
+const REVEAL_ROOT = process.env.REVEAL_ROOT ?? join(REPO, "dist");
 const PORT = Number(process.env.PORT ?? 8765);
+const SERVER = `http://127.0.0.1:${PORT}`;
 const SERVER_LOG = join(REVEAL_ROOT, "server.log");
 
 mkdirSync(REVEAL_ROOT, { recursive: true });
@@ -69,12 +69,13 @@ function stop(): void {
 function killViewWatchers(): void {
   const file = join(REVEAL_ROOT, "view-pids.json");
   if (!existsSync(file)) return;
-  let pids: number[] = [];
+  let parsed: unknown;
   try {
-    pids = JSON.parse(readFileSync(file, "utf-8"));
+    parsed = JSON.parse(readFileSync(file, "utf-8"));
   } catch {
     return;
   }
+  const pids = collectPids(parsed);
   let killed = 0;
   for (const pid of pids) {
     try {
@@ -88,10 +89,25 @@ function killViewWatchers(): void {
   rmSync(file);
 }
 
+function collectPids(value: unknown): number[] {
+  if (Array.isArray(value)) return value.filter(isNumber);
+  if (!value || typeof value !== "object") return [];
+  return Object.values(value).flatMap((item) =>
+    Array.isArray(item) ? item.filter(isNumber) : [],
+  );
+}
+
+function isNumber(value: unknown): value is number {
+  return typeof value === "number";
+}
+
 async function ensureServer(): Promise<void> {
-  if (await portInUse(PORT)) {
+  if (await previewServerReady()) {
     console.log(`✓ preview server on :${PORT}`);
     return;
+  }
+  if (await portInUse(PORT)) {
+    die(`✗ port :${PORT} is already used by another server`);
   }
   console.log("  starting preview server...");
   // stdio takes an OS handle, not a Node stream. Listeners would pin the
@@ -110,12 +126,21 @@ async function ensureServer(): Promise<void> {
   child.unref();
   for (let attempt = 0; attempt < 20; attempt++) {
     await sleep(500);
-    if (await portInUse(PORT)) {
+    if (await previewServerReady()) {
       console.log(`✓ preview server on :${PORT}`);
       return;
     }
   }
   die(`✗ preview server failed (check ${SERVER_LOG})`);
+}
+
+async function previewServerReady(): Promise<boolean> {
+  try {
+    const response = await fetch(`${SERVER}/api/sd-preview-server`);
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 function which(command: string): boolean {

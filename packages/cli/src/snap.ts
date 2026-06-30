@@ -10,10 +10,10 @@
 
 import { spawnSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 
-const REPO = process.env.REPO ?? resolve(import.meta.dirname, "..", "..", "..");
-const REVEAL_ROOT = process.env.REVEAL_ROOT ?? "/tmp/sd-test";
+const REPO = process.env.REPO ?? process.cwd();
+const REVEAL_ROOT = process.env.REVEAL_ROOT ?? join(REPO, "dist");
 const PORT = process.env.PORT ?? "8765";
 const SNAPSHOT_DIR = join(REVEAL_ROOT, "snapshots");
 mkdirSync(SNAPSHOT_DIR, { recursive: true });

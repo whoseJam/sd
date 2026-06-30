@@ -1,36 +1,6 @@
-import colors from "colors-console";
-import fs from "node:fs";
-import path from "node:path";
-
 const DEFAULT_FONTS = ["Times New Roman", "Arial", "Consolas"];
 
 let parsed = false;
-let config: Record<string, unknown> | undefined;
-
-const CONFIG_PATH = path.join(
-  import.meta.dirname,
-  "..",
-  "..",
-  "..",
-  "myconfig.json",
-);
-
-const configHints: Record<string, string> = {
-  animationOutputPath:
-    "Default output path for animation (For example: C:/Users/xxx/Desktop/output)",
-  pptOutputPath:
-    "Default output path for PPT (For example: C:/Users/xxx/Desktop/output)",
-};
-
-function loadConfig(): void {
-  if (config !== undefined) return;
-  try {
-    config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-  } catch {
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify({}, null, 4));
-    config = {};
-  }
-}
 
 export function parseInput(): void {
   if (parsed) return;
@@ -59,23 +29,12 @@ export function parseInput(): void {
   }
 }
 
-export function parseConfig(key: string): string {
-  loadConfig();
-  if (!config || config[key] === undefined) {
-    console.log(
-      colors(
-        "red",
-        `[Error] Configuration key '${key}' not found. Please check the configuration.`,
-      ),
-    );
-    console.log(colors("cyan", configHints[key]));
-    process.exit();
-  }
-  return config[key] as string;
+export function requireOutputPath(command: string): string {
+  if (global.o) return global.o;
+  console.error(`[Error] -o <output-dir> required for ${command}.`);
+  process.exit(1);
 }
 
-export function parseConfigFonts(): string[] {
-  loadConfig();
-  const fonts = config?.["fonts"];
-  return Array.isArray(fonts) ? (fonts as string[]) : DEFAULT_FONTS;
+export function getFonts(): string[] {
+  return DEFAULT_FONTS;
 }
